@@ -87,9 +87,9 @@ class APICType:
     FILE_ICON = 1
     # Other file icon
     OTHER_FILE_ICON = 2
-    # Cover (front)
+    # Front cover
     COVER_FRONT = 3
-    # Cover (back)
+    # Back cover
     COVER_BACK = 4
     # Leaflet page
     LEAFLET_PAGE = 5

@@ -30,7 +30,6 @@ class TPlayOrderWidget(TestCase):
 
     def tearDown(self):
         self.po.destroy()
-        # quodlibet.plugins.quit()
         quodlibet.config.quit()
 
     def test_initial(self):

@@ -124,7 +124,6 @@ class TMassagers(TestCase):
     def test_language_valid(self):
         self.validate("language", ["eng", "zho", "lol", "fre", "ger", "zza"])
         self.validate("language", ["deu", "fra", "msa"])
-        # self.invalidate("language", ["xxx", "ROFL", "", "es", "ENG"])
         # Issue 439: Actually, allow free-text.
         self.validate("language", ["", "German", "Chinese", "Foobarlanguage"])
         mas = Massager.for_tag("language")

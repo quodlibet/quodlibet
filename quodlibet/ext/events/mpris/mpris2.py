@@ -378,7 +378,6 @@ value="false"/>
                 def can(s):
                     return False
 
-                # can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)
             if name == "SupportedMimeTypes":

@@ -1248,7 +1248,7 @@ class _TreeViewColumnLabel(Gtk.Label):
 
 class TreeViewColumn(Gtk.TreeViewColumn):
     __gsignals__: GSignals = {
-        # tree-view-changed(old_tree_view, new_tree_view)
+        # Signal of: tree-view-changed(old_tree_view, new_tree_view)
         # Triggers when the columns gets added/removed from a tree view.
         # The passed values are either a TreeView or None
         "tree-view-changed": (GObject.SignalFlags.RUN_LAST, None, (object, object)),

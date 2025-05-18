@@ -50,7 +50,6 @@ DEFAULT_ARTISTPAT = "<artist|<artist>|<composer|<composer>|<performer>>>"
 
 plugin_config = PluginConfig("listenbrainz")
 defaults = plugin_config.defaults
-# defaults.set("endpoint", "https://api.listenbrainz.org")
 defaults.set("user_token", "")
 
 defaults.set("titlepat", "")
@@ -221,9 +220,7 @@ class ListenBrainzSubmitQueue:
 
     # Must be called with self.condition acquired
     def _check_config(self):
-        # endpoint = plugin_config.get('endpoint')
         user_token = plugin_config.get("user_token")
-        # if not endpoint or not user_token:
         if not user_token:
             if self.queue and not self.broken:
                 self.quick_dialog(
@@ -235,10 +232,7 @@ class ListenBrainzSubmitQueue:
                     Gtk.MessageType.INFO,
                 )
                 self.broken = True
-        # elif (self.lb.host_name, self.lb.user_token) != (endpoint, user_token):
         elif self.lb.user_token != user_token:
-            # print_d("Setting %s, %s" % (endpoint, user_token))
-            # self.lb.host_name, self.lb.user_token = (endpoint, user_token)
             print_d(f"Setting user_token {user_token}")
             self.lb.user_token = user_token
             self.broken = False
@@ -451,7 +445,6 @@ class ListenbrainzSubmission(EventPlugin):
     def disabled(self):
         self.__enabled = False
         print_d("Plugin disabled - not accepting any new songs.")
-        # ListenBrainzSubmitQueue.dump_queue()
 
     def PluginPreferences(self, parent):
         def changed(entry, key):
@@ -484,14 +477,6 @@ class ListenbrainzSubmission(EventPlugin):
 
         row = 0
 
-        # endpoint url / hostname
-        # entry = UndoEntry()
-        # entry.set_text(plugin_config.get('endpoint'))
-        # entry.connect('changed', changed, 'endpoint')
-        # table.attach(entry, 1, 2, row, row + 1)
-        # labels[row].set_mnemonic_widget(entry)
-        # row += 1
-
         # token
         entry = UndoEntry()
         entry.set_text(plugin_config.get("user_token"))
@@ -499,12 +484,6 @@ class ListenbrainzSubmission(EventPlugin):
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
-
-        # verify data
-        # button = qltk.Button(_("_Verify account data"),
-        #                     Icons.DIALOG_INFORMATION)
-        # button.connect('clicked', check_login)
-        # table.attach(button, 0, 2, 4, 5)
 
         box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
 

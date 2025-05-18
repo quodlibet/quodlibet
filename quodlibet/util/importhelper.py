@@ -70,8 +70,6 @@ def get_importables(folder):
         # Ignore packages like "_shared"
         for d in dirs:
             if d.startswith(("_", ".")):
-                # Too noisy to print this
-                # print_d("Ignoring %r" % os.path.join(root, d))
                 dirs.remove(d)
         if not first and any(is_init(n) for n in names):
             yield (

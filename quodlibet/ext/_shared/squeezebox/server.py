@@ -247,7 +247,6 @@ class SqueezeboxServer:
             self.play()
         ms = app.player.get_position()
         self.seek_to(ms)
-        # self.player_request("pause 0")
 
     def stop(self):
         self.player_request("stop")

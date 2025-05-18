@@ -60,7 +60,6 @@ class ProjectM(EventPlugin):
             )
             ErrorMessage(title=_("Error"), description=msg, parent=app.window).run()
         else:
-            # self._stdin = os.fdopen(fdin, mode='w')
             print_d(f"Launched with PID: {self._pid}")
 
     def disabled(self):

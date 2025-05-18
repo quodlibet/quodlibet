@@ -219,9 +219,9 @@ class RGSong:
 
 class ReplayGainPipeline(GObject.Object):
     __gsignals__ = {
-        # done(self, album)
+        # For done(self, album)
         "done": (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        # update(self, album, song)
+        # For update(self, album, song)
         "update": (
             GObject.SignalFlags.RUN_LAST,
             None,
@@ -610,7 +610,6 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         rows = []
 
         def process_option_changed(combo):
-            # xcode = combo.get_child().get_text()
             model = combo.get_model()
             lbl, value = model[combo.get_active()]
             cls.config_set("process_if", value)

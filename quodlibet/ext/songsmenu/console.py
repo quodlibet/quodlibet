@@ -257,10 +257,8 @@ class PythonConsole(Gtk.ScrolledWindow):
             if com_mark == "... ":
                 spaces = re.match(self.__spaces_pattern, line)
                 if spaces is not None:
-                    # cur = buffer.get_end_iter()
                     buffer.insert(cur, line[spaces.start() : spaces.end()])
                 if cur_strip.endswith(":"):
-                    # cur = buffer.get_end_iter()
                     buffer.insert(cur, "    ")
 
             buffer.place_cursor(cur)

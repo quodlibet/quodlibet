@@ -137,11 +137,7 @@ class ListenBrainzClient:
         response_text = response.read()
         try:
             response_data = json.loads(response_text)
-        # Python3
-        # except json.JSONDecodeError:
-        #    response_data = response_text
-        # Python2
-        except ValueError as e:
+        except (ValueError, json.JSONDecodeError) as e:
             if str(e) != "No JSON object could be decoded":
                 raise e
             response_data = response_text

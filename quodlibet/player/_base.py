@@ -77,7 +77,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         "seek": (GObject.SignalFlags.RUN_LAST, None, (object, int)),
         "paused": (GObject.SignalFlags.RUN_LAST, None, ()),
         "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
-        # (song, PlayerError)
+        # Signal error (song, PlayerError)
         "error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 

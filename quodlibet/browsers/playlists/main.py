@@ -423,14 +423,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 # code?).
                 playlist = self.pl_lib.create_from_songs(songs)
                 GLib.idle_add(self._select_playlist, playlist)
-                # self.changed()
             else:
                 playlist = model[path][0]
                 # Call a helper-function that adds the tracks to the playlist if the
                 # user accepts the prompt.
                 was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
 
-            # self.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
             # Cause a refresh to the dragged-to playlist if it is selected
             # so that the dragged (duplicate) track(s) appears
@@ -464,7 +462,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     raise OSError
                 self.songs_lib.add(playlist.songs)
                 # TODO: change to use playlist library too?
-                # self.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
             except OSError:
                 Gtk.drag_finish(ctx, False, False, etime)

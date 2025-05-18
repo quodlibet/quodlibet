@@ -70,6 +70,7 @@ select = [
   "B",
   "C",
   "E",
+  "ERA",
   "EXE",
   "F",
   "FLY",
@@ -95,6 +96,7 @@ ignore = [
   "N806", # allow class-like variables in tests
   "N816", # as above really
 ]
+"**/cdefs.py" = ["ERA001"]
 "quodlibet/**/__init__.py" = [
   "B018", # allow importing "without effect"
 ]

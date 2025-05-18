@@ -697,8 +697,6 @@ class AudioFile(dict, ImageContainer, HasKey):
                 if pathfile not in pathfiles:
                     pathfiles[pathfile] = rpf
 
-        # print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
-
         # expand each raw pathfile in turn and test for existence
         match_ = None
         pathfiles_expanded = OrderedDict()
@@ -715,7 +713,6 @@ class AudioFile(dict, ImageContainer, HasKey):
         if not match_:
             # search even harder!
             lyric_extensions = ["lyric", "lyrics", "", "txt"]
-            # print_d("extending search to extensions: %s" % lyric_extensions)
 
             def generate_mod_ext_paths(pathfile):
                 # separate pathfile's extension (if any)
@@ -737,7 +734,6 @@ class AudioFile(dict, ImageContainer, HasKey):
                 for path_ext in paths_mod_ext:
                     if os.path.exists(path_ext):
                         # persistence has paid off!
-                        # print_d("extended search match!")
                         match_ = path_ext
                         break
                 if match_:
@@ -995,7 +991,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             # on FLACs, the most common case, this should be close enough
             if "~#bitrate" not in self:
                 try:
-                    # kbps = bytes * 8 / seconds / 1000
+                    # Note - kbps = bytes * 8 / seconds / 1000
                     self["~#bitrate"] = int(
                         stat.st_size / (self["~#length"] * (1000 / 8))
                     )

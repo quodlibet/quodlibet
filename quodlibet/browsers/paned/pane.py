@@ -211,7 +211,6 @@ class Pane(AllTreeView):
     def matches(self, song):
         model, paths = self.get_selection().get_selected_rows()
 
-        # nothing == all
         if not paths:
             return True
 

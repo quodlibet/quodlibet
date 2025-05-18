@@ -46,7 +46,7 @@ class GstPlayerPreferences(Gtk.VBox):
         apply_button = Button(_("_Apply"), Icons.VIEW_REFRESH)
 
         def format_buffer(scale, value):
-            # Translators: s = seconds
+            # Translators: s = seconds  # noqa
             return _("%.1f s") % value
 
         def scale_changed(scale):
