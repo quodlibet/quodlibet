@@ -72,11 +72,12 @@ select = [
   "E",
   "EXE",
   "F",
-  "INT",
+  "FLY",
+  "INT", # Gettext
   "N",
   "PIE",
   "Q",
-  "RET",
+  "RET", # return types - mostly useful IMO
   "UP",
   "W",
 ]

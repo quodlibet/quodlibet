@@ -76,7 +76,7 @@ class Comment:
         m = numeric_phrase(
             "missing from %d song", "missing from %d songs", self.missing
         )
-        return ", ".join([d, m])
+        return f"{d}, {m}"
 
     def is_special(self):
         return not self.shared or not self.complete

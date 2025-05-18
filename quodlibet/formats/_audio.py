@@ -727,9 +727,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 extra_extensions = [x for x in lyric_extensions if x != ext]
 
                 # join valid new extensions to pathfile stub and return
-                return [
-                    ".".join([path, ext]) if ext else path for ext in extra_extensions
-                ]
+                return [f"{path}.{ext}" if ext else path for ext in extra_extensions]
 
             # look for a match by modifying the extension for each of the
             # (now fully resolved) 'pathfiles_expanded' search items
