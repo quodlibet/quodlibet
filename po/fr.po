@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-01-08 05:00+0000\n"
-"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
+"PO-Revision-Date: 2025-05-20 14:03+0000\n"
+"Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -610,14 +610,13 @@ msgid "Columnar"
 msgstr "Chronique"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Modèle d'étiquette avec balisage optionnel, par exemple <tt>compositeur</tt> "
-"ou\n"
-"{example}"
+"Modèle de balise avec marquage optionnel, par exemple %(short)s ou\n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -3949,9 +3948,9 @@ msgid "unidentified Squeezebox server"
 msgstr "Serveur Squeezebox inconnu"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy, python-format
+#, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr "lecteur Squeezebox non-identifié : {self!r}"
+msgstr "lecteur Squeezebox non-identifié : %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4269,9 +4268,9 @@ msgid "No covers found"
 msgstr "Les pochettes n'ont pas été trouvées"
 
 #: quodlibet/ext/songsmenu/cover_download.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr "{size} ✕ {size} px"
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -5537,9 +5536,9 @@ msgid "Buffering"
 msgstr "Mise en mémoire tampon"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "Impossible de créer le pipeline GStreamer ({e})"
+msgstr "Impossible de créer le pipeline GStreamer (%s)"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
