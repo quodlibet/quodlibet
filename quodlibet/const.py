@@ -87,7 +87,7 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = "Copyright 2004-2023"
+COPYRIGHT = "Copyright 2004-2025"
 
 AUTHORS = sorted(
     """\
