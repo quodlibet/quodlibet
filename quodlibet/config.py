@@ -51,6 +51,7 @@ INITIAL: dict[str, dict[str, str]] = {
         # Consider a track as played after listening to
         # this proportion of its overall length
         "playcount_minimum_length_proportion": "0.5",
+        "gst_use_playbin3": "false",
     },
     "library": {
         "exclude": "",

@@ -526,7 +526,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         gpad = Gst.GhostPad.new("sink", pipeline[0].get_static_pad("sink"))
         bufbin.add_pad(gpad)
 
-        bin_ = self._make("playbin", None)
+        if config.getboolean("player", "gst_use_playbin3"):
+            bin_ = self._make("playbin3", None)
+        else:
+            bin_ = self._make("playbin", None)
         assert bin_
 
         self.bin = BufferingWrapper(bin_, self)
