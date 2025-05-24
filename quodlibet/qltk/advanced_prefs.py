@@ -289,6 +289,12 @@ class AdvancedPreferencesPane(Gtk.VBox):
                     "<~#bitrate>, etc. See tags documentation for details."
                 ),
             ),
+            boolean_config(
+                "player",
+                "gst_use_playbin3",
+                "Use GStreamer playbin3",
+                "Use GStreamer playbin3 instead of playbin for playback.",
+            ),
         ]
 
         # Tabulate all settings for neatness
