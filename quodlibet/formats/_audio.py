@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2023 Nick Boultbee
+#           2012-2025 Nick Boultbee
 #                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1083,7 +1083,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         if key not in self:
             self[key] = value
         else:
-            self[key] += "\n" + value
+            self[key] += f"\n{value}"
 
     def remove(self, key, value=None):
         """Remove a value from the given key.

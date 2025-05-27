@@ -1,4 +1,4 @@
-# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Niklas Janlert,
+# Copyright 2004-2025 Joe Wreschnig, Michael Urman, Niklas Janlert,
 #                     Steven Robertson, Nick Boultbee, h88e22dgpeps56sg
 #
 # This program is free software; you can redistribute it and/or modify
@@ -109,74 +109,76 @@ class ID3File(AudioFile):
         tag = audio.tags
 
         self._parse_info(audio.info)
+        save_email = config.get("editing", "save_email")
 
         for frame in tag.values():
-            if frame.FrameID == "APIC" and len(frame.data):
+            frame_id = frame.FrameID
+            if frame_id == "APIC" and len(frame.data):
                 self.has_images = True
                 continue
-            if frame.FrameID == "TCON":
+            if frame_id == "TCON":
                 self["genre"] = "\n".join(frame.genres)
                 continue
-            if frame.FrameID == "UFID" and frame.owner == "http://musicbrainz.org":
+            if frame_id == "UFID" and frame.owner == "http://musicbrainz.org":
                 self["musicbrainz_trackid"] = frame.data.decode("utf-8", "replace")
                 continue
-            if frame.FrameID == "POPM":
+            if frame_id == "POPM":
                 rating = frame.rating / 255.0
-                if frame.email == const.EMAIL:
+                email = frame.email
+                if email == const.EMAIL:
                     try:
                         self.setdefault("~#playcount", frame.count)
                     except AttributeError:
                         pass
                     self.setdefault("~#rating", rating)
-                elif frame.email == config.get("editing", "save_email"):
+                elif email == save_email:
                     try:
                         self["~#playcount"] = frame.count
                     except AttributeError:
                         pass
                     self["~#rating"] = rating
                 continue
-            if frame.FrameID == "COMM" and frame.desc == "":
+            if frame_id == "COMM" and frame.desc == "":
                 name = "comment"
-            elif frame.FrameID in ["COMM", "TXXX"]:
+            elif frame_id in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
                     name = frame.desc[11:]
                 elif frame.desc in self.TXXX_MAP:
                     name = self.TXXX_MAP[frame.desc]
                 else:
                     continue
-            elif frame.FrameID == "RVA2":
+            elif frame_id == "RVA2":
                 self.__process_rg(frame)
                 continue
-            elif frame.FrameID == "TMCL":
+            elif frame_id == "TMCL":
                 for role, name in frame.people:
                     key = self.__validate_name("performer:" + role)
                     if key:
                         self.add(key, name)
                 continue
-            elif frame.FrameID == "TLAN":
+            elif frame_id == "TLAN":
                 self["language"] = "\n".join(frame.text)
                 continue
-            elif frame.FrameID == "USLT":
+            elif frame_id == "USLT":
                 name = "lyrics"
             else:
-                name = self.IDS.get(frame.FrameID, "").lower()
+                name = self.IDS.get(frame_id, "").lower()
 
             name = self.__validate_name(name)
             if not name:
                 continue
             name = name.lower()
 
-            id3id = frame.FrameID
-            if id3id.startswith("T"):
+            if frame_id.startswith("T"):
                 text = "\n".join(map(str, frame.text))
-            elif id3id == "COMM":
+            elif frame_id == "COMM":
                 text = "\n".join(frame.text)
-            elif id3id == "USLT":
+            elif frame_id == "USLT":
                 # lyrics are single string, not list
                 text = frame.text
                 self["~lyricsdescription"] = frame.desc
                 self["~lyricslanguage"] = frame.lang
-            elif id3id.startswith("W"):
+            elif frame_id.startswith("W"):
                 text = frame.url
                 frame.encoding = 0
             else:
@@ -189,7 +191,7 @@ class ID3File(AudioFile):
                 continue
 
             if name in self:
-                self[name] += "\n" + text
+                self[name] += f"\n{text}"
             else:
                 self[name] = text
             self[name] = self[name].strip()
@@ -301,7 +303,7 @@ class ID3File(AudioFile):
             "UFID:http://musicbrainz.org",
             "TMCL",
             f"POPM:{const.EMAIL}",
-            "POPM:{}".format(config.get("editing", "save_email")),
+            f"POPM:{config.get("editing", "save_email")}",
         ]:
             if key in tag:
                 del tag[key]
