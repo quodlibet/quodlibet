@@ -1,8 +1,7 @@
 {
   description = "Development Flake for Quod Libet";
   inputs = {
-    # TODO: pin to 25.05 once available, but we need Poetry > 2.0 now
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -24,8 +23,8 @@
       perSystem =
         { pkgs, ... }:
         let
-          # 3.10 is now too far against the tide here to be worth it
-          qlPython = pkgs.python311;
+          # 3.11 is now too far against the tide here to be worth it
+          qlPython = pkgs.python312;
           qlPoetry = pkgs.poetry.override { python3 = qlPython; };
         in
         {
