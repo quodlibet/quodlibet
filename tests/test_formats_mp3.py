@@ -89,7 +89,7 @@ def test_mp3_load_performance():
 
     assert mp3("~#rating") == 0.333
     total = 10_000
-    for i in range(total):
+    for _ in range(total):
         MP3File(str(path))
 
     duration_micros = (time.monotonic_ns() - t) / 1000.0
