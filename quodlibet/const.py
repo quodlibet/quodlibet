@@ -67,7 +67,7 @@ class MinVersions:
     GSTREAMER = Version("GStreamer", 1, 8)
 
 
-VERSION_TUPLE = Version("", 4, 7, -1)
+VERSION_TUPLE = Version("", 4, 7, 0)
 VERSION = str(VERSION_TUPLE)
 
 QL_NAMESPACE = "https://quodlibet.github.io"
