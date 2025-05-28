@@ -303,7 +303,7 @@ class ID3File(AudioFile):
             "UFID:http://musicbrainz.org",
             "TMCL",
             f"POPM:{const.EMAIL}",
-            f"POPM:{config.get("editing", "save_email")}",
+            f"POPM:{config.get('editing', 'save_email')}",
         ]:
             if key in tag:
                 del tag[key]
