@@ -5492,11 +5492,11 @@ msgstr "Punjenje memorije"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Ne mogu stvoriti GStreamer pipeline"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Nije pronađen ni jedan GStreamer element za obradu formata"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format zapisa: %(format-description)s"
@@ -5663,7 +5663,7 @@ msgstr ""
 msgid "Revert to default"
 msgstr "Poništi na podrazumevano"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Znam šta radim"

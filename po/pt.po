@@ -5555,13 +5555,13 @@ msgstr "Preenchimento do buffer"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Não foi possível criar a fila de processamento do GStreamer"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Não foi encontrado um elemento de GStreamer capaz de lidar com este formato "
 "de mídia"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formato de mídia: %(format-description)s"
@@ -5729,7 +5729,7 @@ msgstr ""
 msgid "Revert to default"
 msgstr "Restaurar para o padrão"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Eu sei o que estou fazendo"

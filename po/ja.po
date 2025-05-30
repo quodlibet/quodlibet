@@ -5412,11 +5412,11 @@ msgstr "バッファリング中"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "GStreamer パイプラインを作成できません ({e})"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "メディア形式を処理する GStreamer エレメントが見つかりません"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "メディア形式: %(format-description)s"
@@ -5580,7 +5580,7 @@ msgstr "使用法"
 msgid "Revert to default"
 msgstr "デフォルト値に戻す"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "分かってるから任せて!"
 

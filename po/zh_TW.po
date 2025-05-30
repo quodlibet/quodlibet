@@ -2483,8 +2483,8 @@ msgid ""
 msgstr ""
 "此外掛變更暫停為 停止/播放/尋找。\n"
 "\n"
-"如果在系統中新增音訊設備(藍牙喇叭、USB DAC 等)時， Quod Libet "
-"無法切換音訊裝置，則此功能很有用。\n"
+"如果在系統中新增音訊設備(藍牙喇叭、USB DAC 等)時， Quod Libet 無法切換音訊裝"
+"置，則此功能很有用。\n"
 "\n"
 "確保「僅於可以尋找的來源」處於關閉狀態，目前來源中的位置就會保持不變。否則，"
 "播放將會停止，必須從頭開始重新播放。"
@@ -2571,9 +2571,8 @@ msgid ""
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
-"對於使用 MTP 掛載裝置，請匯出至本地目標資料夾，然後使用 rsync "
-"將其傳送至您的裝置。或者，當要將許多檔案同步至 Android 裝置時，請使adb-"
-"sync，會比較快。"
+"對於使用 MTP 掛載裝置，請匯出至本地目標資料夾，然後使用 rsync 將其傳送至您的"
+"裝置。或者，當要將許多檔案同步至 Android 裝置時，請使adb-sync，會比較快。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:191
 msgid "Destination path:"
@@ -2900,7 +2899,8 @@ msgstr "Telepathy 狀態訊息"
 msgid ""
 "Updates all Telepathy-based IM accounts (as configured in Empathy etc) with "
 "a status message based on current song."
-msgstr "使用基於目前曲目的狀態訊息，更新全部 Telepathy-based IM 帳戶(如同於 Empathy "
+msgstr ""
+"使用基於目前曲目的狀態訊息，更新全部 Telepathy-based IM 帳戶(如同於 Empathy "
 "等的設定)。"
 
 #: quodlibet/ext/events/telepathy_status.py:137
@@ -2963,7 +2963,8 @@ msgid ""
 "Adds a thumb-up / thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
-msgstr "增添一個的拇指上下評分系統，轉換為評分計值。對於維持投票合計、依照 "
+msgstr ""
+"增添一個的拇指上下評分系統，轉換為評分計值。對於維持投票合計、依照 "
 "<b><tt>~#score</tt></b> 進行排序，將會很有用。"
 
 #: quodlibet/ext/events/toggle_menu.py:18
@@ -3414,7 +3415,8 @@ msgstr "匯出至 Squeezebox"
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure."
-msgstr "將播放列表動態匯出至 Logitech Squeezebox 播放列表，兩者均共享目錄結構。"
+msgstr ""
+"將播放列表動態匯出至 Logitech Squeezebox 播放列表，兩者均共享目錄結構。"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:30
 #, python-format
@@ -3554,8 +3556,8 @@ msgid ""
 msgstr ""
 "增添隨機模式，以常用標籤將曲目加以群組 - 類似於專輯隨機。\n"
 "\n"
-"這對於整理多重動作古典作品很有用，確保全部動作均依順序進行，然後再進行下一首"
-"。"
+"這對於整理多重動作古典作品很有用，確保全部動作均依順序進行，然後再進行下一"
+"首。"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:41
 msgid "Shuffle by grouping"
@@ -3613,7 +3615,8 @@ msgstr "跳過不喜歡的音軌"
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
-msgstr "增添依照順序播放的播放順序(隨機)模式，但是跳過音軌是低於(或等於)所給定閾值的"
+msgstr ""
+"增添依照順序播放的播放順序(隨機)模式，但是跳過音軌是低於(或等於)所給定閾值的"
 "評分的。"
 
 #: quodlibet/ext/playorder/skip_disliked.py:31
@@ -4142,7 +4145,8 @@ msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
 "of '{PARAM}' in your command will have the value prompted for when run"
-msgstr "若有指定，則將其出現在指令中的參數，以用戶提供的值代替，例如在指令中使用 "
+msgstr ""
+"若有指定，則將其出現在指令中的參數，以用戶提供的值代替，例如在指令中使用 "
 "'PARAM' 全部替用 '{PARAM}' ，將在執行時顯示提示"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:59
@@ -4151,8 +4155,8 @@ msgid ""
 "For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
-"此 QL 型式，例如 <~filename> ，用來計算指令的值。對於播放清單，"
-"也支援虛擬標籤 <~playlistname> 及 <~#playlistindex>。"
+"此 QL 型式，例如 <~filename> ，用來計算指令的值。對於播放清單，也支援虛擬標"
+"籤 <~playlistname> 及 <~#playlistindex>。"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid "unique"
@@ -4237,7 +4241,8 @@ msgstr "找出並顯示相類似已標籤的曲目版本。"
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
-msgstr "接受 QL 標籤表述式，像是 <tt>~藝人~曲名</tt> 或 <tt>musicbrainz_track_id</tt>"
+msgstr ""
+"接受 QL 標籤表述式，像是 <tt>~藝人~曲名</tt> 或 <tt>musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "_Group duplicates by:"
@@ -4288,8 +4293,8 @@ msgstr ""
 "當多首曲目選取時，計數將遞增，而非設定。\n"
 "\n"
 "當設定曲目的 <tt>~#playcount</tt> 為 0 時，此 <tt>~#lastplayed</tt> 及 "
-"<tt>~#laststarted</tt> 項目將會被清除。但是，播放次數為 0 "
-"的曲目設定為正播放次數時，將不會建立播放時間。"
+"<tt>~#laststarted</tt> 項目將會被清除。但是，播放次數為 0 的曲目設定為正播放"
+"次數時，將不會建立播放時間。"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:72
 msgid "Play Count"
@@ -4607,9 +4612,9 @@ msgstr ""
 "請注意，您選擇匯出的任何內容都會被匯入。如果您匯出了檔案詞條(沒有副檔名的檔案"
 "名稱)，那麼在匯入時，所選的檔案將會重新命名。\n"
 "\n"
-"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。音道的順序和數量可以不相同"
-"。該外掛將匯出的資料與新的音軌，即使曲目名稱僅略有不同。自動符合匹配並非永遠"
-"正確，因此最好不要降低太多相似度值。"
+"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。音道的順序和數量可以不相"
+"同。該外掛將匯出的資料與新的音軌，即使曲目名稱僅略有不同。自動符合匹配並非永"
+"遠正確，因此最好不要降低太多相似度值。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:231
 msgid "User interaction on import"
@@ -4839,8 +4844,8 @@ msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"分析並更新 <a href=\"%(rg_link)s\">ReplayGain</a> 資訊，使用 GStreamer "
-"。結果依照專輯分別群組。"
+"分析並更新 <a href=\"%(rg_link)s\">ReplayGain</a> 資訊，使用 GStreamer 。結果"
+"依照專輯分別群組。"
 
 #: quodlibet/ext/songsmenu/replaygain.py:583
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -5296,11 +5301,11 @@ msgstr "緩衝"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "無法建立 GStreamer pipeline (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "找無 GStreamer 元件來處理媒體格式"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "媒體檔案格式： %(format-description)s"
@@ -5315,9 +5320,9 @@ msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
-msgstr "GStreamer "
-"輸出管道用於播放。留下空白用於預設管道。如果管道包含一個接收器，則將使用它代"
-"替為預設一。"
+msgstr ""
+"GStreamer 輸出管道用於播放。留下空白用於預設管道。如果管道包含一個接收器，則"
+"將使用它代替為預設一。"
 
 #: quodlibet/player/gstbe/prefs.py:42
 msgid "_Output pipeline:"
@@ -5403,7 +5408,8 @@ msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
-msgstr "過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗加以重新設定 "
+msgstr ""
+"過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗加以重新設定 "
 "ListerBainz。在此之前，不會提交聆聽。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:366
@@ -5451,7 +5457,7 @@ msgstr "用途"
 msgid "Revert to default"
 msgstr "重設還原成預設"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "我明白現在我在做什麼了！"
 
@@ -6473,9 +6479,8 @@ msgid ""
 "calculation for all albums."
 msgstr ""
 "Bayesian Average factor (C) 用於總計評分。\n"
-"0 "
-"表示常規平均值，數值越高表示曲目越少的專輯評分越低。變更此值會觸發全部專輯的"
-"重新計算。"
+"0 表示常規平均值，數值越高表示曲目越少的專輯評分越低。變更此值會觸發全部專輯"
+"的重新計算。"
 
 #: quodlibet/qltk/prefs.py:647
 msgid "_Bayesian averaging amount:"

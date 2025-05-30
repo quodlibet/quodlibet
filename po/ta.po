@@ -5454,11 +5454,11 @@ msgstr "இடையக"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "சிச்ட்ரீமர் பைப்லைனை உருவாக்க முடியவில்லை ({e})"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "மீடியா வடிவமைப்பைக் கையாள சிச்ட்ரீமர் உறுப்பு எதுவும் கிடைக்கவில்லை"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, fuzzy, python-format
 msgid "Media format: %(format-description)s"
 msgstr "மீடியா வடிவம்: %(வடிவமைப்பு-விளக்கமானது) கள்"
@@ -5622,7 +5622,7 @@ msgstr "பயன்பாடு"
 msgid "Revert to default"
 msgstr "இயல்புநிலைக்கு திரும்பவும்"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "நான் என்ன செய்கிறேன் என்று எனக்குத் தெரியும்!"
 

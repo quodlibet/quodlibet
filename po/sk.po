@@ -5497,11 +5497,11 @@ msgstr "Ukladanie do vyrovnávacej pamäte"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nemohol vytvoriť GStreamer potrubia ({e}))"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Nenašiel sa žiadny prvok GStreamera na spracovanie tohto formátu"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formát: %(format-description)s"
@@ -5667,7 +5667,7 @@ msgstr "Použitie"
 msgid "Revert to default"
 msgstr "Obnoviť predvolené"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "Viem, čo robím!"
 

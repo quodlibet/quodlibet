@@ -5564,11 +5564,11 @@ msgstr "Puffer wird gefüllt"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "GStreamer-Pipeline konnte nicht angelegt werden (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Kein GStreamer-Element für das Medienformat gefunden"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Medienformat: %(format-description)s"
@@ -5732,7 +5732,7 @@ msgstr "Verwendung"
 msgid "Revert to default"
 msgstr "Standardwerte wiederherstellen"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Ich weiß, was ich tue"
