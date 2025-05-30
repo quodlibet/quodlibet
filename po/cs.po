@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-03-09 17:15+0000\n"
+"PO-Revision-Date: 2025-05-27 20:42+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -614,13 +614,13 @@ msgid "Columnar"
 msgstr "Ve sloupcích"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Šablona tagů s volitelným formátováním, např. <tt>composer</tt> nebo\n"
-"{example}"
+"Šablona tagů s volitelným formátováním, např. %(short)s nebo\n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -3910,9 +3910,9 @@ msgid "unidentified Squeezebox server"
 msgstr "nerozpoznaný Squeezbox server"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy, python-format
+#, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr "nerozpoznaný Squeezbox přehrávač: {self!r}"
+msgstr "nerozpoznaný Squeezbox přehrávač: %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4227,9 +4227,9 @@ msgid "No covers found"
 msgstr "Nenalezeny žádné přebaly alb"
 
 #: quodlibet/ext/songsmenu/cover_download.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr "{size} ✕ {size} px"
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -5469,9 +5469,9 @@ msgid "Buffering"
 msgstr "Načítání do vyrovnávací paměti"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "Nepodařilo se vytvořit rouru GStreameru ({e})"
+msgstr "Nepodařilo se vytvořit rouru GStreameru (%s)"
 
 #: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
