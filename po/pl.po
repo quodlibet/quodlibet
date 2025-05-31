@@ -5528,12 +5528,12 @@ msgstr "Buforowanie"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nie można utworzyć potoku biblioteki GStreamer"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Nie odnaleziono elementu biblioteki GStreamer do obsługi formatu multimediów"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format multimediów: %(format-description)s"
@@ -5700,7 +5700,7 @@ msgstr "Użycie"
 msgid "Revert to default"
 msgstr "Przywróć domyślne"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Wiem, co robię"

@@ -5471,13 +5471,13 @@ msgstr "Almacenando en búfer"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "No se pudo crear la canalización de GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "No se encontró ningún elemento de GStreamer para manipular el formato "
 "multimedia"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formato multimedia: %(format-description)s"
@@ -5645,7 +5645,7 @@ msgstr "Uso"
 msgid "Revert to default"
 msgstr "Restablecer valores predeterminados"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Sé lo que hago"

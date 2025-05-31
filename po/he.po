@@ -5417,11 +5417,11 @@ msgstr "חציצה"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "לא ניתן ליצר צנרת ג'סטרימר"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "לא נמצא רכיב ג'סטרימר לטיפול בתבנית המדיה"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "תבנית המדיה: %(format-description)s"
@@ -5580,7 +5580,7 @@ msgstr ""
 msgid "Revert to default"
 msgstr "איפוס לברירת מחדל"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "תסמכו עלי, אני בשליטה"

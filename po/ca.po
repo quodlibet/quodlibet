@@ -5517,12 +5517,12 @@ msgstr "S'està carregant"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "No s'ha pogut crear la canonada del GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "No s'ha trobat cap element del GStreamer per a gestionar el format multimèdia"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format multimèdia: %(format-description)s"
@@ -5689,7 +5689,7 @@ msgstr "Ús"
 msgid "Revert to default"
 msgstr "Reinicialitza"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "Sé què faig!"
 

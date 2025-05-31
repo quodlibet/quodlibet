@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-05-02 04:20+0000\n"
-"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
+"PO-Revision-Date: 2025-05-30 08:01+0000\n"
+"Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5.3-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -540,7 +540,7 @@ msgstr "Tidak ada stasiun radio internet yang ditemukan di %s."
 
 #: quodlibet/browsers/iradio.py:872
 msgid "Nothing to add"
-msgstr ""
+msgstr "Tidak ada yang ditambahkan"
 
 #: quodlibet/browsers/iradio.py:873
 msgid "All stations listed are already in your library."
@@ -701,7 +701,7 @@ msgstr "Daftar Putar Contoh"
 
 #: quodlibet/browsers/playlists/prefs.py:51
 msgid "Playlist Browser Preferences"
-msgstr ""
+msgstr "Preferensi Jelajah Daftar Putar"
 
 #: quodlibet/browsers/playlists/prefs.py:56
 msgid "Playlist display"
@@ -766,11 +766,11 @@ msgstr "Masukkan lokasi umpan audio:"
 
 #: quodlibet/browsers/podcasts.py:318
 msgid "Podcasts"
-msgstr ""
+msgstr "Siniar"
 
 #: quodlibet/browsers/podcasts.py:319
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Siniar"
 
 #: quodlibet/browsers/podcasts.py:421
 #, fuzzy
@@ -784,7 +784,7 @@ msgstr "_Segarkan"
 
 #: quodlibet/browsers/podcasts.py:491
 msgid "Search source for new episodes"
-msgstr ""
+msgstr "Cari sumber untuk episode baru"
 
 #: quodlibet/browsers/podcasts.py:494
 msgid "_Rebuild"
@@ -894,7 +894,7 @@ msgstr "Masukkan kode autentikasi Soundcloud:"
 
 #: quodlibet/cli.py:54
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr ""
+msgstr "Quod Libet sedang tidak berjalan (tambahkan '--run' untuk memulainya)"
 
 #: quodlibet/cli.py:116
 msgid "a music library and player"
@@ -906,7 +906,7 @@ msgstr ""
 
 #: quodlibet/cli.py:119
 msgid "Print the playing song and exit"
-msgstr ""
+msgstr "Cetak lagu yang sedang diputar dan keluar"
 
 #: quodlibet/cli.py:120
 msgid "Begin playing immediately"
@@ -918,15 +918,15 @@ msgstr "Jangan tampilkan jendela apa pun pada pemulaian"
 
 #: quodlibet/cli.py:124
 msgid "Jump to next song"
-msgstr ""
+msgstr "Loncat ke lagu berikutnya"
 
 #: quodlibet/cli.py:125
 msgid "Jump to previous song or restart if near the beginning"
-msgstr ""
+msgstr "Loncat ke lagu berikutnya atau ulangi jika dekat dengan awalan"
 
 #: quodlibet/cli.py:126
 msgid "Jump to previous song"
-msgstr ""
+msgstr "Loncat ke lagu sebelumnya"
 
 #: quodlibet/cli.py:127
 msgid "Start playback"
@@ -954,11 +954,11 @@ msgstr "Kecilkan volume"
 
 #: quodlibet/cli.py:133
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "Tambah rating lagu yang diputar dengan satu bintang"
 
 #: quodlibet/cli.py:134
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "Kurangi rating lagu yang diputar dengan satu bintang"
 
 #: quodlibet/cli.py:135
 msgid "Print player status"
@@ -1067,7 +1067,7 @@ msgstr "nama berkas"
 
 #: quodlibet/cli.py:161
 msgid "Set rating of playing song"
-msgstr ""
+msgstr "Atur rating lagu yang diputar"
 
 #: quodlibet/cli.py:162
 msgid "Set the current browser"
@@ -1226,6 +1226,8 @@ msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
+"Unduh gambar sampul yang ditautkan di tagar <tt>artwork_url</tt>. Ini "
+"bekerja untuk peramban Soundcloud dan Siniar."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1269,11 +1271,11 @@ msgstr ""
 
 #: quodlibet/ext/editing/kakasi.py:28
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr ""
+msgstr "Ubah kana/kanji ke romaji sebelum pengubahan nama"
 
 #: quodlibet/ext/editing/kakasi.py:34
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "Romanisasi teks _Jepang"
 
 #: quodlibet/ext/editing/kakasi.py:67
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
@@ -1666,8 +1668,9 @@ msgid "Reggae"
 msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:147
+#, fuzzy
 msgid "Headphones"
-msgstr ""
+msgstr "Headphone"
 
 #: quodlibet/ext/events/equalizer.py:167
 #, fuzzy
@@ -1964,7 +1967,7 @@ msgstr "Klien Telah Dites"
 
 #: quodlibet/ext/events/mpris/__init__.py:39
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Integrasi Desktop Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
 msgid ""
@@ -1972,6 +1975,9 @@ msgid ""
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"⏯️ Perbolehkan kontrol Quod LIbet menggunakan Antarmuka D-Bus <a href="
+"\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"Ini bisa mengintegrasikan desktop Linux (cth. pintasan multimedia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -2180,7 +2186,7 @@ msgstr "Tidak dapat menghubungi layanan '%s'."
 
 #: quodlibet/ext/events/qlscrobbler.py:280
 msgid "Authentication failed: invalid URL."
-msgstr ""
+msgstr "Autentikasi gagal: URL tidak valid."
 
 #: quodlibet/ext/events/qlscrobbler.py:301
 #, python-format
@@ -2207,7 +2213,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:500
 msgid "Authentication successful."
-msgstr ""
+msgstr "Autentikasi berhasil."
 
 #: quodlibet/ext/events/qlscrobbler.py:512
 msgid "_Service:"
@@ -2370,7 +2376,7 @@ msgstr ""
 
 #: quodlibet/ext/events/searchprovider.py:77
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr ""
+msgstr "Layanan pencarian di GNOME Shell untuk Quod Libet tidak terpasang."
 
 #: quodlibet/ext/events/searchprovider.py:79
 #, python-format
@@ -2379,7 +2385,7 @@ msgstr ""
 
 #: quodlibet/ext/events/searchprovider.py:86
 msgid "GNOME Search Provider"
-msgstr ""
+msgstr "Layanan Pencarian GNOME"
 
 #: quodlibet/ext/events/searchprovider.py:87
 msgid "Allows GNOME Shell to search the library."
@@ -2969,8 +2975,9 @@ msgid "Tray Icon"
 msgstr ""
 
 #: quodlibet/ext/events/trayicon/__init__.py:51
+#, fuzzy
 msgid "Controls Quod Libet from the system tray."
-msgstr ""
+msgstr "Kontrol Quod Libet dari bilah sistem."
 
 #: quodlibet/ext/events/trayicon/menu.py:40
 #, python-format
@@ -3038,19 +3045,19 @@ msgstr "_Keluar"
 #: quodlibet/ext/events/trayicon/prefs.py:39 quodlibet/qltk/prefs.py:105
 #: quodlibet/qltk/prefs.py:519 quodlibet/qltk/prefs.py:840
 msgid "Behavior"
-msgstr ""
+msgstr "Tindakan"
 
 #: quodlibet/ext/events/trayicon/prefs.py:49
 msgid "Scroll wheel adjusts volume"
-msgstr ""
+msgstr "Guliran roda tetikus mengatur volume"
 
 #: quodlibet/ext/events/trayicon/prefs.py:55
 msgid "Scroll wheel changes song"
-msgstr ""
+msgstr "Guliran roda tetikus mengubah lagu"
 
 #: quodlibet/ext/events/trayicon/prefs.py:63
 msgid "Scroll _Wheel"
-msgstr ""
+msgstr "Guliran _Roda Tetikus"
 
 #: quodlibet/ext/events/trayicon/prefs.py:94
 msgid "Tooltip Display"
@@ -5246,11 +5253,11 @@ msgstr ""
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr ""
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Tidak ditemukan elemen GStreamer untuk menangani format media"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format media: %(format-description)s"
@@ -5400,7 +5407,7 @@ msgstr "Penggunaan"
 msgid "Revert to default"
 msgstr "Atur ulang ke yang baku"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Saya tahu apa yang saya lakukan"

@@ -5540,11 +5540,11 @@ msgstr "Mise en mémoire tampon"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Impossible de créer le pipeline GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Aucun élément GStreamer n'est disponible pour gérer le format du média"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format du support : %(format-description)s"
@@ -5709,7 +5709,7 @@ msgstr "Utilisation"
 msgid "Revert to default"
 msgstr "Rétablir la valeur par défaut"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "Je sais ce que je fais !"
 

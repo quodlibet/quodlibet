@@ -5466,11 +5466,11 @@ msgstr "Ara Belleğe Alınıyor"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "GStreamer iletişim hattı oluşturulamadı (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "Ortam biçimini işleyecek GStreamer unsuru bulunamadı"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Ortam biçimi: %(format-description)s"
@@ -5635,7 +5635,7 @@ msgstr "Kullanım"
 msgid "Revert to default"
 msgstr "Varsayılanlara döndür"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "Ne yaptığımı biliyorum!"
 
