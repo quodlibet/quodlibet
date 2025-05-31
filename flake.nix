@@ -74,6 +74,7 @@
               POETRY_VIRTUALENV_CREATE = 1;
               # Allow libpcre to... work
               LD_LIBRARY_PATH = "${glib.out}/lib";
+              GIO_MODULE_DIR = "${glib-networking}/lib/gio/modules/";
               packages =
                 [
                   qlPoetry
