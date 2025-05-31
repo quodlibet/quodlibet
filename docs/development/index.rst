@@ -12,6 +12,6 @@ Development Guide
     plugins
     tools
     faq
-    maint
+    maintainers
     formats
     flatpak
