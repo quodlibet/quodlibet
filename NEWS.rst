@@ -1,13 +1,87 @@
 .. _News:
 
+.. _release-4.7.1:
 
-4.7.0 - Unreleased
-------------------
+4.7.1 - T-rex in: popular corn
+------------------------------
+
+ℹ️ A highlight of the changes in 4.7.1 is below.
+For full details,
+see `the 4.7 commit log <https://github.com/quodlibet/quodlibet/compare/release-4.6.0...release-4.7.1>`_.
 
 Packaging Changes
+ * Quodlibet now requires Python 3.10+ :pr:`4400` (:user:`Nick Boultbee <declension>`),
+   and supports Python 3.12.
  * Quodlibet now uses ``gtksourceview4`` optionally instead of ``gtksourceview3`` :pr:`4377`
  * Appdata is now installed into ``/usr/share/metainfo`` instead of ``/usr/share/appdata`` :pr:`4375`
  * The tests now use use ``appstream`` optionally instead of ``appstream-util`` :pr:`4376`
+ * Move to zlib 1.3.1.  The previous version is no longer available upstream. :pr:`4491` (:user:`John Dykstra`)
+ * Update OS X build instructions re Python 3.12 :pr:`4446` (:user:`John Dykstra`)
+ * libsoup 3 also needs ``gir1.2-soup-3.0`` :pr:`4391` (:user:`lbt`)
+ * Update feedparser to avoid deprecated cgi :pr:`4479` (:user:`Nick Boultbee <declension>`)
+
+General
+ * Advanced prefs: add option to use playbin3 instead of playbin :pr:`4693` (:user:`Christoph Reiter <lazka>`)
+ * Auto-enable more plugins: :pr:`4667` (:user:`Nick Boultbee <declension>`)
+ * Tidy EF prefs :pr:`4627` (:user:`Nick Boultbee <declension>`)
+ * Exfalso: add progress bar (fixes #4604) :pr:`4625` (:user:`abretaud`)
+ * Waveform seekbar: update config :pr:`4609` (:user:`Nick Boultbee <declension>`)
+ * Fix logging time, and quieten logs a bit :pr:`4611` (:user:`Nick Boultbee <declension>`)
+ * Squeezebox plugins: Migrate to raw socket connection :pr:`4563` (:user:`luk1337`)
+ * Document how to run exfalso and quodlibet from source :pr:`4569` (:user:`sezanzeb`)
+ * Fix: Dereference symbolic links when writing to file (Issue 4543) :pr:`4548` (:user:`Peptis`)
+ * Make waveform height configurable (in plugin configuration) :pr:`4550` (:user:`eudoxos`)
+ * Sort list of active plugins in config file :pr:`4444` (:user:`toy`)
+ * Fix shuffle history (2) :pr:`4405` (:user:`slosd`)
+ * Paned Browser: small refactors / tidyings :pr:`4421` (:user:`Nick Boultbee <declension>`)
+ * Fix paned browser total rendering (#4415) :pr:`4420` (:user:`Nick Boultbee <declension>`)
+ * Update user guide for QL version of Fallback tags :pr:`4418` (:user:`Nick Boultbee <declension>`)
+ * operon: multiple file edit :pr:`3418` (:user:`remvee`)
+ * Advanced prefs pane boolean switches :pr:`4411` (:user:`jej`)
+ * Merge advanced prefs plugin into prefs pane :pr:`4408` (:user:`jej`)
+ * Revert "Fix shuffle history (#4255)" :pr:`4382` (:user:`Nick Boultbee <declension>`)
+ * Add disjunction / fallback tag expression :pr:`4372` (:user:`afontenot`)
+ * Repeat should pass set_explicit and set_implicit instead of set :pr:`4341` (:user:`toy`)
+ * Connect TreeViewHints->view leave-notify-event to __undisplay :pr:`4365` (:user:`luk1337`)
+ * Explicitly stop playing song before deleting it :pr:`4689` (:user:`Nick Boultbee <declension>`)
+ * Add genre splitting in tag editor :pr:`4250` (:user:`scresante`)
+ * Make Sort Tags Plugin: restrict and improve behaviour :pr:`4633` (:user:`Nick Boultbee <declension>`)
+ * Create Sort Tags plugin: never create empty tags :pr:`4630` (:user:`Nick Boultbee <declension>`)
+ * Fix playlist renaming (#4589) :pr:`4616` (:user:`Nick Boultbee <declension>`)
+ * Nicer DBUS plugin text / explanation :pr:`4615` (:user:`Nick Boultbee <declension>`)
+ * Fix default plugins (#4612) :pr:`4614` (:user:`Nick Boultbee <declension>`)
+ * Parse year from MM/DD/YYYY dates :pr:`4556` (:user:`Iris Ilexiris`)
+ * TrackNumbers: Up limit to 9999 :pr:`4471` (:user:`Adam Chalkley`)
+ * PlaycountEqualizer extension improvements :pr:`4499` (:user:`Rumato Estorsky`)
+ * Fix / improve Gnome SearchProvider :pr:`4501` (:user:`Nick Boultbee <declension>`)
+ * Add option to hide timestamps from lyrics panel :pr:`4523` (:user:`Vic Verstraete`)
+ * Include configured title/album details in MPRIS plugin :pr:`4493` (:user:`Markus Koller`)
+ * Only scrobble over HTTPS :pr:`4487` (:user:`Nick Boultbee <declension>`)
+ * Squeezebox plugins: fail nicely if telnetlib is missing :pr:`4480` (:user:`Nick Boultbee <declension>`)
+ * Docs: Add unofficial macOS 4.6.0 builds :pr:`4467` (:user:`Nick Boultbee <declension>`)
+ * Different approach to unsortable columns :pr:`4468` (:user:`Nick Boultbee <declension>`)
+ * Pass the name of the playlist to create (#4392) :pr:`4430` (:user:`David Greaves`)
+ * Fix the clickability when always allowing sorting :pr:`4453` (:user:`Nick Boultbee <declension>`)
+ * Support producer tag properly :pr:`4452` (:user:`Nick Boultbee <declension>`)
+ * Unify playlist hidden file check (so be Windows-aware) :pr:`4690` (:user:`Nick Boultbee <declension>`)
+
+Developer
+ * Upgrade all Python syntax to 3.10 :pr:`4407` (:user:`Nick Boultbee <declension>`)
+ * Migrate lots of old unittest assertions to native :pr:`4617` (:user:`Nick Boultbee <declension>`)
+ * Remove redundant GTK checks / hacks :pr:`4412` (:user:`Nick Boultbee <declension>`)
+ * Add Nix flake for dev :pr:`4401` (:user:`Nick Boultbee <declension>`)
+ * Expand ruff analysis rules, fix things, and autoformat :pr:`4686` (:user:`Nick Boultbee <declension>`)
+ * Update linting & formatting throughout codebase :pr:`4634` (:user:`Nick Boultbee <declension>`)
+ * CI: switch Fedora to 39 :pr:`4481` (:user:`Nick Boultbee <declension>`)
+ * Require poetry v2 and update pyproject.toml :pr:`4670` (:user:`Christoph Reiter <lazka>`)
+ * Update MacOS build to harfbuzz 10.1.0. :pr:`4639` (:user:`jdykstra`)
+ * tests: Filter out unsupported file formats properly :pr:`4566` (:user:`luk1337`)
+ * Repo code quality upgrade (with Ruff) :pr:`4404` (:user:`Nick Boultbee <declension>`)
+ * Move to Ruff for linting :pr:`4403` (:user:`Nick Boultbee <declension>`)
+ * gdist: Fix filtering dirs logic in get_missing() :pr:`4577` (:user:`luk1337`)
+ * Clean up loose ends in OS X support :pr:`4443` (:user:`John Dykstra`)
+ * Update / expand maintainer guide :pr:`4359` (:user:`Nick Boultbee <declension>`)
+ * Update OSX build scripts and associated data files. :pr:`4433` (:user:`John Dykstra`)
 
 
 .. _release-4.6.0:
@@ -28,8 +102,8 @@ General
  * Audiofeeds: enable clipboard when adding feed :pr:`4128` (:user:`Nick Boultbee <declension>`)
  * Fix aggregate units on numeric comparisons :pr:`4089` (:user:`Nick Boultbee <declension>`)
  * Fix playlist renaming bug :pr:`4079` (:user:`Nick Boultbee <declension>`)
- * Remove some senf helpers that are more or less the same in the Python 3 stdlib :pr:`4041` (:user:`lazka`)
- * Require Python 3.8 :pr:`3956` (:user:`lazka`)
+ * Remove some senf helpers that are more or less the same in the Python 3 stdlib :pr:`4041` (:user:`Christoph Reiter <lazka>`)
+ * Require Python 3.8 :pr:`3956` (:user:`Christoph Reiter <lazka>`)
  * Move to libsoup3 :pr:`4294` (:user:`Nick Boultbee <declension>`)
  * Add Stop command to Control menu :pr:`4213` (:user:`Markus Koller`)
  * Allow disabling of songlist sorting :pr:`4273` (:user:`Nick Boultbee <declension>`)
@@ -219,8 +293,8 @@ Developer:
  * Fixed Code Quality Issues :pr:`3583` (:user:`Ankit Dobhal`)
  * Add release infos in appdata files (:user:`Christoph Reiter <lazka>`)
  * Fix distcheck (:user:`Christoph Reiter <lazka>`)
- * Commit .pot file to git :pr:`3665` (:user:`lazka`)
- * setup.py: add a create_pot command :pr:`3664` (:user:`lazka`)
+ * Commit .pot file to git :pr:`3665` (:user:`Christoph Reiter <lazka>`)
+ * setup.py: add a create_pot command :pr:`3664` (:user:`Christoph Reiter <lazka>`)
  * wininst: stop pinning pypi deps (:user:`Christoph Reiter <lazka>`)
  * wininst: remove frei0r (:user:`Christoph Reiter <lazka>`)
  * Create GitHub Actions automated testing for Fedora 33 (resolves #3542) :pr:`3558` (:user:`Phillip Julien`)

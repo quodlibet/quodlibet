@@ -24,6 +24,8 @@ include quodlibet/packages/README.rst
 include *.py
 include *.yaml
 include *.toml
+include .envrc
+include flake.*
 include setup.cfg
 include pyproject.toml
 include poetry.lock
