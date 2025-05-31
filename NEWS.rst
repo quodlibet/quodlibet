@@ -63,7 +63,7 @@ General
  * Pass the name of the playlist to create (#4392) :pr:`4430` (:user:`David Greaves`)
  * Fix the clickability when always allowing sorting :pr:`4453` (:user:`Nick Boultbee <declension>`)
  * Support producer tag properly :pr:`4452` (:user:`Nick Boultbee <declension>`)
-* Unify playlist hidden file check (so be Windows-aware) :pr:`4690` (:user:`Nick Boultbee <declension>`)
+ * Unify playlist hidden file check (so be Windows-aware) :pr:`4690` (:user:`Nick Boultbee <declension>`)
 
 Developer
  * Upgrade all Python syntax to 3.10 :pr:`4407` (:user:`Nick Boultbee <declension>`)
