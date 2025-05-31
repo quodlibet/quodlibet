@@ -71,9 +71,6 @@ class Results:
     "plugin_class_name", ["lastfm-cover", "discogs-cover", "musicbrainz-cover"]
 )
 def test_live_cover_download(plugin_class_name):
-    if plugin_class_name == "musicbrainz-cover":
-        pytest.skip("https://coverartarchive.org is currently broken")
-
     results = Results()
     # Just in case overhanging events
     run_gtk_loop()
