@@ -35,14 +35,14 @@ jobs:
           git clean -f
           poetry run ./setup.py distcheck
           cd dist
-          gz_name="$(quodlibet-*.tar.gz)"
+          gz_name=(quodlibet-*.tar.gz)
           sha256sum "$gz_name" > "$gz_name.sha256"
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: $GITHUB_REF_NAME
-          path: dist/
+          path: dist/quodlibet-*
           if-no-files-found: fail
           # TODO: maybe revert this
           include-hidden-files: false
