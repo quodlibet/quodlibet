@@ -4,7 +4,8 @@ on:
     branches:
       - quodlibet-*
 
-  ubuntu-poetry:
+jobs:
+  create-release-artifacts:
     runs-on: ubuntu-24.04
     name: ubuntu-24.04-poetry-release
     steps:
