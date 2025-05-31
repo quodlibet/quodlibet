@@ -41,6 +41,5 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: $GITHUB_REF_NAME
           path: dist/quodlibet-*
           if-no-files-found: error
