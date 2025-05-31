@@ -34,7 +34,7 @@ AN_MBID = "82a4adf2-008b-3236-bb7a-bd93d7ed9677"
 
 def delay_rerun(self, *args):
     # Try to recover from any network blips
-    sleep(10)
+    sleep(5)
     return True
 
 
@@ -71,9 +71,6 @@ class Results:
     "plugin_class_name", ["lastfm-cover", "discogs-cover", "musicbrainz-cover"]
 )
 def test_live_cover_download(plugin_class_name):
-    if plugin_class_name == "musicbrainz-cover":
-        pytest.skip("https://coverartarchive.org is currently broken")
-
     results = Results()
     # Just in case overhanging events
     run_gtk_loop()

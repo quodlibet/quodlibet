@@ -1,4 +1,5 @@
 # Copyright 2018 Christoph Reiter
+#           2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,23 +77,24 @@ class GnomeSessionClient(SessionClient):
         if self._client_priv is None:
             return
 
-        self._client_priv.disconnect(self._sig_id)
-        self._sig_id = None
+        if self._sig_id:
+            self._client_priv.disconnect(self._sig_id)
+            self._sig_id = None
 
-        try:
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            session_mgr = Gio.DBusProxy.new_sync(
-                bus,
-                Gio.DBusProxyFlags.NONE,
-                None,
-                self.DBUS_NAME,
-                self.DBUS_OBJECT_PATH,
-                self.DBUS_MAIN_INTERFACE,
-                None,
-            )
-            session_mgr.UnregisterClient("(o)", self._client_path)
-        except GLib.Error as e:
-            print_w(str(e))
-
-        print_d(f"Disconnected from gnome session manager: {self._client_path}")
-        self._client_path = None
+        if self._client_path:
+            try:
+                bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+                session_mgr = Gio.DBusProxy.new_sync(
+                    bus,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    self.DBUS_NAME,
+                    self.DBUS_OBJECT_PATH,
+                    self.DBUS_MAIN_INTERFACE,
+                    None,
+                )
+                session_mgr.UnregisterClient("(o)", self._client_path)
+            except GLib.Error as e:
+                print_w(str(e))
+            print_d(f"Disconnected from gnome session manager: {self._client_path}")
+            self._client_path = None
