@@ -7,7 +7,7 @@ on:
 jobs:
   create-release-artifacts:
     runs-on: ubuntu-24.04
-    name: ubuntu-24.04-poetry-release
+    name: create-release-artifacts
     steps:
       - uses: actions/checkout@v4
 
@@ -31,10 +31,10 @@ jobs:
 
       - name: Create source dist
         run: |
-          - poetry run ./setup.py distcheck
-          - cd dist
-          - gz_name="$(quodlibet-*.tar.gz)"
-          - sha256sum "$gz_name" > "$gz_name.sha256"
+          poetry run ./setup.py distcheck
+          cd dist
+          gz_name="$(quodlibet-*.tar.gz)"
+          sha256sum "$gz_name" > "$gz_name.sha256"
 
       - name: Upload
         uses: actions/upload-artifact@v4
