@@ -43,6 +43,4 @@ jobs:
         with:
           name: $GITHUB_REF_NAME
           path: dist/quodlibet-*
-          if-no-files-found: fail
-          # TODO: maybe revert this
-          include-hidden-files: false
+          if-no-files-found: error
