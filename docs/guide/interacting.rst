@@ -5,7 +5,7 @@ Interacting with Quod Libet
 In Python
 ---------
 
-Quod Libet supports :ref:`plugins written in Python <PluginDev>`. These
+Quod Libet supports plugins written in Python. These
 plugins can interact with songs more directly than the other interfaces,
 changing or reading metadata using dict-like !AudioFile objects. The plugin
 interface has not yet stabilized, although we do not expect it to change
