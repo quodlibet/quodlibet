@@ -1,13 +1,13 @@
 .. _News:
 
-.. _release-4.7.0:
+.. _release-4.7.1:
 
-4.7.0 - T-rex in: popular corn
+4.7.1 - T-rex in: popular corn
 ------------------------------
 
-ℹ️ A highlight of the changes in 4.7.0 is below.
+ℹ️ A highlight of the changes in 4.7.1 is below.
 For full details,
-see `the 4.7 commit log <https://github.com/quodlibet/quodlibet/compare/release-4.6.0...release-4.7.0>`_.
+see `the 4.7 commit log <https://github.com/quodlibet/quodlibet/compare/release-4.6.0...release-4.7.1>`_.
 
 Packaging Changes
  * Quodlibet now requires Python 3.10+ :pr:`4400` (:user:`Nick Boultbee <declension>`),

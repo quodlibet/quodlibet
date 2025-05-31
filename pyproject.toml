@@ -3,7 +3,7 @@ name = "quodlibet"
 description = "A music library, tagger, and player"
 license = { text = "GPL-2.0-or-later" }
 keywords = ["audio", "music", "player", "tags", "gtk"]
-version = "4.7.0"
+version = "4.7.1"
 authors = [
   { name = "Joe Wreschnig" },
   { name = "Michael Urman" },
