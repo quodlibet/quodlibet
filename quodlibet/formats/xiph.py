@@ -93,12 +93,12 @@ class MutagenVCFile(AudioFile):
             self[single] = final
 
     def __post_read(self):
-        email = config.get("editing", "save_email").strip()
+        email = config.get("editing", "save_email").strip().lower()
         maps = {"rating": float, "playcount": int}
+        sub_keys = ["", f":{const.EMAIL.lower()}", f":{email}"]
         for keyed_key, func in maps.items():
-            emails = [s.lower() for s in ["", f":{const.EMAIL}", f":{email}"]]
-            for subkey in emails:
-                key = keyed_key + subkey
+            for subkey in sub_keys:
+                key = f"{keyed_key}{subkey}"
                 if key in self:
                     try:
                         self[f"~#{keyed_key}"] = func(self[key])
