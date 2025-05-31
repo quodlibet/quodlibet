@@ -34,7 +34,7 @@ AN_MBID = "82a4adf2-008b-3236-bb7a-bd93d7ed9677"
 
 def delay_rerun(self, *args):
     # Try to recover from any network blips
-    sleep(10)
+    sleep(5)
     return True
 
 
