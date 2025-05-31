@@ -31,6 +31,7 @@ jobs:
 
       - name: Create source dist
         run: |
+          poetry install
           poetry run ./setup.py distcheck
           cd dist
           gz_name="$(quodlibet-*.tar.gz)"
