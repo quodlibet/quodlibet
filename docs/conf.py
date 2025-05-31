@@ -40,9 +40,7 @@ exclude_patterns = ["_build", "_build_all", "README.rst", "**/README.rst"]
 html_theme = "sphinx_rtd_theme"
 html_title = project
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-suppress_warnings
-suppress_warnings = [
-    "config.cache"
-]
+suppress_warnings = ["config.cache"]
 
 extlinks = {
     "bug": ("https://github.com/quodlibet/quodlibet/issues/%s", "#%s"),
