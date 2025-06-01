@@ -2,12 +2,17 @@ name: "release"
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   create-release-artifacts:
     runs-on: ubuntu-24.04
     name: create-release-artifacts
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Dependencies
         run: |

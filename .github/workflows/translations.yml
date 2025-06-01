@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 4 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   update-pot:
     if: github.repository == 'quodlibet/quodlibet'
@@ -14,6 +17,8 @@ jobs:
     name: update-pot
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Install Dependencies
         run: |
