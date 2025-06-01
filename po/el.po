@@ -5531,12 +5531,12 @@ msgstr "Buffering"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Αδυναμία δημιουργίας διασωλήνωσης GStreamer"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Δεν βρέθηκε στοιχείο GStreamer ικανό να χειριστεί αυτό το είδος αρχείου"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Μορφή πολυμέσου: %(format-description)s"
@@ -5706,7 +5706,7 @@ msgstr ""
 msgid "Revert to default"
 msgstr "Επαναφορά στο προκαθορισμένο πρότυπο"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Ξέρω τι κάνω"

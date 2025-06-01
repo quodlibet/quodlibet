@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-01-08 05:00+0000\n"
+"PO-Revision-Date: 2025-05-26 13:03+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -600,13 +600,13 @@ msgid "Columnar"
 msgstr "カラムナー"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"任意にマークアップ可能なタグパターン。例: <tt>composer</tt> や\n"
-"{example}"
+"タグパターン (マークアップも可能)。例1: %(short)s\n"
+"例2: %(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -3860,9 +3860,9 @@ msgid "unidentified Squeezebox server"
 msgstr "不明な Squeezebox プレイヤー"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy, python-format
+#, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr "不明な Squeezebox プレイヤー: {self!r}"
+msgstr "不明な Squeezebox プレイヤー: %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4178,9 +4178,9 @@ msgid "No covers found"
 msgstr "カバーが見つかりません"
 
 #: quodlibet/ext/songsmenu/cover_download.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr "{size} ✕ {size} px"
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -5408,15 +5408,15 @@ msgid "Buffering"
 msgstr "バッファリング中"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "GStreamer パイプラインを作成できません ({e})"
+msgstr "GStreamer パイプラインを作成できません (%s)"
 
-#: quodlibet/player/gstbe/player.py:687
+#: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
 msgstr "メディア形式を処理する GStreamer エレメントが見つかりません"
 
-#: quodlibet/player/gstbe/player.py:688
+#: quodlibet/player/gstbe/player.py:691
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "メディア形式: %(format-description)s"
@@ -5580,7 +5580,7 @@ msgstr "使用法"
 msgid "Revert to default"
 msgstr "デフォルト値に戻す"
 
-#: quodlibet/qltk/advanced_prefs.py:322
+#: quodlibet/qltk/advanced_prefs.py:328
 msgid "I know what I'm doing!"
 msgstr "分かってるから任せて!"
 
@@ -5878,7 +5878,7 @@ msgstr "複数行タグの表示(_M)"
 
 #: quodlibet/qltk/edittags.py:557
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
-msgstr "複数行になる可能性のあるタグ(「lyrics」など)もここに表示します"
+msgstr "複数行になる可能性のあるタグ (lyrics など) もここに表示します"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:588
