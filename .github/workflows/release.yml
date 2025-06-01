@@ -1,8 +1,6 @@
 name: "release"
 on:
   push:
-    branches:
-      - quodlibet-*
 
 jobs:
   create-release-artifacts:
