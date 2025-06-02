@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-04-15 16:06+0000\n"
-"Last-Translator: Zsuzsanna Kipilla <kipizsu@gmail.com>\n"
+"PO-Revision-Date: 2025-06-02 11:01+0000\n"
+"Last-Translator: Balázs Kipilla <ruszok@rompecs.de>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/hu/>\n"
 "Language: hu\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -831,27 +831,24 @@ msgstr "Szám lista"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
-#, fuzzy
 msgid "Soundcloud"
-msgstr "Paneles böngésző"
+msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:51
-#, fuzzy
 msgid "Soundcloud Browser"
-msgstr "Paneles böngésző"
+msgstr "Soundcloud böngésző"
 
 #: quodlibet/browsers/soundcloud/main.py:52
 msgid "Sound_cloud"
-msgstr ""
+msgstr "Sound_cloud"
 
 #: quodlibet/browsers/soundcloud/main.py:74 quodlibet/qltk/searchbar.py:91
 msgid "Search"
-msgstr "Keres"
+msgstr "Keresés"
 
 #: quodlibet/browsers/soundcloud/main.py:81
-#, fuzzy
 msgid "My tracks"
-msgstr "számok"
+msgstr "Számaim"
 
 #: quodlibet/browsers/soundcloud/main.py:152
 #, python-format
