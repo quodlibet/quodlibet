@@ -45,9 +45,9 @@ pconfig.defaults.set(
 )
 
 
-class PreferencesWidget(Gtk.VBox):
+class PreferencesWidget(Gtk.Box):
     def __init__(self, parent, plugin_instance):
-        GObject.GObject.__init__(self, spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.plugin_instance = plugin_instance
 
         # notification text settings
@@ -81,7 +81,7 @@ class PreferencesWidget(Gtk.VBox):
 
         title_revert = Gtk.Button()
         title_revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
         title_revert.set_tooltip_text(_("Revert to default pattern"))
         title_revert.connect(
@@ -116,7 +116,7 @@ class PreferencesWidget(Gtk.VBox):
 
         body_revert = Gtk.Button()
         body_revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
         body_revert.set_tooltip_text(_("Revert to default pattern"))
         body_revert.connect(
@@ -155,25 +155,25 @@ class PreferencesWidget(Gtk.VBox):
             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
         )
 
-        self.pack_start(text_frame, True, True, 0)
+        self.prepend(text_frame, True, True, 0)
 
         # notification display settings
-        display_box = Gtk.VBox(spacing=12)
+        display_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         display_frame = qltk.Frame(_("Show notifications"), child=display_box)
 
-        radio_box = Gtk.VBox(spacing=6)
-        display_box.pack_start(radio_box, True, True, 0)
+        radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        display_box.prepend(radio_box, True, True, 0)
 
-        only_user_radio = Gtk.RadioButton(
+        only_user_radio = Gtk.CheckButton(
             label=_("Only on <i>_manual</i> song changes"), use_underline=True
         )
         only_user_radio.get_child().set_use_markup(True)
         only_user_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "user"
         )
-        radio_box.pack_start(only_user_radio, True, True, 0)
+        radio_box.prepend(only_user_radio, True, True, 0)
 
-        only_auto_radio = Gtk.RadioButton(
+        only_auto_radio = Gtk.CheckButton(
             group=only_user_radio,
             label=_("Only on <i>_automatic</i> song changes"),
             use_underline=True,
@@ -182,9 +182,9 @@ class PreferencesWidget(Gtk.VBox):
         only_auto_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "auto"
         )
-        radio_box.pack_start(only_auto_radio, True, True, 0)
+        radio_box.prepend(only_auto_radio, True, True, 0)
 
-        all_radio = Gtk.RadioButton(
+        all_radio = Gtk.CheckButton(
             group=only_user_radio,
             label=_("On <i>a_ll</i> song changes"),
             use_underline=True,
@@ -193,7 +193,7 @@ class PreferencesWidget(Gtk.VBox):
         all_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "all"
         )
-        radio_box.pack_start(all_radio, True, True, 0)
+        radio_box.prepend(all_radio, True, True, 0)
 
         {"user": only_user_radio, "auto": only_auto_radio, "all": all_radio}.get(
             pconfig.gettext("show_notifications"), all_radio
@@ -206,14 +206,14 @@ class PreferencesWidget(Gtk.VBox):
         focus_check.connect(
             "toggled", self.on_checkbutton_toggled, "show_only_when_unfocused"
         )
-        display_box.pack_start(focus_check, True, True, 0)
+        display_box.prepend(focus_check, True, True, 0)
 
         show_next = Gtk.CheckButton(label=_('Show "_Next" button'), use_underline=True)
         show_next.set_active(pconfig.getboolean("show_next_button"))
         show_next.connect("toggled", self.on_checkbutton_toggled, "show_next_button")
-        display_box.pack_start(show_next, True, True, 0)
+        display_box.prepend(show_next, True, True, 0)
 
-        self.pack_start(display_frame, True, True, 0)
+        self.prepend(display_frame, True, True, 0)
 
         self.show_all()
         self.connect("destroy", self.on_destroyed)

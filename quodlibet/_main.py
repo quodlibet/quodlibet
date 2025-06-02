@@ -259,7 +259,7 @@ def set_application_info(app):
 
     assert is_init()
 
-    from gi.repository import Gtk, GLib
+    from gi.repository import Gtk, Gdk, GLib
 
     assert app.process_name
     set_process_title(app.process_name)
@@ -267,13 +267,11 @@ def set_application_info(app):
     GLib.idle_add(set_process_title, app.process_name)
 
     assert app.id
-    # https://honk.sigxcpu.org/con/GTK__and_the_application_id.html
-    GLib.set_prgname(app.id)
     assert app.name
     GLib.set_application_name(app.name)
 
     assert app.icon_name
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
     assert theme.has_icon(app.icon_name)
     Gtk.Window.set_default_icon_name(app.icon_name)
 

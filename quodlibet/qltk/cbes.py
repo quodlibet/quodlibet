@@ -31,7 +31,7 @@ class _KeyValueEditor(qltk.Window):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(Gtk.VBox(spacing=6))
+        self.add(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6))
 
         t = Gtk.Table(n_rows=2, n_columns=3)
         t.set_row_spacings(6)
@@ -57,7 +57,7 @@ class _KeyValueEditor(qltk.Window):
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
-        self.get_child().pack_start(t, False, True, 0)
+        self.get_child().prepend(t, False, True, 0)
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str, str)
@@ -78,9 +78,9 @@ class _KeyValueEditor(qltk.Window):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.get_child().pack_start(sw, True, True, 3)
+        self.get_child().prepend(sw, True, True, 3)
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove, "activate", self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
@@ -90,14 +90,14 @@ class _KeyValueEditor(qltk.Window):
         bbox = Gtk.HButtonBox()
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
-        bbox.pack_start(rem_b, True, True, 0)
+        bbox.prepend(rem_b, True, True, 0)
         self.use_header_bar()
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
-            bbox.pack_start(close, True, True, 0)
+            bbox.prepend(close, True, True, 0)
         else:
             bbox.set_layout(Gtk.ButtonBoxStyle.START)
-        self.get_child().pack_start(bbox, False, True, 0)
+        self.get_child().prepend(bbox, False, True, 0)
 
         selection = view.get_selection()
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
@@ -109,7 +109,7 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(rem_b, "clicked", self.__remove, view)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         view.connect("key-press-event", self.__view_key_press)
-        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
 
         name.grab_focus()
         self.get_child().show_all()
@@ -279,11 +279,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.clear()
 
         render = Gtk.CellRendererPixbuf()
-        self.pack_start(render, False)
+        self.prepend(render, False)
         self.add_attribute(render, "icon-name", 2)
 
         render = Gtk.CellRendererText()
-        self.pack_start(render, True)
+        self.prepend(render, True)
         self.add_attribute(render, "text", 1)
 
         self.set_row_separator_func(self.__separator_func, None)

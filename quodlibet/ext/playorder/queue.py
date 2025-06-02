@@ -32,7 +32,7 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     accelerated_name = _("_Queue only")
 
     def PluginPreferences(self):
-        box = Gtk.HBox()
+        box = Gtk.Box()
         ccb = ConfigCheckButton(
             _("Automatically start playing double-clicked songs"),
             "plugins",
@@ -40,7 +40,7 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
         )
         autoplay = config.getboolean("plugins", "queue_only_autoplay", False)
         ccb.set_active(autoplay)
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.prepend(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
     def next(self, playlist, iter):

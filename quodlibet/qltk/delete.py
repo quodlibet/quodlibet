@@ -88,7 +88,7 @@ class DeleteDialog(WarningMessage):
         area = self.get_message_area()
         exp = FileListExpander(paths)
         exp.show()
-        area.pack_start(exp, False, True, 0)
+        area.prepend(exp, False, True, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(
@@ -134,7 +134,7 @@ class TrashDialog(WarningMessage):
         area = self.get_message_area()
         exp = FileListExpander(paths)
         exp.show()
-        area.pack_start(exp, False, True, 0)
+        area.prepend(exp, False, True, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(_("_Move to Trash"), Icons.USER_TRASH, self.RESPONSE_TRASH)

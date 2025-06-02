@@ -53,8 +53,8 @@ def boolean_config(section, option, label, tooltip):
         button.set_active(config.getboolean(section, option))
 
     button = ConfigSwitch(None, section, option, tooltip=tooltip, populate=True)
-    button_box = Gtk.VBox(homogeneous=True)
-    button_box.pack_start(button, False, False, 0)
+    button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True)
+    button_box.prepend(button, False, False, 0)
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(button.switch)
@@ -64,7 +64,7 @@ def boolean_config(section, option, label, tooltip):
 
 def revert_button(on_reverted: Callable[..., None]) -> Gtk.Button:
     revert = Gtk.Button()
-    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
+    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE))
     revert.connect("clicked", on_reverted)
     revert.set_tooltip_text(_("Revert to default"))
     return revert
@@ -116,11 +116,11 @@ def slider_config(
     return lbl, scale, revert
 
 
-class AdvancedPreferencesPane(Gtk.VBox):
+class AdvancedPreferencesPane(Gtk.Box):
     MARGIN = 12
 
     def __init__(self, *args):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
@@ -306,7 +306,7 @@ class AdvancedPreferencesPane(Gtk.VBox):
         for row, (label, widget, button) in enumerate(rows):
             label.set_alignment(0.0, 0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
-            if isinstance(widget, Gtk.VBox):
+            if isinstance(widget, Gtk.Box):
                 # This stops checkbox from expanding too big, or shrinking text entries
                 blank = Gtk.Label()
                 table.attach(
@@ -328,5 +328,5 @@ class AdvancedPreferencesPane(Gtk.VBox):
         button = Gtk.Button(label=_("I know what I'm doing!"), use_underline=True)
         button.connect("clicked", on_click)
 
-        self.pack_start(button, False, True, 0)
-        self.pack_start(table, True, True, 0)
+        self.prepend(button, False, True, 0)
+        self.prepend(table, True, True, 0)

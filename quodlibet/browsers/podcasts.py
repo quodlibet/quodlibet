@@ -416,9 +416,9 @@ class Podcasts(Browser):
         swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.pack_start(swin, True, True, 0)
+        self.prepend(swin, True, True, 0)
 
-        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
         new.connect("clicked", self.__new_feed)
         view.get_selection().connect("changed", self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -437,7 +437,7 @@ class Podcasts(Browser):
 
         connect_obj(self, "destroy", self.__save, view)
 
-        self.pack_start(Align(new, left=3, bottom=3), False, True, 0)
+        self.prepend(Align(new, left=3, bottom=3), False, True, 0)
 
         for child in self.get_children():
             child.show_all()
@@ -482,9 +482,9 @@ class Podcasts(Browser):
         else:
             self.feed_error(feed).run()
 
-    def _popup_menu(self, view: Gtk.Widget) -> Gtk.Menu | None:
+    def _popup_menu(self, view: Gtk.Widget) -> Gtk.PopoverMenu | None:
         model, paths = self._view.get_selection().get_selected_rows()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         refresh = MenuItem(
             _("_Refresh"),
             Icons.VIEW_REFRESH,

@@ -127,11 +127,11 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             # query_file is empty
             return self._no_queries_frame()
 
-        main_vbox = Gtk.VBox(spacing=self.spacing_main)
+        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_main)
         self.main_vbox = main_vbox
 
         # Saved search selection frame
-        saved_search_vbox = Gtk.VBox(spacing=self.spacing_large)
+        saved_search_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
         self.saved_search_vbox = saved_search_vbox
         for query_name, _query in self.queries.items():
             query_config = self.CONFIG_QUERY_PREFIX + query_name
@@ -139,14 +139,14 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                 query_name, PM.CONFIG_SECTION, self._config_key(query_config)
             )
             check_button.set_active(self.config_get_bool(query_config))
-            saved_search_vbox.pack_start(check_button, False, False, 0)
+            saved_search_vbox.prepend(check_button, False, False, 0)
         saved_search_scroll = self._expandable_scroll(min_h=0, max_h=300)
         saved_search_scroll.add(saved_search_vbox)
         frame = qltk.Frame(
             label=_("Synchronize the following saved searches:"),
             child=saved_search_scroll,
         )
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.prepend(frame, False, False, 0)
 
         # Destination path entry field
         destination_entry = Gtk.Entry(
@@ -161,9 +161,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         destination_button.connect("clicked", self._select_destination_path)
 
         # Destination path hbox
-        destination_path_hbox = Gtk.HBox(spacing=self.spacing_small)
-        destination_path_hbox.pack_start(destination_entry, True, True, 0)
-        destination_path_hbox.pack_start(destination_button, False, False, 0)
+        destination_path_hbox = Gtk.Box(spacing=self.spacing_small)
+        destination_path_hbox.prepend(destination_entry, True, True, 0)
+        destination_path_hbox.prepend(destination_button, False, False, 0)
 
         # Destination path information
         destination_warn_label = self._label_with_icon(
@@ -184,12 +184,12 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Destination path frame
-        destination_vbox = Gtk.VBox(spacing=self.spacing_large)
-        destination_vbox.pack_start(destination_path_hbox, False, False, 0)
-        destination_vbox.pack_start(destination_warn_label, False, False, 0)
-        destination_vbox.pack_start(destination_info_label, False, False, 0)
+        destination_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        destination_vbox.prepend(destination_path_hbox, False, False, 0)
+        destination_vbox.prepend(destination_warn_label, False, False, 0)
+        destination_vbox.prepend(destination_info_label, False, False, 0)
         frame = qltk.Frame(label=_("Destination path:"), child=destination_vbox)
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.prepend(frame, False, False, 0)
 
         # Export pattern frame
         export_pattern_combo = ComboBoxEntrySave(
@@ -212,7 +212,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         export_pattern_entry.connect("changed", self._export_pattern_changed)
         self.export_pattern_entry = export_pattern_entry
         frame = qltk.Frame(label=_("Export pattern:"), child=export_pattern_combo)
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.prepend(frame, False, False, 0)
 
         # Start preview button
         preview_start_button = qltk.Button(
@@ -298,15 +298,15 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Section for previewing exported files
-        preview_vbox = Gtk.VBox(spacing=self.spacing_large)
-        preview_vbox.pack_start(preview_start_button, False, False, 0)
-        preview_vbox.pack_start(preview_stop_button, False, False, 0)
-        preview_vbox.pack_start(details_scroll, True, True, 0)
-        preview_vbox.pack_start(self.status_operation, False, False, 0)
-        preview_vbox.pack_start(self.status_progress, False, False, 0)
-        preview_vbox.pack_start(self.status_duplicates, False, False, 0)
-        preview_vbox.pack_start(self.status_deletions, False, False, 0)
-        main_vbox.pack_start(preview_vbox, True, True, 0)
+        preview_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        preview_vbox.prepend(preview_start_button, False, False, 0)
+        preview_vbox.prepend(preview_stop_button, False, False, 0)
+        preview_vbox.prepend(details_scroll, True, True, 0)
+        preview_vbox.prepend(self.status_operation, False, False, 0)
+        preview_vbox.prepend(self.status_progress, False, False, 0)
+        preview_vbox.prepend(self.status_duplicates, False, False, 0)
+        preview_vbox.prepend(self.status_deletions, False, False, 0)
+        main_vbox.prepend(preview_vbox, True, True, 0)
 
         # Start sync button
         sync_start_button = qltk.Button(
@@ -327,10 +327,10 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.sync_stop_button = sync_stop_button
 
         # Section for the sync buttons
-        sync_vbox = Gtk.VBox(spacing=self.spacing_large)
-        sync_vbox.pack_start(sync_start_button, False, False, 0)
-        sync_vbox.pack_start(sync_stop_button, False, False, 0)
-        main_vbox.pack_start(sync_vbox, False, False, 0)
+        sync_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        sync_vbox.prepend(sync_start_button, False, False, 0)
+        sync_vbox.prepend(sync_stop_button, False, False, 0)
+        main_vbox.prepend(sync_vbox, False, False, 0)
 
         return main_vbox
 
@@ -367,15 +367,15 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         :param icon_name: An icon name or None.
         :return: A HBox containing an icon followed by a label.
         """
-        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.BUTTON)
+        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.LARGE)
         label = Gtk.Label(label=text, xalign=0.0, yalign=0.5, wrap=True)
 
-        hbox = Gtk.HBox(spacing=self.spacing_large)
+        hbox = Gtk.Box(spacing=self.spacing_large)
         if not visible:
             hbox.set_visible(False)
             hbox.set_no_show_all(True)
-        hbox.pack_start(image, False, False, 0)
-        hbox.pack_start(label, True, True, 0)
+        hbox.prepend(image, False, False, 0)
+        hbox.prepend(label, True, True, 0)
 
         return hbox
 
@@ -406,7 +406,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if sort:
             tvc.set_sort_column_id(sort)
         tvc.set_cell_data_func(render, cdf)
-        tvc.pack_start(render, True)
+        tvc.prepend(render, True)
         self.renders[tvc] = render
         return tvc
 

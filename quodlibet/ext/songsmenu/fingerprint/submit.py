@@ -39,22 +39,22 @@ class FingerprintDialog(Window):
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(450, 0)
 
-        outer_box = Gtk.VBox(spacing=12)
+        outer_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         self.__label = label = Gtk.Label()
         label.set_markup(util.bold(_("Generating fingerprints:")))
         label.set_alignment(0, 0.5)
-        box.pack_start(label, False, True, 0)
+        box.prepend(label, False, True, 0)
 
         self.__bar = bar = Gtk.ProgressBar()
         self.__set_fraction(0)
-        box.pack_start(bar, False, True, 0)
+        box.prepend(bar, False, True, 0)
         self.__label_song = label_song = Gtk.Label()
         label_song.set_alignment(0, 0.5)
         label_song.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        box.pack_start(label_song, False, True, 0)
+        box.prepend(label_song, False, True, 0)
 
         self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
@@ -69,7 +69,7 @@ class FingerprintDialog(Window):
 
         stats.connect("unmap", expand_cb)
 
-        box.pack_start(expand, False, False, 0)
+        box.prepend(expand, False, False, 0)
 
         self.__fp_results = {}
         self.__fp_done = 0
@@ -89,11 +89,11 @@ class FingerprintDialog(Window):
         submit.connect("clicked", self.__submit_cb)
         cancel = Button(_("_Cancel"))
         connect_obj(cancel, "clicked", self.__cancel_cb, pool)
-        bbox.pack_start(cancel, True, True, 0)
-        bbox.pack_start(submit, True, True, 0)
+        bbox.prepend(cancel, True, True, 0)
+        bbox.prepend(submit, True, True, 0)
 
-        outer_box.pack_start(box, True, True, 0)
-        outer_box.pack_start(bbox, False, True, 0)
+        outer_box.prepend(box, True, True, 0)
+        outer_box.prepend(bbox, False, True, 0)
 
         pool.connect("fingerprint-done", self.__fp_done_cb)
         pool.connect("fingerprint-error", self.__fp_error_cb)

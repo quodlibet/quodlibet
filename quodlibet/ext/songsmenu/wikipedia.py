@@ -48,23 +48,23 @@ class WikiSearch(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = Gtk.HBox(spacing=3)
+        hb = Gtk.Box(spacing=3)
         hb.set_border_width(6)
         e = Entry(max_length=2)
         e.set_width_chars(3)
         e.set_max_width_chars(3)
         e.set_text(get_lang())
         e.connect("changed", cls.changed)
-        hb.pack_start(
+        hb.prepend(
             Gtk.Label(label=_("Search at %(website)s") % {"website": "https://"}),
             False,
             True,
             0,
         )
-        hb.pack_start(e, False, True, 0)
-        hb.pack_start(Gtk.Label(label=".wikipedia.org"), False, True, 0)
-        vb = Gtk.VBox(spacing=6)
-        vb.pack_start(hb, False, False, 0)
+        hb.prepend(e, False, True, 0)
+        hb.prepend(Gtk.Label(label=".wikipedia.org"), False, True, 0)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vb.prepend(hb, False, False, 0)
 
         def _open_editor(widget):
             def _editor_closed(widget):
@@ -78,7 +78,7 @@ class WikiSearch(SongsMenuPlugin):
 
         button = Gtk.Button(_("Edit Tags"))
         button.connect("clicked", _open_editor)
-        vb.pack_start(button, False, True, 0)
+        vb.prepend(button, False, True, 0)
         vb.show_all()
 
         return vb
@@ -89,7 +89,7 @@ class WikiSearch(SongsMenuPlugin):
         self.update_submenu()
 
     def update_submenu(self):
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         tags = config.getlist("plugins", "wiki_tags", self.DEFAULT_TAGS)
         for tag in tags:
             if tag:

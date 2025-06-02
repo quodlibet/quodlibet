@@ -42,7 +42,7 @@ class MediaServer(EventPlugin):
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         conf_exp = _(
             "Ensure the following is in your rygel config file "
@@ -65,8 +65,8 @@ class MediaServer(EventPlugin):
         conf_lbl.set_alignment(0, 0)
         conf_lbl.set_markup(f"<span font='mono'>{conf_cont}</span>")
 
-        vbox.pack_start(exp_lbl, True, False, 0)
-        vbox.pack_start(conf_lbl, True, False, 0)
+        vbox.prepend(exp_lbl, True, False, 0)
+        vbox.prepend(conf_lbl, True, False, 0)
         return vbox
 
     def enabled(self):

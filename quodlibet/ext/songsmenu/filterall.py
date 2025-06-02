@@ -47,11 +47,11 @@ class SelectionWindow(Window):
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        buttons.pack_start(close, True, True, 0)
+        buttons.prepend(close, True, True, 0)
 
-        box = Gtk.VBox(spacing=12)
-        box.pack_start(sw, True, True, 0)
-        box.pack_start(buttons, False, True, 0)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.prepend(sw, True, True, 0)
+        box.prepend(buttons, False, True, 0)
 
         self.add(box)
 

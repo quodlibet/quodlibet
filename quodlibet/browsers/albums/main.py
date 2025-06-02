@@ -218,7 +218,7 @@ def compare_avgplaycount(a1, a2):
     )
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, browser, model):
         super().__init__()
 
@@ -233,10 +233,10 @@ class PreferencesButton(Gtk.HBox):
             (_("Play_count"), self.__compare_avgplaycount),
         ]
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.Menu()
+        sort_menu = Gtk.PopoverMenu()
 
         active = config.getint("browsers", "album_sort", 1)
 
@@ -262,10 +262,10 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, False, False, 0)
+        self.prepend(button, False, False, 0)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -592,11 +592,11 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.pack_start(prefs, False, True, 0)
+        search.prepend(prefs, False, True, 0)
         hb = Gtk.Box(spacing=3)
-        hb.pack_start(search, True, True, 6)
-        self.pack_start(hb, False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        hb.prepend(search, True, True, 6)
+        self.prepend(hb, False, True, 0)
+        self.prepend(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)
 

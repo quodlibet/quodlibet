@@ -167,15 +167,15 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         return cfg[0] in (Config.PAT_PLAYING[0], Config.PAT_PAUSED[0])
 
     def PluginPreferences(self, parent):
-        outer_vb = Gtk.VBox(spacing=12)
+        outer_vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         t = self.config_table_for(self._CONFIG[:_TOTAL_MQTT_ITEMS])
         frame = qltk.Frame(_("MQTT Configuration"), child=t)
-        outer_vb.pack_start(frame, False, True, 0)
+        outer_vb.prepend(frame, False, True, 0)
 
         t = self.config_table_for(self._CONFIG[_TOTAL_MQTT_ITEMS:])
         frame = qltk.Frame(_("Status Text"), child=t)
-        outer_vb.pack_start(frame, False, True, 0)
+        outer_vb.prepend(frame, False, True, 0)
 
         return outer_vb
 

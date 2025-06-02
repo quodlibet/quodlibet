@@ -55,7 +55,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = Gtk.VBox(spacing=6)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         vb.set_border_width(6)
 
         t = Gtk.Table(n_rows=5, n_columns=2, homogeneous=True)
@@ -101,7 +101,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(s, 1, 2, 4, 5)
         s.connect("value-changed", cls._set_font_size)
 
-        vb.pack_start(t, False, False, 0)
+        vb.prepend(t, False, False, 0)
         return vb
 
     @classmethod
@@ -144,10 +144,10 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.scrolled_window.add_with_viewport(self.textview)
 
-        vb = Gtk.HBox()
-        vb.pack_start(self.scrolled_window, True, True, 6)
+        vb = Gtk.Box()
+        vb.prepend(self.scrolled_window, True, True, 6)
         vb.show_all()
-        app.window.get_child().pack_start(vb, False, True, 0)
+        app.window.get_child().prepend(vb, False, True, 0)
         app.window.get_child().reorder_child(vb, 2)
 
         self._style_lyrics_window()

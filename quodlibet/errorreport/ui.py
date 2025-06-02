@@ -71,7 +71,7 @@ class ErrorDialog(Gtk.MessageDialog):
 
         area = self.get_message_area()
         expand = TextExpander(_("Error details:"), error_text)
-        area.pack_start(expand, False, True, 0)
+        area.prepend(expand, False, True, 0)
         area.show_all()
 
 
@@ -110,10 +110,10 @@ class SubmitErrorDialog(Gtk.MessageDialog):
 
         self._entry = UndoEntry()
         self._entry.set_placeholder_text(_("Short description…"))
-        area.pack_start(self._entry, False, True, 0)
+        area.prepend(self._entry, False, True, 0)
 
         expand = TextExpander(_("Data to be sent:"), error_text)
-        area.pack_start(expand, False, True, 0)
+        area.prepend(expand, False, True, 0)
         area.show_all()
 
         self.get_widget_for_response(Gtk.ResponseType.CANCEL).grab_focus()

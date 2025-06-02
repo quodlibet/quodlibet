@@ -123,19 +123,19 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         connect_destroy(self.library, "changed", self.__changed)
         self.login_state = State.LOGGED_IN if self.online else State.LOGGED_OUT
         self._create_searchbar(self.library)
-        vbox = Gtk.VBox()
-        vbox.pack_start(self._create_header(), False, False, 0)
-        vbox.pack_start(self._create_category_widget(), True, True, 0)
-        vbox.pack_start(self.create_login_button(), False, False, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox.prepend(self._create_header(), False, False, 0)
+        vbox.prepend(self._create_category_widget(), True, True, 0)
+        vbox.prepend(self.create_login_button(), False, False, 0)
         vbox.show()
         pane = qltk.ConfigRHPaned("browsers", "soundcloud_pos", 0.4)
         pane.show()
         pane.pack1(vbox, resize=False, shrink=False)
-        self._songs_box = songs_box = Gtk.VBox(spacing=6)
-        songs_box.pack_start(self._searchbox, False, True, 0)
+        self._songs_box = songs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        songs_box.prepend(self._searchbox, False, True, 0)
         songs_box.show()
         pane.pack2(songs_box, resize=True, shrink=False)
-        self.pack_start(pane, True, True, 0)
+        self.prepend(pane, True, True, 0)
         self.show()
 
     def menu(self, songs, library, items):
@@ -146,12 +146,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return self.api_client.online
 
     def _create_header(self):
-        hbox = Gtk.HBox()
-        button = Gtk.Button(always_show_image=True, relief=Gtk.ReliefStyle.NONE)
+        hbox = Gtk.Box()
+        button = Gtk.Button(always_show_image=True)
         button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
-        hbox.pack_start(button, True, True, 6)
+        hbox.prepend(button, True, True, 6)
         hbox.show_all()
         return hbox
 
@@ -216,13 +216,11 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 self.login_state = State.LOGGING_IN
             self.update_connect_button()
 
-        hbox = Gtk.HBox()
-        self.login_button = login = Gtk.Button(
-            always_show_image=True, relief=Gtk.ReliefStyle.NONE
-        )
+        hbox = Gtk.Box()
+        self.login_button = login = Gtk.Button(always_show_image=True)
         self.update_connect_button()
         login.connect("clicked", clicked_login)
-        hbox.pack_start(login, True, False, 0)
+        hbox.prepend(login, True, False, 0)
         hbox.show_all()
         return hbox
 
@@ -253,7 +251,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 6
         renderpb.props.ypad = 6
-        column.pack_start(renderpb, False)
+        column.prepend(renderpb, False)
         column.add_attribute(renderpb, "icon-name", self.ModelIndex.ICON_NAME)
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -269,7 +267,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         column.set_cell_data_func(renderpb, cdf)
 
         view.append_column(column)
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.add_attribute(render, "text", self.ModelIndex.NAME)
         view.set_model(model)
 
@@ -313,7 +311,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.activate()
 
     def pack(self, songpane):
-        container = Gtk.VBox()
+        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         container.add(self)
         self._songs_box.add(songpane)
         return container

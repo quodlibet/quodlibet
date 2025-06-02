@@ -93,12 +93,12 @@ class WebsiteSearch(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = Gtk.HBox(spacing=3)
+        hb = Gtk.Box(spacing=3)
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
-        hb.pack_start(button, True, True, 0)
+        hb.prepend(button, True, True, 0)
         hb.show_all()
         return hb
 
@@ -114,7 +114,7 @@ class WebsiteSearch(SongsMenuPlugin):
         super().__init__(*args, **kwargs)
         self.chosen_site = None
         self._url_pats = []
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         self._get_saved_searches()
         for name, _url_pat in self._url_pats:
             item = Gtk.MenuItem(label=name)

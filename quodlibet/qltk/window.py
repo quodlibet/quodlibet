@@ -124,9 +124,10 @@ class Window(Gtk.Window):
                 self.set_modal(True)
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        # TODO GTK4: check what we want to do here given removal of positioning in GTK4
+        # self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         connect_obj(self, "destroy", type(self).windows.remove, self)
-        self.connect("key-press-event", self._on_key_press)
+        # self.connect("key-press-event", self._on_key_press)
 
     def _on_key_press(self, widget, event):
         is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG
@@ -173,8 +174,8 @@ class Window(Gtk.Window):
         super().set_default_size(width, height)
 
     def use_header_bar(self):
-        """Try to use a headerbar, returns the widget or None in case
-        GTK+ is too old or headerbars are disabled (under xfce for example)
+        """Try to use a headerbar, returns the widget
+        or None if headerbars are disabled (under xfce for example)
         """
 
         assert not self._header_bar

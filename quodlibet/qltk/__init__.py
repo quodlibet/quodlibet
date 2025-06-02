@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 
 import gi
 
-gi.require_version("Gtk", "3.0")
+gi.require_version("Gtk", "4.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -547,8 +547,8 @@ class ThemeOverrider:
 
         for provider in wanted_providers:
             if provider not in self._active_providers:
-                Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(),
+                Gtk.StyleContext.add_provider_for_display(
+                    Gdk.Display.get_default(),
                     provider,
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
                 )

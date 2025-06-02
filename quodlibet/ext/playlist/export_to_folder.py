@@ -41,12 +41,12 @@ class ExportToFolderDialog(Dialog):
         self.add_button(_("_Export"), Gtk.ResponseType.OK)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         destination_label = Gtk.Label(_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
-        box.pack_start(destination_label, False, False, 0)
+        box.prepend(destination_label, False, False, 0)
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
@@ -57,18 +57,18 @@ class ExportToFolderDialog(Dialog):
         frame.add(self.directory_chooser)
         frame.set_shadow_type(Gtk.ShadowType.IN)
         frame.set_border_width(0)
-        box.pack_start(frame, True, True, 0)
+        box.prepend(frame, True, True, 0)
 
         pattern_label = Gtk.Label(_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
-        box.pack_start(pattern_label, False, False, 0)
+        box.prepend(pattern_label, False, False, 0)
 
         self.pattern_entry = UndoEntry()
         self.pattern_entry.set_text(pattern)
-        box.pack_start(self.pattern_entry, False, False, 0)
+        box.prepend(self.pattern_entry, False, False, 0)
 
-        self.vbox.pack_start(box, True, True, 0)
+        self.vbox.prepend(box, True, True, 0)
 
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
 
@@ -170,20 +170,20 @@ class ExportToFolder(PlaylistPlugin):
         def changed(entry):
             CONFIG.default_pattern = entry.get_text()
 
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         def create_pattern():
-            hbox = Gtk.HBox(spacing=6)
+            hbox = Gtk.Box(spacing=6)
             hbox.set_border_width(6)
             label = Gtk.Label(label=_("Default filename pattern:"))
-            hbox.pack_start(label, False, True, 0)
+            hbox.prepend(label, False, True, 0)
             entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect("changed", changed)
-            hbox.pack_start(entry, True, True, 0)
+            hbox.prepend(entry, True, True, 0)
             return hbox
 
-        vbox.pack_start(create_pattern(), True, True, 0)
+        vbox.prepend(create_pattern(), True, True, 0)
 
         return vbox

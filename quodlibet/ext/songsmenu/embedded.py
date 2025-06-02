@@ -32,7 +32,7 @@ class EditEmbedded(SongsMenuPlugin):
 
     def __init__(self, songs, *args, **kwargs):
         super().__init__(songs, *args, **kwargs)
-        self.__menu = Gtk.Menu()
+        self.__menu = Gtk.PopoverMenu()
         self._init_submenu_items(self.__menu, songs)
         self.set_submenu(self.__menu)
 

@@ -25,18 +25,18 @@ def supports_scrolling():
     return not is_windows()
 
 
-class Preferences(Gtk.VBox):
+class Preferences(Gtk.Box):
     """A small window to configure the tray icon's tooltip."""
 
     def __init__(self):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         self.set_border_width(6)
 
         ccb = pconfig.ConfigCheckButton(
             _("Hide main window on close"), "window_hide", populate=True
         )
-        self.pack_start(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
+        self.prepend(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
 
         def on_scroll_changed(button, new_state):
             if button.get_active():
@@ -44,31 +44,31 @@ class Preferences(Gtk.VBox):
 
         modifier_swap = pconfig.getboolean("modifier_swap")
 
-        scrollwheel_box = Gtk.VBox(spacing=0)
-        group = Gtk.RadioButton(
+        scrollwheel_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        group = Gtk.CheckButton(
             group=None, label=_("Scroll wheel adjusts volume"), use_underline=True
         )
         group.connect("toggled", on_scroll_changed, False)
         group.set_active(not modifier_swap)
-        scrollwheel_box.pack_start(group, False, True, 0)
-        group = Gtk.RadioButton(
+        scrollwheel_box.prepend(group, False, True, 0)
+        group = Gtk.CheckButton(
             group=group, label=_("Scroll wheel changes song"), use_underline=True
         )
         group.connect("toggled", on_scroll_changed, True)
         group.set_active(modifier_swap)
-        scrollwheel_box.pack_start(group, False, True, 0)
+        scrollwheel_box.prepend(group, False, True, 0)
 
         if supports_scrolling():
-            self.pack_start(
+            self.prepend(
                 qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box), True, True, 0
             )
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        entry_box = Gtk.HBox(spacing=6)
+        entry_box = Gtk.Box(spacing=6)
 
         entry = UndoEntry()
-        entry_box.pack_start(entry, True, True, 0)
+        entry_box.prepend(entry, True, True, 0)
 
         def on_reverted(*args):
             pconfig.reset("tooltip")
@@ -76,24 +76,24 @@ class Preferences(Gtk.VBox):
 
         revert = Gtk.Button()
         revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON)
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE)
         )
         revert.connect("clicked", on_reverted)
-        entry_box.pack_start(revert, False, True, 0)
+        entry_box.prepend(revert, False, True, 0)
 
-        box.pack_start(entry_box, False, True, 0)
+        box.prepend(entry_box, False, True, 0)
 
         preview = Gtk.Label()
         preview.set_line_wrap(True)
         preview_frame = Gtk.Frame(label=_("Preview"))
-        vbox = Gtk.VBox(margin=18)
-        vbox.pack_start(preview, False, False, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=18)
+        vbox.prepend(preview, False, False, 0)
         preview_frame.add(vbox)
-        box.pack_start(preview_frame, False, True, 0)
+        box.prepend(preview_frame, False, True, 0)
 
         tt_frame = qltk.Frame(_("Tooltip Display"), child=box)
         tt_frame.get_label_widget().set_mnemonic_widget(entry)
-        self.pack_start(tt_frame, True, True, 0)
+        self.prepend(tt_frame, True, True, 0)
 
         entry.connect("changed", self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))

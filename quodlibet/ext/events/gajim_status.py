@@ -145,17 +145,17 @@ class GajimStatusMessage(EventPlugin):
         config.set("plugins", self.c_statuses, " ".join(self.statuses))
 
     def PluginPreferences(self, parent):
-        vb = Gtk.VBox(spacing=6)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        pattern_box = Gtk.HBox(spacing=6)
+        pattern_box = Gtk.Box(spacing=6)
         pattern_box.set_border_width(3)
         pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect("changed", self.pattern_changed)
-        pattern_box.pack_start(Gtk.Label(label=_("Pattern:")), False, True, 0)
-        pattern_box.pack_start(pattern, True, True, 0)
+        pattern_box.prepend(Gtk.Label(label=_("Pattern:")), False, True, 0)
+        pattern_box.prepend(pattern, True, True, 0)
 
-        accounts_box = Gtk.HBox(spacing=3)
+        accounts_box = Gtk.Box(spacing=3)
         accounts_box.set_border_width(3)
         accounts = Gtk.Entry()
         accounts.set_text(" ".join(self.accounts))
@@ -167,8 +167,8 @@ class GajimStatusMessage(EventPlugin):
                 "status message of all accounts will be changed."
             )
         )
-        accounts_box.pack_start(Gtk.Label(label=_("Accounts:")), False, True, 0)
-        accounts_box.pack_start(accounts, True, True, 0)
+        accounts_box.prepend(Gtk.Label(label=_("Accounts:")), False, True, 0)
+        accounts_box.prepend(accounts, True, True, 0)
 
         c = Gtk.CheckButton(label=_("Add '[paused]'"))
         c.set_active(self.paused)
@@ -195,11 +195,11 @@ class GajimStatusMessage(EventPlugin):
             else:
                 i += 1
 
-        vb.pack_start(pattern_box, True, True, 0)
-        vb.pack_start(accounts_box, True, True, 0)
-        vb.pack_start(c, True, True, 0)
+        vb.prepend(pattern_box, True, True, 0)
+        vb.prepend(accounts_box, True, True, 0)
+        vb.prepend(c, True, True, 0)
         frame = Frame(
             label=_("Statuses for which message will be changed"), child=table
         )
-        vb.pack_start(frame, True, True, 6)
+        vb.prepend(frame, True, True, 6)
         return vb

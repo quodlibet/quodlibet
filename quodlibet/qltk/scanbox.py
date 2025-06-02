@@ -23,7 +23,7 @@ from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj, copool
 
 
-class ScanBox(Gtk.HBox):
+class ScanBox(Gtk.Box):
     """A box for editing the Library's scan directories"""
 
     def __init__(self):
@@ -34,7 +34,7 @@ class ScanBox(Gtk.HBox):
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
@@ -91,13 +91,13 @@ class ScanBox(Gtk.HBox):
 
         connect_obj(remove, "clicked", self.__remove, view)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(add, False, True, 0)
-        vbox.pack_start(remove, False, True, 0)
-        vbox.pack_start(move, False, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.prepend(add, False, True, 0)
+        vbox.prepend(remove, False, True, 0)
+        vbox.prepend(move, False, True, 0)
 
-        self.pack_start(sw, True, True, 0)
-        self.pack_start(vbox, False, True, 0)
+        self.prepend(sw, True, True, 0)
+        self.prepend(vbox, False, True, 0)
 
         for path in get_scan_dirs():
             model.append(row=[path])

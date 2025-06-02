@@ -98,7 +98,7 @@ class UpdateDialog(Dialog):
         self._stack = Gtk.Stack(border_width=10)
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        content.pack_start(self._stack, True, True, 0)
+        content.prepend(self._stack, True, True, 0)
         content.show_all()
 
         spinner = Gtk.Spinner()

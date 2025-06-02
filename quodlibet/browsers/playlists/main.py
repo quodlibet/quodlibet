@@ -107,10 +107,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
-        self._rh_box = rhbox = Gtk.VBox(spacing=6)
+        self._rh_box = rhbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=0)
-        rhbox.pack_start(align, False, True, 0)
-        rhbox.pack_start(songpane, True, True, 0)
+        rhbox.prepend(align, False, True, 0)
+        rhbox.prepend(songpane, True, True, 0)
         self._main_box.pack2(rhbox, True, False)
         rhbox.show()
         align.show_all()
@@ -206,12 +206,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.pack_start(swin, True, True, 0)
+        self.prepend(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.NORMAL)
         new_pl.connect("clicked", self.__new_playlist, library)
-        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
+        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.NORMAL)
         import_pl.connect("clicked", self.__import, library)
 
         fb = Gtk.FlowBox()
@@ -228,10 +228,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2 = Gtk.FlowBox()
         fb2.insert(pref, 0)
 
-        hb = Gtk.HBox()
-        hb.pack_start(fb, True, True, 3)
-        hb.pack_end(fb2, False, False, 0)
-        self.pack_start(hb, False, False, 0)
+        hb = Gtk.Box()
+        hb.prepend(fb, True, True, 3)
+        hb.append(fb2, False, False, 0)
+        self.prepend(hb, False, False, 0)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -702,11 +702,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return self.__view.get_selection().get_selected()
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, browser):
         super().__init__()
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         menu.append(pref_item)
@@ -715,7 +715,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.prepend(button, True, True, 0)

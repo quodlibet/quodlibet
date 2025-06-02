@@ -147,7 +147,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
             label.set_margin_end(3)
             return label
 
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         grouping_label = make_label(_("Grouping tag:"))
         grouping_entry = Gtk.Entry()

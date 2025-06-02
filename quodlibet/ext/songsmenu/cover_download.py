@@ -211,7 +211,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         paned.pack1(sw, True, True)
         paned.pack2(self.create_options(), False, False)
-        self.vbox.pack_start(paned, True, True, 0)
+        self.vbox.prepend(paned, True, True, 0)
 
         connect_destroy(manager, "covers-found", self._covers_found)
         connect_destroy(manager, "searches-complete", self._finished)
@@ -260,7 +260,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         reveal.props.transition_duration = 800
         reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
 
-        eb = Gtk.EventBox()
+        eb = Gtk.Box()
         eb.add(img)
         reveal.add(eb)
         frame.add(reveal)
@@ -335,7 +335,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box()
         sizes = self.SIZES.keys()
         slider = Gtk.Scale.new_with_range(
             Gtk.Orientation.HORIZONTAL, min(sizes), max(sizes), 100
@@ -362,22 +362,22 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         slider.connect("value-changed", slider_changed)
         label = Gtk.Label(_("Preview size"))
         label.set_mnemonic_widget(slider)
-        hbox.pack_start(label, False, False, 6)
-        hbox.pack_start(slider, True, True, 6)
-        vbox = Gtk.VBox()
-        vbox.pack_start(hbox, False, False, 6)
+        hbox.prepend(label, False, False, 6)
+        hbox.prepend(slider, True, True, 6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox.prepend(hbox, False, False, 6)
 
         def create_save_box():
-            hbox = Gtk.HBox()
+            hbox = Gtk.Box()
             label = Gtk.Label(_("Save destination"))
-            hbox.pack_start(label, False, False, 6)
+            hbox.prepend(label, False, False, 6)
             model = Gtk.ListStore(str)
             for val in SAVE_PATTERNS:
                 model.append(row=[val])
             save_filename = Gtk.ComboBox(model=model)
             label.set_mnemonic_widget(save_filename)
             cell = Gtk.CellRendererText()
-            save_filename.pack_start(cell, True)
+            save_filename.prepend(cell, True)
 
             def draw_save_type(column, cell, model, it, data):
                 pat_text = model[it][0]
@@ -398,7 +398,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
             save_filename.connect("changed", changed)
             select_value(save_filename, self.config.save_pattern)
-            hbox.pack_start(save_filename, False, False, 6)
+            hbox.prepend(save_filename, False, False, 6)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
                 "If not already a JPEG, convert the image to "
@@ -408,10 +408,10 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
             re_encode.connect("toggled", lambda _: hbox.queue_draw())
-            hbox.pack_start(re_encode, False, False, 6)
+            hbox.prepend(re_encode, False, False, 6)
             return hbox
 
-        vbox.pack_start(create_save_box(), False, False, 6)
+        vbox.prepend(create_save_box(), False, False, 6)
         frame.add(vbox)
 
         self.button = self.add_icon_button(

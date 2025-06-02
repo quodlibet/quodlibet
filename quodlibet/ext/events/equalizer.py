@@ -367,11 +367,11 @@ class Equalizer(EventPlugin):
         self.apply()
 
     def PluginPreferences(self, win):
-        main_vbox = Gtk.VBox(spacing=12)
+        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         if not self.player_has_eq:
             l = Gtk.Label()
             l.set_markup(_("The current backend does not support equalization."))
-            main_vbox.pack_start(l, False, True, 0)
+            main_vbox.prepend(l, False, True, 0)
             return main_vbox
 
         def format_hertz(band):
@@ -420,7 +420,7 @@ class Equalizer(EventPlugin):
             hs.set_value_pos(Gtk.PositionType.RIGHT)
             hs.connect("format-value", lambda s, v: _("%.1f dB") % v)
             table.attach(hs, 2, 3, i, i + 1)
-        main_vbox.pack_start(table, True, True, 0)
+        main_vbox.prepend(table, True, True, 0)
 
         # Reset EQ button
         def clicked_rb(button):
@@ -493,7 +493,7 @@ class Equalizer(EventPlugin):
                 self._save_button.set_sensitive(True)
 
         frame = Gtk.Frame(label=_("Default presets"), label_xalign=0.5)
-        main_middle_hbox = Gtk.HBox(spacing=6)
+        main_middle_hbox = Gtk.Box(spacing=6)
 
         # Default presets
         combo = Gtk.ComboBoxText()
@@ -505,22 +505,22 @@ class Equalizer(EventPlugin):
         combo.connect("changed", default_combo_changed)
 
         # This block is just for padding.
-        padboxv = Gtk.VBox()
-        padboxv.pack_start(combo, True, True, 6)
-        padboxh = Gtk.HBox()
-        padboxh.pack_start(padboxv, True, True, 6)
+        padboxv = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        padboxv.prepend(combo, True, True, 6)
+        padboxh = Gtk.Box()
+        padboxh.prepend(padboxv, True, True, 6)
         frame.add(padboxh)
 
-        main_middle_hbox.pack_start(frame, True, True, 0)
+        main_middle_hbox.prepend(frame, True, True, 0)
 
         reset = Button(_("_Reset EQ"), Icons.EDIT_UNDO)
         reset.connect("clicked", clicked_rb)
-        main_middle_hbox.pack_start(reset, False, False, 0)
+        main_middle_hbox.prepend(reset, False, False, 0)
 
-        main_vbox.pack_start(main_middle_hbox, False, False, 0)
+        main_vbox.prepend(main_middle_hbox, False, False, 0)
 
         frame = Gtk.Frame(label=_("Custom presets"), label_xalign=0.5)
-        main_bottom_vbox = Gtk.VBox()
+        main_bottom_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
 
         # Custom presets
         combo = Gtk.ComboBoxText()
@@ -532,44 +532,44 @@ class Equalizer(EventPlugin):
         for key in custom_presets:
             combo.append_text(key)
         combo.connect("changed", custom_combo_changed)
-        hb = Gtk.HBox(spacing=6)
-        hb.pack_start(combo, True, True, 0)
+        hb = Gtk.Box(spacing=6)
+        hb.prepend(combo, True, True, 0)
 
         delete = Button(_("_Delete selected"), Icons.EDIT_DELETE)
         delete.connect("clicked", clicked_db)
         delete.set_sensitive(False)
         self._delete_button = delete
-        hb.pack_start(delete, False, False, 0)
+        hb.prepend(delete, False, False, 0)
 
-        main_bottom_vbox.pack_start(hb, True, True, 6)
+        main_bottom_vbox.prepend(hb, True, True, 6)
         hs = Gtk.HSeparator()
-        main_bottom_vbox.pack_start(hs, True, True, 6)
+        main_bottom_vbox.prepend(hs, True, True, 6)
 
-        hb = Gtk.HBox()
+        hb = Gtk.Box()
         l = Gtk.Label(label=_("Preset name for saving:"))
-        hb.pack_start(l, False, False, 0)
-        main_bottom_vbox.pack_start(hb, False, False, 0)
+        hb.prepend(l, False, False, 0)
+        main_bottom_vbox.prepend(hb, False, False, 0)
 
         e = Gtk.Entry()
         e.connect("changed", save_name_changed)
         self._preset_name_entry = e
-        hb = Gtk.HBox(spacing=6)
-        hb.pack_start(e, True, True, 0)
+        hb = Gtk.Box(spacing=6)
+        hb.prepend(e, True, True, 0)
 
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         save.connect("clicked", clicked_sb)
         save.set_sensitive(False)
         self._save_button = save
-        hb.pack_start(save, False, False, 0)
+        hb.prepend(save, False, False, 0)
 
-        main_bottom_vbox.pack_start(hb, True, True, 6)
+        main_bottom_vbox.prepend(hb, True, True, 6)
 
         # This block is just for padding.
-        padboxh = Gtk.HBox()
-        padboxh.pack_start(main_bottom_vbox, True, True, 6)
+        padboxh = Gtk.Box()
+        padboxh.prepend(main_bottom_vbox, True, True, 6)
         frame.add(padboxh)
 
-        main_vbox.pack_start(frame, True, True, 0)
+        main_vbox.prepend(frame, True, True, 0)
         return main_vbox
 
     def __rightclick(self, hs, event):

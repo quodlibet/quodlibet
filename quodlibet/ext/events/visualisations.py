@@ -73,7 +73,7 @@ class ProjectM(EventPlugin):
             print_w(f"Couldn't shut down cleanly ({e})")
 
     def PluginPreferences(self, *args):
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         label = Gtk.Label(label=_("Visualiser executable:"))
 
@@ -83,10 +83,10 @@ class ProjectM(EventPlugin):
         entry = UndoEntry()
         entry.connect("changed", edited)
         entry.set_text(self.executable)
-        hbox = Gtk.HBox(spacing=6)
-        hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(entry, True, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox = Gtk.Box(spacing=6)
+        hbox.prepend(label, False, False, 0)
+        hbox.prepend(entry, True, True, 0)
+        vbox.prepend(hbox, True, True, 0)
 
         def refresh_clicked(widget):
             self.disabled()
@@ -94,7 +94,7 @@ class ProjectM(EventPlugin):
 
         refresh_button = Button(_("Reload"), Icons.VIEW_REFRESH)
         refresh_button.connect("clicked", refresh_clicked)
-        vbox.pack_start(refresh_button, False, False, 0)
+        vbox.prepend(refresh_button, False, False, 0)
         return vbox
 
     @property

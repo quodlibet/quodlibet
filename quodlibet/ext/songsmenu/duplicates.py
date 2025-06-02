@@ -324,7 +324,7 @@ class DuplicateDialog(Gtk.Window):
         view.connect("popup-menu", self.__songs_popup_menu)
         swin.add(view)
         # A basic information area
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
 
         def expand_all(*args):
             model = view.get_model()
@@ -337,20 +337,20 @@ class DuplicateDialog(Gtk.Window):
 
         expand = Gtk.Button(_("Collapse / Expand all"))
         connect_obj(expand, "clicked", expand_all, view)
-        hbox.pack_start(expand, False, True, 0)
+        hbox.prepend(expand, False, True, 0)
 
         label = Gtk.Label(
             label=_("Duplicate key expression is '%s'")
             % Duplicates.get_key_expression()
         )
-        hbox.pack_start(label, True, True, 0)
+        hbox.prepend(label, True, True, 0)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", self.__quit)
-        hbox.pack_start(close, False, True, 0)
+        hbox.prepend(close, False, True, 0)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(swin, True, True, 0)
-        vbox.pack_start(hbox, False, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.prepend(swin, True, True, 0)
+        vbox.prepend(hbox, False, True, 0)
         self.add(vbox)
         self.show_all()
 
@@ -389,9 +389,9 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             cls.key_expression = None
             cls.config_set(cls._CFG_KEY_KEY, entry.get_text().strip())
 
-        vb = Gtk.VBox(spacing=10)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         vb.set_border_width(0)
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         # TODO: construct a decent validator and use ValidatingEntry
         e = UndoEntry()
         e.set_text(cls.get_key_expression())
@@ -406,10 +406,10 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
-        hbox.pack_start(lbl, False, True, 0)
-        hbox.pack_start(e, True, True, 0)
+        hbox.prepend(lbl, False, True, 0)
+        hbox.prepend(e, True, True, 0)
         frame = qltk.Frame(label=_("Duplicate Key"), child=hbox)
-        vb.pack_start(frame, True, True, 0)
+        vb.prepend(frame, True, True, 0)
 
         # Matching Option
         toggles = [
@@ -418,14 +418,14 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             (cls._CFG_REMOVE_PUNCTUATION, _("Remove _Punctuation")),
             (cls._CFG_CASE_INSENSITIVE, _("Case _Insensitive")),
         ]
-        vb2 = Gtk.VBox(spacing=6)
+        vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for key, label in toggles:
             ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
-            vb2.pack_start(ccb, True, True, 0)
+            vb2.prepend(ccb, True, True, 0)
 
         frame = qltk.Frame(label=_("Matching options"), child=vb2)
-        vb.pack_start(frame, False, True, 0)
+        vb.prepend(frame, False, True, 0)
 
         vb.show_all()
         return vb

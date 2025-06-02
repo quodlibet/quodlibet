@@ -28,7 +28,7 @@ class ConfirmMaskedRemoval(qltk.Message):
         self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE, Gtk.ResponseType.YES)
 
 
-class MaskedBox(Gtk.HBox):
+class MaskedBox(Gtk.Box):
     def __init__(self, library):
         super().__init__(spacing=6)
 
@@ -38,7 +38,7 @@ class MaskedBox(Gtk.HBox):
         view.set_headers_visible(False)
         self.view = view
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         unhide_item = qltk.MenuItem(_("Unhide"), Icons.LIST_ADD)
         connect_obj(unhide_item, "activate", self.__unhide, view, library)
         menu.append(unhide_item)
@@ -71,12 +71,12 @@ class MaskedBox(Gtk.HBox):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.set_cell_data_func(render, cdf)
 
         render = Gtk.CellRendererText()
         render.props.sensitive = False
-        column.pack_start(render, False)
+        column.prepend(render, False)
         column.set_cell_data_func(render, cdf_count)
 
         view.append_column(column)
@@ -92,12 +92,12 @@ class MaskedBox(Gtk.HBox):
 
         connect_obj(remove, "clicked", self.__remove, view, library)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(unhide, False, True, 0)
-        vbox.pack_start(remove, False, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.prepend(unhide, False, True, 0)
+        vbox.prepend(remove, False, True, 0)
 
-        self.pack_start(sw, True, True, 0)
-        self.pack_start(vbox, False, True, 0)
+        self.prepend(sw, True, True, 0)
+        self.prepend(vbox, False, True, 0)
 
         for path in library.masked_mount_points:
             model.append(row=[path])

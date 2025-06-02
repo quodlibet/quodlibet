@@ -44,7 +44,7 @@ class BigCenteredImage(qltk.Window):
             self.destroy()
             return
 
-        event_box = Gtk.EventBox()
+        event_box = Gtk.Box()
         event_box.add(self.__image)
 
         frame = Gtk.Frame()
@@ -109,9 +109,9 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
         return None
 
 
-class ResizeImage(Gtk.Bin):
+class ResizeImage(Gtk.Widget):
     def __init__(self, resize=False, size=1):
-        Gtk.Bin.__init__(self)
+        super().__init__()
         self._dirty = True
         self._path = None
         self._file = None
@@ -218,7 +218,7 @@ class ResizeImage(Gtk.Bin):
         Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
 
 
-class CoverImage(Gtk.EventBox):
+class CoverImage(Gtk.Box):
     __gsignals__ = {
         # We do not necessarily display cover at the same instant this widget
         # is created or set_song is called. This signal allows callers know

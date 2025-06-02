@@ -51,7 +51,7 @@ from quodlibet.qltk import popup_menu_at_widget
 
 class PreferencesButton(AlbumPreferencesButton):
     def __init__(self, browser, model):
-        Gtk.HBox.__init__(self)
+        Gtk.Box.__init__(self)
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
@@ -64,10 +64,10 @@ class PreferencesButton(AlbumPreferencesButton):
             (_("Play_count"), self.__compare_avgplaycount),
         ]
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.Menu()
+        sort_menu = Gtk.PopoverMenu()
 
         active = config.getint("browsers", "album_sort", 1)
 
@@ -93,10 +93,10 @@ class PreferencesButton(AlbumPreferencesButton):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.prepend(button, True, True, 0)
 
 
 class CoverGridContainer(ScrolledWindow):
@@ -302,9 +302,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.pack_start(prefs, False, True, 0)
-        self.pack_start(Align(search, left=6, top=0), False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        search.prepend(prefs, False, True, 0)
+        self.prepend(Align(search, left=6, top=0), False, True, 0)
+        self.prepend(sw, True, True, 0)
 
         self.__update_filter()
         model_filter.connect(

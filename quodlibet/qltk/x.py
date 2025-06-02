@@ -155,12 +155,14 @@ class Notebook(Gtk.Notebook):
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
 
-    _KEY_MODS = MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD1_MASK | MT.MOD2_MASK
+    _KEY_MODS = MT.SHIFT_MASK | MT.CONTROL_MASK | MT.ALT_MASK | MT.SUPER_MASK
     """Keyboard modifiers of interest"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("key-press-event", self.__key_pressed)
+        event_controller = Gtk.EventControllerKey()
+        event_controller.connect("key-pressed", self.__key_pressed)
+        self.add_controller(event_controller)
 
     def __key_pressed(self, _widget: Gtk.Widget, event: Gdk.Event):
         # alt+X switches to page X
@@ -174,10 +176,10 @@ class Notebook(Gtk.Notebook):
         if event.hardware_keycode == 23:
             total = self.get_n_pages()
             current = self.get_current_page()
-            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD2_MASK):
+            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + total - 1) % total)
                 return Gdk.EVENT_STOP
-            if state == (MT.CONTROL_MASK | MT.MOD2_MASK):
+            if state == (MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + 1) % total)
                 return Gdk.EVENT_STOP
             print_d(f"Unhandled tab key combo: {event.state}")
@@ -249,10 +251,8 @@ def Frame(label, child=None):
     return frame
 
 
-class Align(Gtk.Alignment):
-    """Note: With gtk3.12+ we could replace this with a Gtk.Bin +
-    margin properties.
-    """
+class Align(Gtk.Widget):
+    """TODO: With gtk3.12+ we could replace this with a Gtk.Bin + margin properties"""
 
     def __init__(
         self,
@@ -322,7 +322,7 @@ def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
     if tooltip:
         item.set_tooltip_text(tooltip)
     item.set_always_show_image(True)
-    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU)
+    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.NORMAL)
     image.show()
     item.set_image(image)
     return item
@@ -333,12 +333,12 @@ def _Button(type_, label, icon_name, size):
         return type_.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
-    hbox = Gtk.HBox(spacing=6)
+    hbox = Gtk.Box(spacing=6)
     image = Gtk.Image.new_from_icon_name(icon_name, size)
-    hbox.pack_start(image, True, True, 0)
+    hbox.prepend(image, True, True, 0)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
-    hbox.pack_start(label, True, True, 0)
+    hbox.prepend(label, True, True, 0)
     align.add(hbox)
     align.show_all()
     button = type_()
@@ -346,7 +346,7 @@ def _Button(type_, label, icon_name, size):
     return button
 
 
-def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def Button(label, icon_name=None, size=Gtk.IconSize.LARGE):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button.
     """
@@ -354,7 +354,7 @@ def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     return _Button(Gtk.Button, label, icon_name, size)
 
 
-def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def ToggleButton(label, icon_name=None, size=Gtk.IconSize.LARGE):
     """A ToggleButton with a custom label and stock image. It should pack
     exactly like a stock button.
     """
@@ -421,7 +421,7 @@ def SymbolicIconImage(name, size, fallbacks=None):
 
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
-    return Gtk.Image.new_from_gicon(gicon, size)
+    return Gtk.Image.new_from_gicon(gicon)
 
 
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
@@ -429,21 +429,22 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
         super().__init__(*args, **kwargs)
 
 
-class Action(Gtk.Action):
+class Action(Gio.SimpleAction):
     def __init__(self, *args, **kargs):
-        # Older pygobject didn't pass through kwargs to GObject.Object
-        # so skip the override __init__
-        GObject.Object.__init__(self, *args, **kargs)
+        # TODO GTK4: Check this behaviour
+        super().__init__(self, *args, **kargs)
 
 
-class ToggleAction(Gtk.ToggleAction):
+class ToggleAction(Gio.SimpleAction):
     def __init__(self, *args, **kargs):
-        GObject.Object.__init__(self, *args, **kargs)
+        # TODO GTK4: Toggle behaviour
+        super().__init__(self, *args, **kargs)
 
 
-class RadioAction(Gtk.RadioAction):
+class RadioAction(Gio.SimpleAction):
     def __init__(self, *args, **kargs):
-        GObject.Object.__init__(self, *args, **kargs)
+        # TODO GTK4: Radio behaviour
+        super().__init__(self, *args, **kargs)
 
 
 class WebImage(Gtk.Image):
@@ -465,7 +466,7 @@ class WebImage(Gtk.Image):
         call_async(self._fetch_image, self._cancel, self._finished, (url,))
         self.connect("destroy", self._on_destroy)
         self.set_size_request(width, height)
-        self.set_from_icon_name("image-loading", Gtk.IconSize.BUTTON)
+        self.set_from_icon_name("image-loading", Gtk.IconSize.LARGE)
 
     def _on_destroy(self, *args):
         self._cancel.cancel()
@@ -488,7 +489,7 @@ class WebImage(Gtk.Image):
 
     def _finished(self, pixbuf):
         if pixbuf is None:
-            self.set_from_icon_name("image-missing", Gtk.IconSize.BUTTON)
+            self.set_from_icon_name("image-missing", Gtk.IconSize.LARGE)
         else:
             self.set_from_pixbuf(pixbuf)
 

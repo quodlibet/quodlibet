@@ -18,9 +18,9 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
-class GstPlayerPreferences(Gtk.VBox):
+class GstPlayerPreferences(Gtk.Box):
     def __init__(self, player, debug=False):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         e = UndoEntry()
         e.set_tooltip_text(
@@ -54,7 +54,7 @@ class GstPlayerPreferences(Gtk.VBox):
             player._set_buffer_duration(duration_msec)
 
         duration = config.getfloat("player", "gst_buffer")
-        scale = Gtk.HScale.new(Gtk.Adjustment(value=duration, lower=0.2, upper=10))
+        scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=Gtk.Adjustment(value=duration, lower=0.2, upper=10))
         scale.set_value_pos(Gtk.PositionType.LEFT)
         scale.set_show_fill_level(True)
         scale.connect("format-value", format_buffer)
@@ -101,15 +101,15 @@ class GstPlayerPreferences(Gtk.VBox):
         _jack_activated(jack_button, None)
 
         hb = self._create_pipeline_box(pipe_label, e, apply_button)
-        self.pack_start(hb, False, False, 0)
+        self.prepend(hb, False, False, 0)
 
         # Buffer
         hb = self._create_buffer_box(buffer_label, scale)
-        self.pack_start(hb, False, False, 0)
+        self.prepend(hb, False, False, 0)
 
-        self.pack_start(gapless_button, False, False, 0)
-        self.pack_start(jack_button, False, False, 0)
-        self.pack_start(jack_connect, False, False, 0)
+        self.prepend(gapless_button, False, False, 0)
+        self.prepend(jack_button, False, False, 0)
+        self.prepend(jack_connect, False, False, 0)
 
         if debug:
 
@@ -119,20 +119,20 @@ class GstPlayerPreferences(Gtk.VBox):
             b = Button("Print Pipeline", Icons.DIALOG_INFORMATION)
             connect_obj(b, "clicked", print_bin, player)
             hb = Gtk.Box(spacing=6)
-            hb.pack_end(b, False, False, 0)
-            self.pack_start(hb, False, False, 0)
+            hb.append(b, False, False, 0)
+            self.prepend(hb, False, False, 0)
 
-    def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.HScale):
+    def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.Scale):
         hb = Gtk.Box(spacing=6)
-        hb.pack_start(label, False, False, 0)
-        hb.pack_end(scale, True, True, 0)
+        hb.prepend(label, False, False, 0)
+        hb.append(scale, True, True, 0)
         return hb
 
     def _create_pipeline_box(
         self, pipe_label: Gtk.Label, e: Gtk.Widget, apply_button: Gtk.Button
     ):
         hb = Gtk.Box(spacing=12)
-        hb.pack_start(pipe_label, False, False, 0)
-        hb.pack_start(e, True, True, 0)
-        hb.pack_end(apply_button, False, False, 0)
+        hb.prepend(pipe_label, False, False, 0)
+        hb.prepend(e, True, True, 0)
+        hb.append(apply_button, False, False, 0)
         return hb

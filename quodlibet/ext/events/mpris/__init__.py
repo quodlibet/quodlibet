@@ -46,14 +46,14 @@ class MPRIS(EventPlugin):
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     def PluginPreferences(self, parent):
-        box = Gtk.HBox()
+        box = Gtk.Box()
         ccb = ConfigSwitch(
             _("Hide main window on close"),
             "plugins",
             "mpris_window_hide",
             populate=True,
         )
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.prepend(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
     def __do_hide(self):

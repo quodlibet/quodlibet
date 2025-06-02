@@ -36,7 +36,7 @@ class AppInformation(EventPlugin):
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def PluginPreferences(self, *args):
-        vb = Gtk.VBox()
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
 
         row = 0
         grid = Gtk.Grid(column_spacing=12, row_spacing=6)
@@ -135,7 +135,7 @@ class AppInformation(EventPlugin):
         grid.attach(v, 1, row, 1, 1)
         row += 1
 
-        vb.pack_start(grid, True, True, 0)
+        vb.prepend(grid, True, True, 0)
         vb.show_all()
 
         return vb

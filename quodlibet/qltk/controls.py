@@ -19,14 +19,13 @@ from quodlibet.util.dprint import print_e
 
 class Volume(Gtk.VolumeButton):
     def __init__(self, player):
-        super().__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
+        super().__init__(size=Gtk.IconSize.NORMAL, use_symbolic=True)
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=781605
         scales = qltk.find_widgets(self.get_popup(), Gtk.Scale)
         if scales:
             scales[0].props.round_digits = -1
 
-        self.set_relief(Gtk.ReliefStyle.NORMAL)
         self.set_adjustment(Gtk.Adjustment.new(0, 0, 1, 0.05, 0.1, 0))
 
         popup = self.get_popup()
@@ -113,7 +112,7 @@ class Volume(Gtk.VolumeButton):
         self._update_mute(player)
 
 
-class VolumeMenu(Gtk.Menu):
+class VolumeMenu(Gtk.PopoverMenu):
     __modes = (
         ("auto", _("Auto_matic"), None),
         ("track", _("_Track Mode"), ["track"]),
@@ -141,7 +140,7 @@ class VolumeMenu(Gtk.Menu):
         replaygain_mode = config.gettext("player", "replaygain_mode", "auto")
         self.__set_mode(player, replaygain_mode)
 
-        rg = Gtk.Menu()
+        rg = Gtk.PopoverMenu()
         rg.show()
         item.set_submenu(rg)
         item = None
@@ -181,7 +180,7 @@ class PlayPauseButton(Gtk.Button):
     }
 
     def __init__(self):
-        super().__init__(relief=Gtk.ReliefStyle.NONE)
+        super().__init__()
         self._pause_image = SymbolicIconImage(
             "media-playback-pause", Gtk.IconSize.LARGE_TOOLBAR
         )
@@ -216,22 +215,22 @@ class PlayPauseButton(Gtk.Button):
         return self.get_child() is self._pause_image
 
 
-class PlayControls(Gtk.VBox):
+class PlayControls(Gtk.Box):
     def __init__(self, player, library):
-        super().__init__(spacing=3)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=3)
 
         upper = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
         upper.set_row_spacings(3)
         upper.set_col_spacings(3)
 
-        prev = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
+        prev = Gtk.Button()
         prev.add(SymbolicIconImage("media-skip-backward", Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
         play = PlayPauseButton()
         upper.attach(play, 1, 2, 0, 1)
 
-        next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
+        next_ = Gtk.Button()
         next_.add(SymbolicIconImage("media-skip-forward", Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(next_, 2, 3, 0, 1)
 
@@ -240,7 +239,6 @@ class PlayControls(Gtk.VBox):
         lower.set_col_spacings(3)
 
         self.volume = Volume(player)
-        self.volume.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(self.volume, 0, 1, 0, 1)
 
         # XXX: Adwaita defines a different padding for GtkVolumeButton
@@ -256,11 +254,10 @@ class PlayControls(Gtk.VBox):
         )
 
         seekbutton = SeekButton(player, library)
-        seekbutton.set_relief(Gtk.ReliefStyle.NONE)
         lower.attach(seekbutton, 1, 3, 0, 1)
 
-        self.pack_start(upper, False, True, 0)
-        self.pack_start(lower, False, True, 0)
+        self.prepend(upper, False, True, 0)
+        self.prepend(lower, False, True, 0)
 
         connect_obj(prev, "clicked", self.__previous, player)
         self._toggle_id = play.connect("toggled", self.__playpause, player)

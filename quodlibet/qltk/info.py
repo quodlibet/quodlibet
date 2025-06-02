@@ -25,7 +25,7 @@ from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
-class SongInfo(Gtk.EventBox):
+class SongInfo(Gtk.Box):
     """A widget for showing information about the currently playing song.
 
     Provides a way to change the display pattern for formatting the

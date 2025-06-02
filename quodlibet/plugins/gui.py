@@ -54,7 +54,7 @@ class UserInterfacePluginHandler(PluginHandler):
         self.__plugins.pop(plugin.cls)
 
 
-class MenuItemPlugin(Gtk.ImageMenuItem):
+class MenuItemPlugin(Gtk.Widget):
     """
     A base plugin that appears in a menu, typically.
 
@@ -87,7 +87,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
         """Sets the GTK icon for this plugin item"""
         icon = getattr(self, "PLUGIN_ICON", Icons.SYSTEM_RUN)
 
-        image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.NORMAL)
         self.set_always_show_image(True)
         self.set_image(image)
 

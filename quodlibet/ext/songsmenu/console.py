@@ -635,8 +635,8 @@ class ListChoiceDialog(Gtk.Dialog):
 
             lbl = Gtk.Label(label=name, xalign=0)
             lbl2 = Gtk.Label(label=details, xalign=0)
-            hbox.pack_start(lbl, expand=False, fill=False, padding=0)
-            hbox.pack_start(lbl2, expand=True, fill=True, padding=0)
+            hbox.prepend(lbl, expand=False, fill=False, padding=0)
+            hbox.prepend(lbl2, expand=True, fill=True, padding=0)
 
             # dim the details-label
             style = lbl2.get_style_context()
@@ -654,7 +654,7 @@ class ListChoiceDialog(Gtk.Dialog):
         scroll.add(listbox)
 
         content = self.get_content_area()
-        content.pack_start(scroll, True, True, 0)
+        content.prepend(scroll, True, True, 0)
 
         content.show_all()
         self.get_action_area().hide()

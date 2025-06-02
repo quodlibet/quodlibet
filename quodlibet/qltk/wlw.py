@@ -146,21 +146,21 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         # progress will not be clickable
         self.add(Gtk.Frame())
         self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         vbox.set_border_width(12)
         self._label.set_size_request(170, -1)
         self._label.set_line_wrap(True)
         self._label.set_justify(Gtk.Justification.CENTER)
-        vbox.pack_start(self._label, True, True, 0)
-        vbox.pack_start(self._progress, True, True, 0)
+        vbox.prepend(self._label, True, True, 0)
+        vbox.prepend(self._progress, True, True, 0)
 
         if self._cancel_button and self._pause_button:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
-            hbox = Gtk.HBox(spacing=6, homogeneous=True)
-            hbox.pack_start(self._cancel_button, True, True, 0)
-            hbox.pack_start(self._pause_button, True, True, 0)
-            vbox.pack_start(hbox, True, True, 0)
+            hbox = Gtk.Box(spacing=6, homogeneous=True)
+            hbox.prepend(self._cancel_button, True, True, 0)
+            hbox.prepend(self._pause_button, True, True, 0)
+            vbox.prepend(hbox, True, True, 0)
 
         self.get_child().add(vbox)
 
@@ -208,7 +208,7 @@ class WritingWindow(WaitLoadWindow):
         return super().step()
 
 
-class WaitLoadBar(WaitLoadBase, Gtk.HBox):
+class WaitLoadBar(WaitLoadBase, Gtk.Box):
     def __init__(self):
         super().__init__()
 
@@ -217,17 +217,17 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
 
         self._cancel_button.remove(self._cancel_button.get_child())
         self._cancel_button.add(
-            Gtk.Image.new_from_icon_name(Icons.PROCESS_STOP, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.PROCESS_STOP, Gtk.IconSize.NORMAL)
         )
         self._pause_button.remove(self._pause_button.get_child())
         self._pause_button.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL)
         )
 
-        self.pack_start(self._label, True, True, 0)
-        self.pack_start(self._progress, False, True, 6)
-        self.pack_start(self._pause_button, False, True, 0)
-        self.pack_start(self._cancel_button, False, True, 0)
+        self.prepend(self._label, True, True, 0)
+        self.prepend(self._progress, False, True, 6)
+        self.prepend(self._pause_button, False, True, 0)
+        self.prepend(self._cancel_button, False, True, 0)
 
         for child in self.get_children():
             child.show_all()

@@ -222,8 +222,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         render = Gtk.CellRendererText()
         if view.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.pack_start(imgrender, False)
-        column.pack_start(render, True)
+        column.prepend(imgrender, False)
+        column.prepend(render, True)
         column.set_cell_data_func(render, cell_data)
         column.set_cell_data_func(imgrender, cell_data_pb)
         view.append_column(column)
@@ -231,10 +231,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL))
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
@@ -245,11 +245,11 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
-        hbox.pack_start(search, True, True, 0)
-        hbox.pack_start(prefs, False, True, 0)
+        hbox.prepend(search, True, True, 0)
+        hbox.prepend(prefs, False, True, 0)
 
-        self.pack_start(Align(hbox, left=6, top=0), False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(Align(hbox, left=6, top=0), False, True, 0)
+        self.prepend(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = view.get_selection().connect("changed", self.__selection_changed)

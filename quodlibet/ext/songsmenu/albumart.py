@@ -203,13 +203,13 @@ class DiscogsSearcher(CoverSearcher):
         return self.covers
 
 
-class CoverArea(Gtk.VBox, PluginConfigMixin):
+class CoverArea(Gtk.Box, PluginConfigMixin):
     """The image display and saving part."""
 
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
 
     def __init__(self, parent, song):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.song = song
 
         self.dirname = song("~dirname")
@@ -315,26 +315,26 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(self.button, True, True, 0)
-        bbox.pack_start(close_button, True, True, 0)
+        bbox.prepend(self.button, True, True, 0)
+        bbox.prepend(close_button, True, True, 0)
 
         bb_align = Align(valign=Gtk.Align.END, right=6)
         bb_align.add(bbox)
 
-        main_hbox = Gtk.HBox()
-        main_hbox.pack_start(table, False, True, 6)
-        main_hbox.pack_start(bb_align, True, True, 0)
+        main_hbox = Gtk.Box()
+        main_hbox.prepend(table, False, True, 6)
+        main_hbox.prepend(bb_align, True, True, 0)
 
-        top_hbox = Gtk.HBox()
-        top_hbox.pack_start(self.open_check, True, True, 0)
-        top_hbox.pack_start(self.window_fit, False, True, 0)
+        top_hbox = Gtk.Box()
+        top_hbox.prepend(self.open_check, True, True, 0)
+        top_hbox.prepend(self.window_fit, False, True, 0)
 
-        main_vbox = Gtk.VBox()
-        main_vbox.pack_start(top_hbox, True, True, 2)
-        main_vbox.pack_start(main_hbox, True, True, 0)
+        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        main_vbox.prepend(top_hbox, True, True, 2)
+        main_vbox.prepend(main_hbox, True, True, 0)
 
-        self.pack_start(self.scrolled, True, True, 0)
-        self.pack_start(main_vbox, False, True, 5)
+        self.prepend(self.scrolled, True, True, 0)
+        self.prepend(main_vbox, False, True, 5)
 
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
@@ -551,7 +551,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn("Thumb")
-        img_col.pack_start(rend_pix, False)
+        img_col.prepend(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
             surface = model[iter_][0]
@@ -614,9 +614,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search_fieldclean.set_can_focus(False)
         self.search_fieldclean.set_alignment(xalign=0.0, yalign=0.5)
 
-        self.search_radioraw = Gtk.RadioButton(group=None, label=None)
+        self.search_radioraw = Gtk.CheckButton(group=None, label=None)
         self.search_radioraw.connect("toggled", self.__searchtypetoggled, "raw")
-        self.search_radioclean = Gtk.RadioButton(group=self.search_radioraw, label=None)
+        self.search_radioclean = Gtk.CheckButton(group=self.search_radioraw, label=None)
         self.search_radioclean.connect("toggled", self.__searchtypetoggled, "clean")
         # note: set_active(False) appears to have no effect
         # self.search_radioraw.set_active(
@@ -686,9 +686,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.progress = Gtk.ProgressBar()
 
-        left_vbox = Gtk.VBox(spacing=widget_space)
-        left_vbox.pack_start(search_table, False, True, 0)
-        left_vbox.pack_start(sw_list, True, True, 0)
+        left_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=widget_space)
+        left_vbox.prepend(search_table, False, True, 0)
+        left_vbox.prepend(sw_list, True, True, 0)
 
         hpaned = ConfigRHPaned(
             section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
@@ -701,7 +701,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.show_all()
 
-        left_vbox.pack_start(self.progress, False, True, 0)
+        left_vbox.prepend(self.progress, False, True, 0)
 
         self.connect("destroy", self.__save_config)
 

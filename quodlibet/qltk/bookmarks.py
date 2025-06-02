@@ -32,7 +32,7 @@ def MenuItems(marks, player, seekable):
             i.remove(i.get_child())
         connect_obj(i, "activate", player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
-        hbox = Gtk.HBox(spacing=12)
+        hbox = Gtk.Box(spacing=12)
         i.add(hbox)
         if time < 0:
             l = Gtk.Label(label=_("N/A"))
@@ -40,30 +40,30 @@ def MenuItems(marks, player, seekable):
             l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        hbox.pack_start(l, False, True, 0)
+        hbox.prepend(l, False, True, 0)
         text = Gtk.Label(mark)
         text.set_max_width_chars(80)
         text.set_ellipsize(Pango.EllipsizeMode.END)
         text.set_alignment(0.0, 0.5)
-        hbox.pack_start(text, True, True, 0)
+        hbox.prepend(text, True, True, 0)
         i.show_all()
         items.append(i)
     return items
 
 
-class EditBookmarksPane(Gtk.VBox):
+class EditBookmarksPane(Gtk.Box):
     def __init__(self, library, song, close=False):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        hb = Gtk.HBox(spacing=12)
+        hb = Gtk.Box(spacing=12)
         self.time = time = Gtk.Entry()
         time.set_width_chars(5)
         self.markname = name = Gtk.Entry()
-        add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.MENU)
-        hb.pack_start(time, False, True, 0)
-        hb.pack_start(name, True, True, 0)
-        hb.pack_start(add, False, True, 0)
-        self.pack_start(hb, False, True, 0)
+        add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
+        hb.prepend(time, False, True, 0)
+        hb.prepend(name, True, True, 0)
+        hb.prepend(add, False, True, 0)
+        self.prepend(hb, False, True, 0)
 
         model = Gtk.ListStore(int, str)
         sw = Gtk.ScrolledWindow()
@@ -91,19 +91,19 @@ class EditBookmarksPane(Gtk.VBox):
         render.set_property("editable", True)
         render.connect("edited", self.__edit_name, model)
         sw.get_child().append_column(col)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
         self.accels = Gtk.AccelGroup()
 
         hbox = Gtk.HButtonBox()
         remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
-        hbox.pack_start(remove, True, True, 0)
+        hbox.prepend(remove, True, True, 0)
         if close:
             self.close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
-            hbox.pack_start(self.close, True, True, 0)
+            hbox.prepend(self.close, True, True, 0)
         else:
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
-        self.pack_start(hbox, False, True, 0)
+        self.prepend(hbox, False, True, 0)
 
         connect_obj(add, "clicked", self.__add, model, time, name)
 
@@ -124,7 +124,7 @@ class EditBookmarksPane(Gtk.VBox):
         connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("activate", self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
@@ -135,7 +135,7 @@ class EditBookmarksPane(Gtk.VBox):
         menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
         sw.get_child().connect("key-press-event", self.__view_key_press, remove)
-        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
 
         self.__fill(model, song)
 

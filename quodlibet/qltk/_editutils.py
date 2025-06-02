@@ -109,7 +109,7 @@ class FilterCheckButton(ConfigCheckButton):
         return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
-class FilterPluginBox(Gtk.VBox):
+class FilterPluginBox(Gtk.Box):
     __gsignals__ = {
         # the list should be updated
         "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
@@ -118,7 +118,7 @@ class FilterPluginBox(Gtk.VBox):
     }
 
     def __init__(self, plugin_handler, filter_types=None):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         # static filters
         if filter_types is None:
@@ -127,22 +127,22 @@ class FilterPluginBox(Gtk.VBox):
         filters = [Kind() for Kind in filter_types]
         filters.sort()
         for f in filters:
-            self.pack_start(f, True, True, 0)
+            self.prepend(f, True, True, 0)
         self.__filters = filters
 
         # plugins
         self.__plugins = []
-        hb = Gtk.HBox()
+        hb = Gtk.Box()
         expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
         expander.set_no_show_all(True)
-        hb.pack_start(expander, True, True, 0)
-        self.pack_start(hb, False, True, 0)
+        hb.prepend(expander, True, True, 0)
+        self.prepend(hb, False, True, 0)
 
         for filt in filters:
             filt.connect("preview", lambda *x: self.emit("preview"))
 
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         expander.add(vbox)
 
         connect_destroy(
@@ -178,7 +178,7 @@ class FilterPluginBox(Gtk.VBox):
 
         for f in instances:
             try:
-                vbox.pack_start(f, True, True, 0)
+                vbox.prepend(f, True, True, 0)
             except Exception:
                 errorhook()
                 f.destroy()

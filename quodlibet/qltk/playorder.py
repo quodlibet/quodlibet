@@ -143,7 +143,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         toggle.show_all()
         qltk.remove_padding(toggle)
         toggle.set_size_request(26, 26)
-        self.pack_start(toggle, True, True, 0)
+        self.prepend(toggle, True, True, 0)
 
         def forward_signal(*args):
             if not self.__inhibit:
@@ -158,7 +158,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         arrow.show_all()
         arrow.set_size_request(20, 26)
         qltk.remove_padding(arrow)
-        self.pack_start(arrow, True, True, 0)
+        self.prepend(arrow, True, True, 0)
         self._menu_button = arrow
         self.__current = current_order
         self.__orders = orders
@@ -223,7 +223,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if item.get_active():
                 self.current = order
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         group = None
         prev_priority = None
 
@@ -244,7 +244,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self._menu_button.set_menu(menu)
 
 
-class PlayOrderWidget(Gtk.HBox):
+class PlayOrderWidget(Gtk.Box):
     """A combined play order selection widget.
     Whenever something changes the 'changed' signal gets emitted.
     """
@@ -293,8 +293,8 @@ class PlayOrderWidget(Gtk.HBox):
         self._repeat_orders.connect("updated", self.__repeat_widget.set_orders)
 
         self.__compose_order()
-        self.pack_start(self.__shuffle_widget, False, True, 0)
-        self.pack_start(self.__repeat_widget, False, True, 0)
+        self.prepend(self.__shuffle_widget, False, True, 0)
+        self.prepend(self.__repeat_widget, False, True, 0)
         self.__inhibit = False
 
     @property

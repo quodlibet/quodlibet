@@ -197,11 +197,14 @@ class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):
-        self.connect("drag-begin", self.__drag_begin)
-        self.connect("drag-motion", self.__drag_motion)
-        self.connect("drag-leave", self.__drag_leave)
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("drag-data-received", self.__drag_data_received, library)
+        drag_controller = Gtk.DragSource()
+        drop_controller = Gtk.DropTarget()
+        drag_controller.connect("drag-begin", self.__drag_begin)
+        drop_controller.connect("accept", self.__drag_motion)
+        drag_controller.connect("drag-end", self.__drag_leave)
+        drag_controller.connect("prepare", self.__drag_data_get)
+        # TODO GTK4: https://docs.gtk.org/gdk4/method.Drop.read_async.html
+        # drop_controller.connect("drag-data-received", self.__drag_data_received, library)
 
     def __drag_begin(self, *args):
         ok, state = Gtk.get_current_event_state()
@@ -211,32 +214,35 @@ class SongListDnDMixin(GObject.GObject):
             self.__force_copy = False
 
     def enable_drop(self, by_row=True):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK,
-            targets,
-            Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
-        )
-        self.drag_dest_set(
-            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
-        )
+        # TODO GTK4: DnD support
+        # targets = [
+        #     ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+        #     ("text/uri-list", 0, DND_URI_LIST),
+        # ]
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # self.drag_source_set(
+        #     Gdk.ModifierType.BUTTON1_MASK,
+        #     targets,
+        #     Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
+        # )
+        # self.drag_dest_set(
+        #     Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
+        # )
         self.__drop_by_row = by_row
         self.__force_copy = False
 
     def disable_drop(self):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.drag_dest_unset()
+        # TODO GTK4: ???
+        return
+        # targets = [
+        #     ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+        #     ("text/uri-list", 0, DND_URI_LIST),
+        # ]
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # self.drag_source_set(
+        #     Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
+        # self.drag_dest_unset()
 
     def __drag_motion(self, view, ctx, x, y, time):
         if self.__drop_by_row:
@@ -422,7 +428,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
         self.set_size_request(200, 150)
-        self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.set_fixed_height_mode(True)
         self.__csig = self.connect("columns-changed", self.__columns_changed)
@@ -444,8 +449,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             connect_destroy(player, "unpaused", lambda *x: self.__redraw_current())
             connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
-        self.connect("button-press-event", self.__button_press, library)
-        self.connect("key-press-event", self.__key_press, library, player)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_press, library, player)
+        click_controller = Gtk.GestureClick()
+        click_controller.connect("pressed", self.__button_press, library)
+        self.add_controller(key_controller)
+        self.add_controller(click_controller)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -1160,8 +1169,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         self.handler_unblock(self.__csig)
 
-    def _menu(self, column: SongListColumn) -> Gtk.Menu:
-        menu = Gtk.Menu()
+    def _menu(self, column: SongListColumn) -> Gtk.PopoverMenu:
+        menu = Gtk.PopoverMenu()
 
         def selection_done_cb(menu):
             menu.destroy()
@@ -1178,7 +1187,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         current = [(tag_title(c), c) for c in SongList.headers]
 
         def add_header_toggle(
-            menu: Gtk.Menu,
+            menu: Gtk.PopoverMenu,
             header: str,
             tag: str,
             active: bool,
@@ -1229,7 +1238,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             item = Gtk.MenuItem(label=name, use_underline=True)
             item.show()
             menu.append(item)
-            submenu = Gtk.Menu()
+            submenu = Gtk.PopoverMenu()
             item.set_submenu(submenu)
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
                 add_header_toggle(submenu, header, tag, tag in current_set)

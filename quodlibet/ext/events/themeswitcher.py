@@ -44,7 +44,7 @@ class ThemeSwitcher(EventPlugin):
     def PluginPreferences(self, *args):
         self.__init_defaults()
 
-        hb = Gtk.HBox(spacing=6)
+        hb = Gtk.Box(spacing=6)
         label = Gtk.Label(label=_("_Theme:"))
         combo = Gtk.ComboBoxText()
 
@@ -76,12 +76,12 @@ class ThemeSwitcher(EventPlugin):
 
         label.set_mnemonic_widget(combo)
         label.set_use_underline(True)
-        hb.pack_start(label, False, True, 0)
-        hb.pack_start(combo, False, True, 0)
+        hb.prepend(label, False, True, 0)
+        hb.prepend(combo, False, True, 0)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(hb, False, True, 0)
-        vbox.pack_start(dark_button, False, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.prepend(hb, False, True, 0)
+        vbox.prepend(dark_button, False, True, 0)
 
         return qltk.Frame(_("Preferences"), child=vbox)
 

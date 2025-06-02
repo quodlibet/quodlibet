@@ -35,20 +35,20 @@ class GetStringDialog(Dialog):
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         lab = Gtk.Label(label=text)
         box.set_border_width(6)
         lab.set_line_wrap(True)
         lab.set_justify(Gtk.Justification.CENTER)
-        box.pack_start(lab, True, True, 0)
+        box.prepend(lab, True, True, 0)
 
         self._val = UndoEntry()
         if tooltip:
             self._val.set_tooltip_text(tooltip)
         self._val.set_max_width_chars(50)
-        box.pack_start(self._val, True, True, 0)
+        box.prepend(self._val, True, True, 0)
 
-        self.vbox.pack_start(box, True, True, 0)
+        self.vbox.prepend(box, True, True, 0)
         self.get_child().show_all()
 
     def _verify_clipboard(self, text):

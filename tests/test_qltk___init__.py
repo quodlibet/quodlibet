@@ -82,7 +82,7 @@ class TQltk(TestCase):
         w = Gtk.Window()
         l = Gtk.Label()
         w.add(l)
-        m = Gtk.Menu()
+        m = Gtk.PopoverMenu()
         m.attach_to_widget(l, None)
         w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
@@ -94,7 +94,7 @@ class TQltk(TestCase):
 
     def test_get_menu_item_top_parent(self):
         item = Gtk.MenuItem()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         menu.append(item)
         window = Gtk.Window()
         menu.attach_to_widget(window, None)
@@ -102,11 +102,11 @@ class TQltk(TestCase):
 
     def test_get_menu_item_top_parent_sub(self):
         item = Gtk.MenuItem()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         menu.append(item)
         window = Gtk.Window()
         menu.attach_to_widget(window, None)
-        sub = Gtk.Menu()
+        sub = Gtk.PopoverMenu()
         sub_item = Gtk.MenuItem()
         sub.append(sub_item)
         item.set_submenu(sub)
@@ -114,7 +114,7 @@ class TQltk(TestCase):
 
     def test_get_menu_item_top_parent_unattached(self):
         item = Gtk.MenuItem()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         menu.append(item)
         assert qltk.get_menu_item_top_parent(item) is None
 

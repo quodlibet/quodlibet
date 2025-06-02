@@ -18,12 +18,12 @@ class MenuButton(Gtk.MenuButton):
     def __init__(self, widget=None, arrow=False, down=True):
         super().__init__()
 
-        bbox = Gtk.HBox(spacing=3)
+        bbox = Gtk.Box(spacing=3)
         if widget:
-            bbox.pack_start(widget, True, True, 0)
+            bbox.prepend(widget, True, True, 0)
         if arrow:
             arrow_type = Gtk.ArrowType.DOWN if down else Gtk.ArrowType.UP
-            bbox.pack_start(Gtk.Arrow.new(arrow_type, Gtk.ShadowType.IN), True, True, 0)
+            bbox.prepend(Gtk.Arrow.new(arrow_type, Gtk.ShadowType.IN), True, True, 0)
 
         self.add(bbox)
         self.set_direction(Gtk.ArrowType.DOWN if down else Gtk.ArrowType.UP)

@@ -87,11 +87,11 @@
                   glib-networking
                   glibcLocales
                   gobject-introspection
-                  gtk3
-                  gtksourceview4
+                  gtk4
+                  gtksourceview5
                   kakasi
                   keybinder3
-                  libappindicator-gtk3
+                  libappindicator
                   libmodplug
                   libnotify
                   librsvg

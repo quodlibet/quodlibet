@@ -198,7 +198,7 @@ class PlayerOptions(GObject.Object):
         self._stop_after.set_active(value)
 
 
-class DockMenu(Gtk.Menu):
+class DockMenu(Gtk.PopoverMenu):
     """Menu used for the OSX dock and the tray icon"""
 
     def __init__(self, app):
@@ -222,7 +222,7 @@ class DockMenu(Gtk.Menu):
         self.append(next_)
 
         browse = qltk.MenuItem(_("_Browse Library"), Icons.EDIT_FIND)
-        browse_sub = Gtk.Menu()
+        browse_sub = Gtk.PopoverMenu()
         for Kind in browsers.browsers:
             i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
             connect_obj(
@@ -277,12 +277,13 @@ class MainSongList(SongList):
             player.paused = False
 
 
-class TopBar(Gtk.Toolbar):
+class TopBar(Gtk.Widget):
     def __init__(self, parent, player, library):
         super().__init__()
+        # TODO GTK4: add 'toolbar' style class
 
         # play controls
-        control_item = Gtk.ToolItem()
+        control_item = Gtk.Widget()
         self.insert(control_item, 0)
         t = PlayControls(player, library.librarian)
         self.volume = t.volume
@@ -295,9 +296,9 @@ class TopBar(Gtk.Toolbar):
         connect_destroy(player, "notify::volume", self._on_volume_changed)
         control_item.add(t)
 
-        self.insert(Gtk.SeparatorToolItem(), 1)
+        self.insert(Gtk.Box(), 1)
 
-        info_item = Gtk.ToolItem()
+        info_item = Gtk.Box()
         self.insert(info_item, 2)
         info_item.set_expand(True)
 
@@ -305,13 +306,13 @@ class TopBar(Gtk.Toolbar):
         info_item.add(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
-        self._pattern_box = Gtk.VBox(spacing=3)
+        self._pattern_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
 
         # song text
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        self._pattern_box.pack_start(text, True, True, 0)
-        box.pack_start(self._pattern_box, True, True, 0)
+        self._pattern_box.prepend(text, True, True, 0)
+        box.prepend(self._pattern_box, True, True, 0)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -323,7 +324,7 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, "cover-changed", self.__song_art_changed, library
             )
 
-        box.pack_start(Align(self.image, top=3, right=3), False, True, 0)
+        box.prepend(Align(self.image, top=3, right=3), False, True, 0)
 
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
@@ -342,7 +343,7 @@ class TopBar(Gtk.Toolbar):
             self._pattern_box.remove(children[-1])
 
         if widget:
-            self._pattern_box.pack_start(widget, False, True, 0)
+            self._pattern_box.prepend(widget, False, True, 0)
 
     def _on_volume_changed(self, player, *args):
         config.set("memory", "volume", str(player.volume))
@@ -383,19 +384,19 @@ class QueueButton(HighlightToggleButton):
         self.set_tooltip_text(_("Toggle queue visibility"))
 
 
-class StatusBarBox(Gtk.HBox):
+class StatusBarBox(Gtk.Box):
     def __init__(self, play_order, queue):
         super().__init__(spacing=6)
-        self.pack_start(play_order, False, True, 0)
+        self.prepend(play_order, False, True, 0)
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.pack_start(self.statusbar, True, True, 0)
+        self.prepend(self.statusbar, True, True, 0)
         queue_button = QueueButton()
         queue_button.bind_property(
             "active", queue, "visible", GObject.BindingFlags.BIDIRECTIONAL
         )
         queue_button.props.active = queue.props.visible
 
-        self.pack_start(queue_button, False, True, 0)
+        self.prepend(queue_button, False, True, 0)
 
 
 class PlaybackErrorDialog(ErrorMessage):
@@ -572,22 +573,25 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.__update_title(player)
         self.set_default_size(600, 480)
 
-        main_box = Gtk.VBox()
-        self.add(main_box)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        self.set_child(main_box)
         self.side_book = qltk.Notebook()
 
         # get the playlist up before other stuff
         self.songlist = MainSongList(library, player)
-        self.songlist.connect("key-press-event", self.__songlist_key_press)
-        self.songlist.connect_after(
-            "drag-data-received", self.__songlist_drag_data_recv
-        )
+        key_controller = Gtk.EventControllerKey()
+        self.songlist.add_controller(key_controller)
+        key_controller.connect("key-pressed", self.__songlist_key_press)
+        # TODO GTK4: Migrate to new DnD
+        # self.songlist.connect_after(
+        #     "drag-data-received", self.__songlist_drag_data_recv
+        # )
         self.song_scroller = ScrolledWindow()
         self.song_scroller.set_policy(
             Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
         )
-        self.song_scroller.set_shadow_type(Gtk.ShadowType.IN)
-        self.song_scroller.add(self.songlist)
+        self.song_scroller.set_property("has-frame", True)
+        self.song_scroller.set_child(self.songlist)
 
         self.qexpander = QueueExpander(library, player)
         self.qexpander.set_no_show_all(True)
@@ -630,10 +634,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             if isinstance(child, Gtk.ImageMenuItem):
                 child.set_image(None)
 
-        main_box.pack_start(menubar, False, True, 0)
+        main_box.prepend(menubar, False, True, 0)
 
         top_bar = TopBar(self, player, library)
-        main_box.pack_start(top_bar, False, True, 0)
+        main_box.prepend(top_bar, False, True, 0)
         self.top_bar = top_bar
 
         self.__browserbox = Align(top=3, bottom=3)
@@ -641,7 +645,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         paned.pack1(self.__browserbox, resize=True)
         # We'll pack2 when necessary (when the first sidebar plugin is set up)
 
-        main_box.pack_start(paned, True, True, 0)
+        main_box.prepend(paned, True, True, 0)
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -649,7 +653,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.statusbar = statusbox.statusbar
 
         align = Align(statusbox, top=1, bottom=4, left=6, right=6)
-        main_box.pack_start(align, False, True, 0)
+        main_box.prepend(align, False, True, 0)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
         self.songpane.show_all()
@@ -725,7 +729,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def add_sidebar(self, box, name):
         vbox = Gtk.Box(margin=0)
-        vbox.pack_start(box, True, True, 0)
+        vbox.prepend(box, True, True, 0)
         vbox.show()
         if self.side_book_empty:
             self.add_sidebar_to_layout(self.side_book)
@@ -937,7 +941,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             ag.add_action(Action(name="Control", label=_("_Control")))
             ag.add_action(Action(name="Help", label=_("_Help")))
 
-        ag = Gtk.ActionGroup.new("QuodLibetWindowActions")
+        ag = Gio.SimpleActionGroup("QuodLibetWindowActions")
         add_top_level_items(ag)
         add_view_items(ag)
 
@@ -1213,7 +1217,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             label, icon = _("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE
 
         menu.set_label(label)
-        image.set_from_icon_name(icon, Gtk.IconSize.MENU)
+        image.set_from_icon_name(icon, Gtk.IconSize.NORMAL)
 
     def __song_ended(self, player, song, stopped):
         # Check if the song should be removed, based on the

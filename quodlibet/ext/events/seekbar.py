@@ -30,9 +30,9 @@ class SeekBar(Gtk.Box):
         scale.set_draw_value(False)
         self._scale = scale
 
-        self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
-        self.pack_start(scale, True, True, 0)
-        self.pack_start(Align(self._remaining_label, border=6), False, True, 0)
+        self.prepend(Align(self._elapsed_label, border=6), False, True, 0)
+        self.prepend(scale, True, True, 0)
+        self.prepend(Align(self._remaining_label, border=6), False, True, 0)
         for child in self.get_children():
             child.show_all()
 

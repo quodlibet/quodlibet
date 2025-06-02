@@ -95,7 +95,7 @@ class ListEntry:
         return fsn2text(self.song("~basename"))
 
 
-class TagsFromPath(Gtk.VBox):
+class TagsFromPath(Gtk.Box):
     title = _("Tags From Path")
     FILTERS = [UnderscoresToSpaces, TitleCase, SplitTag]
     handler = TagsFromPathPluginHandler()
@@ -105,10 +105,10 @@ class TagsFromPath(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         self.set_border_width(12)
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         cbes_defaults = TBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(
             TBP,
@@ -117,11 +117,11 @@ class TagsFromPath(Gtk.VBox):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.pack_start(self.combo, True, True, 0)
+        hbox.prepend(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.pack_start(self.preview, False, True, 0)
-        self.pack_start(hbox, False, True, 0)
+        hbox.prepend(self.preview, False, True, 0)
+        self.prepend(hbox, False, True, 0)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -132,31 +132,31 @@ class TagsFromPath(Gtk.VBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
 
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         addreplace = Gtk.ComboBoxText()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
         addreplace.connect("changed", self.__add_changed)
-        vbox.pack_start(addreplace, True, True, 0)
+        vbox.prepend(addreplace, True, True, 0)
         addreplace.show()
-        self.pack_start(vbox, False, True, 0)
+        self.prepend(vbox, False, True, 0)
 
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
         filter_box.connect("preview", self.__filter_preview)
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
-        self.pack_start(filter_box, False, True, 0)
+        self.prepend(filter_box, False, True, 0)
 
         # Save button
         self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(self.save, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.prepend(self.save, True, True, 0)
+        self.prepend(bbox, False, True, 0)
 
         connect_obj(self.preview, "clicked", self.__preview, None)
         connect_obj(parent, "changed", self.__class__.__preview, self)
@@ -234,7 +234,7 @@ class TagsFromPath(Gtk.VBox):
 
         render = Gtk.CellRendererText()
         col = TreeViewColumn(title=_("File"))
-        col.pack_start(render, True)
+        col.prepend(render, True)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):

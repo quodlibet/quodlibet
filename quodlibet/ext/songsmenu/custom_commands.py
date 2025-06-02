@@ -242,12 +242,12 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = Gtk.HBox(spacing=3)
+        hb = Gtk.Box(spacing=3)
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
-        hb.pack_start(button, True, True, 0)
+        hb.prepend(button, True, True, 0)
         hb.show_all()
         return hb
 
@@ -280,7 +280,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         pl_mode = hasattr(self, "_playlists") and bool(len(self._playlists))
         self.com_index = None
         self.unique_only = False
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         for name, c in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
             connect_obj(item, "activate", self.__set_pat, name)

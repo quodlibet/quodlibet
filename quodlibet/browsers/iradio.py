@@ -464,7 +464,6 @@ class CloseButton(Gtk.Button):
             visible=False,
             can_focus=True,
             image=image,
-            relief=Gtk.ReliefStyle.NONE,
             valign=Gtk.Align.CENTER,
         )
 
@@ -630,13 +629,13 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
-        column.pack_start(renderpb, False)
+        column.prepend(renderpb, False)
         column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         view.append_column(column)
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.add_attribute(render, "text", self.NAME)
 
         view.set_model(model)
@@ -648,8 +647,8 @@ class InternetRadio(Browser, util.InstanceTracker):
             selection, "changed", util.DeferredSignal(lambda x: self.activate())
         )
 
-        box = Gtk.HBox(spacing=6)
-        box.pack_start(search, True, True, 0)
+        box = Gtk.Box(spacing=6)
+        box.prepend(search, True, True, 0)
         self._searchbox = Align(box, left=0, right=6, top=0)
         self._searchbox.show_all()
 
@@ -663,8 +662,8 @@ class InternetRadio(Browser, util.InstanceTracker):
             self.qbar.show()
 
         pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
-        vb = Gtk.VBox(spacing=0)
-        vb.pack_start(scrolled_window, True, True, 0)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        vb.prepend(scrolled_window, True, True, 0)
         fb = Gtk.FlowBox()
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
@@ -674,18 +673,18 @@ class InternetRadio(Browser, util.InstanceTracker):
         self._update_button.connect("clicked", self.__update)
         fb.insert(new_station, 1)
         fb.insert(self._update_button, 2)
-        vb.pack_end(Align(fb, left=3), False, False, 3)
+        vb.append(Align(fb, left=3), False, False, 3)
         pane.pack1(vb, resize=False, shrink=False)
         pane.show_all()
 
-        songbox = Gtk.VBox(spacing=6)
-        songbox.pack_start(self._searchbox, False, True, 0)
-        self._songpane_container = Gtk.VBox()
-        songbox.pack_start(self._songpane_container, True, True, 0)
-        songbox.pack_start(self.qbar, False, True, 0)
+        songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        songbox.prepend(self._searchbox, False, True, 0)
+        self._songpane_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        songbox.prepend(self._songpane_container, True, True, 0)
+        songbox.prepend(self.qbar, False, True, 0)
         songbox.show_all()
         pane.pack2(songbox, resize=True, shrink=False)
-        self.pack_start(pane, True, True, 0)
+        self.prepend(pane, True, True, 0)
         self.show()
 
     @property
@@ -693,7 +692,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         return bool(len(self.__stations or []) + len(self.__fav_stations or []))
 
     def pack(self, songpane):
-        container = Gtk.VBox()
+        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         container.add(self)
         self._songpane_container.add(songpane)
         return container

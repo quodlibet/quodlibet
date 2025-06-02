@@ -200,11 +200,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         render = Gtk.CellRendererPixbuf()
         render.set_property("icon-name", Icons.FOLDER)
         render.props.xpad = 3
-        column.pack_start(render, False)
+        column.prepend(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.pack_start(render, True)
+        column.prepend(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
@@ -247,7 +247,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         self.connect("drag-data-received", self.__drag_data_received)
 
     def _create_menu(self):
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         m = qltk.MenuItem(_("_New Folder…"), Icons.DOCUMENT_NEW)
         m.connect("activate", self.__mkdir)
         menu.append(m)
@@ -526,11 +526,11 @@ class FileSelector(Paned):
 
         column.set_cell_data_func(render, cell_icon)
 
-        column.pack_start(render, False)
+        column.prepend(render, False)
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.pack_start(render, True)
+        column.prepend(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)

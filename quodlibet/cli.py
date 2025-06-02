@@ -25,7 +25,7 @@ def exit_(status=None, notify_startup=False):
     if notify_startup:
         import gi
 
-        gi.require_version("Gdk", "3.0")
+        gi.require_version("Gdk", "4.0")
         from gi.repository import Gdk
 
         Gdk.notify_startup_complete()

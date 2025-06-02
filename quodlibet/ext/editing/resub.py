@@ -13,7 +13,7 @@ from quodlibet.util import connect_obj
 from quodlibet.qltk import Icons
 
 
-class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
+class RegExpSub(Gtk.Box, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_ID = "Regex Substitution"
     PLUGIN_NAME = _("Regex Substitution")
     PLUGIN_DESC_MARKUP = _(
@@ -29,11 +29,11 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         super().__init__()
         self._from = Gtk.Entry()
         self._to = Gtk.Entry()
-        self.pack_start(Gtk.Label("s/"), True, True, 0)
-        self.pack_start(self._from, True, True, 0)
-        self.pack_start(Gtk.Label("/"), True, True, 0)
-        self.pack_start(self._to, True, True, 0)
-        self.pack_start(Gtk.Label("/"), True, True, 0)
+        self.prepend(Gtk.Label("s/"), True, True, 0)
+        self.prepend(self._from, True, True, 0)
+        self.prepend(Gtk.Label("/"), True, True, 0)
+        self.prepend(self._to, True, True, 0)
+        self.prepend(Gtk.Label("/"), True, True, 0)
 
         connect_obj(self._from, "changed", self.emit, "changed")
         connect_obj(self._to, "changed", self.emit, "changed")

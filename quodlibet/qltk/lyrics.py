@@ -22,9 +22,9 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
-class LyricsPane(Gtk.VBox):
+class LyricsPane(Gtk.Box):
     def __init__(self, song):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.set_border_width(12)
         view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
@@ -42,13 +42,13 @@ class LyricsPane(Gtk.VBox):
         view_online.connect("clicked", self.__view_online, song)
 
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
 
         bbox = Gtk.HButtonBox()
-        bbox.pack_start(save, True, True, 0)
-        bbox.pack_start(delete, True, True, 0)
-        bbox.pack_start(view_online, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.prepend(save, True, True, 0)
+        bbox.prepend(delete, True, True, 0)
+        bbox.prepend(view_online, True, True, 0)
+        self.prepend(bbox, False, True, 0)
 
         save.set_sensitive(False)
         view_online.set_sensitive(True)

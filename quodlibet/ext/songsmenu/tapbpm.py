@@ -14,9 +14,9 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.window import Dialog
 
 
-class TapBpmPanel(Gtk.VBox):
+class TapBpmPanel(Gtk.Box):
     def __init__(self, parent, song):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.dialog = parent
         self.song = song
@@ -25,24 +25,24 @@ class TapBpmPanel(Gtk.VBox):
         self.set_margin_bottom(6)
         self.set_spacing(6)
 
-        box = Gtk.HBox()
+        box = Gtk.Box()
         box.set_spacing(6)
         # TRANSLATORS: BPM mean "beats per minute"
-        box.pack_start(Gtk.Label(_("BPM:")), False, True, 0)
+        box.prepend(Gtk.Label(_("BPM:")), False, True, 0)
         self.bpm_label = Gtk.Label(_("n/a"))
         self.bpm_label.set_xalign(0.5)
-        box.pack_start(self.bpm_label, True, True, 0)
+        box.prepend(self.bpm_label, True, True, 0)
 
         self.reset_btn = Gtk.Button(label=_("Reset"))
         self.reset_btn.connect("clicked", lambda *x: self.reset())
-        box.pack_end(self.reset_btn, False, True, 0)
+        box.append(self.reset_btn, False, True, 0)
 
-        self.pack_start(box, False, True, 0)
+        self.prepend(box, False, True, 0)
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
         self.tap_btn.connect("button-press-event", self.tap)
         self.tap_btn.connect("key-press-event", self.key_tap)
-        self.pack_start(self.tap_btn, True, True, 0)
+        self.prepend(self.tap_btn, True, True, 0)
 
         self.init_tap()
         self.update()
@@ -187,7 +187,7 @@ class TapBpm(SongsMenuPlugin):
         self.__resp_sig = window.connect("response", self.response)
 
         self._panel = TapBpmPanel(window, song)
-        window.vbox.pack_start(self._panel, False, True, 0)
+        window.vbox.prepend(self._panel, False, True, 0)
 
         window.vbox.show_all()
         window.present()

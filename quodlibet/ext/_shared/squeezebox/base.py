@@ -95,7 +95,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 cls.server.config[key] = entry.get_text()
                 config.set("plugins", "squeezebox_" + key, entry.get_text())
 
-        vb = Gtk.VBox(spacing=12)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         if not cls.server:
             cls.init_server()
         cfg = cls.server.config
@@ -157,9 +157,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         # Server settings Frame
         cfg_frame = Frame(_("Squeezebox Server"), table)
 
-        vb.pack_start(cfg_frame, True, True, 0)
+        vb.prepend(cfg_frame, True, True, 0)
         debug = cls.ConfigCheckButton(_("Debug"), "debug")
-        vb.pack_start(debug, True, True, 0)
+        vb.prepend(debug, True, True, 0)
         return vb
 
     @classmethod

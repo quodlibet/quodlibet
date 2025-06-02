@@ -46,13 +46,13 @@ class ConfigSwitch(Gtk.Box):
     ):
         super().__init__()
         self.switch = Gtk.Switch()
-        eb = Gtk.EventBox()
+        eb = Gtk.Box()
         if label is not None:
             self.label = Gtk.Label(label, use_underline=True)
             self.label.set_mnemonic_widget(self.switch)
             eb.add(self.label)
-        self.pack_start(eb, False, True, 0)
-        self.pack_end(self.switch, False, True, 0)
+        self.prepend(eb, False, True, 0)
+        self.append(self.switch, False, True, 0)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)
 
@@ -79,7 +79,7 @@ class ConfigSwitch(Gtk.Box):
         config.set(section, option, str(switch.get_active()).lower())
 
 
-class ConfigCheckMenuItem(Gtk.CheckMenuItem):
+class ConfigCheckMenuItem(Gtk.Label):
     """A CheckMenuItem that connects to QL's config module, and toggles
     a boolean configuration value when it is toggled.
 

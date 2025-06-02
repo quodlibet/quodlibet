@@ -152,7 +152,7 @@ class Entry:
 RESPONSE_SKIP_ALL = 1
 
 
-class RenameFiles(Gtk.VBox):
+class RenameFiles(Gtk.Box):
     title = _("Rename Files")
     FILTERS = [
         SpacesToUnderscores,
@@ -170,11 +170,11 @@ class RenameFiles(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.__skip_interactive = False
         self.set_border_width(12)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         cbes_defaults = NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(
             NBP,
@@ -183,11 +183,11 @@ class RenameFiles(Gtk.VBox):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.pack_start(self.combo, True, True, 0)
+        hbox.prepend(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.pack_start(self.preview, False, True, 0)
-        self.pack_start(hbox, False, True, 0)
+        hbox.prepend(self.preview, False, True, 0)
+        self.prepend(hbox, False, True, 0)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -198,12 +198,12 @@ class RenameFiles(Gtk.VBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
 
-        self.pack_start(Gtk.VBox(), False, True, 0)
+        self.prepend(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, ), False, True, 0)
 
         # rename options
-        rename_options = Gtk.HBox()
+        rename_options = Gtk.Box()
 
         # file name options
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
@@ -213,13 +213,13 @@ class RenameFiles(Gtk.VBox):
 
         frame_filename_options = Frame(_("File names"), filter_box)
         frame_filename_options.show_all()
-        rename_options.pack_start(frame_filename_options, False, True, 0)
+        rename_options.prepend(frame_filename_options, False, True, 0)
 
         # album art options
-        albumart_box = Gtk.VBox()
+        albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
 
         # move art
-        moveart_box = Gtk.VBox()
+        moveart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         self.moveart = ConfigCheckButton(
             _("_Move album art"), "rename", "move_art", populate=True
         )
@@ -230,7 +230,7 @@ class RenameFiles(Gtk.VBox):
             )
         )
         self.moveart.show()
-        moveart_box.pack_start(self.moveart, False, True, 0)
+        moveart_box.prepend(self.moveart, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(
             _("_Overwrite album art at target"),
             "rename",
@@ -238,34 +238,34 @@ class RenameFiles(Gtk.VBox):
             populate=True,
         )
         self.moveart_overwrite.show()
-        moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
-        albumart_box.pack_start(moveart_box, False, True, 0)
+        moveart_box.prepend(self.moveart_overwrite, False, True, 0)
+        albumart_box.prepend(moveart_box, False, True, 0)
         # remove empty
-        removeemptydirs_box = Gtk.VBox()
+        removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         self.removeemptydirs = ConfigCheckButton(
             _("_Remove empty directories"), "rename", "remove_empty_dirs", populate=True
         )
         self.removeemptydirs.show()
-        removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
-        albumart_box.pack_start(removeemptydirs_box, False, True, 0)
+        removeemptydirs_box.prepend(self.removeemptydirs, False, True, 0)
+        albumart_box.prepend(removeemptydirs_box, False, True, 0)
 
         frame_albumart_options = Frame(_("Album art"), albumart_box)
         frame_albumart_options.show_all()
-        rename_options.pack_start(frame_albumart_options, False, True, 0)
+        rename_options.prepend(frame_albumart_options, False, True, 0)
 
-        self.pack_start(rename_options, False, True, 0)
+        self.prepend(rename_options, False, True, 0)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(self.save, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.prepend(self.save, True, True, 0)
+        self.prepend(bbox, False, True, 0)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
-        column.pack_start(render, True)
+        column.prepend(render, True)
 
         def cell_data_file(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -279,7 +279,7 @@ class RenameFiles(Gtk.VBox):
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
         column = TreeViewColumn(title=_("New Name"))
-        column.pack_start(render, True)
+        column.prepend(render, True)
 
         def cell_data_new_name(column, cell, model, iter_, data):
             entry = model.get_value(iter_)

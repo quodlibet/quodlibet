@@ -31,9 +31,9 @@ class Entry:
         return fsn2text(self.song("~basename"))
 
 
-class TrackNumbers(Gtk.VBox):
+class TrackNumbers(Gtk.Box):
     def __init__(self, prop, library):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
 
@@ -71,11 +71,11 @@ class TrackNumbers(Gtk.VBox):
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.pack_start(grid, False, True, 0)
+        self.prepend(grid, False, True, 0)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -88,7 +88,7 @@ class TrackNumbers(Gtk.VBox):
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
         column = TreeViewColumn(title=_("Track"))
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_track(column, cell, model, iter_, data):
@@ -103,7 +103,7 @@ class TrackNumbers(Gtk.VBox):
         w.set_shadow_type(Gtk.ShadowType.IN)
         w.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         w.add(view)
-        self.pack_start(w, True, True, 0)
+        self.prepend(w, True, True, 0)
 
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
@@ -113,9 +113,9 @@ class TrackNumbers(Gtk.VBox):
         connect_obj(save, "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
-        bbox.pack_start(revert, True, True, 0)
-        bbox.pack_start(save, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.prepend(revert, True, True, 0)
+        bbox.prepend(save, True, True, 0)
+        self.prepend(bbox, False, True, 0)
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect("clicked", self.__preview_tracks, *preview_args)

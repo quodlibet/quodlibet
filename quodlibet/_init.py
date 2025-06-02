@@ -240,15 +240,15 @@ def _init_gtk():
 
     try:
         # not sure if this is available under Windows
-        gi.require_version("GdkX11", "3.0")
+        gi.require_version("GdkX11", "4.0")
         from gi.repository import GdkX11
 
         GdkX11  # noqa
     except (ValueError, ImportError):
         pass
 
-    gi.require_version("Gtk", "3.0")
-    gi.require_version("Gdk", "3.0")
+    gi.require_version("Gtk", "4.0")
+    gi.require_version("Gdk", "4.0")
     gi.require_version("Pango", "1.0")
     gi.require_version("Soup", "3.0")
     gi.require_version("PangoCairo", "1.0")
@@ -256,16 +256,16 @@ def _init_gtk():
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # PyGObject doesn't fail anymore when init fails, so do it ourselves
-    initialized, sys.argv[:] = Gtk.init_check(sys.argv)
+    # PyGObject doesn't fail any more when init fails, so do it ourselves
+    initialized = Gtk.init_check()
     if not initialized:
         raise SystemExit("Gtk.init failed")
 
-    # include our own icon theme directory
-    theme = Gtk.IconTheme.get_default()
-    theme_search_path = get_image_dir()
-    assert os.path.exists(theme_search_path)
-    theme.append_search_path(theme_search_path)
+    # TODO: include our own icon theme directory
+    # theme = Gtk.IconTheme.get_default()
+    # theme_search_path = get_image_dir()
+    # assert os.path.exists(theme_search_path)
+    # theme.append_search_path(theme_search_path)
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
@@ -283,8 +283,8 @@ def _init_gtk():
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        settings.set_property("gtk-button-images", True)
-        settings.set_property("gtk-menu-images", True)
+        # settings.set_property("gtk-button-images", True)
+        # settings.set_property("gtk-menu-images", True)
     if hasattr(settings.props, "gtk_primary_button_warps_slider"):
         # https://bugzilla.gnome.org/show_bug.cgi?id=737843
         settings.set_property("gtk-primary-button-warps-slider", True)

@@ -92,7 +92,7 @@ class SearchBarBox(Gtk.Box):
         entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
 
         combo.enable_clear_button()
-        self.pack_start(combo, True, True, 0)
+        self.prepend(combo, True, True, 0)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")
@@ -213,7 +213,7 @@ class LimitSearchBarBox(SearchBarBox):
     """A version of `SearchBarBox` that allows specifying the limiting and
     weighting of a search."""
 
-    class Limit(Gtk.HBox):
+    class Limit(Gtk.Box):
         __gsignals__ = {
             "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
         }
@@ -221,7 +221,7 @@ class LimitSearchBarBox(SearchBarBox):
         def __init__(self):
             super().__init__(spacing=3, no_show_all=True)
             label = Gtk.Label(label=_("_Limit:"))
-            self.pack_start(label, True, True, 0)
+            self.prepend(label, True, True, 0)
 
             self.__limit = limit = Gtk.SpinButton()
             self.__limit.connect("value-changed", self.__changed)
@@ -230,11 +230,11 @@ class LimitSearchBarBox(SearchBarBox):
             limit.set_increments(5, 100)
             label.set_mnemonic_widget(limit)
             label.set_use_underline(True)
-            self.pack_start(limit, True, True, 0)
+            self.prepend(limit, True, True, 0)
 
             self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
-            self.pack_start(self.__weight, True, True, 0)
+            self.prepend(self.__weight, True, True, 0)
 
             for child in self.get_children():
                 child.show()
@@ -254,7 +254,7 @@ class LimitSearchBarBox(SearchBarBox):
         super().__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
-        self.pack_start(self.__limit, False, True, 0)
+        self.prepend(self.__limit, False, True, 0)
         self.__limit.connect("changed", self.__limit_changed)
 
     def __limit_changed(self, *args):
@@ -294,10 +294,10 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._old_tooltip = self._entry.get_tooltip_text()
 
         self._add_button = Gtk.Button.new_from_icon_name(
-            "list-add", Gtk.IconSize.BUTTON
+            "list-add", Gtk.IconSize.LARGE
         )
         self._add_button.set_no_show_all(True)
-        self.pack_start(self._add_button, False, True, 0)
+        self.prepend(self._add_button, False, True, 0)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
@@ -382,14 +382,13 @@ class QueryItem(Gtk.FlowBoxChild):
         self.string = string
         self.query = Query(string)
 
-        hbox = Gtk.HBox()
-        hbox.pack_start(
+        hbox = Gtk.Box()
+        hbox.prepend(
             Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0
         )
-        btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.BUTTON)
-        btn.set_relief(Gtk.ReliefStyle.NONE)
+        btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.LARGE)
         btn.connect("clicked", self.remove)
-        hbox.pack_start(btn, False, True, 0)
+        hbox.prepend(btn, False, True, 0)
         frame = Gtk.Frame()
         frame.add(hbox)
         self.add(frame)

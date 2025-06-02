@@ -36,7 +36,7 @@ from quodlibet.util import connect_obj
 T = TypeVar("T")
 
 
-class FileSystem(Browser, Gtk.HBox):
+class FileSystem(Browser, Gtk.Box):
     __library = None
 
     name = _("File System")
@@ -101,7 +101,7 @@ class FileSystem(Browser, Gtk.HBox):
         sel.connect("changed", self._on_selection_changed)
         dt.connect("row-activated", lambda *a: self.songs_activated())
         sw.add(dt)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
 
         self.show_all()
 

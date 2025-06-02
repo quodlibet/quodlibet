@@ -123,7 +123,7 @@ class SongsMenuPluginHandler(PluginHandler):
         items = [i for i in items if i.initialized]
 
         if items:
-            menu = Gtk.Menu()
+            menu = Gtk.PopoverMenu()
             for item in items:
                 try:
                     menu.append(item)
@@ -262,7 +262,7 @@ class SongsMenuPluginHandler(PluginHandler):
         self.__plugins.remove(plugin.cls)
 
 
-class SongsMenu(Gtk.Menu):
+class SongsMenu(Gtk.PopoverMenu):
     plugins = SongsMenuPluginHandler()
 
     @classmethod

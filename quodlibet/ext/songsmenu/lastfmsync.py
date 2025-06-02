@@ -210,14 +210,14 @@ class LastFMSyncWindow(qltk.Dialog):
         self.set_border_width(5)
         self.set_default_size(300, 100)
 
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
         vbox.set_spacing(12)
 
         self.progbar = Gtk.ProgressBar()
-        vbox.pack_start(self.progbar, False, True, 0)
+        vbox.prepend(self.progbar, False, True, 0)
         self.status = Gtk.Label(label="")
-        vbox.pack_start(self.status, True, True, 0)
-        self.get_content_area().pack_start(vbox, True, True, 0)
+        vbox.prepend(self.status, True, True, 0)
+        self.get_content_area().prepend(vbox, True, True, 0)
 
         self.set_response_sensitive(Gtk.ResponseType.ACCEPT, False)
         self.show_all()
@@ -291,9 +291,9 @@ class LastFMSync(SongsMenuPlugin):
         entry.connect("changed", entry_changed)
         label.set_mnemonic_widget(entry)
 
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box()
         hbox.set_spacing(6)
-        hbox.pack_start(label, False, True, 0)
-        hbox.pack_start(entry, True, True, 0)
+        hbox.prepend(label, False, True, 0)
+        hbox.prepend(entry, True, True, 0)
 
         return qltk.Frame(_("Account"), child=hbox)

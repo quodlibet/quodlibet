@@ -21,7 +21,7 @@ from quodlibet.util import connect_obj
 try:
     import gi
 
-    gi.require_version("GtkSource", "4")
+    gi.require_version("GtkSource", "5")
     from gi.repository import GtkSource
 except (ValueError, ImportError):
     TextView = Gtk.TextView
@@ -41,7 +41,7 @@ else:
             self.end_not_undoable_action()
 
 
-class TextEditBox(Gtk.HBox):
+class TextEditBox(Gtk.Box):
     """A simple text editing area with a default value, a revert button,
     and an apply button. The 'buffer' attribute is the text buffer, the
     'apply' attribute is the apply button.
@@ -56,15 +56,15 @@ class TextEditBox(Gtk.HBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(TextView(buffer=TextBuffer()))
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw, True, True, 0)
         self.buffer = sw.get_child().get_buffer()
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         rev = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         app = Button(_("_Apply"))
-        box.pack_start(rev, False, True, 0)
-        box.pack_start(app, False, True, 0)
-        self.pack_start(box, False, True, 0)
+        box.prepend(rev, False, True, 0)
+        box.prepend(app, False, True, 0)
+        self.prepend(box, False, True, 0)
         connect_obj(rev, "clicked", self.buffer.set_text, default)
         self.revert = rev
         self.apply = app
@@ -163,18 +163,18 @@ class TextEdit(qltk.UniqueWindow):
         self.set_border_width(12)
         self.set_default_size(420, 190)
 
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.pack_start(close, True, True, 0)
+        b.prepend(close, True, True, 0)
 
         self.box = box = self.Box(default, **kwargs)
-        vbox.pack_start(box, True, True, 0)
+        vbox.prepend(box, True, True, 0)
         self.use_header_bar()
         if not self.has_close_button():
-            vbox.pack_start(b, False, True, 0)
+            vbox.prepend(b, False, True, 0)
 
         self.add(vbox)
         self.apply = box.apply

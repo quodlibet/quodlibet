@@ -238,7 +238,7 @@ class TaskController:
 TaskController.default_instance = TaskController()
 
 
-class TaskWidget(Gtk.HBox):
+class TaskWidget(Gtk.Box):
     """
     Displays a task.
     """
@@ -249,25 +249,25 @@ class TaskWidget(Gtk.HBox):
         self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
         self.label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(self.label, True, False, 3)
+        self.prepend(self.label, True, False, 3)
         self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(200, 12)
         add_css(self.progress, "progress, trough { min-height: 12px }")
-        vb = Gtk.VBox(valign=Gtk.Align.CENTER)
-        vb.pack_start(self.progress, True, True, 0)
-        self.pack_start(vb, True, True, 3)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, valign=Gtk.Align.CENTER)
+        vb.prepend(self.progress, True, True, 0)
+        self.prepend(vb, True, True, 3)
         self.pause = SmallImageToggleButton()
         self.pause.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL)
         )
         self.pause.connect("toggled", self.__pause_toggled)
-        self.pack_start(self.pause, False, True, 3)
+        self.prepend(self.pause, False, True, 3)
         self.stop = SmallImageButton()
         self.stop.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.NORMAL)
         )
         self.stop.connect("clicked", self.__stop_clicked)
-        self.pack_start(self.stop, False, True, 0)
+        self.prepend(self.stop, False, True, 0)
 
     def __pause_toggled(self, btn):
         if self.task.pausable:
@@ -293,7 +293,7 @@ class TaskWidget(Gtk.HBox):
             self.stop.props.sensitive = self.task.stoppable
 
 
-class StatusBar(Gtk.HBox):
+class StatusBar(Gtk.Box):
     def __init__(self, task_controller):
         super().__init__()
         self.__dirty = False
@@ -303,9 +303,9 @@ class StatusBar(Gtk.HBox):
 
         self.default_label = Gtk.Label(selectable=True)
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(Align(self.default_label, halign=Gtk.Align.END), True, True, 0)
+        self.prepend(Align(self.default_label, halign=Gtk.Align.END), True, True, 0)
         self.task_widget = TaskWidget(task_controller)
-        self.pack_start(self.task_widget, False, False, 0)
+        self.prepend(self.task_widget, False, False, 0)
 
         self.show_all()
         self.set_no_show_all(True)

@@ -103,7 +103,7 @@ class TBrowserMixin:
         if self.b.name == "Playlists":
             return
         menu = self.b.menu([], self.library, [])
-        assert isinstance(menu, Gtk.Menu)
+        assert isinstance(menu, Gtk.PopoverMenu)
 
     def test_key(self):
         self.assertEqual(browsers.get(browsers.name(self.Kind)), self.Kind)
