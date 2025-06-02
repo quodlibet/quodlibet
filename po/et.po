@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-05-01 19:01+0000\n"
+"PO-Revision-Date: 2025-06-02 11:01+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/et/>\n"
@@ -607,13 +607,13 @@ msgid "Columnar"
 msgstr "Veergudega"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Sildimuster koos võimaliku märgendkeelega, nt. <tt>composer</tt> või\n"
-"{example}"
+"Sildimuster koos võimaliku märgendkeelega, nt.%(short)s või\n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -2255,20 +2255,20 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:500
 msgid "Authentication successful."
-msgstr ""
+msgstr "Autentimine õnnestus."
 
 #: quodlibet/ext/events/qlscrobbler.py:512
 msgid "_Service:"
-msgstr ""
+msgstr "Teenu_s:"
 
 #: quodlibet/ext/events/qlscrobbler.py:512
 msgid "_URL:"
-msgstr ""
+msgstr "Võrg_uaadress:"
 
 #. Translators: Other service
 #: quodlibet/ext/events/qlscrobbler.py:533
 msgid "Other…"
-msgstr ""
+msgstr "Muu…"
 
 #. verify data
 #: quodlibet/ext/events/qlscrobbler.py:571
@@ -2613,7 +2613,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:191
 msgid "Destination path:"
-msgstr ""
+msgstr "Sihtkaust:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
 #: quodlibet/qltk/renamefiles.py:182 quodlibet/qltk/tagsfrompath.py:116
@@ -2627,24 +2627,24 @@ msgstr "Muuda salvestatud asukohamustreid…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:205
 msgid "The structure of the exported filenames, based on their tags"
-msgstr ""
+msgstr "Siltidel põhinev eksporditavate failinimede struktuur"
 
 #: quodlibet/ext/events/synchronize_to_device.py:214
 msgid "Export pattern:"
-msgstr ""
+msgstr "Ekspordimuster:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:227
 msgid "Stop preview"
-msgstr ""
+msgstr "Sulge eelvaade"
 
 #: quodlibet/ext/events/synchronize_to_device.py:248
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
-msgstr ""
+msgstr "Olek"
 
 #: quodlibet/ext/events/synchronize_to_device.py:259
 msgid "Source File"
-msgstr ""
+msgstr "Lähtefail"
 
 #: quodlibet/ext/events/synchronize_to_device.py:271
 msgid "Export Path"
@@ -2664,11 +2664,11 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:313
 msgid "Start synchronization"
-msgstr ""
+msgstr "Alusta sünkroniseerimist"
 
 #: quodlibet/ext/events/synchronize_to_device.py:322
 msgid "Stop synchronization"
-msgstr ""
+msgstr "Lõpeta sünkroniseerimine"
 
 #: quodlibet/ext/events/synchronize_to_device.py:344
 msgid "No saved searches yet, create some and come back!"
@@ -2980,15 +2980,15 @@ msgstr ""
 
 #: quodlibet/ext/events/themeswitcher.py:48
 msgid "_Theme:"
-msgstr ""
+msgstr "_Kujundus:"
 
 #: quodlibet/ext/events/themeswitcher.py:53
 msgid "Default Theme"
-msgstr ""
+msgstr "Vaikimisi kujundus"
 
 #: quodlibet/ext/events/themeswitcher.py:65
 msgid "Prefer dark theme version"
-msgstr ""
+msgstr "Eelista tumedat kujundust"
 
 #: quodlibet/ext/events/thumbrating.py:90
 msgid "Thumb Rating"
@@ -3202,15 +3202,15 @@ msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:67
 msgid "File:"
-msgstr ""
+msgstr "Fail:"
 
 #: quodlibet/ext/gstreamer/compressor.py:21
 msgid "_Threshold:"
-msgstr ""
+msgstr "_Lävend:"
 
 #: quodlibet/ext/gstreamer/compressor.py:21
 msgid "Threshold until the filter is activated"
-msgstr ""
+msgstr "Lävend, mille puhul filter aktiveeritakse"
 
 #: quodlibet/ext/gstreamer/compressor.py:22
 msgid "R_atio:"
@@ -3760,19 +3760,19 @@ msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:112
 msgid "Hostname:"
-msgstr ""
+msgstr "Võrguaadress:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:120
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:127
 msgid "Username:"
-msgstr ""
+msgstr "Kasutajanimi:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:134
 msgid "Password:"
-msgstr ""
+msgstr "Salasõna:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:140
 msgid "Library directory the server connects to"
@@ -3808,7 +3808,7 @@ msgstr ""
 #: quodlibet/ext/_shared/squeezebox/server.py:38
 #, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr ""
+msgstr "Squeezeboxi tuvastamata meediaesitaja: %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -3839,16 +3839,16 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:252
 msgid "File_name:"
-msgstr ""
+msgstr "Faili_nimi:"
 
 #: quodlibet/ext/songsmenu/albumart.py:370
 msgid "Saving failed"
-msgstr ""
+msgstr "Salvestamine ei õnnestunud"
 
 #: quodlibet/ext/songsmenu/albumart.py:370
 #, python-format
 msgid "Unable to save \"%s\"."
-msgstr ""
+msgstr "„%s“ faili salvestamine ei õnnestunud."
 
 #: quodlibet/ext/songsmenu/albumart.py:471
 #, python-format
@@ -3857,12 +3857,12 @@ msgstr "[albumart] HTTP viga: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:528
 msgid "Album Art Downloader"
-msgstr ""
+msgstr "Kaanepiltide allalaadija"
 
 #: quodlibet/ext/songsmenu/albumart.py:581
 #, python-format
 msgid "from %(source)s"
-msgstr ""
+msgstr "allikast %(source)s"
 
 #: quodlibet/ext/songsmenu/albumart.py:585
 #, python-format
@@ -3872,7 +3872,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/albumart.py:589
 #, python-format
 msgid "Size: %s"
-msgstr ""
+msgstr "Suurus: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:631
 msgid "Per engine 'at best' results limit"
@@ -3885,38 +3885,40 @@ msgstr ""
 #: quodlibet/ext/songsmenu/albumart.py:744
 #: quodlibet/ext/songsmenu/brainz/widgets.py:458
 msgid "Searching…"
-msgstr ""
+msgstr "Otsin…"
 
 #: quodlibet/ext/songsmenu/albumart.py:812
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
-msgstr ""
+msgstr "Valmis"
 
 #: quodlibet/ext/songsmenu/albumart.py:928
 msgid "Download Album Art"
-msgstr ""
+msgstr "Kaanepiltide allalaadimine"
 
 #: quodlibet/ext/songsmenu/albumart.py:929
 msgid "Downloads album covers from various websites."
-msgstr ""
+msgstr "Kaanepiltide allalaadimine erinevatest saitidest."
 
 #: quodlibet/ext/songsmenu/albumart.py:942
 msgid "Sources"
-msgstr ""
+msgstr "Allikad"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
-msgstr ""
+msgstr "APEv2 → ID3v2"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:28
 msgid ""
 "Converts your APEv2 tags to ID3v2 tags. This will delete the APEv2 tags "
 "after conversion."
 msgstr ""
+"Teisendab sinu lugude APEv2 sildid ID3v2 siltideks. Peale teisendamist APEv2 "
+"sildid kustutatakse."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
 msgid "Go to Bookmark"
-msgstr ""
+msgstr "Siirdi järjehoidja juurde"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
@@ -3932,7 +3934,7 @@ msgstr "Järjehoidjaid pole"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
 msgid "MusicBrainz Lookup"
-msgstr ""
+msgstr "Otsing MusicBrainzi teenusest"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
@@ -3960,13 +3962,13 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:137
 msgid "Filename"
-msgstr ""
+msgstr "Failinimi"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:138
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:620
 msgid "Disc"
-msgstr ""
+msgstr "Plaat"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:139
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:621
@@ -3978,7 +3980,7 @@ msgstr "Pala"
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:432
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:622
 msgid "Title"
-msgstr ""
+msgstr "Nimi"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:141
 msgid "Artist"
@@ -3986,15 +3988,15 @@ msgstr "Esitaja"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:358
 msgid "MusicBrainz lookup"
-msgstr ""
+msgstr "Otsing MusicBrainzi teenusest"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:380
 msgid "_Query:"
-msgstr ""
+msgstr "_Päring:"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:383
 msgid "S_earch"
-msgstr ""
+msgstr "_Otsing"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:396
 msgid "Results <i>(drag to reorder)</i>"
@@ -4111,7 +4113,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/cover_download.py:350
 #, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr ""
+msgstr "%(size)d ✕ %(size)d pikslit"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -5298,7 +5300,7 @@ msgstr ""
 #: quodlibet/player/gstbe/player.py:485
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr ""
+msgstr "GStreamer andmekonveieri loomine ei õnnestunud (%s)"
 
 #: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
@@ -5568,7 +5570,7 @@ msgstr ""
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:129
 msgid "_Mute"
-msgstr ""
+msgstr "_Summuta"
 
 #: quodlibet/qltk/controls.py:136
 msgid "_Replay Gain Mode"
@@ -5578,11 +5580,11 @@ msgstr "_Esitusvaljuse tundlikkuse töörežiim"
 #: quodlibet/qltk/data_editors.py:119
 #, python-format
 msgid "New %s"
-msgstr ""
+msgstr "Uus %s"
 
 #: quodlibet/qltk/data_editors.py:216
 msgid "(unknown)"
-msgstr ""
+msgstr "(teadmata)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:568
 msgid "_Add…"
@@ -5602,11 +5604,11 @@ msgstr "Sildi avaldis, näiteks people:real või ~album~year"
 
 #: quodlibet/qltk/data_editors.py:397
 msgid "Enter new tag"
-msgstr ""
+msgstr "Sisesta uus silt"
 
 #: quodlibet/qltk/data_editors.py:407
 msgid "Edit tag expression"
-msgstr "Sildi avaldise muutmine"
+msgstr "Muuda sildi avaldist"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -7405,20 +7407,20 @@ msgstr "Asukohas „%(path)s“ juba leidub esitusloend nimega „%(name)s“"
 
 #: quodlibet/util/cover/built_in.py:37
 msgid "Embedded album covers"
-msgstr ""
+msgstr "Lõimitud kaanepildid"
 
 #: quodlibet/util/cover/built_in.py:38
 msgid "Uses covers embedded into audio files."
-msgstr ""
+msgstr "Kasutab helifailidesse lõimitud kaanepilte."
 
 #: quodlibet/util/cover/built_in.py:61
 msgid "Filesystem cover"
-msgstr ""
+msgstr "Kaanepildid failisüsteemist"
 
 #: quodlibet/util/cover/built_in.py:63
 msgid ""
 "Uses commonly named images found in common directories alongside the song."
-msgstr ""
+msgstr "Kasutab lugude kõrval leiduvaid standardsete nimedega pildifaile."
 
 #: quodlibet/util/cover/manager.py:231
 msgid "Cover Art"
@@ -7550,22 +7552,22 @@ msgstr ""
 
 #: quodlibet/util/massagers.py:215
 msgid "Language must be an ISO 639-2 three-letter code"
-msgstr ""
+msgstr "Keel peab olema ISO 639-2 kolmetäheline kood"
 
 #: quodlibet/util/songwrapper.py:111
 #, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Salvestamisel failid: %d"
+msgstr[1] "Salvestamisel failid: %d"
 
 #: quodlibet/util/songwrapper.py:112
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Automaatne salvestamine"
 
 #: quodlibet/util/songwrapper.py:120
 msgid "Unable to edit song"
-msgstr ""
+msgstr "Loo muutmine ei õnnestu"
 
 #: quodlibet/util/songwrapper.py:122
 #, python-format
@@ -7573,6 +7575,8 @@ msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
+"„%s“ faili salvestamine ei õnnestunud. Fail võib olla vaid lugemisõigusega, "
+"rikutud või pole sul õigust seda muuta."
 
 #: quodlibet/util/string/__init__.py:33 quodlibet/util/string/__init__.py:44
 msgid "[Invalid Encoding]"
