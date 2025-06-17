@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-02-20 19:25+0000\n"
-"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"PO-Revision-Date: 2025-06-16 05:04+0000\n"
+"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ta/>\n"
 "Language: ta\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -605,13 +605,13 @@ msgid "Columnar"
 msgstr "நெடுவரிசை"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"விருப்பமான மார்க்அப்புடன் குறிச்சொல் முறை எ.கா. <Tt> இசையமைப்பாளர் </tt> அல்லது\n"
-" {example}"
+"விருப்பமான மார்க்அப்புடன் குறிச்சொல் முறை எ.கா. %(short)s அல்லது \n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -3887,9 +3887,9 @@ msgid "unidentified Squeezebox server"
 msgstr "அடையாளம் தெரியாத SWEEZEBOX சேவையகம்"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy, python-format
+#, python-format
 msgid "unidentified Squeezebox player: %r"
-msgstr "அடையாளம் தெரியாத sweezebox பிளேயர்: {சுய! r}"
+msgstr "அடையாளம் தெரியாத கசக்கி பெட்டி பிளேயர்: %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4204,9 +4204,9 @@ msgid "No covers found"
 msgstr "கவர்கள் எதுவும் கிடைக்கவில்லை"
 
 #: quodlibet/ext/songsmenu/cover_download.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr "{size} ✕ {size} px"
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -5386,8 +5386,8 @@ msgstr "உதவி தகவலைக் காண்பி"
 #, fuzzy, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
-"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து நெடுவரிசை-ஐ."
-"டி) கள்."
+"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து "
+"நெடுவரிசை-ஐ.டி) கள்."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
@@ -5450,9 +5450,9 @@ msgid "Buffering"
 msgstr "இடையக"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "சிச்ட்ரீமர் பைப்லைனை உருவாக்க முடியவில்லை ({e})"
+msgstr "சிச்ட்ரீமர் பைப்லைனை (%s) உருவாக்க முடியவில்லை"
 
 #: quodlibet/player/gstbe/player.py:690
 msgid "No GStreamer element found to handle media format"
@@ -6020,8 +6020,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் "
-"சேமிப்பது பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
+"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் சேமிப்பது"
+" பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
 
 #: quodlibet/qltk/_editutils.py:47
 msgid "Unable to save song"
@@ -7546,8 +7546,8 @@ msgid ""
 "%(current)d/%(total)d songs saved\n"
 "(%(remaining)s remaining)"
 msgstr ""
-"%(current)d/%(total)d பாடல்கள் சேமிக்கப்பட்டன\n"
-" (%(மீதமுள்ள) மீதமுள்ள)"
+"%(current)d/%(total)d பாடல்கள் சேமிக்கப்பட்டன \n"
+"(%(மீதமுள்ள) மீதமுள்ள)"
 
 #: quodlibet/qltk/wlw.py:241
 #, python-format
@@ -7576,11 +7576,11 @@ msgid ""
 "\n"
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
-"புதிய பதிப்பு %(புதிய-பதிப்பு) கள் கிடைக்கின்றன\n"
+"புதிய பதிப்பு %(புதிய-பதிப்பு) கள் கிடைக்கின்றன \n"
 "\n"
-" நீங்கள் தற்போது பதிப்பு %(பழைய பதிப்பு) களை பயன்படுத்துகிறீர்கள்\n"
+"நீங்கள் தற்போது பதிப்பு %(பழைய பதிப்பு) களை பயன்படுத்துகிறீர்கள் \n"
 "\n"
-" <A href = '%(url)s'> வலைத்தளம் </a> ஐப் பார்வையிடவும்"
+"<A href = '%(url)s'> வலைத்தளம் </a> ஐப் பார்வையிடவும்"
 
 #: quodlibet/util/collection.py:342
 msgid "Empty Playlist"
