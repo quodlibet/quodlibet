@@ -10,11 +10,13 @@ import time
 from collections import defaultdict
 
 from gi.repository import Gtk, Pango
+
+from quodlibet.qltk import add_css
 from senf import fsn2text
 
 from quodlibet import _, app, ngettext, qltk, util
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk.cover import CoverImage
+from quodlibet.qltk.cover import CoverImage, get_no_cover_pixbuf
 from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.util import connect_destroy, tag, capitalize
 from quodlibet.util.i18n import numeric_phrase
@@ -39,7 +41,7 @@ class TitleLabel(Gtk.Label):
     def __init__(self, text, is_markup=False):
         super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
-        qltk.add_css(self, "* {font-size: 36px; font-style: italic;}")
+        qltk.add_css(self, "* {font-size: 36px}")
         if is_markup:
             self.set_markup(text)
         else:
@@ -47,7 +49,9 @@ class TitleLabel(Gtk.Label):
 
 
 class ReactiveCoverImage(CoverImage):
-    def __init__(self, resize=False, size=160, song=None, tooltip=None):
+    DEFAULT_SIZE = 160
+
+    def __init__(self, resize=False, size=DEFAULT_SIZE, song=None, tooltip=None):
         super().__init__(resize, size, song)
         self.set_property("no-show-all", True)
 
@@ -64,15 +68,16 @@ class ReactiveCoverImage(CoverImage):
 
 def Frame(name, widget):
     f = Gtk.Frame()
+    f.set_label_align(0.01, 0.5)
     qltk.add_css(f, "* {border-radius: 6px; padding: 3px 6px 12px 9px}")
     l = Gtk.Label(label=name)
-    qltk.add_css(l, " * {opacity: 0.4}")
+    qltk.add_css(l, " * {opacity: 0.6; margin: 2px;}")
     f.set_label_widget(l)
     f.add(widget)
     return f
 
 
-def table_of(data: list[tuple[str, str, bool]] | int) -> Gtk.Grid:
+def table_of(data: list[tuple[str, str, bool]]) -> Gtk.Grid:
     g = Gtk.Grid(column_spacing=24, row_spacing=9)
     g.set_row_homogeneous(True)
     for i, (k, v, sensitive) in enumerate(data):
@@ -81,7 +86,7 @@ def table_of(data: list[tuple[str, str, bool]] | int) -> Gtk.Grid:
         key.set_selectable(False)
         key.set_sensitive(False)
         g.attach(key, 0, i, 1, 1)
-        value = Label(v)
+        value = Label(v, ellipsize=True)
         value.set_sensitive(sensitive)
         value.set_selectable(sensitive)
         g.attach(value, 1, i, 1, 1)
@@ -124,10 +129,10 @@ class OneSong(Gtk.Box):
             vbox.show_all()
 
     def _title(self, song):
-        text = song.comma("title")
+        text = util.italic(song.comma("title"))
         if "version" in song:
             text += "\n" + util.escape(song.comma("version"))
-        self.pack_start(TitleLabel(text), False, False, 0)
+        self.pack_start(TitleLabel(text, is_markup=True), False, False, 0)
         self.title = song.comma("title")
 
     def _album(self, song):
@@ -400,11 +405,11 @@ class OneAlbum(Gtk.Box):
             cur_track += 1
             ts = "    " * (bool(disc) + bool(part))
             while cur_track < track:
-                # text.append(
-                #     "{ts}{cur: >2}. {text}".format(
-                #         ts=ts, cur=cur_track, text=_("Track unavailable")
-                #     )
-                # )
+                text.append(
+                    "{ts}{cur: >2}. {text}".format(
+                        ts=ts, cur=cur_track, text=_("Track unavailable")
+                    )
+                )
                 cur_track += 1
             title = util.italic(song.comma("~title~version"))
             text.append(f"{ts}{track: >2}. {title}")
@@ -425,38 +430,64 @@ class OneArtist(Gtk.Box):
         self.pack_start(l, False, False, 0)
 
     def _album(self, songs):
-        albums, noalbum = _sort_albums(songs)
+        albums, no_album_count = _sort_albums(songs)
 
-        def format(args):
-            date, song, album = args
+        def format(date, song, album):
             markup = f"<big>{util.italic(album)}</big>"
             return f"{markup} ({date[:4]})" if date else markup
 
-        get_cover = app.cover_manager.get_cover
-        covers = [(a, get_cover(s), s) for d, s, a in albums]
-        albums = [format(a) for a in albums]
-        if noalbum:
-            albums.append(
-                ngettext("%d song with no album", "%d songs with no album", noalbum)
-                % noalbum
-            )
-        l = Label(markup="\n".join(albums), ellipsize=True)
-        self.pack_start(Frame(_("Selected Discography"), l), False, False, 0)
-
-        covers = [ac for ac in covers if bool(ac[1])]
         added = set()
         fb = Gtk.FlowBox(column_spacing=6, row_spacing=6, homogeneous=True)
         qltk.add_css(fb, "flowbox { padding: 0 6px;}")
         fb.set_min_children_per_line(2)
         fb.set_max_children_per_line(6)
+        fb.set_selection_mode(Gtk.SelectionMode.NONE)
 
-        for album, cover, song in covers:
-            if cover.name in added:
-                continue
-            cov = ReactiveCoverImage(song=song, tooltip=album)
-            fb.add(cov)
-            added.add(cover.name)
-        self.pack_start(fb, False, True, 0)
+        size = ReactiveCoverImage.DEFAULT_SIZE
+        missing_pb = get_no_cover_pixbuf(size, size)
+        get_cover = app.cover_manager.get_cover
+
+        for d, song, album in albums:
+            album_title = format(d, song, album)
+            box = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
+            box.set_halign(Gtk.Align.CENTER)
+
+            add_css(box, "box { padding: 6px;}")
+            box.set_can_focus(False)
+            cover = get_cover(song)
+            if cover:
+                if cover.name in added:
+                    continue
+                added.add(cover.name)
+                widget = ReactiveCoverImage(song=song, tooltip=album)
+            else:
+                widget = Gtk.Image.new_from_pixbuf(missing_pb)
+
+            box.pack_start(widget, False, False, 0)
+            widget.set_halign(Gtk.Align.CENTER)
+            label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END)
+            label.set_markup(album_title)
+            box.pack_start(label, False, False, 0)
+
+            fb.add(box)
+        if no_album_count:
+            text = (
+                ngettext(
+                    "%d song with no album", "%d songs with no album", no_album_count
+                )
+                % no_album_count
+            )
+            box = Gtk.Box(spacing=6, orientation=Gtk.Orientation.VERTICAL)
+            label = Gtk.Label(
+                label=text,
+                ellipsize=Pango.EllipsizeMode.END,
+                justify=Gtk.Justification.CENTER,
+            )
+            label.set_halign(Gtk.Align.CENTER)
+            label.set_valign(Gtk.Align.CENTER)
+            box.pack_start(label, True, True, 0)
+            fb.add(box)
+        self.pack_start(Frame(_("Selected Discography"), fb), False, False, 0)
 
 
 def _sort_albums(songs):
@@ -486,8 +517,7 @@ class ManySongs(Gtk.Box):
 
     def _title(self, songs):
         self.title = ngettext("%d song", "%d songs", len(songs)) % len(songs)
-        markup = util.escape(self.title)
-        self.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
+        self.pack_start(TitleLabel(self.title), False, False, 0)
 
     def _people(self, songs):
         artists = set()
