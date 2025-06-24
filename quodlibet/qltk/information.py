@@ -41,7 +41,7 @@ class TitleLabel(Gtk.Label):
     def __init__(self, text, is_markup=False):
         super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
-        qltk.add_css(self, "* {font-size: 36px}")
+        qltk.add_css(self, "* {font-size: 28px; margin: 6px 12px 0px 12px;}")
         if is_markup:
             self.set_markup(text)
         else:
