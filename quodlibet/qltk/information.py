@@ -465,6 +465,7 @@ class OneArtist(Gtk.Box):
 
             box.pack_start(widget, False, False, 0)
             widget.set_halign(Gtk.Align.CENTER)
+            widget.set_size_request(size, size)
             label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END)
             label.set_markup(album_title)
             box.pack_start(label, False, False, 0)
