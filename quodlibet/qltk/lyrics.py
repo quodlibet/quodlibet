@@ -18,16 +18,18 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet.errorreport import errorhook
 from quodlibet.formats import AudioFileError
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 from quodlibet.util import connect_obj
 
 
 class LyricsPane(Gtk.VBox):
     def __init__(self, song):
         super().__init__(spacing=12)
-        self.set_border_width(12)
+        self.title = _("Lyrics")
         view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.IN)
+        add_css(sw, "* { margin: 0px 12px; }")
         sw.add(view)
         save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
@@ -41,24 +43,29 @@ class LyricsPane(Gtk.VBox):
         delete.connect("clicked", self.__delete, song, save)
         view_online.connect("clicked", self.__view_online, song)
 
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.pack_start(sw, True, True, 0)
+        self.pack_start(sw, True, True, 12)
 
-        bbox = Gtk.HButtonBox()
-        bbox.pack_start(save, True, True, 0)
-        bbox.pack_start(delete, True, True, 0)
-        bbox.pack_start(view_online, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox = Gtk.Box(spacing=18, orientation=Gtk.Orientation.HORIZONTAL)
+        bbox.set_homogeneous(True)
+        add_css(bbox, "* { margin: 0px 12px }")
+        bbox.pack_start(save, False, False, 0)
+        bbox.pack_start(delete, False, False, 0)
+        bbox.pack_start(view_online, False, False, 0)
+        box2 = Gtk.Box()
+        box2.props.halign = Gtk.Align.START
+        box2.pack_start(bbox, True, False, 0)
+        self.pack_end(box2, False, False, 12)
 
         save.set_sensitive(False)
         view_online.set_sensitive(True)
-
+        add_css(view, "* { padding: 12px }")
         lyrics = song("~lyrics")
 
         if lyrics:
             buffer.set_text(lyrics)
         else:
-            buffer.set_text(_("No lyrics found for this song."))
+            buffer.set_text(_("(No lyrics found for this song)"))
+            delete.set_sensitive(False)
         connect_obj(buffer, "changed", save.set_sensitive, True)
 
     def __view_online(self, add, song):

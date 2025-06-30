@@ -1,15 +1,16 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
-#                        2013-17 Nick Boultbee
+#                        2013-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
 import re
+
+from gi.repository import Gtk, Gdk
 
 from quodlibet import _, config, print_d, app
 from quodlibet import qltk
@@ -17,7 +18,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gui import UserInterfacePlugin
 from quodlibet.qltk import Icons, add_css, Button
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.information import Information
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.util.songwrapper import SongWrapper
 
 
@@ -123,9 +124,9 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             def edit(widget):
                 print_d("Launching lyrics editor for {}".format(song("~filename")))
                 assert isinstance(song, SongWrapper)
-                information = Information(app.librarian, [song._song])
-                information.get_child()._switch_to_lyrics()
-                information.show()
+                edit_properties = SongProperties(app.librarian, [song._song])
+                edit_properties.switch_to_lyrics()
+                edit_properties.show()
 
             if self._sig:
                 self._edit_button.disconnect(self._sig)
