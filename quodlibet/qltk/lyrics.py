@@ -127,14 +127,16 @@ class LyricsPane(Gtk.VBox):
             errorhook()
 
     def __delete(self, delete, song, save):
-        # First, delete from the tags.
+        # First, delete lyrics from the tags.
         song.remove("lyrics")
         try:
             song.write()
         except AudioFileError:
             util.print_exc()
-
+        else:
+            app.librarian.emit("changed", [song])
         self._delete_file(song.lyric_filename)
+        self.text_view.get_buffer().set_text("")
         delete.set_sensitive(False)
         save.set_sensitive(True)
 
