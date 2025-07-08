@@ -1,5 +1,5 @@
 # Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
-#           2017-2022 Nick Boultbee
+#           2017-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ class LyricsPane(Gtk.VBox):
     def __init__(self, song):
         super().__init__(spacing=12)
         self.title = _("Lyrics")
-        view = Gtk.TextView()
+        self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         add_css(sw, "* { margin: 0px 12px; }")
@@ -43,22 +43,21 @@ class LyricsPane(Gtk.VBox):
         delete.connect("clicked", self.__delete, song, save)
         view_online.connect("clicked", self.__view_online, song)
 
-        self.pack_start(sw, True, True, 12)
+        self.pack_start(sw, True, True, 0)
 
-        bbox = Gtk.Box(spacing=18, orientation=Gtk.Orientation.HORIZONTAL)
+        bbox = Gtk.Box(spacing=9, orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_homogeneous(True)
         add_css(bbox, "* { margin: 0px 12px }")
-        bbox.pack_start(save, False, False, 0)
-        bbox.pack_start(delete, False, False, 0)
-        bbox.pack_start(view_online, False, False, 0)
+        bbox.pack_start(view_online, False, True, 0)
+        bbox.pack_start(delete, False, True, 0)
+        bbox.pack_start(save, False, True, 0)
         box2 = Gtk.Box()
-        box2.props.halign = Gtk.Align.START
+        add_css(box2, "box { margin-bottom: 12px; }")
+        box2.props.halign = Gtk.Align.END
         box2.pack_start(bbox, True, False, 0)
-        self.pack_end(box2, False, False, 12)
-
+        self.pack_start(box2, False, False, 0)
         save.set_sensitive(False)
-        view_online.set_sensitive(True)
-        add_css(view, "* { padding: 12px }")
+        add_css(sw, "scrolledwindow { padding: 0px 6px; font-size: large; }")
         lyrics = song("~lyrics")
 
         if lyrics:
