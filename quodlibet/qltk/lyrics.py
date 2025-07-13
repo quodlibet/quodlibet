@@ -24,12 +24,11 @@ from quodlibet.util import connect_obj
 
 class LyricsPane(Gtk.VBox):
     def __init__(self, song):
-        super().__init__(spacing=12)
+        super().__init__(spacing=12, margin=12)
         self.title = _("Lyrics")
         self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        add_css(sw, "* { margin: 0px 12px; }")
         sw.add(view)
         save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
@@ -52,12 +51,11 @@ class LyricsPane(Gtk.VBox):
         bbox.pack_start(delete, False, True, 0)
         bbox.pack_start(save, False, True, 0)
         box2 = Gtk.Box()
-        add_css(box2, "box { margin-bottom: 12px; }")
         box2.props.halign = Gtk.Align.END
         box2.pack_start(bbox, True, False, 0)
         self.pack_start(box2, False, False, 0)
         save.set_sensitive(False)
-        add_css(sw, "scrolledwindow { padding: 0px 6px; font-size: large; }")
+        add_css(sw, "scrolledwindow { padding: 0px 6px; }")
         lyrics = song("~lyrics")
 
         if lyrics:
