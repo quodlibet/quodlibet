@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-06-02 11:01+0000\n"
+"PO-Revision-Date: 2025-06-21 20:01+0000\n"
 "Last-Translator: Balázs Kipilla <ruszok@rompecs.de>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/hu/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -782,7 +782,7 @@ msgstr "Új epizódok keresése e forrásban"
 
 #: quodlibet/browsers/podcasts.py:494
 msgid "_Rebuild"
-msgstr "_Újraépítés"
+msgstr "Újra_építés"
 
 #: quodlibet/browsers/podcasts.py:496
 msgid "Remove all existing episodes then reload from source"
@@ -790,7 +790,7 @@ msgstr "Minden epizód eltávolítása és újraépítés a forrásból"
 
 #: quodlibet/browsers/podcasts.py:501
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Podcast és epizódjai eltávolítása"
 
 #: quodlibet/browsers/podcasts.py:565
 msgid "Unable to add feed"
@@ -853,44 +853,42 @@ msgstr "Számaim"
 #: quodlibet/browsers/soundcloud/main.py:152
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "Ugrás ide: %s"
 
 #: quodlibet/browsers/soundcloud/main.py:469
-#, fuzzy
 msgid "Connected"
-msgstr "hely"
+msgstr "Csatlakozva"
 
 #: quodlibet/browsers/soundcloud/main.py:470
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "<b>%s</b> nincs csatlakoztatva"
+msgstr "Quod Libet sikeresen csatlakozott, %s!"
 
 #: quodlibet/browsers/soundcloud/main.py:485
 #, python-format
 msgid "Log out of %s"
-msgstr ""
+msgstr "Kijelentkezés innen: %s"
 
 #: quodlibet/browsers/soundcloud/main.py:488
 msgid "Enter code…"
-msgstr ""
+msgstr "Adja meg a kódot…"
 
 #: quodlibet/browsers/soundcloud/main.py:490
 #, python-format
 msgid "Log in to %s"
-msgstr ""
+msgstr "Bejelentkezés ide: %s"
 
 #: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
-msgstr ""
+msgstr "Soundcloud belépés"
 
 #: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
-msgstr ""
+msgstr "Adja meg a Soundcloud auth-kódot:"
 
 #: quodlibet/cli.py:54
-#, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "A Quod Libet nem fut."
+msgstr "A Quod Libet nem fut. ('--run' hozzáadásával elindíthatja)"
 
 #: quodlibet/cli.py:116
 msgid "a music library and player"
@@ -911,7 +909,7 @@ msgstr "Lejátszás kezdése azonnal"
 
 #: quodlibet/cli.py:121
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "Ne mutasson ablakokat indításkor"
 
 #: quodlibet/cli.py:124
 msgid "Jump to next song"
@@ -919,7 +917,7 @@ msgstr "Ugrás a következő dalra"
 
 #: quodlibet/cli.py:125
 msgid "Jump to previous song or restart if near the beginning"
-msgstr ""
+msgstr "Ugrás az előző dalra, vagy a jelenlegi újrakezdése ha nemrég indult"
 
 #: quodlibet/cli.py:126
 msgid "Jump to previous song"
@@ -931,32 +929,31 @@ msgstr "Lejátszás indítása"
 
 #: quodlibet/cli.py:128
 msgid "Pause playback"
-msgstr "Lejátszás szünete"
+msgstr "Lejátszás szüneteltetése"
 
 #: quodlibet/cli.py:129
 msgid "Toggle play/pause mode"
-msgstr "Lejátszás/szünet váltása"
+msgstr "Lejátszás/szünetelés mód váltása"
 
 #: quodlibet/cli.py:130
-#, fuzzy
 msgid "Stop playback"
-msgstr "Lejátszás indítása"
+msgstr "Lejátszás leállítása"
 
 #: quodlibet/cli.py:131
 msgid "Turn up volume"
-msgstr "Hang be"
+msgstr "Hangerő fel"
 
 #: quodlibet/cli.py:132
 msgid "Turn down volume"
-msgstr "Hang ki"
+msgstr "Hangerő le"
 
 #: quodlibet/cli.py:133
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "Jelenlegi dal értékelésének megnövelése egy csillaggal"
 
 #: quodlibet/cli.py:134
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "Jelenlegi dal értékelésének csökkentése egy csillaggal"
 
 #: quodlibet/cli.py:135
 msgid "Print player status"
@@ -988,31 +985,28 @@ msgid "Refresh and rescan library"
 msgstr "Daltár _frissítése"
 
 #: quodlibet/cli.py:142
-#, fuzzy
 msgid "List available browsers"
-msgstr "Böngésző kikapcsolása"
+msgstr "Elérhető böngészők felsorolása"
 
 #: quodlibet/cli.py:143
 msgid "Print the current playlist"
-msgstr "Mostani lista kiírása"
+msgstr "Mostani lejátszási lista kiírása"
 
 #: quodlibet/cli.py:144
 msgid "Print the contents of the queue"
 msgstr "Sor tartalmának kiírása"
 
 #: quodlibet/cli.py:145
-#, fuzzy
 msgid "Print the active text query"
-msgstr "Sor tartalmának kiírása"
+msgstr "Keresőmező tartalmának kiírása"
 
 #: quodlibet/cli.py:146
 msgid "Start without plugins"
-msgstr ""
+msgstr "Bővítmények nélküli indítás"
 
 #: quodlibet/cli.py:147
-#, fuzzy
 msgid "Start Quod Libet if it isn't running"
-msgstr "A Quod Libet nem fut."
+msgstr "Quod Libet indítása, ha nem fut"
 
 #: quodlibet/cli.py:148
 msgid "Exit Quod Libet"
@@ -1027,23 +1021,20 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ÓÓ:]PP:MM"
 
 #: quodlibet/cli.py:154
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "Lejátszás/szünet váltása"
+msgstr "Véletlenszerű lejátszásmód váltása"
 
 #: quodlibet/cli.py:155
-#, fuzzy
 msgid "Set shuffle mode type"
-msgstr "Lejátszás/szünet váltása"
+msgstr "Véletlenszerű lejátszásmód beállítása"
 
 #: quodlibet/cli.py:156
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Ismétlés be/ki/váltás"
 
 #: quodlibet/cli.py:157
-#, fuzzy
 msgid "Set repeat mode type"
-msgstr "Lejátszás/szünet váltása"
+msgstr "Ismétlésmód beállítása"
 
 #: quodlibet/cli.py:158
 msgid "Set the volume"
@@ -1069,18 +1060,16 @@ msgid "filename"
 msgstr "fájlnév"
 
 #: quodlibet/cli.py:161
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "Ugrás a forgó dalban"
+msgstr "Forgó dal értékelése"
 
 #: quodlibet/cli.py:162
 msgid "Set the current browser"
 msgstr "E böngésző beállítása"
 
 #: quodlibet/cli.py:163
-#, fuzzy
 msgid "Stop after the playing song"
-msgstr "E dal értéke"
+msgstr "Megállás a forgó dal után"
 
 #: quodlibet/cli.py:164
 msgid "Open a new browser"
@@ -1095,18 +1084,17 @@ msgid "Filter on a random value"
 msgstr "Szűrő egy véletlen értéken"
 
 #: quodlibet/cli.py:166
-#, fuzzy
 msgctxt "command"
 msgid "tag"
-msgstr "Tag"
+msgstr "címke"
 
 #: quodlibet/cli.py:167
 msgid "Filter on a tag value"
-msgstr "Szűrő egy tag értéken"
+msgstr "Szűrő egy címke értéken"
 
 #: quodlibet/cli.py:167
 msgid "tag=value"
-msgstr "tag=érték"
+msgstr "címke=érték"
 
 #: quodlibet/cli.py:170
 msgid "Enqueue a file or query"
@@ -1114,7 +1102,7 @@ msgstr "Fájl vagy lekérés a lejátszósorba"
 
 #: quodlibet/cli.py:175
 msgid "Enqueue comma-separated files"
-msgstr ""
+msgstr "Vesszővel elválasztott fájlok a lejátszósorba"
 
 #: quodlibet/cli.py:176 quodlibet/util/tags.py:156
 msgid "filename"
@@ -1122,7 +1110,7 @@ msgstr "fájlnév"
 
 #: quodlibet/cli.py:178
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "Lekéréseredmények fájlnevei kiírása az stdout-ba"
 
 #: quodlibet/cli.py:181
 msgid "Unqueue a file or query"
@@ -1130,7 +1118,7 @@ msgstr "Fájl vagy lekérés törlése a sorból"
 
 #: quodlibet/cli.py:184
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "Fájl vagy mappa hozzáadása a daltárhoz"
 
 #: quodlibet/cli.py:184 quodlibet/util/tags.py:101
 msgid "location"
@@ -1138,15 +1126,14 @@ msgstr "hely"
 
 #: quodlibet/cli.py:185
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Minta megadása a --print-* parancsokhoz"
 
 #: quodlibet/cli.py:185 quodlibet/ext/songsmenu/custom_commands.py:57
-#, fuzzy
 msgid "pattern"
-msgstr "Hibás minta"
+msgstr "minta"
 
 #: quodlibet/cli.py:249
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument for '%s'."
 msgstr "E: Rossz argumentum ehhez: '%s'."
 
@@ -1157,7 +1144,7 @@ msgstr "E: Próbáld ezt: %s --help."
 
 #: quodlibet/errorreport/ui.py:56
 msgid "An Error Occurred"
-msgstr ""
+msgstr "Egy hiba felmerült"
 
 #: quodlibet/errorreport/ui.py:58
 msgid ""
@@ -1165,23 +1152,25 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"Figyelmen kívül hagyhatja ezt a hibát, de az alkalmazás instabil lehet "
+"újraindításig. Egy hibajelentés beküldése mindössze néhány másodpercet vesz "
+"igénybe, és sokat segítene nekünk."
 
 #: quodlibet/errorreport/ui.py:67 quodlibet/errorreport/ui.py:82
 msgid "Submit Error Report"
-msgstr ""
+msgstr "Hibajelentés beküldése"
 
 #: quodlibet/errorreport/ui.py:68
 msgid "Restart"
-msgstr ""
+msgstr "Újraindítás"
 
 #: quodlibet/errorreport/ui.py:69
-#, fuzzy
 msgid "Ignore Error"
-msgstr "Hibák mutatása"
+msgstr "Hiba ignorálása"
 
 #: quodlibet/errorreport/ui.py:73
 msgid "Error details:"
-msgstr ""
+msgstr "Hiba részletei:"
 
 #: quodlibet/errorreport/ui.py:84
 msgid ""
@@ -1189,42 +1178,44 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"Különféle részletek a hibáról és a rendszeredről be lesznek küldve egy "
+"harmadik fél által nyújtott szolgáltatáshoz (<a "
+"href='https://www.sentry.io'>www.sentry.io</a>). Ellenőrizheti az adatokat "
+"az alábbiakban mielőtt elküldi őket."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
-msgstr ""
+msgstr "(opcionális) Kérjük adjon meg egy rövid leírást a hibáról:"
 
 #: quodlibet/errorreport/ui.py:106
 msgid "_Send"
-msgstr ""
+msgstr "_Küldés"
 
 #: quodlibet/errorreport/ui.py:112
-#, fuzzy
 msgid "Short description…"
-msgstr "leírás"
+msgstr "Rövid leírás…"
 
 #: quodlibet/errorreport/ui.py:115
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Beküldendő adatok:"
 
 #: quodlibet/exfalso.py:37
 msgid "an audio tag editor"
-msgstr "egy hang tag szerkesztő"
+msgstr "egy címkeszerkesztő hangfájlokhoz"
 
 #: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "könyvtár"
 
 #: quodlibet/exfalso.py:46
-#, fuzzy
 msgid "Audio metadata editor"
-msgstr "Hang tag szerkesztő"
+msgstr "Hangfájl metadata szerkesztő"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "Borítókép-URL forrás"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
