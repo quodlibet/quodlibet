@@ -136,13 +136,10 @@ class IRFile(RemoteFile):
         if self.streamsong:
             if k is None:
                 return []
-            else:
-                return False
-        else:
-            if k is None:
-                return self.__CAN_CHANGE
-            else:
-                return k in self.__CAN_CHANGE
+            return False
+        if k is None:
+            return self.__CAN_CHANGE
+        return k in self.__CAN_CHANGE
 
 
 def parse_pls(file) -> Collection[IRFile]:
@@ -162,8 +159,7 @@ def parse_pls(file) -> Collection[IRFile]:
             head = head.lower()
             if head.startswith("length") and val == "-1":
                 continue
-            else:
-                data[head] = val
+            data[head] = val
 
     count = 1
     files = []
@@ -388,6 +384,7 @@ class AddNewStation(GetStringDialog):
 
             if uri_is_valid(line):
                 return line
+        return None
 
 
 class GenreFilter:
@@ -519,9 +516,7 @@ class InternetRadio(Browser, util.InstanceTracker):
     keys = ["InternetRadio"]
     priority = 16
     uses_main_library = False
-    headers = (
-        "title artist ~people grouping genre website ~format " "channel-mode".split()
-    )
+    headers = "title artist ~people grouping genre website ~format channel-mode".split()
 
     TYPE, ICON_NAME, KEY, NAME = range(4)
     TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)
@@ -908,7 +903,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         iradio_items.append(button)
 
         items.append(iradio_items)
-        menu = SongsMenu(
+        return SongsMenu(
             self.__librarian,
             songs,
             playlists=False,
@@ -916,7 +911,6 @@ class InternetRadio(Browser, util.InstanceTracker):
             queue=False,
             items=items,
         )
-        return menu
 
     def restore(self):
         text = config.gettext("browsers", "query_text")

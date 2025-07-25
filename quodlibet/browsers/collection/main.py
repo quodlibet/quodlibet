@@ -293,11 +293,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         obj = model.get_value(iter_)
         if isinstance(obj, AlbumNode):
             return check_album(obj.album)
-        else:
-            for album in model.iter_albums(iter_):
-                if check_album(album):
-                    return True
-            return False
+        for album in model.iter_albums(iter_):
+            if check_album(album):
+                return True
+        return False
 
     def __update_filter(self, entry, text):
         self.__filter = None
@@ -360,10 +359,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
-        elif qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, self)

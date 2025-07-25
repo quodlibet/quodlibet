@@ -31,7 +31,7 @@ class SongWrapper:
 
     def __setitem__(self, key, value):
         if key in self and self[key] == value:
-            return
+            return None
         self._updated = True
         self._needs_write = self._needs_write or not key.startswith("~")
         return self._song.__setitem__(key, value)
@@ -52,10 +52,9 @@ class SongWrapper:
         # to our parent's attribute handler for error handling.
         if attr in self.__slots__:
             return super().__setattr__(attr, value)
-        elif hasattr(self._song, attr):
+        if hasattr(self._song, attr):
             return setattr(self._song, attr, value)
-        else:
-            return super().__setattr__(attr, value)
+        return super().__setattr__(attr, value)
 
     def __hash__(self):
         return hash(self._song)
@@ -98,8 +97,7 @@ def list_wrapper(songs):
     def wrap(song):
         if song is None:
             return None
-        else:
-            return SongWrapper(song)
+        return SongWrapper(song)
 
     return [wrap(s) for s in songs]
 

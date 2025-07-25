@@ -4,7 +4,6 @@
 # (at your option) any later version.
 
 import os
-import re
 from collections.abc import Iterable, Generator
 
 import quodlibet
@@ -12,13 +11,12 @@ from quodlibet import print_d, print_w, print_e, ngettext, _
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
 from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
-from senf import text2fsn, _fsnative, fsn2text
+from quodlibet.util.path import is_hidden
+from senf import text2fsn, _fsnative, fsnative
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
 
-HIDDEN_RE = re.compile(r"^\.\w[^.]*")
-"""Hidden-like files, to ignored"""
 
 _MIN_NON_EMPTY_PL_BYTES = 4
 """Arbitrary minimum file size for a legacy non-empty playlist file"""
@@ -61,7 +59,7 @@ class PlaylistLibrary(Library[str, Playlist]):
             full_path = os.path.join(self.pl_dir, fn)
             if os.path.isdir(full_path):
                 continue
-            if HIDDEN_RE.match(fsn2text(fn)):
+            if is_hidden(fsnative(fn)):
                 print_d(f"Ignoring hidden file {fn!r}")
                 continue
             try:

@@ -106,7 +106,6 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
 
     def _changed(self, items: Collection[V]):
         """Called by the changed method and Librarians."""
-        # assert isinstance(items, set)
 
         if not items:
             return

@@ -248,10 +248,9 @@ class SongListDnDMixin(GObject.GObject):
                 kind = Gdk.DragAction.COPY
             Gdk.drag_status(ctx, kind, time)
             return True
-        else:
-            self.get_parent().drag_highlight()
-            Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
-            return True
+        self.get_parent().drag_highlight()
+        Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
+        return True
 
     def __drag_leave(self, widget, ctx, time):
         widget.get_parent().drag_unhighlight()
@@ -386,7 +385,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     def menu(self, header: str, browser, library):
         songs = self.get_selected_songs()
         if not songs:
-            return
+            return None
 
         def Filter(t):
             # Translators: The substituted string is the name of the
@@ -554,6 +553,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             # get_sort_tag == "" if the default sort key should be used
             if not get_sort_tag(c.header_name):
                 return c
+        return None
 
     def is_sorted(self):
         """If any of the columns has a sort indicator.
@@ -620,7 +620,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             value = model.get_value(iter)(column.header_name)
             if not isinstance(value, str):
                 continue
-            elif key in value.lower() or key in value:
+            if key in value.lower() or key in value:
                 return False
         else:
             return True
@@ -640,7 +640,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
     def __button_press(self, view, event, librarian):
         if event.button != Gdk.BUTTON_PRIMARY:
-            return
+            return None
         x, y = map(int, [event.x, event.y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
@@ -650,7 +650,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return False
         if col.header_name == "~rating":
             if not config.getboolean("browsers", "rating_click"):
-                return
+                return None
 
             song = view.get_model()[path][0]
             l = Gtk.Label()
@@ -666,6 +666,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             if rating <= precision and song("~#rating") == precision:
                 rating = 0.0
             self.__set_rating(rating, [song], librarian)
+        return None
 
     def __set_rating(self, value, songs, librarian):
         count = len(songs)
@@ -681,30 +682,30 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
-        elif qltk.is_accel(event, "<Primary>F"):
+        if qltk.is_accel(event, "<Primary>F"):
             self.emit("start-interactive-search")
             return True
-        elif qltk.is_accel(event, "<Primary>Delete"):
+        if qltk.is_accel(event, "<Primary>Delete"):
             songs = self.get_selected_songs()
             if songs:
                 trash_songs(self, songs, librarian)
             return True
-        elif qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel(event, "<alt>Return"):
             songs = self.get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<Primary>I"):
+        if qltk.is_accel(event, "<Primary>I"):
             songs = self.get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "space", "KP_Space") and player is not None:
+        if qltk.is_accel(event, "space", "KP_Space") and player is not None:
             player.paused = not player.paused
             return True
-        elif qltk.is_accel(event, "F2"):
+        if qltk.is_accel(event, "F2"):
             songs = self.get_selected_songs()
             if len(songs) > 1:
                 print_d("Can't edit more than one")
@@ -810,8 +811,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             for key, reverse in self.__get_song_sort_key_func(orders):
                 song_order.sort(key=lambda i: key(songs[i]), reverse=reverse)
             return song_order
-        else:
-            return None
+        return None
 
     def __get_song_sort_key_func(self, order):
         last_tag = None
@@ -957,6 +957,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         model, paths = selection.get_selected_rows()
         if paths:
             return model.get_value(model.get_iter(paths[0]))
+        return None
 
     def get_selected_songs(self):
         """Returns a list of selected songs"""

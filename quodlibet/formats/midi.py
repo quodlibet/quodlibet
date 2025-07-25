@@ -36,8 +36,7 @@ class MidiFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return ["title"]
-        else:
-            return k == "title"
+        return k == "title"
 
 
 loader = MidiFile

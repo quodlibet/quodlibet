@@ -417,7 +417,7 @@ class ConfirmLibDirSetup(WarningMessage):
     def __init__(self, parent):
         title = _("Set up library directories?")
         description = _(
-            "You don't have any music library set up. " "Would you like to do that now?"
+            "You don't have any music library set up. Would you like to do that now?"
         )
 
         super().__init__(parent, title, description, buttons=Gtk.ButtonsType.NONE)
@@ -788,8 +788,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             if self.__player.go_to(song):
                 self.__player.paused = False
             return True
-        else:
-            return False
+        return False
 
     def enqueue(self, songs, limit=0):
         """Append `songs` to the queue
@@ -838,7 +837,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __key_pressed(self, widget, event, player):
         if not player.song:
-            return
+            return None
 
         def seek_relative(seconds):
             current = player.get_position()
@@ -850,9 +849,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if qltk.is_accel(event, "<alt>Right"):
             seek_relative(10)
             return True
-        elif qltk.is_accel(event, "<alt>Left"):
+        if qltk.is_accel(event, "<alt>Left"):
             seek_relative(-10)
             return True
+        return None
 
     def __destroy(self, *args):
         self.playlist.destroy()
@@ -1402,6 +1402,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         menu = self.songlist.menu(header, self.browser, self.__library)
         if menu is not None:
             return self.songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return None
 
     def __current_song_prop(self, *args):
         song = app.player.song

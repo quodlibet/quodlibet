@@ -38,8 +38,6 @@ class Equalizer:
     def update_eq_values(self):
         """Override to apply equalizer values"""
 
-        pass
-
 
 class BasePlayer(GObject.GObject, Equalizer):
     """Interfaces between a QL PlaylistModel and a GSt playbin.
@@ -79,7 +77,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         "seek": (GObject.SignalFlags.RUN_LAST, None, (object, int)),
         "paused": (GObject.SignalFlags.RUN_LAST, None, ()),
         "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
-        # (song, PlayerError)
+        # Signal error (song, PlayerError)
         "error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
@@ -229,8 +227,6 @@ class BasePlayer(GObject.GObject, Equalizer):
         timeout in seconds.
         """
 
-        pass
-
     def get_position(self):
         """The current position in milliseconds"""
 
@@ -322,7 +318,7 @@ class BasePlayer(GObject.GObject, Equalizer):
                 # FIXME: this is for the queue only plugin. the play order
                 # should return if it has handled set() itself instead
                 if explicit:
-                    return
+                    return None
                 self._end(True)
 
         return self.song is not None

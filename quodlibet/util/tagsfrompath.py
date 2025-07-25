@@ -75,5 +75,4 @@ class TagsFromPattern:
         # dicts for all!
         if match is None:
             return {}
-        else:
-            return match.groupdict()
+        return match.groupdict()

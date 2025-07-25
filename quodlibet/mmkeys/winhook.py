@@ -46,13 +46,13 @@ class WinHookBackend(MMKeysBackend):
             if vkCode == winapi.VK_MEDIA_PLAY_PAUSE:
                 self._callback(MMKeysAction.PLAYPAUSE)
                 return STOP_PROCESSING
-            elif vkCode == winapi.VK_MEDIA_STOP:
+            if vkCode == winapi.VK_MEDIA_STOP:
                 self._callback(MMKeysAction.STOP)
                 return STOP_PROCESSING
-            elif vkCode == winapi.VK_MEDIA_NEXT_TRACK:
+            if vkCode == winapi.VK_MEDIA_NEXT_TRACK:
                 self._callback(MMKeysAction.NEXT)
                 return STOP_PROCESSING
-            elif vkCode == winapi.VK_MEDIA_PREV_TRACK:
+            if vkCode == winapi.VK_MEDIA_PREV_TRACK:
                 self._callback(MMKeysAction.PREV)
                 return STOP_PROCESSING
 

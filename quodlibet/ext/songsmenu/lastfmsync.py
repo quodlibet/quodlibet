@@ -234,7 +234,7 @@ class LastFMSyncWindow(qltk.Dialog):
 class LastFMSync(SongsMenuPlugin):
     PLUGIN_ID = "Last.fm Sync"
     PLUGIN_NAME = _("Last.fm Sync")
-    PLUGIN_DESC = _("Updates your library's statistics from your " "Last.fm profile.")
+    PLUGIN_DESC = _("Updates your library's statistics from your Last.fm profile.")
     PLUGIN_ICON = Icons.EMBLEM_SHARED
 
     CACHE_PATH = os.path.join(quodlibet.get_user_dir(), "lastfmsync.db")
@@ -253,8 +253,7 @@ class LastFMSync(SongsMenuPlugin):
         if self.running:
             GLib.idle_add(self.dialog.progress, msg, frac)
             return True
-        else:
-            return False
+        return False
 
     def plugin_songs(self, songs):
         try:

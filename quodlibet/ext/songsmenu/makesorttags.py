@@ -26,7 +26,8 @@ FAMOUS_COMPOSERS = {
     "faure",
     "rachmaninov",
     "rachmaninoff",
-    "puccini" "mendelssohn",
+    "puccini",
+    "mendelssohn",
     "liszt",
     "elgar",
     "mahler",
@@ -36,7 +37,8 @@ FAMOUS_COMPOSERS = {
     "dvorak",
     "holst",
     "britten",
-    "straus" "williams",
+    "straus",
+    "williams",
     "zimmer",
 }
 
@@ -49,7 +51,7 @@ def artist_to_sort(tag: str, artist: str) -> str | None:
     else:
         # "The Beach Boys" -> "Beach Boys, The" etc
         if first.lower() in ["a", "the"]:
-            return ", ".join([rest, first])
+            return f"{rest}, {first}"
         # We really want "Amadeus Mozart" -> "Mozart, Amadeus"
         # But not really "Rage Against The Machine" -> "Machine, Rage Against The"
         # So let's restrict to composer then.
@@ -57,7 +59,7 @@ def artist_to_sort(tag: str, artist: str) -> str | None:
             rest, last = artist.rsplit(" ", 1)
             last_normalised = remove_diacritics(last).lower()
             if tag in {"composer"} or last_normalised in FAMOUS_COMPOSERS:
-                return ", ".join([last, rest])
+                return f"{last}, {rest}"
         except ValueError:
             pass
     return None
@@ -70,7 +72,7 @@ def album_to_sort(album: str) -> str | None:
         pass
     else:
         if first.lower() in ["a", "the"]:
-            return ", ".join([rest, first])
+            return f"{rest}, {first}"
     return None
 
 

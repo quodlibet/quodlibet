@@ -51,7 +51,7 @@ class DownloadCoverArt(SongsMenuPlugin):
     PLUGIN_ID = "Download Cover Art"
     PLUGIN_NAME = _("Download Cover Art")
     PLUGIN_DESC = _(
-        "Downloads high-quality album covers " "using Quod Libet cover plugins."
+        "Downloads high-quality album covers using Quod Libet cover plugins."
     )
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
@@ -347,7 +347,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         def format_dims(_slider, value):
             size = int(value)
-            return _(f"{size} ✕ {size} px")
+            return _("%(size)d ✕ %(size)d px") % {"size": size}
 
         def slider_changed(_slider):
             new_size = slider.get_value()

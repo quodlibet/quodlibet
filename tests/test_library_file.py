@@ -215,10 +215,11 @@ class TWatchedFileLibrary(TLibrary):
             watch_dirs = self.library._monitors.keys()
             assert path.parent in watch_dirs, "Not monitoring directory of new file"
             run_gtk_loop()
-            assert self.library, f"Nothing in library despite watches on {watch_dirs}"
-            assert str(path) in self.library, (
-                f"{path!s} should have been added to " f"library [{self.fns}]"
-            )
+            dirs = [str(p) for p in watch_dirs]
+            assert self.library, f"Nothing in library despite watches on {dirs}"
+            assert (
+                str(path) in self.library
+            ), f"{path!s} should have been added to library [{self.fns}]"
             assert str(path) in {af("~filename") for af in self.added}
 
     def test_watched_moving_song(self):

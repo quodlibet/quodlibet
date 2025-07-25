@@ -76,12 +76,10 @@ class HTTPRequest(GObject.Object):
                 print_w(msg)
                 return self.emit("send-failure", Exception(msg))
             self.istream = session.send_finish(task)
-            print_d(
-                f"Got HTTP {status} on {m.get_method()} request " f"to {self._uri}."
-            )
+            print_d(f"Got HTTP {status} on {m.get_method()} request to {self._uri}.")
             self.emit("sent", m)
         except GLib.GError as e:
-            print_w(f"Failed sending {m.get_method()} request " f"to {self._uri} ({e})")
+            print_w(f"Failed sending {m.get_method()} request to {self._uri} ({e})")
             self.emit("send-failure", e)
 
     def provide_target(self, stream):
@@ -113,6 +111,7 @@ class HTTPRequest(GObject.Object):
         if self.istream and not self._receive_started:
             if not self.istream.is_closed():
                 self.istream.close(None)
+        return None
 
     def receive(self):
         """

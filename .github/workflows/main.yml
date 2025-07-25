@@ -9,12 +9,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   fedora:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Run tests in Docker container
         uses: ./.github/workflows/fedora
@@ -24,33 +29,35 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: setup-msys2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: UCRT64
+          msystem: CLANG64
           update: true
           install: >-
             git
-            mingw-w64-ucrt-x86_64-gettext
-            mingw-w64-ucrt-x86_64-gdk-pixbuf2
-            mingw-w64-ucrt-x86_64-librsvg
-            mingw-w64-ucrt-x86_64-gtk3
-            mingw-w64-ucrt-x86_64-libsoup3
-            mingw-w64-ucrt-x86_64-gstreamer
-            mingw-w64-ucrt-x86_64-gst-plugins-base
-            mingw-w64-ucrt-x86_64-gst-plugins-good
-            mingw-w64-ucrt-x86_64-gst-plugins-bad
-            mingw-w64-ucrt-x86_64-gst-libav
-            mingw-w64-ucrt-x86_64-gst-plugins-ugly
-            mingw-w64-ucrt-x86_64-python
-            mingw-w64-ucrt-x86_64-cc
-            mingw-w64-ucrt-x86_64-pkgconf
-            mingw-w64-ucrt-x86_64-ninja
-            mingw-w64-ucrt-x86_64-meson
-            mingw-w64-ucrt-x86_64-python-poetry
-            mingw-w64-ucrt-x86_64-gobject-introspection
-            mingw-w64-ucrt-x86_64-appstream
+            mingw-w64-clang-x86_64-gettext
+            mingw-w64-clang-x86_64-gdk-pixbuf2
+            mingw-w64-clang-x86_64-librsvg
+            mingw-w64-clang-x86_64-gtk3
+            mingw-w64-clang-x86_64-libsoup3
+            mingw-w64-clang-x86_64-gstreamer
+            mingw-w64-clang-x86_64-gst-plugins-base
+            mingw-w64-clang-x86_64-gst-plugins-good
+            mingw-w64-clang-x86_64-gst-plugins-bad
+            mingw-w64-clang-x86_64-gst-libav
+            mingw-w64-clang-x86_64-gst-plugins-ugly
+            mingw-w64-clang-x86_64-python
+            mingw-w64-clang-x86_64-cc
+            mingw-w64-clang-x86_64-pkgconf
+            mingw-w64-clang-x86_64-ninja
+            mingw-w64-clang-x86_64-meson
+            mingw-w64-clang-x86_64-python-poetry
+            mingw-w64-clang-x86_64-gobject-introspection
+            mingw-w64-clang-x86_64-appstream
 
       - name: Install additional dependencies
         shell: msys2 {0}
@@ -67,6 +74,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: |
@@ -81,6 +90,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: |
@@ -96,6 +107,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Dependencies
         run: |
@@ -143,6 +156,8 @@ jobs:
     name: ubuntu-24.04-poetry
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Dependencies
         run: |
@@ -159,13 +174,12 @@ jobs:
             pkg-config \
             pipx \
             xvfb
-          pipx install "poetry==1.8.4"
+          pipx install "poetry==2.1.2"
           pipx ensurepath
 
       - name: Check Poetry project
         run: |
-          poetry check
-          poetry lock --check
+          poetry check --lock
 
       - name: Install project virtualenv
         run: poetry install -E plugins

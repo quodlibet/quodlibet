@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2023 Nick Boultbee
+#           2012-2025 Nick Boultbee
 #                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -115,11 +115,10 @@ def decode_value(tag, value):
 
     if tag in FILESYSTEM_TAGS:
         return fsn2text(value)
-    elif tag[:2] == "~#":
+    if tag[:2] == "~#":
         if isinstance(value, float):
             return f"{value:.2f}"
-        else:
-            return str(value)
+        return str(value)
     return str(value)
 
 
@@ -219,21 +218,19 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if callable(tag):
             return lambda song: human(tag(song))
-        elif tag == "artistsort":
+        if tag == "artistsort":
             return artist_sort
-        elif tag in FILESYSTEM_TAGS:
+        if tag in FILESYSTEM_TAGS:
             return lambda song: fsn2text(song(tag))
-        elif tag.startswith("~#") and "~" not in tag[2:]:
+        if tag.startswith("~#") and "~" not in tag[2:]:
             return lambda song: song(tag, 0)
         return lambda song: human(song(tag))
 
     def __getstate__(self):
         """Don't pickle anything from __dict__"""
-        pass
 
     def __setstate__(self, state):
         """Needed because we have defined getstate"""
-        pass
 
     def __setitem__(self, key, value):
         # validate key
@@ -383,7 +380,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                     if v:
                         values.append(v)
                 return connector.join(values) or default
-            elif key == "#track":
+            if key == "#track":
                 try:
                     return int(self["tracknumber"].split("/")[0])
                 except (ValueError, TypeError, KeyError):
@@ -397,8 +394,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 length = self.get("~#length")
                 if length is None:
                     return default
-                else:
-                    return util.format_time_display(length)
+                return util.format_time_display(length)
             elif key == "#rating":
                 return dict.get(self, real_key, config.RATINGS.default)
             elif key == "rating":
@@ -547,20 +543,19 @@ class AudioFile(dict, ImageContainer, HasKey):
             elif key[:1] == "#":
                 if real_key in self:
                     return self[real_key]
-                elif real_key in NUMERIC_ZERO_DEFAULT:
+                if real_key in NUMERIC_ZERO_DEFAULT:
                     return 0
-                else:
+                try:
+                    val = self[real_key[2:]]
+                except KeyError:
+                    return default
+                try:
+                    return int(val)
+                except ValueError:
                     try:
-                        val = self[real_key[2:]]
-                    except KeyError:
-                        return default
-                    try:
-                        return int(val)
+                        return float(val)
                     except ValueError:
-                        try:
-                            return float(val)
-                        except ValueError:
-                            return default
+                        return default
             elif key == "json":
                 # Help the testing by being deterministic with sort_keys.
                 return json.dumps(self, sort_keys=True)
@@ -603,8 +598,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 # ~people:roles and not ~performer:roles).
                 if sub_keys is None:
                     continue
-                else:
-                    role = TAG_ROLES.get(role_tag, role_tag)
+                role = TAG_ROLES.get(role_tag, role_tag)
             else:
                 role = key.split(":", 1)[-1]
             for name in self.list(key):
@@ -703,8 +697,6 @@ class AudioFile(dict, ImageContainer, HasKey):
                 if pathfile not in pathfiles:
                     pathfiles[pathfile] = rpf
 
-        # print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
-
         # expand each raw pathfile in turn and test for existence
         match_ = None
         pathfiles_expanded = OrderedDict()
@@ -721,7 +713,6 @@ class AudioFile(dict, ImageContainer, HasKey):
         if not match_:
             # search even harder!
             lyric_extensions = ["lyric", "lyrics", "", "txt"]
-            # print_d("extending search to extensions: %s" % lyric_extensions)
 
             def generate_mod_ext_paths(pathfile):
                 # separate pathfile's extension (if any)
@@ -733,9 +724,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 extra_extensions = [x for x in lyric_extensions if x != ext]
 
                 # join valid new extensions to pathfile stub and return
-                return [
-                    ".".join([path, ext]) if ext else path for ext in extra_extensions
-                ]
+                return [f"{path}.{ext}" if ext else path for ext in extra_extensions]
 
             # look for a match by modifying the extension for each of the
             # (now fully resolved) 'pathfiles_expanded' search items
@@ -745,7 +734,6 @@ class AudioFile(dict, ImageContainer, HasKey):
                 for path_ext in paths_mod_ext:
                     if os.path.exists(path_ext):
                         # persistence has paid off!
-                        # print_d("extended search match!")
                         match_ = path_ext
                         break
                 if match_:
@@ -792,8 +780,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if isinstance(v, int | float):
             return v
-        else:
-            return re.sub("\n+", ", ", v.strip())
+        return re.sub("\n+", ", ", v.strip())
 
     def list(self, key) -> list[Any]:
         """Get all values of a tag, as a list. Synthetic tags are supported,
@@ -811,12 +798,10 @@ class AudioFile(dict, ImageContainer, HasKey):
             v = self(key)
             if v == "":
                 return []
-            else:
-                v = v.split("\n") if isinstance(v, str) else [v]
-                return [x for x in v if x]
-        else:
-            v = self.get(key, "")
-            return [x for x in v.split("\n") if x]
+            v = v.split("\n") if isinstance(v, str) else [v]
+            return [x for x in v if x]
+        v = self.get(key, "")
+        return [x for x in v.split("\n") if x]
 
     def list_sort(self, key):
         """Like list but return display,sort pairs when appropriate
@@ -853,10 +838,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         """
         if key[:1] == "~" and "~" in key[1:]:  # tied tag
             vals = [self.list_sort(tag) for tag in util.tagsplit(key)]
-            r = [j for i in vals for j in i]
-            return r
-        else:
-            return self.list_sort(key)
+            return [j for i in vals for j in i]
+        return self.list_sort(key)
 
     def list_unique(self, keys):
         """Returns a combined value of all values in keys; duplicate values
@@ -1008,7 +991,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             # on FLACs, the most common case, this should be close enough
             if "~#bitrate" not in self:
                 try:
-                    # kbps = bytes * 8 / seconds / 1000
+                    # Note - kbps = bytes * 8 / seconds / 1000
                     self["~#bitrate"] = int(
                         stat.st_size / (self["~#length"] * (1000 / 8))
                     )
@@ -1100,7 +1083,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         if key not in self:
             self[key] = value
         else:
-            self[key] += "\n" + value
+            self[key] += f"\n{value}"
 
     def remove(self, key, value=None):
         """Remove a value from the given key.
@@ -1111,7 +1094,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if key not in self:
             return
-        elif value is None or self[key] == value:
+        if value is None or self[key] == value:
             del self[key]
         else:
             try:

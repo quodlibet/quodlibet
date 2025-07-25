@@ -241,7 +241,7 @@ numbers, MM:SS format, or simple English, e.g. "3 days", "2 hours".
 See https://quodlibet.readthedocs.io/en/latest/guide/searching.html.
 
 All internal tags begin with a ~ character. Non-numeric internal tags are
-~base‐ name, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
+~basename, ~dirname, ~filename, ~format, ~length, ~people, and ~rating.
 Numeric internal tags are ~#added, ~#bitrate, ~#disc, ~#lastplayed,
 ~#laststarted, ~#length, ~#mtime, ~#playcount, ~#skipcount, and ~#track.
 

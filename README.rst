@@ -66,8 +66,5 @@ Contact
 .. image:: https://img.shields.io/mastodon/follow/109620111805015448?domain=https%3A%2F%2Ffosstodon.org&style=social
     :target: https://fosstodon.org/@quodlibet
 
-.. image:: https://img.shields.io/twitter/follow/QuodLibetApp?style=social
-    :target: https://twitter.com/QuodLibetApp
-
 .. image:: https://img.shields.io/badge/discord-chat-blue?style=social&logo=discord
     :target: https://discord.gg/9A4RKFEm3c

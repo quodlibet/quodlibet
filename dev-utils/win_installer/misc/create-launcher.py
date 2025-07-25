@@ -49,7 +49,7 @@ def get_build_args():
 
 
 def build_exe(source_path, resource_path, is_gui, out_path):
-    args = ["gcc", "-s"]
+    args = ["cc", "-s"]
     if is_gui:
         args.append("-mwindows")
     args.append("-municode")
@@ -121,7 +121,13 @@ END
 """
 
     def to_ver_list(v):
-        return ",".join(map(str, (list(map(int, v.split("."))) + [0] * 4)[:4]))
+
+        # needs to fit a uint16_t, let's just limit instead of erroring out
+        def limit(i):
+            return min(max(int(i), 0), 65535)
+
+        return ",".join(map(str, (
+            list(map(lambda p: limit(int(p)), v.split("."))) + [0] * 4)[:4]))
 
     file_version_list = to_ver_list(file_version)
     product_version_list = to_ver_list(product_version)

@@ -104,8 +104,7 @@ class UpdatePo(Command):
         if self.lang is not None:
             if self.lang not in langs:
                 raise SystemExit(f"Error: {self.lang} not found")
-            else:
-                langs = [self.lang]
+            langs = [self.lang]
 
         with gettextutil.create_pot(po_directory) as pot_path:
             for lang in langs:
@@ -247,8 +246,7 @@ class BuildMo(Command):
         if self.lang is not None:
             if self.lang not in langs:
                 raise SystemExit(f"Error: {self.lang!r} not found")
-            else:
-                langs = [self.lang]
+            langs = [self.lang]
 
         basepath = Path(self.build_base) / "share" / "locale"
         for language in langs:

@@ -11,7 +11,7 @@ some new features have been introduced to the queue, which is described below.
 Disabling
 ---------
 
-With :ref:`release 4.3.0 <release-4.3.0>`, the *Ignore* and *Keep Songs*
+With release 4.3.0, the *Ignore* and *Keep Songs*
 checkboxes were replaced with a *queue disable* button and a *mode selection*
 menu.
 

@@ -200,7 +200,6 @@ xine_stop.argtypes = [ctypes.c_void_p]
 xine_dispose = _libxine.xine_dispose
 xine_dispose.argtypes = [ctypes.c_void_p]
 
-# xine_event_queue_t *xine_event_new_queue(xine_stream_t *stream)
 xine_event_new_queue = _libxine.xine_event_new_queue
 xine_event_new_queue.argtypes = [ctypes.c_void_p]
 xine_event_new_queue.restype = ctypes.c_void_p
@@ -286,5 +285,4 @@ def xine_get_pos_length(stream):
     )
     if result:
         return _pos_stream.value, _pos_time.value, _length_time.value
-    else:
-        return 0, 0, 0
+    return 0, 0, 0

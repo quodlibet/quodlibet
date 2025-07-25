@@ -482,7 +482,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             except OSError as e:
                 print_w("Linking the GStreamer pipeline failed")
                 self._error(
-                    PlayerError(_(f"Could not create GStreamer pipeline ({e})"))
+                    PlayerError(_("Could not create GStreamer pipeline (%s)") % e)
                 )
                 return False
 
@@ -526,7 +526,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         gpad = Gst.GhostPad.new("sink", pipeline[0].get_static_pad("sink"))
         bufbin.add_pad(gpad)
 
-        bin_ = self._make("playbin", None)
+        if config.getboolean("player", "gst_use_playbin3"):
+            bin_ = self._make("playbin3", None)
+        else:
+            bin_ = self._make("playbin", None)
         assert bin_
 
         self.bin = BufferingWrapper(bin_, self)
@@ -738,20 +741,20 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
         if self.song and self.song.multisong:
             print_d("This is a multisong - so ignoring 'about to finish' signal")
-            return
+            return None
 
         # mod + gapless deadlocks
         # https://github.com/quodlibet/quodlibet/issues/2780
         if isinstance(self.song, ModFile):
-            return
+            return None
 
         if config.getboolean("player", "gst_disable_gapless"):
             print_d("Gapless disabled")
-            return
+            return None
 
         # this can trigger twice, see issue 987
         if self._in_gapless_transition:
-            return
+            return None
         self._in_gapless_transition = True
 
         print_d("Select next song in mainloop..")
@@ -761,6 +764,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         song = self._source.current
         if song is not None:
             return song("~uri")
+        return None
 
     def __about_to_finish(self, playbin):
         print_d("About to finish (async)")
@@ -806,7 +810,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 # sliders jump if we read the value back
                 self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
-        elif property.name == "mute":
+        if property.name == "mute":
             if (
                 self._ext_mute_element is not None
                 and sink_has_external_state(self._ext_mute_element)
@@ -814,12 +818,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             ):
                 self._mute = self._ext_mute_element.get_property("mute")
             return self._mute
-        elif property.name == "seekable":
+        if property.name == "seekable":
             if self._seeker is not None:
                 return self._seeker.seekable
             return False
-        else:
-            raise AttributeError
+        raise AttributeError
 
     def _reset_replaygain(self):
         if not self.bin:
@@ -1046,8 +1049,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def eq_bands(self):
         if Gst.ElementFactory.find("equalizer-10bands"):
             return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
-        else:
-            return []
+        return []
 
     def update_eq_values(self):
         need_eq = any(self._eq_values)

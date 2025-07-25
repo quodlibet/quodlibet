@@ -35,7 +35,7 @@ class GStreamerPluginHandler(PluginHandler):
                     _("GStreamer plugin '%(name)s' could not be initialized")
                     % {"name": plugin.PLUGIN_ID}
                 )
-                return
+                return None
             plugin.update_element(element)
             self.__elements[plugin] = element
         return self.__elements[plugin]

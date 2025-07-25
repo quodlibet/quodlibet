@@ -7,11 +7,16 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   lint-with-nix-shell:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:

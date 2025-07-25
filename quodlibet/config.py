@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2022 Nick Boultbee
+#           2009-2025 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
 #                2022 Jej@github
@@ -11,14 +11,20 @@
 
 import shutil
 
-from quodlibet.util import enum
+from quodlibet.util import enum, is_linux
 from . import const
 from quodlibet.util.config import Config, Error
 from quodlibet.util import print_d, print_w
 from quodlibet.util import is_osx, is_windows
 
 # Some plugins can be enabled on first install
-AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
+AUTO_ENABLED_PLUGINS = [
+    "Shuffle Playlist",
+    "Remove Playlist Duplicates",
+    "WaveformSeekBar",
+]
+if is_linux():
+    AUTO_ENABLED_PLUGINS += ["mpris"]
 
 
 # this defines the initial and default values
@@ -45,6 +51,7 @@ INITIAL: dict[str, dict[str, str]] = {
         # Consider a track as played after listening to
         # this proportion of its overall length
         "playcount_minimum_length_proportion": "0.5",
+        "gst_use_playbin3": "false",
     },
     "library": {
         "exclude": "",
@@ -394,7 +401,7 @@ class RatingsPrefs:
     @property
     def all(self):
         """Returns all the possible ratings currently available"""
-        return [float(i) / self.number for i in range(0, self.number + 1)]
+        return [float(i) / self.number for i in range(self.number + 1)]
 
     @staticmethod
     def __save(key, value):

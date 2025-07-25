@@ -48,8 +48,6 @@ class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):
 
     """
 
-    pass
-
 
 class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
     """Shuffle plugins add new ways to reorder a given song list
@@ -60,5 +58,3 @@ class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
         def previous(self, playlist, iter): ...
 
     """
-
-    pass

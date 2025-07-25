@@ -159,7 +159,7 @@ class TPlaylistPlugins(TestCase):
         self.assertTrue("Didn't execute plugin", FakePlaylistPlugin.total > 0)
         self.assertFalse(
             self.confirmed,
-            ("Wasn't expecting a confirmation for %d" " invocations" % len(playlists)),
+            ("Wasn't expecting a confirmation for %d invocations" % len(playlists)),
         )
 
     def test_handling_lots_of_songs_with_confirmation(self):

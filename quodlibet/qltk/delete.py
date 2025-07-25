@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013-2017 Nick Boultbee
+#           2013-2025 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -144,8 +144,7 @@ class TrashDialog(WarningMessage):
 def TrashMenuItem():
     if trash.use_trash():
         return MenuItem(_("_Move to Trash"), Icons.USER_TRASH)
-    else:
-        return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+    return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
 
 def _do_trash_songs(parent, songs, librarian):
@@ -184,6 +183,15 @@ def _do_trash_songs(parent, songs, librarian):
         librarian.remove(ok)
 
 
+def _check_for_playing_song(songs):
+    from quodlibet import app
+
+    if app.player.song in songs and not app.player.paused:
+        fn = app.player.song["~filename"]
+        print_w(f"Stopping playback, as current song {fn} will be deleted.")
+        app.player.stop()
+
+
 def _do_trash_files(parent, paths):
     dialog = TrashDialog.for_files(parent, paths)
     resp = dialog.run()
@@ -193,7 +201,7 @@ def _do_trash_files(parent, paths):
     window_title = _("Moving %(current)d/%(total)d.")
     w = WaitLoadWindow(parent, len(paths), window_title)
     w.show()
-
+    _check_for_playing_song(paths)
     ok = []
     failed = []
     for path in paths:
@@ -225,6 +233,7 @@ def _do_delete_songs(parent, songs, librarian):
     w = WaitLoadWindow(parent, len(songs), window_title)
     w.show()
 
+    _check_for_playing_song(songs)
     ok = []
     failed = []
     for song in songs:

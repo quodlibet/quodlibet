@@ -43,9 +43,8 @@ def show_uri(label, uri):
         if parsed.netloc != "":
             print_w(f"Unknown QuodLibet URL format ({uri})")
             return False
-        else:
-            return __show_quodlibet_uri(parsed)
-    elif parsed.scheme == "file" and (is_windows() or is_osx()):
+        return __show_quodlibet_uri(parsed)
+    if parsed.scheme == "file" and (is_windows() or is_osx()):
         # Gio on non-Linux can't handle file URIs for some reason,
         # fall back to our own implementation for now
         from quodlibet.qltk.showfiles import show_files
@@ -63,8 +62,7 @@ def show_uri(label, uri):
                 from quodlibet.qltk import get_top_parent
 
                 return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
-            else:
-                return Gtk.show_uri(None, uri, 0)
+            return Gtk.show_uri(None, uri, 0)
         except GLib.Error:
             return False
 
@@ -75,8 +73,7 @@ def __show_quodlibet_uri(uri):
 
         print_d(f"Showing plugin prefs resulting from URI ({uri})")
         return PluginWindow().move_to(uri.path[len("/prefs/plugins/") :])
-    else:
-        return False
+    return False
 
 
 def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
@@ -155,8 +152,7 @@ def get_top_parent(widget):
     parent = widget and widget.get_toplevel()
     if parent and parent.is_toplevel():
         return parent
-    else:
-        return None
+    return None
 
 
 def get_menu_item_top_parent(widget):
@@ -167,7 +163,7 @@ def get_menu_item_top_parent(widget):
     while isinstance(widget, Gtk.MenuItem):
         menu = widget.get_parent()
         if not menu:
-            return
+            return None
         widget = menu.get_attach_widget()
     return get_top_parent(widget)
 
@@ -430,7 +426,7 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         # source ID…) so fail with newer pygobject as well.
         if isinstance(fd, int) and fd < 0:
             raise ValueError("invalid fd")
-        elif hasattr(fd, "fileno") and fd.fileno() < 0:
+        if hasattr(fd, "fileno") and fd.fileno() < 0:
             raise ValueError("invalid fd")
         return GLib.io_add_watch(fd, prio, condition, func, *args, **kwargs)
     except TypeError:

@@ -287,5 +287,3 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
 class AlbumListSortModel(ObjectModelSort):
     """This model sorts entries of a child model"""
-
-    pass

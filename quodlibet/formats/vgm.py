@@ -75,8 +75,7 @@ class VgmFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return ["title"]
-        else:
-            return k == "title"
+        return k == "title"
 
 
 def parse_gd3(data):
@@ -84,10 +83,6 @@ def parse_gd3(data):
     if data[0:4] != b"Gd3 ":
         print_d("Invalid Gd3, Missing Header...")
         return tags
-
-    # version = data[4:8]
-    # Should be [0x00, 0x10, 0x00, 0x00] currently.
-    # We should hold onto it for possible branching if standards change.
 
     gd3_length = struct.unpack("<i", data[8:12])[0]
     # Length of gd3 footer. This means we can actually add more tags to the end

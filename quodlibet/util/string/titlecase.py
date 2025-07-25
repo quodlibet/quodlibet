@@ -85,10 +85,6 @@ def title(string, locale="utf-8"):
     """Title-case a string using a less destructive method than str.title."""
     if not string:
         return ""
-    # if the string is all uppercase, lowercase it - Erich/Javier
-    #   Lots of Japanese songs use entirely upper-case English titles,
-    #   so I don't like this change... - JoeW
-    # if string == string.upper(): string = string.lower()
     if not isinstance(string, str):
         string = string.decode(locale)
     return utitle(string)

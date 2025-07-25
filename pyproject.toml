@@ -1,46 +1,48 @@
-[tool.poetry]
+[project]
 name = "quodlibet"
-version = "4.7.0-pre"
 description = "A music library, tagger, and player"
-authors = [
-  "Joe Wreschnig",
-  "Michael Urman",
-  "Steven Robertson",
-  "Christoph Reiter",
-  "Nick Boultbee",
-  "(many others)",
-]
-maintainers = ["Christoph Reiter"]
-homepage = "https://quodlibet.readthedocs.io/"
-documentation = "https://quodlibet.readthedocs.io/"
-repository = "https://github.com/quodlibet/quodlibet"
+license = { text = "GPL-2.0-or-later" }
 keywords = ["audio", "music", "player", "tags", "gtk"]
-license = "GPL-2.0-or-later"
+version = "4.7.0-pre"
+authors = [
+  { name = "Joe Wreschnig" },
+  { name = "Michael Urman" },
+  { name = "Steven Robertson" },
+  { name = "Christoph Reiter" },
+  { name = "Nick Boultbee" },
+]
+maintainers = [{ name = "Christoph Reiter" }, { name = "Nick Boultbee" }]
+requires-python = '>=3.10,<4.0'
+dependencies = [
+  "mutagen>=1.45,<2.0",
+  "feedparser>=6.0.11,<7.0.0",
+  "pycairo>=1.19,<2.0",
+  "pygobject>=3.34.0,<4.0.0",
+]
 
-packages = [{ include = "quodlibet", from = "." }]
+[project.optional-dependencies]
+# Use with poetry install -E plugins
+plugins = [
+  "musicbrainzngs>=0.0.0,<1.0.0",
+  "dbus-python; platform_system == 'Linux'",
+  # 0.28 switched to lxml which is proving tricky on Windows
+  "soco>=0.27,<0.28",
+  "pypresence>=4.2.1,<5.0.0",
+  "paho-mqtt>=1.6.1,<2.0.0",
+]
 
-[tool.poetry.scripts]
+[project.urls]
+homepage = "https://quodlibet.readthedocs.io/"
+repository = "https://github.com/quodlibet/quodlibet"
+documentation = "https://quodlibet.readthedocs.io/"
+
+[project.scripts]
 # Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
 quodlibet = "quodlibet.main:main"
 
-
-[tool.poetry.dependencies]
-python = "^3.10"
-mutagen = "^1.45"
-feedparser = "^6.0.11"
-pycairo = "^1.19"
-pygobject = "^3.34.0"
-# Optional (mainly plugins)
-musicbrainzngs = { version = "0.*", optional = true }
-dbus-python = { version = "*", platform = "linux", optional = true }
-# 0.28 switched to lxml which is proving tricky on Windows
-soco = { version = ">=0.27, <0.28", optional = true }
-pypresence = { version = "^4.2.1", optional = true }
-paho-mqtt = { version = "^1.6.1", optional = true }
-
-[tool.poetry.extras]
-# Use with poetry install -E plugins
-plugins = ["musicbrainzngs", "dbus-python", "paho-mqtt", "soco", "pypresence"]
+[tool.poetry]
+requires-poetry = '>=2.0'
+package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 pytest = '^7.2.2'
@@ -64,7 +66,22 @@ line-length = 88
 extend-exclude = ["dev-utils/*", "quodlibet/packages/"]
 
 [tool.ruff.lint]
-select = ["E", "F", "B", "Q", "C", "N", "UP"]
+select = [
+  "B",
+  "C",
+  "E",
+  "ERA",
+  "EXE",
+  "F",
+  "FLY",
+  "INT", # Gettext
+  "N",
+  "PIE",
+  "Q",
+  "RET", # return types - mostly useful IMO
+  "UP",
+  "W",
+]
 ignore = [
   "E741", # Allow single-letter variables
   "E402", # Allow imports not at top
@@ -79,6 +96,7 @@ ignore = [
   "N806", # allow class-like variables in tests
   "N816", # as above really
 ]
+"**/cdefs.py" = ["ERA001"]
 "quodlibet/**/__init__.py" = [
   "B018", # allow importing "without effect"
 ]
@@ -145,4 +163,4 @@ omit = ["quodlibet/packages/*"]
 include = ["quodlibet/*"]
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools"]

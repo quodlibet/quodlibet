@@ -138,6 +138,7 @@ class PatternEditor(Gtk.HBox):
                     model_headers = [(row[0], row[1]) for row in self.__model]
                     self.__headers[self.__custom] = model_headers
                 return self.__headers[button]
+        return None
 
     @headers.setter
     def headers(self, new_headers):

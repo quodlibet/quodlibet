@@ -43,6 +43,7 @@ class HTTPDownloadMixin:
         target.replace_async(
             None, True, flags, GLib.PRIORITY_DEFAULT, self.cancellable, replaced, None
         )
+        return None
 
     def _download_received(self, request, ostream):
         try:
@@ -85,6 +86,7 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
             return self.emit("search-complete", [])
         msg = Soup.Message.new("GET", self.url)
         download_json(msg, self.cancellable, self._handle_search_response, None)
+        return None
 
     def _handle_search_response(self, message, json_dict, data=None):
         self.emit("search-complete", [])
@@ -99,9 +101,11 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
                 self.download(Soup.Message.new("GET", res[0]["cover"]))
             else:
                 return self.fail("No cover was found")
+            return None
 
         sci = self.connect("search-complete", search_complete)
         self.search()
+        return None
 
     def _album_artists_for(self, song):
         """Returns a comma-separated list of artists indicating the

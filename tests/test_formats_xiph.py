@@ -211,7 +211,6 @@ class TTotalTagsMixin:
         )
 
     def __save_tags(self, tags, expected):
-        # return
         song = OggFile(self.filename)
         for key, value in tags.items():
             song[key] = value

@@ -63,6 +63,7 @@ class MPRIS(EventPlugin):
         if self.__do_hide():
             win.hide()
             return True
+        return None
 
     def enabled(self):
         self.__sig = app.window.connect("delete-event", self.__window_delete)

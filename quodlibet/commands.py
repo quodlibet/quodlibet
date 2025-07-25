@@ -110,7 +110,7 @@ class CommandRegistry:
         try:
             result = cmd(app, *args)
         except CommandError as e:
-            raise CommandError(f"{name}: {str(e)}") from e
+            raise CommandError(f"{name}: {e!s}") from e
         else:
             if result is not None and not isinstance(result, fsnative):
                 raise CommandError(f"{name}: returned {result!r} which is not fsnative")
@@ -559,6 +559,7 @@ def _print_query(app, json_encoded_args):
 def _print_query_text(app):
     if app.browser.can_filter_text():
         return text2fsn(str(app.browser.get_filter_text()) + "\n")
+    return None
 
 
 @registry.register("print-playing", optional=1)

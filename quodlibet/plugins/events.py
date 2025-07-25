@@ -56,17 +56,14 @@ class EventPlugin:
 
     def plugin_on_songs_selected(self, songs):
         """Called when the selection in main songlist changes"""
-        pass
 
     PLUGIN_INSTANCE = True
 
     def enabled(self):
         """Called when the plugin is enabled."""
-        pass
 
     def disabled(self):
         """Called when the plugin is disabled."""
-        pass
 
 
 def list_signal_names(type_):
@@ -90,8 +87,7 @@ def _map_signals(obj, prefix="plugin_on_", blacklist=None):
     if blacklist is None:
         blacklist = []
     sigs = [s for s in sigs if s not in blacklist]
-    sigs = [(s, prefix + s.replace("-", "_")) for s in sigs]
-    return sigs
+    return [(s, prefix + s.replace("-", "_")) for s in sigs]
 
 
 class EventPluginHandler(PluginHandler):

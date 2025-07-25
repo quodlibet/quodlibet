@@ -173,8 +173,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist_iter = self.__selected_playlists()[1]
         remove.set_sensitive(bool(playlist_iter))
         items.append([remove])
-        menu = super().menu(songs, library, items)
-        return menu
+        return super().menu(songs, library, items)
 
     def __get_selected_songs(self):
         songlist = qltk.get_top_parent(self).songlist
@@ -304,21 +303,21 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             else:
                 print_d("Playlist removal cancelled through prompt")
             return True
-        elif qltk.is_accel(event, "F2"):
+        if qltk.is_accel(event, "F2"):
             model, iter = self.__selected_playlists()
             if iter:
                 self._start_rename(model.get_path(iter))
             return True
-        elif qltk.is_accel(event, "<Primary>I"):
+        if qltk.is_accel(event, "<Primary>I"):
             songs = self._get_playlist_songs()
             if songs:
                 window = Information(self.songs_lib.librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self._get_playlist_songs())
             return True
-        elif qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel(event, "<alt>Return"):
             songs = self._get_playlist_songs()
             if songs:
                 window = SongProperties(self.songs_lib.librarian, songs, self)
@@ -334,10 +333,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if "text/x-quodlibet-songs" in targets:
             view.set_drag_dest(x, y, into_only=True)
             return True
-        else:
-            # Highlighting the view itself doesn't work.
-            view.get_parent().drag_highlight()
-            return True
+        # Highlighting the view itself doesn't work.
+        view.get_parent().drag_highlight()
+        return True
 
     def __drag_leave(self, view, ctx, time):
         view.get_parent().drag_unhighlight()
@@ -379,8 +377,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if not iter:
             return None
         path = model.get_path(iter)
-        playlist = model[path][0]
-        return playlist
+        return model[path][0]
 
     def _add_drag_data_tracks_to_playlist(self, target_playlist, songs):
         """helper-function to facilitate unit-tests without fiddling with views"""
@@ -426,14 +423,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 # code?).
                 playlist = self.pl_lib.create_from_songs(songs)
                 GLib.idle_add(self._select_playlist, playlist)
-                # self.changed()
             else:
                 playlist = model[path][0]
                 # Call a helper-function that adds the tracks to the playlist if the
                 # user accepts the prompt.
                 was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
 
-            # self.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
             # Cause a refresh to the dragged-to playlist if it is selected
             # so that the dragged (duplicate) track(s) appears
@@ -459,7 +454,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     playlist = parse_pls(
                         sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
                     )
-                elif uri.endswith(".m3u") or uri.endswith(".m3u8"):
+                elif uri.endswith((".m3u", ".m3u8")):
                     playlist = parse_m3u(
                         sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
                     )
@@ -467,7 +462,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     raise OSError
                 self.songs_lib.add(playlist.songs)
                 # TODO: change to use playlist library too?
-                # self.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
             except OSError:
                 Gtk.drag_finish(ctx, False, False, etime)
@@ -503,7 +497,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __popup_menu(self, view, library):
         model, itr = view.get_selection().get_selected()
         if itr is None:
-            return
+            return None
         songs = list(model[itr][0])
         songs = [s for s in songs if isinstance(s, AudioFile)]
         menu = SongsMenu(library, songs, playlists=False, remove=False, ratings=False)
@@ -656,7 +650,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for filename in fns:
             name = _name_for(filename)
             with open(filename, "rb") as f:
-                if filename.endswith(".m3u") or filename.endswith(".m3u8"):
+                if filename.endswith((".m3u", ".m3u8")):
                     playlist = parse_m3u(
                         f, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
                     )

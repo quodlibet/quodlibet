@@ -116,16 +116,16 @@ class Pane(AllTreeView):
         if is_accel(event, "<Primary>a"):
             self.set_selected([])
             return True
-        elif is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
-        elif is_accel(event, "<alt>Return"):
+        if is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs(sort=True)
             if songs:
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        elif is_accel(event, "<Primary>I"):
+        if is_accel(event, "<Primary>I"):
             songs = self.__get_selected_songs(sort=True)
             if songs:
                 window = Information(librarian, songs, self)
@@ -211,7 +211,6 @@ class Pane(AllTreeView):
     def matches(self, song):
         model, paths = self.get_selection().get_selected_rows()
 
-        # nothing == all
         if not paths:
             return True
 

@@ -183,14 +183,14 @@ class Plugin:
         """A singleton"""
 
         if not getattr(self.cls, "PLUGIN_INSTANCE", False):
-            return
+            return None
 
         if self.instance is None:
             try:
                 obj = self.cls()
             except Exception:
                 util.print_exc()
-                return
+                return None
             self.instance = obj
 
         return self.instance
@@ -442,8 +442,7 @@ PM = PluginManager
 def plugin_enabled(plugin):
     """Returns true if the plugin is enabled (or "always" enabled)"""
     pm = PluginManager.instance
-    enabled = pm.enabled(plugin) or not plugin.can_enable
-    return enabled
+    return pm.enabled(plugin) or not plugin.can_enable
 
 
 class PluginConfig(ConfigProxy):

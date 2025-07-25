@@ -49,8 +49,9 @@ def get_cfg(option):
 
     if option == "feed":
         return config.getint("plugins", cfg_option, _PRESETS[0][4])
-    elif option == "fcut":
+    if option == "fcut":
         return config.getint("plugins", cfg_option, _PRESETS[0][3])
+    return None
 
 
 def set_cfg(option, value):

@@ -53,7 +53,7 @@ class DuplicateSongsView(RCMHintedTreeView):
     def menu(self, library):
         songs = self.get_selected_songs()
         if not songs:
-            return
+            return None
         menu = SongsMenu(library, songs, delete=True, plugins=False, playlists=False)
         menu.show_all()
         return menu
@@ -105,7 +105,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             row = model.find_row(song)
             if row:
                 print_d(
-                    f"Changed duplicated file {song('~artist~title')!r} " f"(Row={row})"
+                    f"Changed duplicated file {song('~artist~title')!r} (Row={row})"
                 )
                 parent = model.iter_parent(row.iter)
                 old_key = model[parent][0]
@@ -235,28 +235,25 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     def get_current(self):
         if self.__iter is None:
             return None
-        elif self.is_empty():
+        if self.is_empty():
             return None
-        else:
-            return self[self.__iter][0]
+        return self[self.__iter][0]
 
     @property
     def get_current_path(self):
         if self.__iter is None:
             return None
-        elif self.is_empty():
+        if self.is_empty():
             return None
-        else:
-            return self[self.__iter].path
+        return self[self.__iter].path
 
     @property
     def get_current_iter(self):
         if self.__iter is None:
             return None
-        elif self.is_empty():
+        if self.is_empty():
             return None
-        else:
-            return self.__iter
+        return self.__iter
 
     def is_empty(self):
         return not len(self)
@@ -280,6 +277,7 @@ class DuplicateDialog(Gtk.Window):
         menu = songlist.menu(app.library)
         if menu is not None:
             return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return None
 
     def __init__(self, model):
         songs_text = numeric_phrase(

@@ -59,31 +59,34 @@ You can now use the ``dev-utils/new-branch.sh`` script to help do this.
 New stable release
 ------------------
 
+First, check out the branch (``git checkout quodlibet-x.y``), then
+
 On the branch
 ^^^^^^^^^^^^^
 
-* ``git checkout quodlibet-x.y``
 * Cherry-pick stuff from default branch
-* Grab a title from `Daily Dinosaur Comics <http://www.qwantz.com/>`_
+* Grab a title from `Daily Dinosaur Comics <https://qwantz.com/archive.php/>`_
 * Update :ref:`News` with a list of all bugfixes and features since last release
 * ``git commit -m "update NEWS"``
 * Create a source dist: ``git clean && poetry run ./setup.py distcheck``
+* Update version to ``X.Y.Z`` in ``pyproject.toml``
 * Update version to ``(X, Y, Z)`` in ``const.py``
-* Update version to ``(X, Y, Z)`` in ``appdata.xml.in``
+* Update version to ``(X, Y, Z)`` in ``appdata.xml.in`` files
 * ``git commit -m "release prep"``
 * ``git tag release-x.y.z``
 * ``git push origin release-x.y.z``
 * `Create Windows builds <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/win_installer#creating-an-installer>`_
 * `Create macOS DMGs <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/osx_bundle#creating-a-bundle>`_
-* Create checksums: ``sha256sum dist/quodlibet-x.y.z.tar.gz``
-* Create PGP signature: ``gpg -b dist/quodlibet-x.y.z.tar.gz``
+* Create PGP signature: ``gpg -b dist/quodlibet-x.y.z.tar.gz > dist/quodlibet-x.y.z.tar.gz.sig``
+* Get built artifact and SHA sum from most recent branch build
 * Attach everything to the `Github release <https://github.com/quodlibet/quodlibet/releases/>`_ tag.
 
 
 On default branch
 ^^^^^^^^^^^^^^^^^
 
-* Update version to ``(X, Y, Z, -1)``
+* Update version to ``(X, Y, Z, -1)`` in ``const.py``
+* Update version to ``X.Y.Z-pre`` in ``pyproject.toml``
 * ``git commit -m "version bump"``
 * Cherry-pick ``NEWS`` commit
 * Update ``release_db/make.py``; run ``./release_db/update.sh``
@@ -94,4 +97,4 @@ External
 
 * Update stable PPAs (ubuntu/debian/OBS)
 * Make a PR on the `Flathub repo <https://github.com/flathub/io.github.quodlibet.QuodLibet/>`_
-* Announce on IRC / Discord / Twitter / Mastodon etc
+* Announce on IRC / Discord / Mastodon etc

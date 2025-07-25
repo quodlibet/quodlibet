@@ -7,15 +7,16 @@ cd "$DIR" || exit
 if [[ -z $ORIG_HOME ]]; then
     export ORIG_HOME="$HOME"
 fi
-export HOME="$DIR/_home"
+export QL_OSXBUNDLE_HOME="$DIR/_home"
 export QL_OSXBUNDLE_JHBUILD_DEST="$DIR/_jhbuild"
 export QL_OSXBUNDLE_BUNDLER_DEST="$DIR/_bundler"
 export QL_OSXBUNDLE_BUNDLE_DEST="$DIR/_build"
 
+export HOME="$QL_OSXBUNDLE_HOME"
 export CARGO_HOME="$ORIG_HOME/.cargo"
 export RUSTUP_HOME="$ORIG_HOME/.rustup"
 
-export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$QL_OSXBUNDLE_HOME/.local/bin"
 export QL_OSXBUNDLE_MODULESETS_DIR="$DIR/modulesets"
 # shellcheck disable=SC2139
 alias jhbuild="python3 $(which jhbuild)"

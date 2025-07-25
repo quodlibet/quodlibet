@@ -87,7 +87,7 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = "Copyright 2004-2023"
+COPYRIGHT = "Copyright 2004-2025"
 
 AUTHORS = sorted(
     """\
@@ -286,8 +286,6 @@ Fabien Devaux
 )
 
 # Default songlist column headers
-DEFAULT_COLUMNS = (
-    "~#track ~people ~title~version ~album~discsubtitle " "~#length".split()
-)
+DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle ~#length".split()
 
 DEBUG = "--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ

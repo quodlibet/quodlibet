@@ -341,10 +341,10 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs())
             return True
-        elif qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, self)

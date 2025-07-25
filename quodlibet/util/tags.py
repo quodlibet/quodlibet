@@ -251,35 +251,34 @@ def readable(tag, plural=False):
 
     if tag in _TAGS:
         return desc(tag)
-    elif tag == "people:real":
+    if tag == "people:real":
         return desc("people")
+    roles = False
+    if tag.endswith(":roles"):
+        roles = True
+        tag = tag[:-6]
+
+    parts = []
+    if tag.endswith("sort"):
+        v = _TAGS.get(tag[:-4])
+        if v is not None and v.has_sort:
+            tag = tag[:-4]
+            # Translators: e.g. "artist (sort)"
+            parts.append(_("sort"))
     else:
-        roles = False
-        if tag.endswith(":roles"):
-            roles = True
-            tag = tag[:-6]
+        v = _TAGS.get(tag[:-4])
 
-        parts = []
-        if tag.endswith("sort"):
-            v = _TAGS.get(tag[:-4])
-            if v is not None and v.has_sort:
-                tag = tag[:-4]
-                # Translators: e.g. "artist (sort)"
-                parts.append(_("sort"))
-        else:
-            v = _TAGS.get(tag[:-4])
+    if roles:
+        v = _TAGS.get(tag)
+        if v is not None and v.has_roles:
+            # Translators: e.g. "performer (roles)"
+            parts.append(_("roles"))
 
-        if roles:
-            v = _TAGS.get(tag)
-            if v is not None and v.has_roles:
-                # Translators: e.g. "performer (roles)"
-                parts.append(_("roles"))
-
-        if tag in _TAGS:
-            desc = desc(tag)
-            if parts:
-                desc += " ({})".format(", ".join(parts))
-            return desc
+    if tag in _TAGS:
+        desc = desc(tag)
+        if parts:
+            desc += " ({})".format(", ".join(parts))
+        return desc
 
     return tag
 
@@ -302,5 +301,4 @@ def sortkey(tag):
     except ValueError:
         if tag in MACHINE_TAGS:
             return (2, tag)
-        else:
-            return (1, tag)
+        return (1, tag)

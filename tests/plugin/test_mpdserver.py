@@ -53,6 +53,7 @@ class TMPDServer(PluginTestCase):
             for l in lines:
                 if not l.startswith("Title"):
                     return l
+            return None
 
         self.assertEqual(getline("artist", "foo"), "Artist: foo")
         self.assertEqual(getline("genre", "foo\nbar"), "Genre: foo, bar")
@@ -97,6 +98,7 @@ class TMPDCommands(PluginTestCase):
             Gtk.main_iteration_do(True)
         if data.strip() != b"idle":
             return self.s.recv(99999)
+        return None
 
     def tearDown(self):
         destroy_fake_app()

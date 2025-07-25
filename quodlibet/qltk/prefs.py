@@ -91,7 +91,7 @@ class PreferencesWindow(UniqueWindow):
                     "always_allow_sorting",
                     populate=True,
                     tooltip=_(
-                        "Allow sorting by column headers, " "even for playlists etc"
+                        "Allow sorting by column headers, even for playlists etc"
                     ),
                 )
 
@@ -347,7 +347,7 @@ class PreferencesWindow(UniqueWindow):
                 "rating_click",
                 populate=True,
                 tooltip=_(
-                    "Enable rating by clicking on the rating " "column in the song list"
+                    "Enable rating by clicking on the rating column in the song list"
                 ),
             )
 
@@ -561,7 +561,7 @@ class PreferencesWindow(UniqueWindow):
                 deltas = []
                 default = RATINGS.default
                 precision = RATINGS.precision
-                for i in range(0, num + 1):
+                for i in range(num + 1):
                     r = i * precision
                     model.append(row=[r])
                     deltas.append((abs(default - r), i))
@@ -793,7 +793,7 @@ class PreferencesWindow(UniqueWindow):
             reload_ = qltk.Button(_("Re_build Library"), Icons.DOCUMENT_NEW)
             reload_.connect("clicked", reload_cb)
             reload_.set_tooltip_text(
-                _("Reload all songs in your library. " "This can take a long time.")
+                _("Reload all songs in your library. This can take a long time.")
             )
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -843,8 +843,7 @@ class PreferencesWindow(UniqueWindow):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             scan_dirs = ScanBox()
             vb.pack_start(scan_dirs, True, True, 0)
-            f = qltk.Frame(_("Scan Directories"), child=vb)
-            return f
+            return qltk.Frame(_("Scan Directories"), child=vb)
 
     class Advanced(Gtk.VBox):
         name = "advanced"
@@ -935,8 +934,7 @@ class PreferencesWindow(UniqueWindow):
 
 
 def create_grid(column_spacing: int = 12, row_spacing: int = 6):
-    table = Gtk.Grid(row_spacing=row_spacing, column_spacing=column_spacing)
-    return table
+    return Gtk.Grid(row_spacing=row_spacing, column_spacing=column_spacing)
 
 
 def hbox_for(label: Gtk.Label, entry: Gtk.Entry, expand_entry: bool = True) -> Gtk.Box:

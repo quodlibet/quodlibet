@@ -229,7 +229,7 @@ You still might want to check out Ex Falso,
 since while there's an awful lot of media players out there,
 there are far fewer choices for tag editors.
 
-You could also :ref:`help us make Quod Libet better <Contribute>`!
+You could also help us make Quod Libet better!
 
 
 Changing the volume in Quod Libet changes the main volume!

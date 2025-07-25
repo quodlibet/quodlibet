@@ -93,12 +93,12 @@ class MutagenVCFile(AudioFile):
             self[single] = final
 
     def __post_read(self):
-        email = config.get("editing", "save_email").strip()
+        email = config.get("editing", "save_email").strip().lower()
         maps = {"rating": float, "playcount": int}
+        sub_keys = ["", f":{const.EMAIL.lower()}", f":{email}"]
         for keyed_key, func in maps.items():
-            emails = [s.lower() for s in ["", f":{const.EMAIL}", f":{email}"]]
-            for subkey in emails:
-                key = keyed_key + subkey
+            for subkey in sub_keys:
+                key = f"{keyed_key}{subkey}"
                 if key in self:
                     try:
                         self[f"~#{keyed_key}"] = func(self[key])
@@ -194,7 +194,7 @@ class MutagenVCFile(AudioFile):
 
         if not cover:
             self.has_images = False
-            return
+            return None
 
         mime = audio.get("coverartmime")
         mime = (mime and mime[0]) or "image/"
@@ -244,26 +244,25 @@ class MutagenVCFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return super().can_change(None)
-        else:
-            l = k.lower()
-            return (
-                super().can_change(k)
-                and l
-                not in [
-                    "rating",
-                    "playcount",
-                    "metadata_block_picture",
-                    "coverart",
-                    "coverartmime",
-                ]
-                and not l.startswith("rating:")
-                and not l.startswith("playcount:")
-            )
+        l = k.lower()
+        return (
+            super().can_change(k)
+            and l
+            not in [
+                "rating",
+                "playcount",
+                "metadata_block_picture",
+                "coverart",
+                "coverartmime",
+            ]
+            and not l.startswith("rating:")
+            and not l.startswith("playcount:")
+        )
 
     def __prep_write(self, comments):
         email = config.get("editing", "save_email").strip()
         for key in comments.keys():
-            if key.startswith("rating:") or key.startswith("playcount:"):
+            if key.startswith(("rating:", "playcount:")):
                 if key.split(":", 1)[1] in [const.EMAIL, email]:
                     del comments[key]
             elif key not in ["metadata_block_picture", "coverart", "coverartmime"]:

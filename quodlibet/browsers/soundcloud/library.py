@@ -161,8 +161,7 @@ class SoundcloudFile(RemoteFile):
     def can_change(self, k=None):
         if k is None:
             return ["~rating", "~#rating"]
-        else:
-            return k.endswith("rating")
+        return k.endswith("rating")
 
     def write(self):
         if not self.client or not self.client.online:
