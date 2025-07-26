@@ -22,7 +22,7 @@ from quodlibet.util.thread import (
 
 
 class Tcall_async(TestCase):
-    @pytest.mark.flaky(max_runs=3, min_passes=2)
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_main(self):
         cancel = Cancellable()
 

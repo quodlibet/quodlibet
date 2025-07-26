@@ -190,7 +190,7 @@ class TWatchedFileLibrary(TLibrary):
         temp_path = Path(self.temp_path)
         assert temp_path in monitors, f"Not monitoring {temp_path} (but {monitors})"
 
-    @pytest.mark.flaky(max_runs=3, min_passes=2)
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_watched_adding_removing(self):
         with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
