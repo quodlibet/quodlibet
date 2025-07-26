@@ -1179,9 +1179,9 @@ msgid ""
 "You can review the data before sending it below."
 msgstr ""
 "Különféle részletek a hibáról és a rendszeredről be lesznek küldve egy "
-"harmadik fél által nyújtott szolgáltatáshoz (<a "
-"href='https://www.sentry.io'>www.sentry.io</a>). Ellenőrizheti az adatokat "
-"az alábbiakban mielőtt elküldi őket."
+"harmadik fél által nyújtott szolgáltatáshoz (<a href='https://www.sentry."
+"io'>www.sentry.io</a>). Ellenőrizheti az adatokat az alábbiakban mielőtt "
+"elküldi őket."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1372,7 +1372,7 @@ msgid "_Fill:"
 msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr ""
 
@@ -2915,19 +2915,19 @@ msgid ""
 "similar)."
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr ""
 

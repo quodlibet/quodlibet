@@ -1293,8 +1293,8 @@ msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"கோப்புகளைக் குறியிடும்போது அல்லது மறுபெயரிடும்போது தன்னிச்சையான ரீசெக்ச் மாற்றீடுகளை ("
-"<tt> கள்/முதல்/வரை/</tt>) அனுமதிக்கிறது."
+"கோப்புகளைக் குறியிடும்போது அல்லது மறுபெயரிடும்போது தன்னிச்சையான ரீசெக்ச் மாற்றீடுகளை "
+"(<tt> கள்/முதல்/வரை/</tt>) அனுமதிக்கிறது."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1376,7 +1376,7 @@ msgid "_Fill:"
 msgstr "_ ஃபில்:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "நிறங்கள்"
 
@@ -2962,19 +2962,19 @@ msgstr ""
 "தடத்தின் (அல்லது ஒத்த) அதே பெயருடன் .lrc கோப்பிலிருந்து ஒத்திசைக்கப்பட்ட பாடல்களைக் "
 "காட்டுகிறது."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "உரை:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "பின்னணி:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "எழுத்துரு"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "அளவு (பிஎக்ச்):"
 
@@ -5386,8 +5386,8 @@ msgstr "உதவி தகவலைக் காண்பி"
 #, fuzzy, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
-"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து "
-"நெடுவரிசை-ஐ.டி) கள்."
+"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து நெடுவரிசை-ஐ."
+"டி) கள்."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
@@ -6020,8 +6020,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் சேமிப்பது"
-" பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
+"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் "
+"சேமிப்பது பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
 
 #: quodlibet/qltk/_editutils.py:47
 msgid "Unable to save song"
