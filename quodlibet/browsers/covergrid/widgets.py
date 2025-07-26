@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 
-from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango, Gdk
+from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango
 from cairo import Surface
 from .models import AlbumListItem
 

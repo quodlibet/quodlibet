@@ -8,7 +8,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import app

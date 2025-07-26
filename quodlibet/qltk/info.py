@@ -9,7 +9,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import _
 
