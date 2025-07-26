@@ -1370,7 +1370,7 @@ msgid "_Fill:"
 msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Warna"
 
@@ -1975,8 +1975,8 @@ msgid ""
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Perbolehkan kontrol Quod LIbet menggunakan Antarmuka D-Bus <a href="
-"\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"⏯️ Perbolehkan kontrol Quod LIbet menggunakan Antarmuka D-Bus <a "
+"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
 "Ini bisa mengintegrasikan desktop Linux (cth. pintasan multimedia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -2866,19 +2866,19 @@ msgid ""
 "similar)."
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "Teks:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "Latar belakang:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Fonta"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "Ukuran (piksel):"
 
