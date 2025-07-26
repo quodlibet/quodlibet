@@ -53,8 +53,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview = None
         self.scrolled_window = None
 
-    @classmethod
-    def PluginPreferences(cls, window):
+    def PluginPreferences(self, window):
         vb = Gtk.VBox(spacing=6)
         vb.set_border_width(6)
 
@@ -71,20 +70,20 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
         c = Gdk.RGBA()
-        c.parse(cls._get_text_color())
+        c.parse(self._get_text_color())
         b = Gtk.ColorButton(rgba=c)
         t.attach(b, 1, 2, 1, 2)
-        b.connect("color-set", cls._set_text_color)
+        b.connect("color-set", self._set_text_color)
 
         l = Gtk.Label(label=_("Background:"))
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
 
         c = Gdk.RGBA()
-        c.parse(cls._get_background_color())
+        c.parse(self._get_background_color())
         b = Gtk.ColorButton(rgba=c)
         t.attach(b, 1, 2, 2, 3)
-        b.connect("color-set", cls._set_background_color)
+        b.connect("color-set", self._set_background_color)
 
         font_section = Gtk.Label()
         font_section.set_markup(util.bold(_("Font")))
@@ -94,12 +93,12 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         l.set_alignment(xalign=1.0, yalign=0.5)
         t.attach(l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
 
-        a = Gtk.Adjustment.new(cls._get_font_size(), 10, 72, 2, 3, 0)
+        a = Gtk.Adjustment.new(self._get_font_size(), 10, 72, 2, 3, 0)
         s = Gtk.SpinButton(adjustment=a)
         s.set_numeric(True)
-        s.set_text(str(cls._get_font_size()))
+        s.set_text(str(self._get_font_size()))
         t.attach(s, 1, 2, 4, 5)
-        s.connect("value-changed", cls._set_font_size)
+        s.connect("value-changed", self._set_font_size)
 
         vb.pack_start(t, False, False, 0)
         return vb
