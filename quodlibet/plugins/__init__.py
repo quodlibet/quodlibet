@@ -1,11 +1,11 @@
-# Copyright 2012 - 2024 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2025 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
+from typing import Optional, Literal
 from collections.abc import Iterable
 
 from quodlibet import _
@@ -64,7 +64,7 @@ class MissingModulePluginError(PluginImportError):
 
     def __init__(self, module_name: str, extra: str | None = None):
         tmpl = _(
-            "Couldn't find module '{module}'. "
+            "Couldn't find module {module!r}. "
             "Perhaps you need to install the package?{extra}"
         )
         msg = tmpl.format(
@@ -77,10 +77,11 @@ class MissingGstreamerElementPluginError(PluginImportError):
     """Consistent Exception for reporting missing Gstreamer elements for
     plugins"""
 
-    def __init__(self, element_name):
-        msg = _("Couldn't find GStreamer element '{element}'.").format(
-            element=element_name
-        )
+    def __init__(self, element: str, category: Literal["good", "bad", "ugly"]):
+        msg = _(
+            "Couldn't find GStreamer element {element!r}, "
+            "from the {category!r} plugins."
+        ).format(**locals())
         super().__init__(msg)
 
 

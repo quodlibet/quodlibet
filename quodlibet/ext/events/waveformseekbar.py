@@ -21,7 +21,13 @@ import cairo
 from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet import util
-from quodlibet.plugins import PluginConfig, IntConfProp, ConfProp, BoolConfProp
+from quodlibet.plugins import (
+    PluginConfig,
+    IntConfProp,
+    ConfProp,
+    BoolConfProp,
+    MissingModulePluginError,
+)
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align, add_css
 from quodlibet.qltk import Icons
@@ -644,6 +650,11 @@ class WaveformSeekBarPlugin(EventPlugin):
         self._bar = None
 
     def enabled(self):
+        level_element = Gst.ElementFactory.find("level")
+        if not level_element:
+            extra_msg = _("Use the GStreamer 'good' plugins package")
+            raise MissingModulePluginError("GStreamer 'level' element", extra_msg)
+
         self._bar = WaveformSeekBar(app.player, app.librarian)
         self._bar.show()
         app.window.set_seekbar_widget(self._bar)
@@ -771,8 +782,4 @@ class WaveformSeekBarPlugin(EventPlugin):
             adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
         )
         height_px.set_numeric(True)
-        height_px.connect("changed", on_height_px_changed)
-        hbox.pack_end(height_px, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
-
-        return vbox
+        height_px
