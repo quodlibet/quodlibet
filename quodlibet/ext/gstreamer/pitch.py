@@ -1,5 +1,6 @@
 # Copyright 2012 Christoph Reiter
 #           2018 Ludovic Druette
+#           2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,7 +10,7 @@
 from gi.repository import Gtk, GObject, Gst
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportError
+from quodlibet.plugins import MissingGstreamerElementPluginError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.qltk.util import GSignals
 from quodlibet import qltk
@@ -123,4 +124,4 @@ class Pitch(GStreamerPlugin):
 
 
 if not Pitch.setup_element():
-    raise PluginImportError("GStreamer element 'pitch' missing (gst-plugins-bad)")
+    raise MissingGstreamerElementPluginError("pitch", "bad")

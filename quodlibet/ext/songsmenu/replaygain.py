@@ -1,7 +1,7 @@
 #    ReplayGain Album Analysis using gstreamer rganalysis element
-#    Copyright (C) 2005,2007,2009  Michael Urman
-#                       2012-2021  Nick Boultbee
-#                            2013  Christoph Reiter
+#    Copyright (C) 2005,2007,2009 Michael Urman
+#                       2012-2025 Nick Boultbee
+#                            2013 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@ from gi.repository import Gst
 from gi.repository import GLib
 
 from quodlibet import print_d, ngettext, C_, _, util
-from quodlibet.plugins import PluginConfigMixin
+from quodlibet.plugins import PluginConfigMixin, MissingGstreamerElementPluginError
 
 from quodlibet.browsers.collection.models import EMPTY
 
@@ -658,4 +658,4 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 if not Gst.Registry.get().find_plugin("replaygain"):
     __all__ = []
     del ReplayGain
-    raise ImportError("GStreamer replaygain plugin not found")
+    raise MissingGstreamerElementPluginError("replaygain", "good")
