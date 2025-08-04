@@ -1,4 +1,5 @@
 # Copyright 2006 Joe Wreschnig
+#           2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,24 +16,21 @@ also be queried in various ways.
 
 import time
 
-from quodlibet import print_d, print_w, config
-
-from quodlibet.library.song import SongLibrary, SongFileLibrary
+from quodlibet import print_d, print_w
 from quodlibet.library.librarians import SongLibrarian
-from quodlibet.util.library import get_scan_dirs
+from quodlibet.library.song import SongFileLibrary, SongLibrary
+
 from quodlibet.util.path import mtime
 
 
 def init(cache_fn=None):
     """Set up the library and return the main one.
 
-    Return a main library, and set a librarian for
-    all future SongLibraries.
+    Return a main library and set a librarian for all future SongLibraries.
     """
 
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
-    watch = config.getboolean("library", "watch")
-    library = SongFileLibrary("main", watch_dirs=get_scan_dirs() if watch else [])
+    library = SongFileLibrary("main")
     if cache_fn:
         library.load(cache_fn)
     return library
@@ -41,8 +39,8 @@ def init(cache_fn=None):
 def save(save_period=None):
     """Save all registered libraries that have a filename and are marked dirty.
 
-    If `save_period` (seconds) is given the library will only be saved if
-    it hasn't been in the last `save_period` seconds.
+    If `save_period` (seconds) is given,
+    the library will only be saved if it hasn't been in the last `save_period` seconds.
     """
 
     print_d("Saving all libraries...")

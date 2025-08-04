@@ -4,17 +4,15 @@
 # (at your option) any later version.
 from pathlib import Path
 from typing import TypeVar
-from collections.abc import Iterable
 
-from quodlibet import util, print_d
-from quodlibet.formats import MusicFile, AudioFile
+from quodlibet import print_d, util
+from quodlibet.formats import AudioFile, MusicFile
 from quodlibet.library.album import AlbumLibrary
-from quodlibet.library.base import Library, PicklingMixin, K
+from quodlibet.library.base import K, Library, PicklingMixin
 from quodlibet.library.file import WatchedFileLibraryMixin
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
 from quodlibet.util.path import normalize_path
-from senf import fsnative
 
 V = TypeVar("V", bound=AudioFile)
 
@@ -90,11 +88,9 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None, watch_dirs: Iterable[fsnative] | None = None):
+    def __init__(self, name=None):
         print_d(f"Initializing {type(self).__name__}: {name!r}")
         super().__init__(name)
-        if watch_dirs:
-            self.start_watching(watch_dirs)
 
     def get_filename(self, filename):
         key = normalize_path(filename, True)

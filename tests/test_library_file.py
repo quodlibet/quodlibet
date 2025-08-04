@@ -179,7 +179,9 @@ class TWatchedFileLibrary(TLibrary):
         destroy_fake_app()
 
     def Library(self):
-        lib = SongFileLibrary(watch_dirs=[text2fsn(str(self.temp_path))])
+        lib = SongFileLibrary()
+        dirs = [text2fsn(str(self.temp_path))]
+        lib.start_watching(dirs)
         # Setup needs copools
         run_gtk_loop()
         return lib
