@@ -446,7 +446,7 @@ class SongsMenu(Gtk.Menu):
 
     def init_edit(self, accels, songs, librarian):
         self.separate()
-        b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
+        b = qltk.MenuItem(_("_Edit…"), Icons.EDIT)
         b.set_sensitive(bool(songs))
         if accels:
             qltk.add_fake_accel(b, "<alt>Return")

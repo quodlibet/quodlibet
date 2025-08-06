@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#        2016-17 Nick Boultbee
+#        2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from quodlibet import _
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 
 
 def MenuItems(marks, player, seekable):
@@ -53,11 +53,13 @@ def MenuItems(marks, player, seekable):
 
 class EditBookmarksPane(Gtk.VBox):
     def __init__(self, library, song, close=False):
-        super().__init__(spacing=6)
+        super().__init__(spacing=12)
+        self.title = _("Bookmarks")
 
         hb = Gtk.HBox(spacing=12)
         self.time = time = Gtk.Entry()
         time.set_width_chars(5)
+        time.set_size_request(65, -1)
         self.markname = name = Gtk.Entry()
         add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         hb.pack_start(time, False, True, 0)
@@ -70,6 +72,7 @@ class EditBookmarksPane(Gtk.VBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(RCMHintedTreeView(model=model))
+        add_css(sw, "* { padding: 12px } ")
 
         render = Gtk.CellRendererText()
 
@@ -92,6 +95,7 @@ class EditBookmarksPane(Gtk.VBox):
         render.connect("edited", self.__edit_name, model)
         sw.get_child().append_column(col)
         self.pack_start(sw, True, True, 0)
+        add_css(self, "* { margin: 12px } ")
         self.accels = Gtk.AccelGroup()
 
         hbox = Gtk.HButtonBox()
@@ -120,9 +124,9 @@ class EditBookmarksPane(Gtk.VBox):
         connect_obj(name, "changed", self.__check_entry, add, time, name)
         connect_obj(name, "activate", Gtk.Button.clicked, add)
 
-        time.set_text(_("MM:SS"))
+        time.set_placeholder_text(_("MM:SS"))
         connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
-        name.set_text(_("Bookmark Name"))
+        name.set_placeholder_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
