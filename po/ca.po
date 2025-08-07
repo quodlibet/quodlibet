@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-05-20 14:03+0000\n"
+"PO-Revision-Date: 2025-08-06 06:02+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5607,19 +5607,19 @@ msgstr ""
 "a ~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"No s'ha trobat el mòdul «{module}». És possible que hàgiu d'instal·lar el "
+"No s'ha trobat el mòdul «{module!r}». És possible que hàgiu d'instal·lar el "
 "paquet. {extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "No s'ha trobat l'element del GStreamer «{element}»."
+msgstr ""
+"No s'ha trobat l'element del GStreamer «{element!r}» dels connectors "
+"«{category!r}»."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
