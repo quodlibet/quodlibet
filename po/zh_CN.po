@@ -1356,7 +1356,7 @@ msgid "_Fill:"
 msgstr "填充(_F)："
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "颜色"
 
@@ -1528,9 +1528,9 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -2871,19 +2871,19 @@ msgid ""
 "similar)."
 msgstr "显示与曲目同名（或类似）的 .lrc 文件中的同步歌词。"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "文字："
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "背景："
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "字体"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "字号（px）："
 
@@ -3120,39 +3120,39 @@ msgstr "可视化可执行文件："
 msgid "Reload"
 msgstr "重新载入"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "波形进度条"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 当前歌曲波形形状的搜索栏。"
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr "前景色"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 msgid "Hover color"
 msgstr "覆盖悬停时的颜色"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr "其余颜色"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 msgid "Show current position whilst hovering"
 msgstr "悬停时显示当前位置"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "显示时间标签"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "在进度条处滚动滚轮时前进/后退的毫秒数："
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr "波形高度（像素）："
 
@@ -3168,34 +3168,34 @@ msgstr "将当前歌曲的封面图像保存到文件。"
 msgid "File:"
 msgstr "文件："
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "阈值(_T)："
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "激活筛选器之前的阈值"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "比例(_R)："
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "压缩比"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "音频压缩器"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3309,23 +3309,23 @@ msgstr "单声道下混"
 msgid "Downmixes audio channels to mono."
 msgstr "将音频通道下混为单声道。"
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "速度(_R)："
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "节奏(_T)："
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "音高(_P)："
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "音频音调/速度"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "控制音频流的音调。"
 
@@ -5384,15 +5384,16 @@ msgid ""
 msgstr "找不到音频设备 %r。检查 ~/.quodlibet/config 中的 Xine 设置。"
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
+#, fuzzy
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr "找不到模块 '{module}'。也许您需要安装此软件包？{extra}"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "找不到 GStreamer 元素 '{element}'。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228

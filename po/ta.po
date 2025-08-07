@@ -1293,8 +1293,8 @@ msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"கோப்புகளைக் குறியிடும்போது அல்லது மறுபெயரிடும்போது தன்னிச்சையான ரீசெக்ச் மாற்றீடுகளை ("
-"<tt> கள்/முதல்/வரை/</tt>) அனுமதிக்கிறது."
+"கோப்புகளைக் குறியிடும்போது அல்லது மறுபெயரிடும்போது தன்னிச்சையான ரீசெக்ச் மாற்றீடுகளை "
+"(<tt> கள்/முதல்/வரை/</tt>) அனுமதிக்கிறது."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1376,7 +1376,7 @@ msgid "_Fill:"
 msgstr "_ ஃபில்:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "நிறங்கள்"
 
@@ -1558,9 +1558,9 @@ msgstr "_வாத உத்தி:"
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -2962,19 +2962,19 @@ msgstr ""
 "தடத்தின் (அல்லது ஒத்த) அதே பெயருடன் .lrc கோப்பிலிருந்து ஒத்திசைக்கப்பட்ட பாடல்களைக் "
 "காட்டுகிறது."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "உரை:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "பின்னணி:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "எழுத்துரு"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "அளவு (பிஎக்ச்):"
 
@@ -3214,39 +3214,39 @@ msgstr "இயங்கக்கூடியதைக் காண்க:"
 msgid "Reload"
 msgstr "ஏற்றவும்"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "அலைவடிவம் பார்"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "Tran தற்போதைய பாடலின் அலைவடிவத்தின் வடிவத்தில் ஒரு சீக்பார்."
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr "முன்புற நிறம்"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 msgid "Hover color"
 msgstr "வண்ணம்"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr "மீதமுள்ள நிறம்"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 msgid "Show current position whilst hovering"
 msgstr "வட்டமிடும் போது தற்போதைய நிலையைக் காட்டு"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "நேர லேபிள்களைக் காட்டு"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "ச்க்ரோலிங் செய்யும் போது (மில்லி விநாடிகள்) தொகையைத் தேடுங்கள்:"
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr "அலைவடிவ உயரம் (பிக்சல்கள்):"
 
@@ -3262,34 +3262,34 @@ msgstr "தற்போதைய பாடலின் கவர் படத்
 msgid "File:"
 msgstr "கோப்பு:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "_Threshold:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "வடிகட்டி செயல்படுத்தப்படும் வரை வாசல்"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "R_atio:"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "சுருக்க விகிதம்"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "ஆடியோ அமுக்கி"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3405,23 +3405,23 @@ msgstr "மோனோ டவுன்மிக்ச்"
 msgid "Downmixes audio channels to mono."
 msgstr "ஆடியோ சேனல்களை மோனோவுக்கு கீழ்நோக்கி."
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "R_ate:"
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "_TEMPO:"
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "_Pitch:"
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "ஆடியோ சுருதி / விரைவு"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "ஆடியோ ச்ட்ரீமின் சுருதியைக் கட்டுப்படுத்துகிறது."
 
@@ -5386,8 +5386,8 @@ msgstr "உதவி தகவலைக் காண்பி"
 #, fuzzy, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
-"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து "
-"நெடுவரிசை-ஐ.டி) கள்."
+"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து நெடுவரிசை-ஐ."
+"டி) கள்."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
@@ -5542,17 +5542,18 @@ msgstr ""
 "இல் சரிபார்க்கவும்."
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
+#, fuzzy
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 "'{module}' தொகுதி கண்டுபிடிக்க முடியவில்லை. ஒருவேளை நீங்கள் தொகுப்பை நிறுவ வேண்டுமா? "
 "{extra}"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "சிச்ட்ரீமர் உறுப்பு '{element}' கண்டுபிடிக்க முடியவில்லை."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
@@ -6020,8 +6021,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் சேமிப்பது"
-" பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
+"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் "
+"சேமிப்பது பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
 
 #: quodlibet/qltk/_editutils.py:47
 msgid "Unable to save song"

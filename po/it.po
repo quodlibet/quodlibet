@@ -1387,7 +1387,7 @@ msgid "_Fill:"
 msgstr "_Riempimento:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Colori"
 
@@ -1579,9 +1579,9 @@ msgstr "_Aggiorna stazioni"
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -3024,19 +3024,19 @@ msgid ""
 "similar)."
 msgstr "Mostra testi sincronizzati da file .lrc con lo stesso nome del brano."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "_Testo:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "_Sfondo:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Carattere"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "_Dimensione (px):"
 
@@ -3277,44 +3277,44 @@ msgstr "Eseguibile visualizzatore"
 msgid "Reload"
 msgstr "_Ricarica"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "Barra di posizionamento a forma d'onda"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 #, fuzzy
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "Una barra di posizionamento del brano corrente in forma d'onda "
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 #, fuzzy
 msgid "Foreground color"
 msgstr "Scavalca colore di primo piano:"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 #, fuzzy
 msgid "Hover color"
 msgstr "Scavalca colore svolazzante:"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 #, fuzzy
 msgid "Remaining color"
 msgstr "Scavalca colore rimanente:"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 #, fuzzy
 msgid "Show current position whilst hovering"
 msgstr "Mostra la posizione corrente"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "Mostra le etichette di tempo"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Quantità di posizionamento allo scorrimento (millisecondi)"
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr ""
 
@@ -3330,34 +3330,34 @@ msgstr "Salva l'immagine di copertina del brano corrente in un file."
 msgid "File:"
 msgstr "File:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "_Soglia:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "Soglia fino alla quale il filtro non viene attivato"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "R_apporto:"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "Rapporto di compressione"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "Compressore audio"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3475,23 +3475,23 @@ msgstr "Missaggio mono"
 msgid "Downmixes audio channels to mono."
 msgstr "Rimissa i canali audio in mono."
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "V_oto:"
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "_Tempo:"
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "_Intonazione:"
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "Intonazione audio / Velocità"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "Controlla l'intonazione di un flusso audio."
 
@@ -5684,17 +5684,18 @@ msgstr ""
 "di Xine in ~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy, python-brace-format
+#, fuzzy
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 "Impossibile trovare il modulo '{module}'. Hai forse bisogno di installare il "
 "pacchetto?"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "Impossibile trovare l'elemento di GStreamer '{element}'."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228

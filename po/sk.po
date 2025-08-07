@@ -1391,7 +1391,7 @@ msgid "_Fill:"
 msgstr "_Vyplniť:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Farby"
 
@@ -1573,9 +1573,9 @@ msgstr "_Spôsob aktualizácie:"
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -2994,19 +2994,19 @@ msgstr ""
 "Zobrazuje synchronizované texty piesní z .lrc súboru, ktorý má rovnaký názov "
 "ako stopa."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "Text:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "Pozadie:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Písmo"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "Veľkosť (px):"
 
@@ -3247,39 +3247,39 @@ msgstr "Spustiteľný súbor vizualizéra:"
 msgid "Reload"
 msgstr "Opätovne načítať"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "Panel posunu vo vlnovej krivke skladby"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Panel posunu v tvare vlnovej krivky prehrávanej skladby."
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr "Foreground farba"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 msgid "Hover color"
 msgstr "Farba prechodu myšou"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr "Zostávajúca farba"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 msgid "Show current position whilst hovering"
 msgstr "Zobraziť aktuálnu pozíciu pri zdvíhaní"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "Zobraziť časové značky"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Dĺžka posunu kolieskom myši (v milisekundách):"
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr "Výška vlny (pixels):"
 
@@ -3295,34 +3295,34 @@ msgstr "Uloží obrázok obalu súčasnej skladby do súboru."
 msgid "File:"
 msgstr "Súbor:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "_Prah:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "Prahová hodnota pre zapnutie filtra"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "P_omer:"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "Pomer kompresie"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "Zvukový kompresor"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3438,23 +3438,23 @@ msgstr "Zlúčenie kanálov"
 msgid "Downmixes audio channels to mono."
 msgstr "Zlúči kanály do jedného."
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "_Hodnotenie:"
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "_Tempo:"
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "_Výška tónov:"
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "Výška tónov / rýchlosť zvuku"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "Ovláda výšku tónov zvukového prúdu."
 
@@ -5586,17 +5586,18 @@ msgstr ""
 "quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
+#, fuzzy
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 "Nepodarilo sa nájsť modul '{module}'. Treba nainštalovať príslušný balík?"
 "{extra}"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "Nepodarilo sa nájsť prvok GStreamera „{element}“."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
