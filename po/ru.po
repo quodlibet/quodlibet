@@ -1395,7 +1395,7 @@ msgid "_Fill:"
 msgstr "За_ливка:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Цвета"
 
@@ -1577,9 +1577,9 @@ msgstr "_Стратегия обновления:"
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -2984,19 +2984,19 @@ msgstr ""
 "Синхронно показывает текст песни из файла .lrc с тем же именем (или "
 "похожим), что и трек ."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "Текст:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "Фон:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Шрифт"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "Размер (пикс):"
 
@@ -3234,39 +3234,39 @@ msgstr "Исполняемый файл визуализатора:"
 msgid "Reload"
 msgstr "Обновить"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "Панель перемотки Waveform"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Панель поиска в виде формы волны текущей песни."
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr "Цвет переднего плана"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 msgid "Hover color"
 msgstr "Цвет при наведении курсора"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr "Остаточный цвет"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 msgid "Show current position whilst hovering"
 msgstr "Показывать текущее положение при наведении курсора"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "Показать метки времени"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Шаг при прокрутке (миллисекунды):"
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr "Высота волноформы (пиксели):"
 
@@ -3282,34 +3282,34 @@ msgstr "Сохраняет обложку текущего трека в фай�
 msgid "File:"
 msgstr "Файл:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "_Порог:"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "Порог до активации фильтра"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "_Коэффициент:"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "Коэффициент компрессии"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "Аудиокомпрессор"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3425,23 +3425,23 @@ msgstr "Сведение в моно"
 msgid "Downmixes audio channels to mono."
 msgstr "Микширует аудио каналы в моно."
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "_Коэффициент:"
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "_Темп:"
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "_Высота:"
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "Высота и скорость звука"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "Управление параметрами аудиопотока."
 
@@ -5568,17 +5568,18 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
+#, fuzzy
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 "Не удалось найти модуль «{module}». Возможно, вам нужно установить пакет?"
 "{extra}"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "Не удалось найти элемент GStreamer: '{element}'."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
