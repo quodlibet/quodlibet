@@ -67,6 +67,13 @@ def main():
             packages.append(package_name)
     assert packages
 
+    # package_data requires that the directories are packages in newer
+    # setuptools
+    for root, _dirnames, _filenames in os.walk("quodlibet/images"):
+        relpath = os.path.relpath(root, os.path.dirname(package_path))
+        package_name = relpath.replace(os.sep, ".")
+        packages.append(package_name)
+
     setup_kwargs = {
         "distclass": GDistribution,
         "name": "quodlibet",
