@@ -1,7 +1,7 @@
 [project]
 name = "quodlibet"
 description = "A music library, tagger, and player"
-license = { text = "GPL-2.0-or-later" }
+license = "GPL-2.0-or-later"
 keywords = ["audio", "music", "player", "tags", "gtk"]
 version = "4.7.0-pre"
 authors = [
@@ -57,7 +57,8 @@ types-docutils = "^0.19.0"
 types-certifi = "^2021.10.8.3"
 types-requests = "^2.28.11.15"
 pyvirtualdisplay = { version = "^3.0", platform = "linux" }
-setuptools = "^75.2.0"
+setuptools = "^77.0.3"
+packaging = "^24.2"
 ruff = { version = "0.7.3", platform = "linux" }
 
 [tool.ruff]
@@ -163,4 +164,4 @@ omit = ["quodlibet/packages/*"]
 include = ["quodlibet/*"]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=77.0.3"]
