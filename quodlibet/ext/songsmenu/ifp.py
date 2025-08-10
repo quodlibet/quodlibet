@@ -33,8 +33,8 @@ class IFPUpload(SongsMenuPlugin):
                     "Unable to contact your iFP device. Check "
                     "that the device is powered on and plugged "
                     "in, and that you have ifp-line "
-                    "(http://ifp-driver.sf.net) installed."
-                ),
+                    "({ifp_url}) installed."
+                ).format(ifp_url="http://ifp-driver.sf.net"),
             ).run()
             return True
         self.__madedir = []
