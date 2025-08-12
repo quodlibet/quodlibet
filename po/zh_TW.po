@@ -1164,10 +1164,11 @@ msgid "Error details:"
 msgstr "錯誤詳細："
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "有關錯誤及系統各式細節將會傳送至第三方線上服務 (<a href='https://www.sentry."
 "io'>www.sentry.io</a>)，傳送之前您可以查看資料。"
@@ -1962,9 +1963,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux 桌面整合 (MPRIS D-BUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, fuzzy, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "⏯️允許 Quod Libet 控制使用 <a href=\"https://mpris2.readthedocs.io/en/latest/"
@@ -4530,9 +4532,10 @@ msgid "No iFP device found"
 msgstr "找不到 iFP 裝置"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "無法聯絡您的 IFP 裝置。檢查裝置是否已開啟電源並插入接通，以及您有 ifp-line "
 "(http://ifp-driver.sf.net) 已經安裝。"
@@ -4846,10 +4849,6 @@ msgid ""
 msgstr ""
 "分析並更新 <a href=\"%(rg_link)s\">ReplayGain</a> 資訊，使用 GStreamer 。結果"
 "依照專輯分別群組。"
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -7912,6 +7911,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一套音樂管理工具程式，提供多種不同方式來呈現音樂庫，以及支援網路"
 "廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr "Converts album and artist names to sort names, poorly."

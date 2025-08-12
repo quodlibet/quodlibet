@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
 "PO-Revision-Date: 2025-08-06 06:02+0000\n"
-"Last-Translator: 大王叫我来巡山 "
-"<hamburger2048@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
+"org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -1166,10 +1166,11 @@ msgid "Error details:"
 msgstr "错误详情："
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "有关错误和您的系统的各种细节将发送给第三方在线服务(<a href='https://www."
 "sentry.io'>www.sentry.io</a>) 发送前，您可以在下方查看这些数据。"
@@ -1962,9 +1963,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux 桌面集成（MPRIS D-BUS）"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, fuzzy, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "⏯️允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-"
@@ -4528,9 +4530,10 @@ msgid "No iFP device found"
 msgstr "未找到 iFP 设备"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp 线 "
 "（http://ifp-driver.sf.net）。"
@@ -4845,10 +4848,6 @@ msgid ""
 msgstr ""
 "使用 GStreamer 分析和更新 <a href=\"%(rg_link)s\">ReplayGain</a> 信息。结果按"
 "专辑分组。"
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%94%BE%E5%A2%9E%E7%9B%8A"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -7913,6 +7912,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一个音乐曲库管理程序。它有多重不同的方式可以管理您的曲库，并且支"
 "持网络电台和音频源。此外它还有非常灵活的标签编辑以及搜索功能。"
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%94%BE%E5%A2%9E%E7%9B%8A"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr "将专辑和艺术家姓名转换为排序名称，效果不佳。"
