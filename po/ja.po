@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-05-26 13:03+0000\n"
+"PO-Revision-Date: 2025-08-11 01:01+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5501,19 +5501,17 @@ msgstr ""
 "Xine の設定を確認してください。"
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
-msgstr ""
-"モジュール「{module}」が見つかりませんでした。おそらくパッケージが未インス"
-"トールなのではないでしょうか?{extra}"
+msgstr "モジュール「{module!r}」が見つかりません。パッケージのインストールが必要かも"
+"しれません。{extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "GStreamer エレメント「{element}」が見つかりませんでした。"
+msgstr "GStreamer エレメント「{element!r}」({category!r} プラグイン) "
+"が見つかりません。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
