@@ -41,6 +41,18 @@ class ThemeSwitcher(EventPlugin):
         self.__default_theme = settings.get_property("gtk-theme-name")
         self.__default_dark = settings.get_property("gtk-application-prefer-dark-theme")
 
+        schemas = Gio.SettingsSchemaSource.get_default()
+        if schemas and schemas.lookup("org.gnome.desktop.interface", True):
+            self.__desktop = Gio.Settings.new("org.gnome.desktop.interface")
+        else:
+            self.__desktop = None
+
+        def on_color_scheme(settings, value):
+            self.__set_dark(self.__get_dark())
+
+        if self.__desktop:
+            self.__desktop.connect("changed::color-scheme", on_color_scheme)
+
     def PluginPreferences(self, *args):
         self.__init_defaults()
 
@@ -66,7 +78,7 @@ class ThemeSwitcher(EventPlugin):
             "plugins",
             self.CONFIG_DARK,
             populate=True,
-            default=self.__get_dark(),
+            default=self.__default_dark,
         )
 
         def dark_cb(button):
@@ -151,7 +163,14 @@ class ThemeSwitcher(EventPlugin):
         settings.set_property("gtk-application-prefer-dark-theme", value)
 
     def __get_dark(self):
-        return config.getboolean("plugins", self.CONFIG_DARK, self.__default_dark)
+        if config.getboolean("plugins", self.CONFIG_DARK, self.__default_dark):
+            return True
+
+        # fallback to desktop's scheme if preference is not True
+        if self.__desktop:
+            return self.__desktop.get_string("color-scheme") == "prefer-dark"
+
+        return False
 
     def enabled(self):
         self.__enabled = True
