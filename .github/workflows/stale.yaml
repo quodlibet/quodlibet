@@ -17,3 +17,10 @@ jobs:
           days-before-pr-close: 14
           # Maybe good?
           exempt-all-pr-assignees: true
+          # Lowercase is nicer?
+          stale-issue-label: stale
+          stale-pr-label: stale
+    permissions:
+      actions: write
+      issues: write
+      pull-requests: write
