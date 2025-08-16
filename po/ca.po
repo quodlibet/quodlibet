@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-06 06:02+0000\n"
+"PO-Revision-Date: 2025-08-12 17:02+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -1187,14 +1187,15 @@ msgid "Error details:"
 msgstr "Detalls de l'error:"
 
 #: quodlibet/errorreport/ui.py:84
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "S'enviaran diversos detalls sobre l'error i el vostre sistema a un servei en "
-"línia de tercers (<a href='https://www.sentry.io'>www.sentry.io</a>). A "
-"continuació, podeu revisar les dades abans d'enviar-les."
+"línia de tercers (<a href='{sentry_url}'>www.sentry.io</a>). A continuació, "
+"podeu revisar les dades abans d'enviar-les."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -2033,13 +2034,14 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Integració amb l'escriptori del Linux (D-Bus MPRIS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "⏯️ Permet el control del Quod Libet mitjançant la interfície del D-Bus <a "
-"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"href=\"{mpris_url}\">MPRIS 2</a>.\n"
 "Això permet diverses integracions de l'escriptori del Linux (per exemple, "
 "les tecles multimèdia)."
 
@@ -4719,13 +4721,13 @@ msgid "No iFP device found"
 msgstr "No s'ha trobat cap dispositiu iFP"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "No es pot contactar amb el dispositiu iFP. Comproveu que el dispositiu "
-"estigui encès i connectat, i que tingueu instal·lat ifp-line (http://ifp-"
-"driver.sf.net)."
+"estigui encès i connectat, i que tingueu instal·lat ifp-line ({ifp_url})."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -5052,10 +5054,6 @@ msgid ""
 msgstr ""
 "Analitza i actualitza la informació de <a href=\"%(rg_link)s\">ReplayGain</"
 "a> amb el GStreamer. Els resultats s'agrupen per àlbum."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -8248,3 +8246,6 @@ msgstr ""
 "maneres diferents de veure la biblioteca d'àudio i compatibilitat amb ràdio "
 "per Internet i canals d'àudio. Té característiques d'edició i cerca de "
 "metadades molt flexibles."
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"

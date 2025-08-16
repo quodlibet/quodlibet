@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-05-27 20:42+0000\n"
+"PO-Revision-Date: 2025-08-12 17:02+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1191,14 +1191,15 @@ msgid "Error details:"
 msgstr "Podrobnosti o chybě:"
 
 #: quodlibet/errorreport/ui.py:84
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "Detaily týkající se chyby a vašeho systému budou odeslány online službě "
-"třetí strany (<a href='https://www.sentry.io'>www.sentry.io</a>). Odesílaná "
-"data můžete před odesláním zkontrolovat níže."
+"třetí strany (<a href='{sentry_url}'>www.sentry.io</a>). Odesílaná data "
+"můžete před odesláním zkontrolovat níže."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -2018,13 +2019,14 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Integrace s linuxovým prostředím (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Umožní kontrolu Quod Libet prostřednictvím D-Bus rozhraní <a "
-"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"⏯️ Umožní kontrolu Quod Libet prostřednictvím D-Bus rozhraní <a href="
+"\"{mpris_url}\">MPRIS 2</a>.\n"
 "To umožní integraci s linuxovým prostředím (nap. multimediální klávesy)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -4682,13 +4684,13 @@ msgid "No iFP device found"
 msgstr "Nebylo nalezeno žádné zařízení iFP"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Nepodařilo se spojit s iFP zařízením. Zkontrolujte, že je vaše zařízení "
-"zapnuté a připojené a že máte nainstalován ifp-line (http://ifp-driver.sf."
-"net)."
+"zapnuté a připojené a že máte nainstalován ifp-line ({ifp_url})."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -5010,10 +5012,6 @@ msgid ""
 msgstr ""
 "Prostřednictvím GStreameru analyzuje a aktualizuje metadata <a "
 "href=\"%(rg_link)s\">ReplayGain</a>. Výsledky jsou seskupeny podle alba."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -5561,18 +5559,18 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Nebyl nalezen modul ‚{module}‘. Možná musíte nainstalovat balíček? {extra}"
+"Nebyl nalezen modul ‚{module!r}‘. Možná musíte nainstalovat balíček? {extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "Nelze nalézt GStreamer element ‚{element}‘."
+msgstr ""
+"Nelze nalézt GStreamer element ‚{element!r}‘ z kategorie zásuvných modulů "
+"{category!r}."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -8199,6 +8197,9 @@ msgstr ""
 "Quod Libet je program pro správu hudby. Nabízí několik způsobů zobrazení "
 "hudební sbírky, stejně jako podporu internetových rádií a audio streamů. "
 "Zároveň je skvěle vybaven pro úpravy metadat a jejich prohledávání."
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr ""

@@ -1183,10 +1183,11 @@ msgid "Error details:"
 msgstr "Vea üksikasjad:"
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "Erinevad vea ja sinu arvuti üksikasjad saadetakse kolmanda osapoole "
 "teenusesse (<a href='https://www.sentry.io'>www.sentry.io</a>). Alljärgnevas "
@@ -2016,9 +2017,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Lõiming Linuxi töölauakeskkondadega (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
@@ -4538,9 +4540,10 @@ msgid "No iFP device found"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/ifp.py:42
@@ -4844,10 +4847,6 @@ msgstr ""
 "Kasutades GStreamerit analüüsib ja uuendab <a "
 "href=\"%(rg_link)s\">esitusvaljuse tundlikkuse</a> teavet. Tulemused on "
 "rühmitatud albumite kaupa."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -7964,3 +7963,6 @@ msgstr ""
 "vaadata sinu muusikakogu ja esitada sealt muusikat ning lisaks on olemas "
 "veebiraadiote ja võrgupõhiste helivoogude tugi. Rakenduses on ülipaindlik "
 "otsingulahendus ja metainfo siltide muutmise võimalus."
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"

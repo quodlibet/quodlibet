@@ -1200,10 +1200,11 @@ msgid "Error details:"
 msgstr "Детаљи грешке:"
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "Разни детаљи о грешци и вашем систему ће бити послати трећој страни на "
 "интернету (<a href='https://www.sentry.io'>www.sentry.io</a>). Испод можете "
@@ -2018,9 +2019,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
@@ -4691,9 +4693,10 @@ msgid "No iFP device found"
 msgstr "Нема пронађеног iFP уређаја"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Не могу да повежем ваш iFP уређај. Проверите да ли је урешај прикључен, и да "
 "поседујете ifp-линију (http://ifp-driver.sf.net) инсталирану."
@@ -5020,10 +5023,6 @@ msgid ""
 msgstr ""
 "Испитује и ажурира <a href=\"%(rg_link)s\">ReplayGain</a> информације "
 "користећи GStreamer. Резултати су груписани по албуму."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
