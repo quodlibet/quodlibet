@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-05-26 13:03+0000\n"
+"PO-Revision-Date: 2025-08-11 01:01+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1173,10 +1173,11 @@ msgid "Error details:"
 msgstr "エラー詳細:"
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "エラーやシステムに関するさまざまな詳細が、サードパーティのオンラインサービス "
 "(<a href='https://www.sentry.io'>www.sentry.io</a>) に送信されます。送信前に"
@@ -1999,9 +2000,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux デスクトップ統合 (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, fuzzy, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "⏯️ <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
@@ -4625,9 +4627,10 @@ msgid "No iFP device found"
 msgstr "iFP デバイスが見つかりません"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "iFP デバイスに接続できません。デバイスの電源がオンになっていて接続されている"
 "こと、および ifp-line (http://ifp-driver.sf.net) がインストールされていること"
@@ -4950,10 +4953,6 @@ msgid ""
 msgstr ""
 "GStreamer を使用して <a href=\"%(rg_link)s\">ReplayGain</a> 情報を解析し更新"
 "します。結果はアルバム単位でグルーピングされます。"
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -5501,19 +5500,19 @@ msgstr ""
 "Xine の設定を確認してください。"
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"モジュール「{module}」が見つかりませんでした。おそらくパッケージが未インス"
-"トールなのではないでしょうか?{extra}"
+"モジュール「{module!r}」が見つかりません。パッケージのインストールが必要かも"
+"しれません。{extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "GStreamer エレメント「{element}」が見つかりませんでした。"
+msgstr ""
+"GStreamer エレメント「{element!r}」({category!r} プラグイン) が見つかりませ"
+"ん。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -8080,6 +8079,9 @@ msgstr ""
 "な方法を提供するのみならず、インターネットラジオやオーディオフィードにも対応"
 "しています。また、非常に柔軟なメタデータタグの編集および検索機能を備えていま"
 "す。"
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr "アルバム名やアーティスト名をソート名に変換します(不十分)。"
