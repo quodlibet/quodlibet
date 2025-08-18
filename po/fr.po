@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-08-07 21:01+0000\n"
+"PO-Revision-Date: 2025-08-12 17:02+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -1191,15 +1191,15 @@ msgid "Error details:"
 msgstr "Détails de l'erreur :"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"Divers détails concernant l'erreur et votre système sera envoyé à un tiers "
-"(<a href='https://www.sentry.io'>www.sentry.io</a>). Vous pouvez consulter "
-"les données avant de les envoyer ci-dessous."
+"Divers détails concernant l'erreur et votre système sera envoyé à un service "
+"en ligne tiers (<a href='{sentry_url}'>www.sentry.io</a>). Vous pouvez "
+"consulter les données avant de les envoyer ci-dessous."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -2042,15 +2042,15 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Intégration du Bureau Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Permet le contrôle de Quod Libet en utilisant l'interface D-Bus <a "
-"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
-"Cela permet diverses intégrations au bureau Linux (par exemple, des touches "
+"⏯️ Permet de contrôler de Quod Libet en utilisant l'interface D-Bus <a href="
+"\"{mpris_url}\">MPRIS 2</a>.\n"
+"Cela permet diverses intégrations au bureau Linux (par exemple, les touches "
 "multimédia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -4736,14 +4736,13 @@ msgid "No iFP device found"
 msgstr "Aucun dispositif iFP trouvé"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Impossible de contacter votre appareil iFP. Vérifiez que l'appareil est sous "
-"tension et branché et que vous avez installé ifp-line (http://ifp-driver.sf."
-"net)."
+"tension et branché et que vous avez installé ifp-line ({ifp_url})."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
