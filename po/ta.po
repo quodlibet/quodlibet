@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-04 05:02+0000\n"
+"PO-Revision-Date: 2025-08-11 01:01+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ta/>\n"
@@ -57,7 +57,7 @@ msgstr "_ ரேட்டிங்"
 #: quodlibet/browsers/albums/main.py:233
 #: quodlibet/browsers/covergrid/main.py:64
 msgid "Play_count"
-msgstr "Play_count"
+msgstr "விளையாடு_எண்ணிக்கை"
 
 #: quodlibet/browsers/albums/main.py:238
 #: quodlibet/browsers/covergrid/main.py:69
@@ -98,7 +98,7 @@ msgstr[1] "%d ஆல்பங்கள்"
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "ஆல்பம் அட்டையை மீண்டும் ஏற்றவும்"
-msgstr[1] "ஆல்பம் அட்டையை மீண்டும் ஏற்றவும்"
+msgstr[1] "ஆல்பம் அட்டைகளை மீண்டும் ஏற்றவும்"
 
 #: quodlibet/browsers/albums/prefs.py:34
 #: quodlibet/browsers/collection/models.py:17
@@ -636,7 +636,7 @@ msgstr "பிளேலிச்ட்கள்"
 
 #: quodlibet/browsers/playlists/main.py:54
 msgid "_Playlists"
-msgstr "_Playlists"
+msgstr "பிளேலிஸ்ட்கள்"
 
 #: quodlibet/browsers/playlists/main.py:170
 msgid "_Remove from Playlist"
@@ -787,7 +787,7 @@ msgstr "_ADD FEED…"
 #: quodlibet/browsers/podcasts.py:489 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/pluginwin.py:425
 msgid "_Refresh"
-msgstr "_Refresh"
+msgstr "புதுப்பி"
 
 #: quodlibet/browsers/podcasts.py:491
 msgid "Search source for new episodes"
@@ -795,7 +795,7 @@ msgstr "புதிய அத்தியாயங்களுக்கான �
 
 #: quodlibet/browsers/podcasts.py:494
 msgid "_Rebuild"
-msgstr "_Rebuild"
+msgstr "மீண்டும் கட்டு"
 
 #: quodlibet/browsers/podcasts.py:496
 msgid "Remove all existing episodes then reload from source"
@@ -810,12 +810,12 @@ msgid "Unable to add feed"
 msgstr "ஊட்டத்தைச் சேர்க்க முடியவில்லை"
 
 #: quodlibet/browsers/podcasts.py:567
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
 msgstr ""
-"%களை சேர்க்க முடியவில்லை. சேவையகம் கீழே இருக்கலாம், அல்லது இருப்பிடம் போட்காச்ட் / ஆடியோ "
+"%s சேர்க்க முடியவில்லை. சேவையகம் கீழே இருக்கலாம், அல்லது இருப்பிடம் போட்காச்ட் / ஆடியோ "
 "ஊட்டமாக இருக்காது."
 
 #: quodlibet/browsers/podcasts.py:589
@@ -1386,7 +1386,7 @@ msgstr "_ சாடோச்"
 
 #: quodlibet/ext/events/animosd/prefs.py:265
 msgid "_Outline"
-msgstr "_Outline"
+msgstr "சுருக்கம்"
 
 #: quodlibet/ext/events/animosd/prefs.py:266
 msgid "Rou_nded Corners"
@@ -1751,7 +1751,7 @@ msgstr "தற்போதைய பின்தளத்தில் சமன�
 #: quodlibet/ext/events/equalizer.py:379
 #, python-format
 msgid "%.1f kHz"
-msgstr "%.1f kHz"
+msgstr "%.1f கிஎட்சு"
 
 #: quodlibet/ext/events/equalizer.py:380
 #: quodlibet/ext/gstreamer/crossfeed.py:110
@@ -1762,9 +1762,9 @@ msgstr "%d hz"
 
 #: quodlibet/ext/events/equalizer.py:421
 #: quodlibet/ext/gstreamer/crossfeed.py:130
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f dB"
-msgstr "%.1F DB"
+msgstr "%.1f டிபி"
 
 #: quodlibet/ext/events/equalizer.py:495
 msgid "Default presets"
@@ -1992,7 +1992,7 @@ msgstr "உள்ளக _IP:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:139
 msgid "P_assword:"
-msgstr "P_assword:"
+msgstr "கடவுச்சொல்:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:179
 msgid "Connection"
@@ -2101,9 +2101,9 @@ msgid "Connected to broker at %(host)s:%(port)d"
 msgstr "%(host)s: %(port)d"
 
 #: quodlibet/ext/events/mqtt.py:219
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
-msgstr "%(host)s:%(port)d (%(எம்.எச்.சி) எச்) உடன் இணைக்க முடியவில்லை"
+msgstr "%(host)s:%(port)d (%(msg)s) உடன் இணைக்க முடியவில்லை"
 
 #: quodlibet/ext/events/mqtt.py:222
 msgid "Connection error"
@@ -2515,7 +2515,9 @@ msgstr ""
 msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
-msgstr "<A href = \"%(plugin_link)s\"> உடன் உள்ளமைவைப் பகிர்கிறது."
+msgstr ""
+"<a href=\"%(plugin_link)s\">Squeezebox செருகுநிரலுக்கு ஏற்றுமதி செய்</a> உடன் "
+"உள்ளமைவைப் பகிர்கிறது."
 
 #: quodlibet/ext/events/squeezebox_sync.py:66
 #: quodlibet/ext/playlist/export_to_squeezebox.py:100
@@ -3052,9 +3054,9 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
-"கட்டைவிரல் / கட்டைவிரல் மதிப்பெண் முறையைச் சேர்க்கிறது, இது மதிப்பீட்டு மதிப்பாக "
-"மாற்றப்படுகிறது. வாக்களிக்கும் மொத்தத்தை இயக்கவும், <b> <tt> ~#மதிப்பெண் </tt> </b> ஆல் "
-"வரிசைப்படுத்தவும் பயனுள்ளதாக இருக்கும்."
+"மதிப்பீட்டு மதிப்பாக மாற்றப்படும் கட்டைவிரல்-மேலே / கட்டைவிரல்-கீழே மதிப்பெண் முறையைச் "
+"சேர்க்கிறது. இயங்கும் வாக்குகளின் மொத்தத்தை வைத்திருக்கவும் <b><tt>~#score</tt></b> மூலம்"
+" வரிசைப்படுத்தவும் பயனுள்ளதாக இருக்கும்."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3079,9 +3081,9 @@ msgid "Controls Quod Libet from the system tray."
 msgstr "கணினி தட்டில் இருந்து குவாட் லிபெட்டைக் கட்டுப்படுத்துகிறது."
 
 #: quodlibet/ext/events/trayicon/menu.py:40
-#, fuzzy, python-format
+#, python-format
 msgid "_Show %(application-name)s"
-msgstr "_SHOW %(விண்ணப்ப-பெயர்) கள்"
+msgstr "%(application-name)s காட்டு"
 
 #: quodlibet/ext/events/trayicon/menu.py:59
 #: quodlibet/qltk/quodlibetwindow.py:209 quodlibet/qltk/quodlibetwindow.py:998
@@ -3093,7 +3095,7 @@ msgstr "_ பிளே"
 #: quodlibet/qltk/quodlibetwindow.py:211 quodlibet/qltk/quodlibetwindow.py:1213
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
-msgstr "P_ause"
+msgstr "இடைநிறுத்து"
 
 #: quodlibet/ext/events/trayicon/menu.py:67
 #: quodlibet/qltk/quodlibetwindow.py:216 quodlibet/qltk/quodlibetwindow.py:992
@@ -3134,12 +3136,12 @@ msgstr "_ செய்தி"
 
 #: quodlibet/ext/events/trayicon/menu.py:116 quodlibet/qltk/songsmenu.py:521
 msgid "Play_lists"
-msgstr "Play_lists"
+msgstr "பிளே_பட்டியல்கள்"
 
 #: quodlibet/ext/events/trayicon/menu.py:133
 #: quodlibet/qltk/quodlibetwindow.py:977
 msgid "_Quit"
-msgstr "_Quit"
+msgstr "வெளியேறு"
 
 #: quodlibet/ext/events/trayicon/prefs.py:39 quodlibet/qltk/prefs.py:105
 #: quodlibet/qltk/prefs.py:519 quodlibet/qltk/prefs.py:840
@@ -3264,7 +3266,7 @@ msgstr "கோப்பு:"
 
 #: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
-msgstr "_Threshold:"
+msgstr "வாசல்:"
 
 #: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
@@ -3272,7 +3274,7 @@ msgstr "வடிகட்டி செயல்படுத்தப்பட�
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
-msgstr "R_atio:"
+msgstr "விகிதம்:"
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
@@ -3407,7 +3409,7 @@ msgstr "ஆடியோ சேனல்களை மோனோவுக்கு 
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
-msgstr "R_ate:"
+msgstr "மதிப்பீடு:"
 
 #: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
@@ -3415,7 +3417,7 @@ msgstr "_TEMPO:"
 
 #: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
-msgstr "_Pitch:"
+msgstr "சுருதி:"
 
 #: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
@@ -3495,9 +3497,9 @@ msgid "Failed to delete existing Sonos playlist %s:"
 msgstr "தற்போதுள்ள சோனோச் பிளேலிச்ட் %s நீக்குவதில் தோல்வி:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:288
-#, fuzzy, python-format
+#, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr "பிளேலிச்டுக்கு ஏற்றுமதி %(பிளேலிச்ட்) ஆர் ( %(total)d தடங்கள்)"
+msgstr "%(playlist)r பிளேலிச்டுக்கு ஏற்றுமதி (%(total)d தடங்கள்)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3517,7 +3519,7 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
-"<A href = \"%(plugin_link)s\"> sweezezbox ஒத்திசைவு சொருகி </a> உடன் உள்ளமைவைப் "
+"<a href=\"%(plugin_link)s\"> sweezezbox ஒத்திசைவு சொருகி </a> உடன் உள்ளமைவைப் "
 "பகிர்கிறது."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:88
@@ -3548,9 +3550,9 @@ msgstr[0] "%d நகல் பாடலை அகற்ற விரும்ப
 msgstr[1] "%d நகல் பாடல்களை அகற்ற விரும்புகிறீர்களா?"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:58
-#, fuzzy, python-format
+#, python-format
 msgid "The duplicate songs will be removed from the playlist '%s'."
-msgstr "பிளேலிச்ட்டில் இருந்து நகல் பாடல்கள் அகற்றப்படும்."
+msgstr "'%s' பிளேலிச்ட்டிலிருந்து நகல் பாடல்கள் அகற்றப்படும்."
 
 #: quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
@@ -3797,12 +3799,12 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
-"மாறி <tt> கள் </tt> (அல்லது <tt> ஒரு </tt>) பாடல்/ஆல்பம் பொருந்துகிறது.\n"
+"மாறி <tt> s </tt> (அல்லது <tt> ஒரு </tt>) பாடல்/ஆல்பம் பொருந்துகிறது.\n"
 "\n"
 " <tt> _ts </tt> வினவலின் தொடக்கத்தில் ஒரு (உண்மையான எண்) நேர முத்திரை.\n"
 "\n"
-" தொகுதிகள் <Tt> நேரம் </tt> மற்றும் <tt> சீரற்ற </tt> ஆகியவை கிடைக்கின்றன, மேலும் "
-"வகுப்பு <tt> சீரற்ற </tt> (== <tt> சீரற்ற."
+" தொகுதிகள் <tt>நேரம் </tt> மற்றும் <tt> சீரற்ற </tt> ஆகியவை கிடைக்கின்றன, மேலும் "
+"வகுப்பு <tt> சீரற்ற </tt> (== <tt> சீரற்ற.சீரற்ற</tt>) கூட."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -4081,7 +4083,7 @@ msgstr "_Query:"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:383
 msgid "S_earch"
-msgstr "S_earch"
+msgstr "தேடல்"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:396
 msgid "Results <i>(drag to reorder)</i>"
@@ -4547,7 +4549,7 @@ msgstr "பகுப்பாய்வு"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:40
 msgid "Lookup"
-msgstr "தேடல்"
+msgstr "பார்த்தெடு"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:116
 msgid "Write"
@@ -4595,8 +4597,8 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
-"பாடல்களுக்கு ஒரு <i> <b> மியூசிக் ப்ரெய்ன்_பிராக் </b> </i>, அல்லது <i> <b> கலைஞர் </"
-"b> </i>/<i> <b> தலைப்பு </b> </ i>/<i> <b> ஆல்பம் </b> </i> சமர்ப்பிக்க குறிச்சொற்கள்."
+"பாடல்களுக்கு ஒரு <i><b> மியூசிக் ப்ரெய்ன்_பிராக் </b></i>, அல்லது <i><b> கலைஞர் "
+"</b></i>/<i><b> தலைப்பு </b></i>/<i><b> ஆல்பம் </b></i> சமர்ப்பிக்க குறிச்சொற்கள்."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Fingerprints:"
@@ -4615,9 +4617,9 @@ msgid "Songs to submit:"
 msgstr "சமர்ப்பிக்க வேண்டிய பாடல்கள்:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:165
-#, fuzzy, python-format
+#, python-format
 msgid "Done. %(to-send)d/%(all)d songs to submit."
-msgstr "முடிந்தது. சமர்ப்பிக்க%(to-send) d/%(all)d பாடல்கள்."
+msgstr "முடிந்தது. சமர்ப்பிக்க%(to-send)d/%(all)d பாடல்கள்."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:183
 msgid "Submitting fingerprints:"
@@ -4971,11 +4973,11 @@ msgid "Peak"
 msgstr "உச்ச"
 
 #: quodlibet/ext/songsmenu/replaygain.py:459
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "புதுப்பிக்க ( %(அனைத்தும்)) %(-செயல்முறை) ஆல்பம் உள்ளது"
-msgstr[1] "புதுப்பிக்க %(-செயல்முறை) ஆல்பங்கள் உள்ளன ( %(all)s)"
+msgstr[0] "புதுப்பிக்க (%(all)s இல்) %(to-process)s செருகேடு உள்ளது"
+msgstr[1] "புதுப்பிக்க (%(all)s இல்) %(to-process)s செருகேடுகள் உள்ளது"
 
 #: quodlibet/ext/songsmenu/replaygain.py:579
 msgid "Replay Gain"
@@ -5165,13 +5167,13 @@ msgid "Adding watches for %s"
 msgstr "%s கடிகாரங்களைச் சேர்ப்பது"
 
 #: quodlibet/library/playlist.py:79
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
-"லெகசி பிளேலிச்ட் %(கோப்பு பெயர்) ஆர் (அளவு %(அளவு) .1 எஃப் கேபி) இல் நூலகப் பாடல்கள் "
-"எதுவும் காணப்படவில்லை."
+"லெகசி பிளேலிச்ட் %(filename)r (அளவு %(size).1f இல் கேபி) நூலகப் பாடல்கள் எதுவும் "
+"காணப்படவில்லை."
 
 #: quodlibet/library/playlist.py:85
 msgid "Have you changed library root dir(s), but not this playlist?"
@@ -5269,9 +5271,9 @@ msgid "Editing aborted"
 msgstr "திருத்துதல் கைவிடப்பட்டது"
 
 #: quodlibet/operon/commands.py:291
-#, fuzzy, python-format
+#, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
-msgstr "உரை எடிட்டர் '%(ஆசிரியர்-பெயர்) எச்' தோல்வியுற்றது."
+msgstr "உரை எடிட்டர் '%(editor-name)s' தோல்வியுற்றது."
 
 #: quodlibet/operon/commands.py:297
 msgid "No changes detected"
@@ -5282,9 +5284,9 @@ msgid "Set a tag and remove existing values"
 msgstr "குறிச்சொல்லை அமைத்து, இருக்கும் மதிப்புகளை அகற்றவும்"
 
 #: quodlibet/operon/commands.py:348
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
-msgstr "%(format)s கோப்பு %(கோப்பு) r க்கு %(குறிச்சொல்) R ஐ அமைக்க முடியாது"
+msgstr "%(format)s கோப்பு %(file)r க்கு %(tag)r ஐ அமைக்க முடியாது"
 
 #: quodlibet/operon/commands.py:364
 msgid "Remove tags"
@@ -5383,15 +5385,14 @@ msgid "Display help information"
 msgstr "உதவி தகவலைக் காண்பி"
 
 #: quodlibet/operon/util.py:41
-#, fuzzy, python-format
+#, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
-"'%(நெடுவரிசை-ஐடி) கள்' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(அனைத்து "
-"நெடுவரிசை-ஐ.டி) கள்."
+"'%(column-id)s' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(all-column-ids)s)."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
-msgstr "_Unknown"
+msgstr "தெரியாத"
 
 #: quodlibet/order/__init__.py:147
 msgid "In Order"
@@ -5431,7 +5432,7 @@ msgstr "அனைத்தையும் மீண்டும் செய்�
 
 #: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
-msgstr "மீண்டும் மீண்டும்"
+msgstr "அனைத்தையும் மீண்டும் செய்"
 
 #: quodlibet/order/repeat.py:76
 msgid "One song"
@@ -5459,9 +5460,9 @@ msgid "No GStreamer element found to handle media format"
 msgstr "மீடியா வடிவமைப்பைக் கையாள சிச்ட்ரீமர் உறுப்பு எதுவும் கிடைக்கவில்லை"
 
 #: quodlibet/player/gstbe/player.py:691
-#, fuzzy, python-format
+#, python-format
 msgid "Media format: %(format-description)s"
-msgstr "மீடியா வடிவம்: %(வடிவமைப்பு-விளக்கமானது) கள்"
+msgstr "ஊடக வடிவம்: %(format-description)s"
 
 #: quodlibet/player/gstbe/plugins.py:35
 #, python-format
@@ -5542,19 +5543,19 @@ msgstr ""
 "இல் சரிபார்க்கவும்."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"'{module}' தொகுதி கண்டுபிடிக்க முடியவில்லை. ஒருவேளை நீங்கள் தொகுப்பை நிறுவ வேண்டுமா? "
-"{extra}"
+"'{module!r}' தொகுதி கண்டுபிடிக்க முடியவில்லை. ஒருவேளை நீங்கள் தொகுப்பை நிறுவ வேண்டுமா"
+"? {extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "சிச்ட்ரீமர் உறுப்பு '{element}' கண்டுபிடிக்க முடியவில்லை."
+msgstr ""
+"{category!r} செருகுநிரல்களிலிருந்து GStreamer உறுப்பு {element!r} ஐக் கண்டுபிடிக்க "
+"முடியவில்லை."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -5589,7 +5590,7 @@ msgstr "பயனர் _ டோக்கன்:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:499
 msgid "T_ags:"
-msgstr "T_ags:"
+msgstr "குறிசொற்கள்:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:554
 msgid ""
@@ -5604,11 +5605,11 @@ msgid "Songs matching this filter will not be submitted."
 msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய பாடல்கள் சமர்ப்பிக்கப்படாது."
 
 #: quodlibet/plugins/playlist.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] "\" %(name)s\" என்ற சொருகி %(எண்ணிக்கை) பிளேலிச்ட்டில் இயக்கவா?"
-msgstr[1] "\" %(name)s\" என்ற சொருகி %(எண்ணிக்கை) பிளேலிச்ட்களில் இயக்கவா?"
+msgstr[0] "%(count)s பிளேலிஸ்ட்டில் \"%(name)s\" செருகுநிரலை இயக்கவா?"
+msgstr[1] "%(count)s பிளேலிச்ட்களில் \"%(name)s\" செருகுநிரலை இயக்கவா?"
 
 #: quodlibet/plugins/playlist.py:32 quodlibet/qltk/songsmenu.py:64
 #: quodlibet/qltk/songsmenu.py:77
@@ -5706,7 +5707,7 @@ msgstr ""
 
 #: quodlibet/qltk/cbes.py:41
 msgid "_Name:"
-msgstr "பெயர்: (_N)"
+msgstr "பெயர்:"
 
 #: quodlibet/qltk/cbes.py:49 quodlibet/qltk/edittags.py:358
 msgid "_Value:"
@@ -5735,7 +5736,7 @@ msgstr "_ ஆல்பம் பயன்முறை"
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:129
 msgid "_Mute"
-msgstr "_Mute"
+msgstr "ஒலிமுடக்கு"
 
 #: quodlibet/qltk/controls.py:136
 msgid "_Replay Gain Mode"
@@ -6016,25 +6017,25 @@ msgid "Tag may not be accurate"
 msgstr "குறிச்சொல் துல்லியமாக இருக்காது"
 
 #: quodlibet/qltk/_editutils.py:33
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"நிரல் இயங்கும் போது %(கோப்பு பெயர்) மாற்றப்பட்டது. உங்கள் நூலகத்தை புதுப்பிக்காமல் சேமிப்பது"
-" பாடலில் மற்ற மாற்றங்களை மேலெழுதும்."
+"நிரல் இயங்கும்போது %(file-name)s மாற்றப்பட்டது. உங்கள் நூலகத்தைப் புதுப்பிக்காமல் சேமிப்பது"
+" பாடலில் உள்ள பிற மாற்றங்களை மேலெழுதக்கூடும்."
 
 #: quodlibet/qltk/_editutils.py:47
 msgid "Unable to save song"
 msgstr "பாடலை சேமிக்க முடியவில்லை"
 
 #: quodlibet/qltk/_editutils.py:51
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
-"%(கோப்பு பெயர்) சேமிப்பு தோல்வியுற்றது. கோப்பு படிக்க மட்டுமே, சிதைந்ததாக இருக்கலாம் "
+"%(file-name)s சேமிப்பு தோல்வியுற்றது. கோப்பு படிக்க மட்டுமே, சிதைந்ததாக இருக்கலாம் "
 "அல்லது அதைத் திருத்த உங்களுக்கு இசைவு இல்லை."
 
 #: quodlibet/qltk/_editutils.py:136
@@ -6043,7 +6044,7 @@ msgstr "_மோர் விருப்பங்கள்…"
 
 #: quodlibet/qltk/entry.py:80
 msgid "_Undo"
-msgstr "_Undo"
+msgstr "செயல்தவிர்"
 
 #: quodlibet/qltk/entry.py:82
 msgid "_Redo"
@@ -6051,7 +6052,7 @@ msgstr "_ ரெடோ"
 
 #: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:1021
 msgid "_About"
-msgstr "_About"
+msgstr "பற்றி"
 
 #: quodlibet/qltk/exfalsowindow.py:103 quodlibet/qltk/quodlibetwindow.py:1045
 msgid "_Check for Updates…"
@@ -6067,7 +6068,7 @@ msgstr "_Plugins"
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s மற்றும் %(count)s அதிகம்"
-msgstr[1] "%(title)s மற்றும் %(count)s அதிகம்"
+msgstr[1] "%(title)s மற்றும் %(count)s அதிகமாக"
 
 #: quodlibet/qltk/exfalsowindow.py:302
 msgid "Ex Falso Preferences"
@@ -6240,7 +6241,7 @@ msgstr "கூடுதல்"
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d தேர்ந்தெடுக்கப்பட்டது"
-msgstr[1] "%d தேர்ந்தெடுக்கப்பட்டது"
+msgstr[1] "%d தேர்ந்தெடுக்கப்பட்டன"
 
 #: quodlibet/qltk/information.py:471
 msgid "Track unavailable"
@@ -6340,9 +6341,9 @@ msgid "File exists"
 msgstr "கோப்பு உள்ளது"
 
 #: quodlibet/qltk/msg.py:127
-#, fuzzy, python-format
+#, python-format
 msgid "Replace %(file-name)s?"
-msgstr "%(கோப்பு பெயர்) களை மாற்றவும்?"
+msgstr "%(file-name)s மாற்றவும்?"
 
 #: quodlibet/qltk/msg.py:133
 msgid "_Replace File"
@@ -6451,7 +6452,7 @@ msgstr "_ டிராக்"
 
 #: quodlibet/qltk/prefs.py:53
 msgid "Grou_ping"
-msgstr "Grou_ping"
+msgstr "தொகுத்தல்"
 
 #: quodlibet/qltk/prefs.py:54
 msgid "_Artist"
@@ -6497,7 +6498,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:117
 msgid "_Others:"
-msgstr "_Others:"
+msgstr "மற்றவைகள்:"
 
 #. Stock edit doesn't have ellipsis chars.
 #: quodlibet/qltk/prefs.py:122
@@ -7051,7 +7052,7 @@ msgstr "கோப்புகளை மறுபெயரிடுங்கள�
 #: quodlibet/qltk/renamefiles.py:187 quodlibet/qltk/tagsfrompath.py:121
 #: quodlibet/qltk/tracknumbers.py:55
 msgid "_Preview"
-msgstr "_Preview"
+msgstr "முன்னோட்டம்"
 
 #: quodlibet/qltk/renamefiles.py:214
 msgid "File names"
@@ -7089,15 +7090,14 @@ msgid "Unable to rename file"
 msgstr "கோப்பை மறுபெயரிட முடியவில்லை"
 
 #: quodlibet/qltk/renamefiles.py:362
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"%(பழைய பெயர்) களை %(புதிய பெயர்) கள் என மறுபெயரிடுவது தோல்வியடைந்தது. இலக்கு கோப்பு "
-"ஏற்கனவே இருக்கலாம், அல்லது புதிய கோப்பை உருவாக்க அல்லது பழையதை அகற்ற உங்களுக்கு இசைவு "
-"இல்லை."
+"%(old-name)sஐ %(new-name)s என மறுபெயரிடுவது தோல்வியடைந்தது. இலக்குக் கோப்பு ஏற்கனவே"
+" இருக்கலாம், அல்லது புதிய கோப்பை உருவாக்க அல்லது பழையதை அகற்ற உங்களுக்கு இசைவு இல்லை."
 
 #: quodlibet/qltk/renamefiles.py:373
 msgid "Ignore _All Errors"
@@ -7187,7 +7187,7 @@ msgstr "இந்த கோப்பகத்தைத் தேர்ந்த�
 
 #: quodlibet/qltk/scanbox.py:156
 msgid "Select Actual / New Directory for {dir!r}"
-msgstr "{Dir! R க்கு க்கு உண்மையான / புதிய கோப்பகத்தைத் தேர்ந்தெடுக்கவும்"
+msgstr "{dir!r} க்கு உள்ள / புதிய கோப்பகத்தைத் தேர்ந்தெடுக்கவும்"
 
 #: quodlibet/qltk/scanbox.py:166
 msgid ""
@@ -7542,13 +7542,13 @@ msgid "Saving the songs you changed."
 msgstr "நீங்கள் மாற்றிய பாடல்களைச் சேமிக்கிறது."
 
 #: quodlibet/qltk/wlw.py:203
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(current)d/%(total)d songs saved\n"
 "(%(remaining)s remaining)"
 msgstr ""
 "%(current)d/%(total)d பாடல்கள் சேமிக்கப்பட்டன \n"
-"(%(மீதமுள்ள) மீதமுள்ள)"
+"(%(remaining)s மீதமுள்ள)"
 
 #: quodlibet/qltk/wlw.py:241
 #, python-format
@@ -7569,7 +7569,7 @@ msgid "You are already using the newest version %(version)s"
 msgstr "நீங்கள் ஏற்கனவே புதிய பதிப்பு %(version)s பயன்படுத்துகிறீர்கள்"
 
 #: quodlibet/update.py:138
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "A new version %(new-version)s is available\n"
 "\n"
@@ -7577,11 +7577,11 @@ msgid ""
 "\n"
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
-"புதிய பதிப்பு %(புதிய-பதிப்பு) கள் கிடைக்கின்றன \n"
+"புதிய பதிப்பு %(new-version)s கிடைக்கின்றது \n"
 "\n"
-"நீங்கள் தற்போது பதிப்பு %(பழைய பதிப்பு) களை பயன்படுத்துகிறீர்கள் \n"
+"நீங்கள் தற்போது பதிப்பு %(old-version)s பயன்படுத்துகிறீர்கள் \n"
 "\n"
-"<A href = '%(url)s'> வலைத்தளம் </a> ஐப் பார்வையிடவும்"
+"<a href='%(url)s'> வலைத்தளம் </a> ஐப் பார்வையிடவும்"
 
 #: quodlibet/util/collection.py:342
 msgid "Empty Playlist"
@@ -7665,11 +7665,11 @@ msgid "%d kbps"
 msgstr "%d kbps"
 
 #: quodlibet/util/__init__.py:431
-#, fuzzy, python-format
+#, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%இரண்டாவது"
-msgstr[1] "%வினாடிகள்"
+msgstr[0] "%s வினாடி"
+msgstr[1] "%s வினாடிகள்"
 
 #: quodlibet/util/__init__.py:444
 msgid "No time information"
