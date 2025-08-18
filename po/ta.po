@@ -1180,10 +1180,11 @@ msgid "Error details:"
 msgstr "பிழை விவரங்கள்:"
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "பிழை மற்றும் உங்கள் கணினி தொடர்பான பல்வேறு விவரங்கள் மூன்றாம் தரப்பு நிகழ்நிலை சேவைக்கு "
 "அனுப்பப்படும் (<a href = 'https: //www.sentry.io'> www.sentry.io </a>). தரவை "
@@ -2007,9 +2008,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "லினக்ச் டெச்க்டாப் ஒருங்கிணைப்பு (MPRIS D-PUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, fuzzy, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "A <a href = \"https://mpris2.readthedocs.io/en/latest/\"> mpris 2 </a> டி-பச் "
@@ -3055,8 +3057,8 @@ msgid ""
 "tt></b>."
 msgstr ""
 "மதிப்பீட்டு மதிப்பாக மாற்றப்படும் கட்டைவிரல்-மேலே / கட்டைவிரல்-கீழே மதிப்பெண் முறையைச் "
-"சேர்க்கிறது. இயங்கும் வாக்குகளின் மொத்தத்தை வைத்திருக்கவும் <b><tt>~#score</tt></b> மூலம்"
-" வரிசைப்படுத்தவும் பயனுள்ளதாக இருக்கும்."
+"சேர்க்கிறது. இயங்கும் வாக்குகளின் மொத்தத்தை வைத்திருக்கவும் <b><tt>~#score</tt></b> "
+"மூலம் வரிசைப்படுத்தவும் பயனுள்ளதாக இருக்கும்."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -4597,8 +4599,8 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
-"பாடல்களுக்கு ஒரு <i><b> மியூசிக் ப்ரெய்ன்_பிராக் </b></i>, அல்லது <i><b> கலைஞர் "
-"</b></i>/<i><b> தலைப்பு </b></i>/<i><b> ஆல்பம் </b></i> சமர்ப்பிக்க குறிச்சொற்கள்."
+"பாடல்களுக்கு ஒரு <i><b> மியூசிக் ப்ரெய்ன்_பிராக் </b></i>, அல்லது <i><b> கலைஞர் </b></"
+"i>/<i><b> தலைப்பு </b></i>/<i><b> ஆல்பம் </b></i> சமர்ப்பிக்க குறிச்சொற்கள்."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Fingerprints:"
@@ -4662,9 +4664,10 @@ msgid "No iFP device found"
 msgstr "IFP சாதனம் இல்லை"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "உங்கள் IFP சாதனத்தை தொடர்பு கொள்ள முடியவில்லை. சாதனம் இயக்கப்பட்டு செருகப்பட்டதா "
 "என்பதையும், உங்களிடம் IFP-LINE (http://ifp-river.sf.net) நிறுவப்பட்டுள்ளதா என்பதையும் "
@@ -4991,10 +4994,6 @@ msgid ""
 msgstr ""
 "பகுப்பாய்வு மற்றும் புதுப்பிப்புகள் <a href = \"%(rg_link)s\"> replaygain </a> "
 "செய்தி, சிச்ட்ரீமரைப் பயன்படுத்தி. முடிவுகள் ஆல்பத்தால் தொகுக்கப்பட்டுள்ளன."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -5387,8 +5386,7 @@ msgstr "உதவி தகவலைக் காண்பி"
 #: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
-msgstr ""
-"'%(column-id)s' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(all-column-ids)s)."
+msgstr "'%(column-id)s' என்பது சரியான நெடுவரிசை பெயர் அல்ல (%(all-column-ids)s)."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
@@ -5547,8 +5545,8 @@ msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"'{module!r}' தொகுதி கண்டுபிடிக்க முடியவில்லை. ஒருவேளை நீங்கள் தொகுப்பை நிறுவ வேண்டுமா"
-"? {extra}"
+"'{module!r}' தொகுதி கண்டுபிடிக்க முடியவில்லை. ஒருவேளை நீங்கள் தொகுப்பை நிறுவ "
+"வேண்டுமா? {extra}"
 
 #: quodlibet/plugins/__init__.py:82
 msgid ""
@@ -6022,8 +6020,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"நிரல் இயங்கும்போது %(file-name)s மாற்றப்பட்டது. உங்கள் நூலகத்தைப் புதுப்பிக்காமல் சேமிப்பது"
-" பாடலில் உள்ள பிற மாற்றங்களை மேலெழுதக்கூடும்."
+"நிரல் இயங்கும்போது %(file-name)s மாற்றப்பட்டது. உங்கள் நூலகத்தைப் புதுப்பிக்காமல் "
+"சேமிப்பது பாடலில் உள்ள பிற மாற்றங்களை மேலெழுதக்கூடும்."
 
 #: quodlibet/qltk/_editutils.py:47
 msgid "Unable to save song"
@@ -7096,8 +7094,9 @@ msgid ""
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"%(old-name)sஐ %(new-name)s என மறுபெயரிடுவது தோல்வியடைந்தது. இலக்குக் கோப்பு ஏற்கனவே"
-" இருக்கலாம், அல்லது புதிய கோப்பை உருவாக்க அல்லது பழையதை அகற்ற உங்களுக்கு இசைவு இல்லை."
+"%(old-name)sஐ %(new-name)s என மறுபெயரிடுவது தோல்வியடைந்தது. இலக்குக் கோப்பு "
+"ஏற்கனவே இருக்கலாம், அல்லது புதிய கோப்பை உருவாக்க அல்லது பழையதை அகற்ற உங்களுக்கு இசைவு "
+"இல்லை."
 
 #: quodlibet/qltk/renamefiles.py:373
 msgid "Ignore _All Errors"
@@ -8159,3 +8158,6 @@ msgstr ""
 "குவாட் லிபெட் ஒரு இசை மேலாண்மை திட்டம். இது உங்கள் ஆடியோ நூலகத்தைக் காண பல்வேறு வழிகளை "
 "வழங்குகிறது, அத்துடன் இணைய வானொலி மற்றும் ஆடியோ ஊட்டங்களுக்கான ஆதரவையும் வழங்குகிறது. "
 "இது மிகவும் நெகிழ்வான மேனிலை தரவு டேக் திருத்துதல் மற்றும் தேடல் திறன்களைக் கொண்டுள்ளது."
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://en.wikipedia.org/wiki/ReplayGain"

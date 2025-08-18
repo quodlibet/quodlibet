@@ -1202,10 +1202,11 @@ msgid "Error details:"
 msgstr "Detalhes do erro:"
 
 #: quodlibet/errorreport/ui.py:84
+#, fuzzy, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 "Vários detalhes relativos ao erro e ao seu sistema serão enviados a um "
 "serviço online de terceiros (<a href='https://www.sentry.io'>www.sentry.io</"
@@ -2047,9 +2048,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
@@ -4750,9 +4752,10 @@ msgid "No iFP device found"
 msgstr "Nenhum dispositivo iFP foi encontrado"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, fuzzy, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Não foi possível entrar em contato com seu dispositivo iFP. Verifique se o "
 "seu dispositivo está ligado e conectado, e que você instalou o ifp-line "
@@ -5080,10 +5083,6 @@ msgid ""
 msgstr ""
 "Analisa e atualiza a os metadados do <a href=\"%(rg_link)s\">ReplayGain</a>, "
 "usando o GStreamer. Os resultados são agrupados por álbum."
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://pt.wikipedia.org/wiki/Replay_Gain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -8304,6 +8303,9 @@ msgstr ""
 "diversas maneiras de visualizar a sua coleção de músicas, e também tem "
 "suporte a rádio via internet e feeds de áudio. Ele também é um poderoso e "
 "flexível editor de etiquetas de metadados para áudio."
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://pt.wikipedia.org/wiki/Replay_Gain"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr ""
