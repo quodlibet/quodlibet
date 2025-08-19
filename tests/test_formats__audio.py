@@ -560,7 +560,7 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_modified_extension_fallback(self):
         """test modified extension fallback search"""
         with self.lyric_filename_test_setup() as (root, ts):
-            fp = root / f"{ts['artist']} - {ts["title"]}.txt"
+            fp = root / f"{ts['artist']} - {ts['title']}.txt"
             fp.write_text("")
             search = ts.lyric_filename
             fp.unlink()
@@ -601,7 +601,7 @@ class TAudioFile(TestCase):
             # (not parsed (transparent to test))
             ts["artist"] = "a < b"
             ts["title"] = "b > a"
-            parts = [str(root), ts["artist"], ts["title"] + ".lyric"]
+            parts = [str(root), ts["artist"], f"{ts['title']}.lyric"]
             rpf = RootPathFile(str(root), os.path.sep.join(parts))
             rmdirs = []
             # ensure valid dir existence
