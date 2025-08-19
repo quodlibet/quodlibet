@@ -643,7 +643,7 @@ class TAudioFile(TestCase):
         lyrics = "blah!\nblasé 😬\n"
         lf = Path(af.lyric_filename)
         lf.parent.mkdir(parents=True)
-        lf.write_text(str(lyrics))
+        lf.write_text(str(lyrics), encoding="utf-8")
         assert af("~lyrics").splitlines() == lyrics.splitlines()
         lf.unlink()
         lf.parent.rmdir()
