@@ -520,8 +520,11 @@ class TAudioFile(TestCase):
             fp.write_text("")
             search = ts.lyric_filename
             fp.unlink()
-            # account for 'os.path.normcase' santisatation
-            expected = str(fp).lower() if is_windows() else str(fp)
+            expected = str(fp)
+            if is_windows():
+                # account for 'os.path.normcase' santisatation
+                expected = expected.lower()
+                search = search.lower()
             assert search == expected
 
     def test_lyric_filename_search_file_not_found(self):
