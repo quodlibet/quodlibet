@@ -477,7 +477,7 @@ class TAudioFile(TestCase):
     def lyric_filename_test_setup(
         self, no_config=False
     ) -> Iterable[tuple[Path, AudioFile]]:
-        with temp_filename(as_path=True) as path:
+        with temp_filename(as_path=True, suffix=".flac") as path:
             s = self.lyric_filename_search_test_song(str(path))
             root = path.absolute().parent
 
@@ -491,8 +491,8 @@ class TAudioFile(TestCase):
 
             yield root, s
 
-            if not no_config:
-                self.lyric_filename_search_clean_config()
+        if not no_config:
+            self.lyric_filename_search_clean_config()
 
     def lyric_filename_search_clean_config(self):
         """reset config to ensure other tests aren't affected"""
@@ -614,13 +614,13 @@ class TAudioFile(TestCase):
                 search = search.lower()  # compensate for the above
             assert search == str(path)
 
-    def test_lyrics_from_file(self):
+    def test_lyrics_tag_reads_from_file(self):
         with temp_filename() as filename:
             af = AudioFile(artist="Motörhead", title="this: again")
             af.sanitize(filename)
         lyrics = "blah!\nblasé 😬\n"
         lf = Path(af.lyric_filename)
-        lf.parent.mkdir(parents=True)
+        lf.parent.mkdir(parents=True, exist_ok=True)
         lf.write_text(str(lyrics), encoding="utf-8")
         assert af("~lyrics").splitlines() == lyrics.splitlines()
         lf.unlink()

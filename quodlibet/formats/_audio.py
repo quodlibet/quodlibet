@@ -644,7 +644,6 @@ class AudioFile(dict, ImageContainer, HasKey):
             "editing", "lyric_filenames", []
         )
         # ensure some default pathfile names
-        lyric_filenames.append(str(song_path.with_suffix(".lrc")))
         lyric_filenames.append(
             sanitise(
                 os.sep,
@@ -659,6 +658,8 @@ class AudioFile(dict, ImageContainer, HasKey):
             )
             + ".lyric"
         )
+        # Add the simple / common case of song-file-with-lrc-extension
+        lyric_filenames.append(song_path.with_suffix(".lrc").name)
 
         # generate all potential paths (unresolved/unexpanded)
         paths = []
