@@ -1,5 +1,5 @@
 # Copyright 2015    Christoph Reiter
-#           2016-23 Nick Boultbee
+#           2016-25 Nick Boultbee
 #           2019    Peter Strulo
 #           2022-23 Jej@github
 #
@@ -125,6 +125,7 @@ class AdvancedPreferencesPane(Gtk.VBox):
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
         # TODO: rethink translation here? (#3494)
+
         rows = [
             text_config(
                 "editing",
@@ -288,6 +289,18 @@ class AdvancedPreferencesPane(Gtk.VBox):
                     "Tags are allowed, like <~basename> <~dirname> <~format> <~length> "
                     "<~#bitrate>, etc. See tags documentation for details."
                 ),
+            ),
+            text_config(
+                "editing",
+                "lyric_filenames",
+                _("Filename patterns for lyric files"),
+                'Comma-separate files, e.g. "<artist> - <title>,<~dirname>.lrc"',
+            ),
+            text_config(
+                "editing",
+                "lyric_dirs",
+                _("Directory strings or patterns for lyric files"),
+                'Comma-separate patterns, e.g. "~/.lyrics,<~dirname>/lyrics',
             ),
             boolean_config(
                 "player",

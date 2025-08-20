@@ -241,6 +241,11 @@ INITIAL: dict[str, dict[str, str]] = {
         "auto_save_changes": "false",
         # e.g. "title,artist"
         "default_tags": "",
+        # Which directories (CSV)
+        # to look in for lyric files (in addition to song dir)
+        "lyric_dirs": "~/.lyrics",
+        # specific lyric file stem (no extension) patterns to look for (CSV)
+        "lyric_filenames": "",
     },
     "albumart": {
         "prefer_embedded": "false",
