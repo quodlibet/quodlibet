@@ -25,10 +25,11 @@ from .helper import get_temp_copy
 def _get_jpeg(size=5):
     from gi.repository import GdkPixbuf
 
-    pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     fd, fn = mkstemp()
+    os.close(fd)
+    pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     pb.savev(fn, "jpeg", [], [])
-    with os.fdopen(fd, "rb") as h:
+    with open(fn, "rb") as h:
         data = h.read()
     os.unlink(fn)
     return data
