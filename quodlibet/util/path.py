@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+import functools
 import os
 import re
 import stat
@@ -13,7 +13,8 @@ import sys
 import errno
 import codecs
 import shlex
-from typing import Any
+from pathlib import Path
+from typing import Any, cast
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -491,3 +492,13 @@ def uri_is_valid(uri):
     if not (parsed.netloc or parsed.path):
         return False
     return True
+
+
+def escape_parts(p: Path, safe: bytes = b" '\"") -> Path:
+    """Escapes each part of a path separately"""
+    escaper = functools.partial(escape_filename, safe=safe)
+
+    # Don't escape the root path ("/")
+    base = first if (first := p.parts[0]) == os.sep else escaper(first)
+    rest = [escaper(part) for part in p.parts[1:]]
+    return Path(cast(str, os.path.join(base, *rest)))

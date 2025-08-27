@@ -30,6 +30,7 @@ from quodlibet.util.path import (
     mkdir,
     mtime,
     normalize_path,
+    escape_parts,
 )
 from quodlibet.util.string import decode, encode, isascii
 from quodlibet.util.string.date import format_date
@@ -667,7 +668,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             for fn in lyric_filenames:
                 if PATTERN_REGEX.search(fn):
                     fn = ArbitraryExtensionFileFromPattern(fn).format(self)
-                path = d / Path(fn)
+                path = d / escape_parts(Path(fn))
                 if path.exists():
                     return str(path)
                 paths.append(path)

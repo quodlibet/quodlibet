@@ -30,6 +30,7 @@ from quodlibet.util.path import (
     mkdir,
     normalize_path,
     unquote,
+    escape_filename,
 )
 from quodlibet.util.string.date import format_date
 from quodlibet.util.tags import _TAGS as TAGS
@@ -578,7 +579,9 @@ class TAudioFile(TestCase):
 
             for path_variant in path_variants:
                 ts["artist"] = f"{path_variant} SpongeBob SquarePants"
-                path = root / f"{ts['artist']} - {ts['title']}.lyric"
+                path = root / escape_filename(
+                    f"{ts['artist']} - {ts['title']}.lyric", safe=b"' "
+                )
 
                 path.write_text("")
                 search = ts.lyric_filename
@@ -597,7 +600,11 @@ class TAudioFile(TestCase):
             # (not parsed (transparent to test))
             ts["artist"] = "a < b"
             ts["title"] = "b > a"
-            path = root / ts["artist"] / f"{ts['title']}.lyric"
+            path = (
+                root
+                / escape_filename(ts["artist"])
+                / escape_filename(f"{ts['title']}.lyric")
+            )
 
             path.parent.mkdir(parents=True)
             # ensure valid dir existence
@@ -625,6 +632,19 @@ class TAudioFile(TestCase):
         assert af("~lyrics").splitlines() == lyrics.splitlines()
         lf.unlink()
         lf.parent.rmdir()
+
+    def test_lyrics_from_lrc(self):
+        with temp_filename(suffix=".lrc", as_path=True) as filename:
+            af = AudioFile(artist="Motörhead", title="The Ace of Spades")
+            af.sanitize(str(filename))
+        lyrics = [
+            "[00:17.82] If you like to gamble, I tell you I'm your man",
+            "[00:21.44] You win some, lose some, it's all the same to me",
+        ]
+        lf = Path(filename.with_suffix(".lrc"))
+        lf.write_text("\n".join(lyrics), encoding="utf-8")
+        assert af("~lyrics").splitlines() == lyrics
+        lf.unlink()
 
     def test_lyrics_mp3_is_not_a_valid_lyrics_file(self):
         # https://github.com/quodlibet/quodlibet/issues/3395
