@@ -86,7 +86,7 @@ class TestMenu(TBrowserBase):
         # We're always in en_US
         assert "_Rating" in items
         assert "_Information" in items, "Should have included Information"
-        assert "Edit _Tags" not in items, "Shouldn't have included edit"
+        assert "_Edit…" not in items, "Shouldn't have included edit"
 
 
 class TestHttpsDefault(TestCase):

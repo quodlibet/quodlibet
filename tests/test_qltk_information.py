@@ -47,36 +47,36 @@ class TInformation(TestCase):
     def test_one(self):
         f = AF({"~filename": fsnative("/dev/null")})
         self.inf = Information(self.library, [f])
-        self.assert_child_is(OneSong)
+        self.assert_is_of_type(OneSong)
 
     def test_two(self):
         f = AF({"~filename": fsnative("/dev/null")})
         f2 = AF({"~filename": fsnative("/dev/null2")})
         self.inf = Information(self.library, [f, f2])
-        self.assert_child_is(ManySongs)
+        self.assert_is_of_type(ManySongs)
 
     def test_album(self):
         f = AF({"~filename": fsnative("/dev/null"), "album": "woo"})
         f2 = AF({"~filename": fsnative("/dev/null2"), "album": "woo"})
         self.inf = Information(self.library, [f, f2])
-        self.assert_child_is(OneAlbum)
+        self.assert_is_of_type(OneAlbum)
 
     def test_album_special_chars(self):
         f = AF({"~filename": fsnative("/dev/null"), "album": "woo & hoo"})
         f2 = AF({"~filename": fsnative("/dev/null2"), "album": "woo & hoo"})
         self.inf = Information(self.library, [f, f2])
-        self.assert_child_is(OneAlbum)
+        self.assert_is_of_type(OneAlbum)
 
     def test_artist(self):
         f = AF({"~filename": fsnative("/dev/null"), "artist": "woo"})
         f2 = AF({"~filename": fsnative("/dev/null2"), "artist": "woo"})
         self.inf = Information(self.library, [f, f2])
-        self.assert_child_is(OneArtist)
+        self.assert_is_of_type(OneArtist)
 
     def test_performer_roles(self):
         f = AF({"~filename": fsnative("/dev/null"), "performer:piano": "woo"})
         self.inf = Information(self.library, [f])
-        self.assert_child_is(OneSong)
+        self.assert_is_of_type(OneSong)
 
     def test_remove_song(self):
         f = AF({"~filename": fsnative("/dev/null"), "artist": "woo"})
@@ -85,8 +85,8 @@ class TInformation(TestCase):
         self.inf = Information(self.library, [f, f2])
         self.library.remove([f])
 
-    def assert_child_is(self, cls):
-        assert isinstance(self.inf.get_child(), cls)
+    def assert_is_of_type(self, cls):
+        assert isinstance(self.inf.get_child().get_child().get_child(), cls)
 
 
 class TUtils(TestCase):
