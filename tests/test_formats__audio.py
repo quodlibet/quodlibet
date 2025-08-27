@@ -599,11 +599,11 @@ class TAudioFile(TestCase):
             # test '<' and '>' in name across path
             # (not parsed (transparent to test))
             ts["artist"] = "a < b"
-            ts["title"] = "b > a"
+            ts["title"] = "b's song > a's song"
             path = (
                 root
-                / escape_filename(ts["artist"])
-                / escape_filename(f"{ts['title']}.lyric")
+                / escape_filename(ts["artist"], safe=b"' ")
+                / escape_filename(f"{ts['title']}.lyric", safe=b"' ")
             )
 
             path.parent.mkdir(parents=True)
