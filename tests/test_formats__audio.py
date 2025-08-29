@@ -617,9 +617,12 @@ class TAudioFile(TestCase):
             shutil.rmtree(path.parent)
 
             if is_windows():
-                path = path.lower()  # account for 'os.path.normcase' santisatation
+                # account for 'os.path.normcase' santisatation
+                str_path = str(path).lower()
                 search = search.lower()  # compensate for the above
-            assert search == str(path)
+            else:
+                str_path = str(path)
+            assert search == str_path
 
     def test_lyrics_tag_reads_from_file(self):
         with temp_filename() as filename:
