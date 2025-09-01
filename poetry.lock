@@ -732,6 +732,7 @@ description = "A pytest plugin to run Xvfb (or Xephyr/Xvnc) for tests."
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
+markers = "sys_platform == \"linux\""
 files = [
     {file = "pytest_xvfb-3.1.1-py3-none-any.whl", hash = "sha256:3270f91417cfa0652b7c5a90e93a676e3a80bec12ccbd20cae3b42511e4aba98"},
     {file = "pytest_xvfb-3.1.1.tar.gz", hash = "sha256:90593634427d974b272e845793e4533f5b827c9d84c051879013624504175e44"},
@@ -748,6 +749,7 @@ description = "python wrapper for Xvfb, Xephyr and Xvnc"
 optional = false
 python-versions = "*"
 groups = ["dev"]
+markers = "sys_platform == \"linux\""
 files = [
     {file = "PyVirtualDisplay-3.0-py3-none-any.whl", hash = "sha256:40d4b8dfe4b8de8552e28eb367647f311f88a130bf837fe910e7f180d5477f0e"},
     {file = "PyVirtualDisplay-3.0.tar.gz", hash = "sha256:09755bc3ceb6eb725fb07eca5425f43f2358d3bf08e00d2a9b792a1aedd16159"},
@@ -1185,4 +1187,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "soco"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "5ff4ca09e2c569b7a6840e12543595e9b0d6aa31c9c0b9f1f395ad0794bf3680"
+content-hash = "91de0d45268dae676259072e24898e8268251be16aa4da3039182f6ca2caaf92"
