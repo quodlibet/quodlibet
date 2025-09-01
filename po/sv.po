@@ -1220,10 +1220,11 @@ msgid "Error details:"
 msgstr ""
 
 #: quodlibet/errorreport/ui.py:84
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
 
 #: quodlibet/errorreport/ui.py:93
@@ -1417,7 +1418,7 @@ msgid "_Fill:"
 msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr ""
 
@@ -1586,9 +1587,9 @@ msgstr "_Uppdatera stationer"
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -2040,9 +2041,10 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
@@ -2980,19 +2982,19 @@ msgid ""
 "similar)."
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr ""
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr ""
 
@@ -3241,42 +3243,42 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 #, fuzzy
 msgid "Waveform Seek Bar"
 msgstr "Alternativ"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 #, fuzzy
 msgid "Hover color"
 msgstr "Total storlek:"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 #, fuzzy
 msgid "Show current position whilst hovering"
 msgstr "Inga nya stationer"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr ""
 
@@ -3293,34 +3295,34 @@ msgstr ""
 msgid "File:"
 msgstr "Filer"
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3439,24 +3441,24 @@ msgstr ""
 msgid "Downmixes audio channels to mono."
 msgstr ""
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr ""
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 #, fuzzy
 msgid "Audio Pitch / Speed"
 msgstr "Ljudfeeds"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 #, fuzzy
 msgid "Controls the pitch of an audio stream."
 msgstr "Ange platsen för en ljud-feed:"
@@ -4692,9 +4694,10 @@ msgid "No iFP device found"
 msgstr "Inga insticksmoduler hittades."
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/ifp.py:42
@@ -5014,10 +5017,6 @@ msgstr ""
 msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
-msgstr ""
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
@@ -5584,15 +5583,15 @@ msgstr ""
 "quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 
-#: quodlibet/plugins/__init__.py:81
-#, fuzzy, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
+#: quodlibet/plugins/__init__.py:82
+#, fuzzy
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 msgstr "Kunde inte länka GStreamer-pipeline: '%s'"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228

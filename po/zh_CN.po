@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-05-20 14:03+0000\n"
-"Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
-"org>\n"
+"PO-Revision-Date: 2025-08-12 17:02+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1166,13 +1166,14 @@ msgid "Error details:"
 msgstr "错误详情："
 
 #: quodlibet/errorreport/ui.py:84
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 msgstr ""
-"有关错误和您的系统的各种细节将发送给第三方在线服务(<a href='https://www."
-"sentry.io'>www.sentry.io</a>) 发送前，您可以在下方查看这些数据。"
+"有关错误和您的系统的各种细节将发送给第三方在线服务(<a "
+"href='{sentry_url}'>www.sentry.io</a>) 。发送前，您可以在下方查看这些数据。"
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1356,7 +1357,7 @@ msgid "_Fill:"
 msgstr "填充(_F)："
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:66
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "颜色"
 
@@ -1528,9 +1529,9 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
 #: quodlibet/ext/events/viewlyrics.py:182
-#: quodlibet/ext/gstreamer/compressor.py:108
+#: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
-#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:101
+#: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:865
 msgid "Preferences"
@@ -1962,13 +1963,13 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux 桌面集成（MPRIS D-BUS）"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
+#, python-brace-format
 msgid ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
+"D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-"
-"Bus 接口控制Quod Libet。 \n"
+"⏯️允许使用 <a href=\"{mpris_url}\">MPRIS 2</a> D-Bus 接口控制 Quod Libet。 \n"
 "这允许各种Linux桌面集成(如多媒体键)。"
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -2871,19 +2872,19 @@ msgid ""
 "similar)."
 msgstr "显示与曲目同名（或类似）的 .lrc 文件中的同步歌词。"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:69
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "文字："
 
-#: quodlibet/ext/events/synchronizedlyrics.py:79
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "背景："
 
-#: quodlibet/ext/events/synchronizedlyrics.py:90
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "字体"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:93
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "字号（px）："
 
@@ -3120,39 +3121,39 @@ msgstr "可视化可执行文件："
 msgid "Reload"
 msgstr "重新载入"
 
-#: quodlibet/ext/events/waveformseekbar.py:638
+#: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
 msgstr "波形进度条"
 
-#: quodlibet/ext/events/waveformseekbar.py:641
+#: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 当前歌曲波形形状的搜索栏。"
 
-#: quodlibet/ext/events/waveformseekbar.py:729
+#: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
 msgstr "前景色"
 
-#: quodlibet/ext/events/waveformseekbar.py:732
+#: quodlibet/ext/events/waveformseekbar.py:738
 msgid "Hover color"
 msgstr "覆盖悬停时的颜色"
 
-#: quodlibet/ext/events/waveformseekbar.py:735
+#: quodlibet/ext/events/waveformseekbar.py:741
 msgid "Remaining color"
 msgstr "其余颜色"
 
-#: quodlibet/ext/events/waveformseekbar.py:739
+#: quodlibet/ext/events/waveformseekbar.py:745
 msgid "Show current position whilst hovering"
 msgstr "悬停时显示当前位置"
 
-#: quodlibet/ext/events/waveformseekbar.py:748
+#: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
 msgstr "显示时间标签"
 
-#: quodlibet/ext/events/waveformseekbar.py:757
+#: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "在进度条处滚动滚轮时前进/后退的毫秒数："
 
-#: quodlibet/ext/events/waveformseekbar.py:768
+#: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
 msgstr "波形高度（像素）："
 
@@ -3168,34 +3169,34 @@ msgstr "将当前歌曲的封面图像保存到文件。"
 msgid "File:"
 msgstr "文件："
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "_Threshold:"
 msgstr "阈值(_T)："
 
-#: quodlibet/ext/gstreamer/compressor.py:21
+#: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
 msgstr "激活筛选器之前的阈值"
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
 msgstr "比例(_R)："
 
-#: quodlibet/ext/gstreamer/compressor.py:22
+#: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
 msgstr "压缩比"
 
-#: quodlibet/ext/gstreamer/compressor.py:81
+#: quodlibet/ext/gstreamer/compressor.py:82
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, python-format
 msgid "%d %%"
 msgstr "%d %%"
 
-#: quodlibet/ext/gstreamer/compressor.py:113
+#: quodlibet/ext/gstreamer/compressor.py:114
 msgid "Audio Compressor"
 msgstr "音频压缩器"
 
-#: quodlibet/ext/gstreamer/compressor.py:115
+#: quodlibet/ext/gstreamer/compressor.py:116
 msgid ""
 "Changes the amplitude of all samples above a specific threshold with a "
 "specific ratio."
@@ -3309,23 +3310,23 @@ msgstr "单声道下混"
 msgid "Downmixes audio channels to mono."
 msgstr "将音频通道下混为单声道。"
 
-#: quodlibet/ext/gstreamer/pitch.py:22
+#: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
 msgstr "速度(_R)："
 
-#: quodlibet/ext/gstreamer/pitch.py:23
+#: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
 msgstr "节奏(_T)："
 
-#: quodlibet/ext/gstreamer/pitch.py:24
+#: quodlibet/ext/gstreamer/pitch.py:25
 msgid "_Pitch:"
 msgstr "音高(_P)："
 
-#: quodlibet/ext/gstreamer/pitch.py:106
+#: quodlibet/ext/gstreamer/pitch.py:107
 msgid "Audio Pitch / Speed"
 msgstr "音频音调/速度"
 
-#: quodlibet/ext/gstreamer/pitch.py:107
+#: quodlibet/ext/gstreamer/pitch.py:108
 msgid "Controls the pitch of an audio stream."
 msgstr "控制音频流的音调。"
 
@@ -4528,12 +4529,12 @@ msgid "No iFP device found"
 msgstr "未找到 iFP 设备"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
-msgstr ""
-"无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp 线 "
-"（http://ifp-driver.sf.net）。"
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
+msgstr "无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp-line "
+"（{ifp_url}）。"
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -4845,10 +4846,6 @@ msgid ""
 msgstr ""
 "使用 GStreamer 分析和更新 <a href=\"%(rg_link)s\">ReplayGain</a> 信息。结果按"
 "专辑分组。"
-
-#: quodlibet/ext/songsmenu/replaygain.py:583
-msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr "https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%94%BE%E5%A2%9E%E7%9B%8A"
 
 #: quodlibet/ext/songsmenu/replaygain.py:619
 msgid "always"
@@ -5384,16 +5381,15 @@ msgid ""
 msgstr "找不到音频设备 %r。检查 ~/.quodlibet/config 中的 Xine 设置。"
 
 #: quodlibet/plugins/__init__.py:67
-#, python-brace-format
 msgid ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr "找不到模块 '{module}'。也许您需要安装此软件包？{extra}"
 
-#: quodlibet/plugins/__init__.py:81
-#, python-brace-format
-msgid "Couldn't find GStreamer element '{element}'."
-msgstr "找不到 GStreamer 元素 '{element}'。"
+#: quodlibet/plugins/__init__.py:82
+msgid ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
+msgstr "无法从 {category!r} 类插件中找到 GStreamer 元素 '{element!r}。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -7914,6 +7910,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一个音乐曲库管理程序。它有多重不同的方式可以管理您的曲库，并且支"
 "持网络电台和音频源。此外它还有非常灵活的标签编辑以及搜索功能。"
+
+#~ msgid "https://en.wikipedia.org/wiki/ReplayGain"
+#~ msgstr "https://zh.wikipedia.org/wiki/%E5%9B%9E%E6%94%BE%E5%A2%9E%E7%9B%8A"
 
 #~ msgid "Converts album and artist names to sort names, poorly."
 #~ msgstr "将专辑和艺术家姓名转换为排序名称，效果不佳。"

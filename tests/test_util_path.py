@@ -6,6 +6,7 @@
 import os
 import shutil
 import unittest
+from pathlib import Path
 
 from senf import uri2fsn, fsn2uri, fsnative
 
@@ -16,6 +17,7 @@ from quodlibet.util.path import (
     uri_is_valid,
     is_hidden,
     uri2gsturi,
+    escape_parts,
 )
 from quodlibet.util import print_d
 
@@ -164,3 +166,9 @@ class Tiscommand(TestCase):
                         print_d(f"Testing {p}")
                         assert iscommand(p), p
                         return
+
+
+def test_escape_parts():
+    p = Path("/tmp") / "oh < no..." / "this: doesn't look good" / " - maybe?!"
+    output = escape_parts(p)
+    assert output == Path("/tmp/oh %3C no.../this%3A doesn't look good/ - maybe%3F%21")

@@ -67,6 +67,13 @@ def main():
             packages.append(package_name)
     assert packages
 
+    # package_data requires that the directories are packages in newer
+    # setuptools
+    for root, _dirnames, _filenames in os.walk("quodlibet/images"):
+        relpath = os.path.relpath(root, os.path.dirname(package_path))
+        package_name = relpath.replace(os.sep, ".")
+        packages.append(package_name)
+
     setup_kwargs = {
         "distclass": GDistribution,
         "name": "quodlibet",
@@ -76,7 +83,6 @@ def main():
         "author": "Joe Wreschnig, Michael Urman, & others",
         "author_email": "quod-libet-development@googlegroups.com",
         "maintainer": "Steven Robertson and Christoph Reiter",
-        "license": "GPL-2.0-or-later",
         "packages": packages,
         "package_data": {
             "quodlibet": [

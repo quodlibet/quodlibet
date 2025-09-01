@@ -21,7 +21,13 @@ import cairo
 from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet import util
-from quodlibet.plugins import PluginConfig, IntConfProp, ConfProp, BoolConfProp
+from quodlibet.plugins import (
+    PluginConfig,
+    IntConfProp,
+    ConfProp,
+    BoolConfProp,
+    MissingGstreamerElementPluginError,
+)
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Align, add_css
 from quodlibet.qltk import Icons
@@ -776,3 +782,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         vbox.pack_start(hbox, True, True, 0)
 
         return vbox
+
+
+if not Gst.ElementFactory.find("level"):
+    raise MissingGstreamerElementPluginError("level", "good")

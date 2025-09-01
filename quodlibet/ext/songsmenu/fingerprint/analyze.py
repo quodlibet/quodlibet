@@ -1,4 +1,5 @@
 # Copyright 2011,2013,2014 Christoph Reiter
+#                     2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,6 +10,7 @@ import multiprocessing
 
 from gi.repository import Gst, GObject
 
+from quodlibet.plugins import MissingGstreamerElementPluginError
 from quodlibet.util import connect_obj
 
 
@@ -58,7 +60,7 @@ class FingerPrintPipeline:
         self._dec = decode
         self._dec_id = connect_obj(decode, "pad-added", new_decoded_pad, convert)
 
-        chroma = Gst.ElementFactory.make("chromaprint", None)
+        chroma = self.setup_chromaprint_element()
         fake = Gst.ElementFactory.make("fakesink", None)
         pipe.add(chroma)
         pipe.add(fake)
@@ -70,6 +72,10 @@ class FingerPrintPipeline:
         self._bus = bus = pipe.get_bus()
         self._bus_id = bus.connect("message", self._bus_message)
         bus.add_signal_watch()
+
+    @classmethod
+    def setup_chromaprint_element(cls):
+        return Gst.ElementFactory.make("chromaprint", None)
 
     def start(self, song, callback):
         """Start processing a new song"""
@@ -221,3 +227,7 @@ class FingerPrintPool(GObject.GObject):
         elif len(self._idle) == len(self._workers):
             # all done, all idle, kill em
             self.stop()
+
+
+if not FingerPrintPipeline.setup_chromaprint_element():
+    raise MissingGstreamerElementPluginError("chromaprint", "bad")

@@ -16,35 +16,29 @@ import os
 import re
 import shutil
 import time
-from typing import Any, Generic, TypeVar
-from collections import OrderedDict
 from itertools import zip_longest
+from pathlib import Path
+from typing import Any, Generic, TypeVar
+from collections.abc import Iterable
 
-from senf import fsn2uri, fsnative, fsn2text, bytes2fsn, path2fsn
+from senf import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
 
-from quodlibet import _, print_d
-from quodlibet import util
-from quodlibet import config
+from quodlibet import _, config, print_d, util
+from quodlibet.util import cached_property, capitalize, iso639
+from quodlibet.util import human_sort_key as human
 from quodlibet.util.path import (
+    ismount,
     mkdir,
     mtime,
     normalize_path,
-    ismount,
-    get_home_dir,
-    RootPathFile,
+    escape_parts,
 )
-from quodlibet.util.string import encode, decode, isascii
-from quodlibet.util.environment import is_windows
-
-from quodlibet.util import iso639, cached_property
-from quodlibet.util import human_sort_key as human, capitalize
-
+from quodlibet.util.string import decode, encode, isascii
 from quodlibet.util.string.date import format_date
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 
 from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
-
 
 translate_errors  # noqa
 
@@ -104,6 +98,8 @@ PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
 
 VARIOUS_ARTISTS_VALUES = "V.A.", "various artists", "Various Artists"
 """Values for ~people representing lots of people, most important last"""
+
+PATTERN_REGEX = re.compile(r"[^\\]<[^" + re.escape(os.sep) + r"]*[^\\]>")
 
 
 def decode_value(tag, value):
@@ -507,12 +503,12 @@ class AudioFile(dict, ImageContainer, HasKey):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
-                lyric_filename = self.lyric_filename
-                if not lyric_filename:
+                lyrics_path = self.lyrics_path
+                if not lyrics_path:
                     return default
                 try:
-                    with open(lyric_filename, "rb") as fileobj:
-                        print_d(f"Reading lyrics from {lyric_filename!r}")
+                    with open(lyrics_path, "rb") as fileobj:
+                        print_d(f"Reading lyrics from {lyrics_path!s}")
                         text = fileobj.read().decode("utf-8", "replace")
                         # try to skip binary files
                         if "\0" in text:
@@ -625,38 +621,12 @@ class AudioFile(dict, ImageContainer, HasKey):
         return "\n".join(descs)
 
     @property
-    def lyric_filename(self) -> str | None:
-        """Returns the validated, or default, lyrics filename for this
-        file. User defined '[memory] lyric_rootpaths' and
-        '[memory] lyric_filenames' matches take precedence"""
+    def lyrics_path(self) -> Path | None:
+        """Returns the validated, or default, lyrics file Path for this song.
+        Config settings ``editing.lyric_dirs`` and ``editing.lyric_filenames``
+        take precedence."""
 
         from quodlibet.pattern import ArbitraryExtensionFileFromPattern
-
-        rx_params = re.compile(r"[^\\]<[^" + re.escape(os.sep) + r"]*[^\\]>")
-
-        def expand_pathfile(rpf):
-            """Return the expanded RootPathFile"""
-            expanded = []
-            root = os.path.expanduser(rpf.root)
-            pathfile = os.path.expanduser(rpf.pathfile)
-            if rx_params.search(pathfile):
-                root = ArbitraryExtensionFileFromPattern(root).format(self)
-                pathfile = ArbitraryExtensionFileFromPattern(pathfile).format(self)
-            rpf = RootPathFile(root, pathfile)
-            expanded.append(rpf)
-            if not os.path.exists(pathfile) and is_windows():
-                # prioritise a special character encoded version
-                #
-                # most 'alien' chars are supported for 'nix fs paths, and we
-                # only pass the proposed path through 'escape_filename' (which
-                # apparently doesn't respect case) if we don't care about case!
-                #
-                # FIX: assumes 'nix build used on a case-sensitive fs, nt case
-                # insensitive. clearly this is not biting anyone though (yet!)
-                pathfile = os.path.sep.join([rpf.root, rpf.end_escaped])
-                rpf = RootPathFile(rpf.root, pathfile)
-                expanded.insert(len(expanded) - 1, rpf)
-            return expanded
 
         def sanitise(sep, parts):
             """Return a sanitised version of a path's parts"""
@@ -664,12 +634,17 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         # setup defaults (user-defined take precedence)
         # root search paths
-        lyric_paths = config.getstringlist("memory", "lyric_rootpaths", [])
+        lyric_dirs = [
+            Path(s).expanduser()
+            for s in config.getstringlist("editing", "lyric_dirs", [])
+        ]
         # ensure default paths
-        lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
-        lyric_paths.append(os.path.join(os.path.dirname(self.comma("~filename"))))
+        song_path = Path(self("~filename"))
+        lyric_dirs.append(song_path.parent)
         # search pathfile names
-        lyric_filenames = config.getstringlist("memory", "lyric_filenames", [])
+        lyric_filenames: list[str] = config.getstringlist(
+            "editing", "lyric_filenames", []
+        )
         # ensure some default pathfile names
         lyric_filenames.append(
             sanitise(
@@ -685,65 +660,37 @@ class AudioFile(dict, ImageContainer, HasKey):
             )
             + ".lyric"
         )
+        # Add the simple / common case of song-file-with-lrc-extension
+        lyric_filenames.append(song_path.with_suffix(".lrc").name)
 
         # generate all potential paths (unresolved/unexpanded)
-        pathfiles = OrderedDict()
-        for r in lyric_paths:
-            for f in lyric_filenames:
-                pathfile = os.path.join(
-                    r, os.path.dirname(f), fsnative(os.path.basename(f))
-                )
-                rpf = RootPathFile(r, pathfile)
-                if pathfile not in pathfiles:
-                    pathfiles[pathfile] = rpf
+        paths = []
+        for d in lyric_dirs:
+            for fn in lyric_filenames:
+                if PATTERN_REGEX.search(fn):
+                    fn = ArbitraryExtensionFileFromPattern(fn).format(self)
+                path = d / escape_parts(Path(fn))
+                if path.exists():
+                    return path
+                paths.append(path)
 
-        # expand each raw pathfile in turn and test for existence
-        match_ = None
-        pathfiles_expanded = OrderedDict()
-        for _pf, rpf in pathfiles.items():
-            for rpf in expand_pathfile(rpf):  # resolved as late as possible  # noqa
-                pathfile = rpf.pathfile
-                pathfiles_expanded[pathfile] = rpf
-                if os.path.exists(pathfile):
-                    match_ = pathfile
-                    break
-            if match_:
-                break
+        # search even harder!
+        lyric_extensions = ["lyric", "lyrics", "lrc", "txt"]
 
-        if not match_:
-            # search even harder!
-            lyric_extensions = ["lyric", "lyrics", "", "txt"]
+        def alternate_extensions(path: Path) -> Iterable[Path]:
+            ext = path.suffix[1:]
+            return (path.with_suffix(f".{x}") for x in lyric_extensions if x != ext)
 
-            def generate_mod_ext_paths(pathfile):
-                # separate pathfile's extension (if any)
-                ext = os.path.splitext(pathfile)[1][1:]
-                path = pathfile[: -1 * len(ext)].strip(".") if ext else pathfile
-                # skip the proposed lyric extension if it is the same as
-                # the original for a given search pathfile stub - it has
-                # already been tested without success!
-                extra_extensions = [x for x in lyric_extensions if x != ext]
+        # look for a match by modifying the extension for each of the
+        # (now fully resolved) 'pathfiles_expanded' search items
+        for path in paths:
+            for path_alt in alternate_extensions(path):
+                if path_alt.exists():
+                    # persistence has paid off!
+                    return path_alt
 
-                # join valid new extensions to pathfile stub and return
-                return [f"{path}.{ext}" if ext else path for ext in extra_extensions]
-
-            # look for a match by modifying the extension for each of the
-            # (now fully resolved) 'pathfiles_expanded' search items
-            for pathfile in pathfiles_expanded.keys():
-                # get alternatives for existence testing
-                paths_mod_ext = generate_mod_ext_paths(pathfile)
-                for path_ext in paths_mod_ext:
-                    if os.path.exists(path_ext):
-                        # persistence has paid off!
-                        match_ = path_ext
-                        break
-                if match_:
-                    break
-
-        if not match_:
-            # default
-            match_ = list(pathfiles_expanded.keys())[0]
-
-        return match_
+        # default
+        return paths[0]
 
     @property
     def has_rating(self):

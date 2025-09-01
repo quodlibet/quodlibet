@@ -55,7 +55,7 @@ class TLyricsPane(TestCase):
 
     def test_save_lyrics_deletes_lyric_file(self):
         af = self.temp_mp3()
-        lf_name = af.lyric_filename
+        lf_name = af.lyrics_path
         os.makedirs(os.path.dirname(lf_name))
         with open(lf_name, "wb") as f:
             f.write(LYRICS.encode("utf-8"))

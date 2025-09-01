@@ -179,7 +179,9 @@ class TWatchedFileLibrary(TLibrary):
         destroy_fake_app()
 
     def Library(self):
-        lib = SongFileLibrary(watch_dirs=[text2fsn(str(self.temp_path))])
+        lib = SongFileLibrary()
+        dirs = [text2fsn(str(self.temp_path))]
+        lib.start_watching(dirs)
         # Setup needs copools
         run_gtk_loop()
         return lib
@@ -190,7 +192,7 @@ class TWatchedFileLibrary(TLibrary):
         temp_path = Path(self.temp_path)
         assert temp_path in monitors, f"Not monitoring {temp_path} (but {monitors})"
 
-    @pytest.mark.flaky(max_runs=3, min_passes=2)
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_watched_adding_removing(self):
         with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)

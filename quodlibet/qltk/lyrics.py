@@ -9,6 +9,7 @@
 # FIXME: Too many buttons -- saving should be automatic?
 
 import os
+from pathlib import Path
 from urllib.parse import quote
 
 from gi.repository import Gtk
@@ -104,12 +105,12 @@ class LyricsPane(Gtk.VBox):
         else:
             print_d(f"Wrote embedded lyrics into {song('~filename')}")
             app.librarian.emit("changed", [song])
-            fn = song.lyric_filename
-            if fn:
-                self._delete_file(fn)
+            path = song.lyrics_path
+            if path:
+                self._delete_file(path)
 
     def _save_to_file(self, song, text):
-        lyric_fn = song.lyric_filename
+        lyric_fn = song.lyrics_path
         if not lyric_fn:
             print_w("No lyrics file to save to, ignoring.")
             return
@@ -133,22 +134,24 @@ class LyricsPane(Gtk.VBox):
             util.print_exc()
         else:
             app.librarian.emit("changed", [song])
-        self._delete_file(song.lyric_filename)
+        self._delete_file(song.lyrics_path)
         self.text_view.get_buffer().set_text("")
         delete.set_sensitive(False)
         save.set_sensitive(True)
 
-    def _delete_file(self, filename):
-        if not filename:
+    def _delete_file(self, path: Path):
+        if not path:
             return
         try:
-            os.unlink(filename)
-            print_d(f"Removed lyrics file {filename!r}")
+            path.unlink()
         except OSError:
             pass
-        lyric_dir = os.path.dirname(filename)
+        else:
+            print_d(f"Removed lyrics file {path!s}")
+        lyric_dir = path.parent
         try:
-            os.rmdir(lyric_dir)
-            print_d(f"Removed lyrics directory {lyric_dir}")
+            lyric_dir.rmdir()
         except OSError:
             pass
+        else:
+            print_d(f"Removed lyrics directory {lyric_dir!s}")

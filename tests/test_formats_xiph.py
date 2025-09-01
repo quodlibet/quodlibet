@@ -22,13 +22,14 @@ from mutagen.oggvorbis import OggVorbis
 from .helper import get_temp_copy
 
 
-def _get_jpeg(size=5):
+def _get_jpeg(size=16):
     from gi.repository import GdkPixbuf
 
-    pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     fd, fn = mkstemp()
+    os.close(fd)
+    pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     pb.savev(fn, "jpeg", [], [])
-    with os.fdopen(fd, "rb") as h:
+    with open(fn, "rb") as h:
         data = h.read()
     os.unlink(fn)
     return data
@@ -403,7 +404,7 @@ class TVCCoverMixin:
         b64pic_cover = base64.b64encode(pic.write()).decode("ascii")
 
         pic2 = Picture()
-        pic2.data = _get_jpeg(size=6)
+        pic2.data = _get_jpeg(size=32)
         pic2.type = APICType.COVER_BACK
         b64pic_other = base64.b64encode(pic2.write()).decode("ascii")
 

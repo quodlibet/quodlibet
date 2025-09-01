@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2024 Nick Boultbee
+#           2009-2025 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,20 +18,22 @@ to unicode with utf-8/surrogateescape.
 The final representation on disk should then in both cases be the same.
 """
 
-import os
-import csv
 import collections
+import csv
+import os
+from configparser import Error, NoSectionError
+from configparser import RawConfigParser as ConfigParser
 from io import StringIO
+from typing import Any, cast
+from collections.abc import Callable
 
-from configparser import RawConfigParser as ConfigParser, Error, NoSectionError
-
-from quodlibet import print_w
 from senf import fsnative
 
+from quodlibet import print_w
 from quodlibet.util import list_unique, print_d
 from quodlibet.util.atomic import atomic_save
-from quodlibet.util.string import join_escape, split_escape
 from quodlibet.util.path import mkdir
+from quodlibet.util.string import join_escape, split_escape
 
 
 # In newer RawConfigParser it is possible to replace the internal dict. The
@@ -42,7 +44,14 @@ class _sorted_dict(collections.OrderedDict):  # noqa
         return sorted(super().items())
 
 
-_DEFAULT = object()
+class _Default:
+    pass
+
+
+_DEFAULT: _Default = _Default()
+
+UpgradeFunction = Callable[["Config", int, int], None]
+"""function(config, old_version: int, new_version: int) -> None"""
 
 
 class Config:
@@ -52,7 +61,7 @@ class Config:
     to set default values.
     """
 
-    def __init__(self, version=None, _defaults=True):
+    def __init__(self, version: int | None = None, _defaults: bool = True):
         """Use read() to read in an existing config file.
 
         version should be an int starting with 0 that gets incremented if you
@@ -64,10 +73,10 @@ class Config:
         if _defaults:
             self.defaults = Config(_defaults=False)
         self._version = version
-        self._loaded_version = None
-        self._upgrade_funcs = []
+        self._loaded_version: int | None = None
+        self._upgrade_funcs: list[UpgradeFunction] = []
 
-    def _do_upgrade(self, func):
+    def _do_upgrade(self, func: UpgradeFunction) -> None:
         assert self._loaded_version is not None
         assert self._version is not None
 
@@ -77,7 +86,7 @@ class Config:
             print_d("Config upgrade: %d->%d (%r)" % (old_version, new_version, func))
             func(self, old_version, new_version)
 
-    def get_version(self):
+    def get_version(self) -> int:
         """Get the version of the loaded config file (for testing only)
 
         Raises Error if no file was loaded or versioning is disabled.
@@ -91,13 +100,11 @@ class Config:
 
         return self._loaded_version
 
-    def register_upgrade_function(self, function):
+    def register_upgrade_function(self, function: UpgradeFunction) -> UpgradeFunction:
         """Register an upgrade function that gets called at each read()
         if the current config version and the loaded version don't match.
 
         Can also be registered after read was called.
-
-        function(config, old_version: int, new_version: int) -> None
         """
 
         if self._version is None:
@@ -109,7 +116,7 @@ class Config:
             self._do_upgrade(function)
         return function
 
-    def reset(self, section, option):
+    def reset(self, section: str, option: str) -> None:
         """Reset the value to the default state"""
 
         assert self.defaults is not None
@@ -119,7 +126,7 @@ class Config:
         except NoSectionError:
             pass
 
-    def options(self, section):
+    def options(self, section: str) -> list[str]:
         """Returns a list of options available in the specified section."""
 
         try:
@@ -137,9 +144,8 @@ class Config:
                     pass
             return options
 
-    def get(self, section, option, default=_DEFAULT):
-        """get(section, option[, default]) -> str
-
+    def get(self, section: str, option: str, default: str | _Default = _DEFAULT) -> str:
+        """
         If default is not given or set, raises Error in case of an error
         """
 
@@ -155,7 +161,7 @@ class Config:
                 raise
             if "No section:" in str(e):
                 print_w(f"Config problem: {e}")
-            return default
+            return cast(str, default)
 
     def gettext(self, *args, **kwargs):
         value = self.get(*args, **kwargs)
@@ -163,7 +169,9 @@ class Config:
         value.encode("utf-8")
         return value
 
-    def getbytes(self, section, option, default=_DEFAULT):
+    def getbytes(
+        self, section: str, option: str, default: bytes | _Default = _DEFAULT
+    ) -> bytes:
         try:
             value = self._config.get(section, option)
             return value.encode("utf-8", "surrogateescape")
@@ -174,14 +182,13 @@ class Config:
                         return self.defaults.getbytes(section, option)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(bytes, default)
 
-    def getboolean(self, section, option, default=_DEFAULT):
-        """getboolean(section, option[, default]) -> bool
-
-        If default is not given or set, raises Error in case of an error
-        """
+    def getboolean(
+        self, section: str, option: str, default: bool | _Default = _DEFAULT
+    ) -> bool:
+        """If default is not given or set, raises Error in case of an error"""
 
         try:
             return self._config.getboolean(section, option)
@@ -192,13 +199,14 @@ class Config:
                         return self.defaults.getboolean(section, option)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(bool, default)
 
-    def getint(self, section, option, default=_DEFAULT):
-        """getint(section, option[, default]) -> int
-
-        If default is not give or set, raises Error in case of an error
+    def getint(
+        self, section: str, option: str, default: int | _Default = _DEFAULT
+    ) -> int:
+        """
+        If default is not given or set, raises Error in case of an error
         """
 
         try:
@@ -210,14 +218,13 @@ class Config:
                         return self.defaults.getint(section, option)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(int, default)
 
-    def getfloat(self, section, option, default=_DEFAULT):
-        """getfloat(section, option[, default]) -> float
-
-        If default is not give or set, raises Error in case of an error
-        """
+    def getfloat(
+        self, section: str, option: str, default: float | _Default = _DEFAULT
+    ) -> float:
+        """If default is not given or set, raises Error in case of an error"""
 
         try:
             return self._config.getfloat(section, option)
@@ -228,12 +235,13 @@ class Config:
                         return self.defaults.getfloat(section, option)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(float, default)
 
-    def getstringlist(self, section, option, default=_DEFAULT):
-        """getstringlist(section, option[, default]) -> list
-
+    def getstringlist(
+        self, section: str, option: str, default: list[str] | _Default = _DEFAULT
+    ) -> list[str]:
+        """
         If default is not given or set, raises Error in case of an error.
         Gets a list of strings, using CSV to parse and delimit.
         """
@@ -245,7 +253,7 @@ class Config:
             try:
                 vals = next(parser)
             except (csv.Error, ValueError) as e:
-                raise Error(e) from e
+                raise Error(str(e)) from e
             return vals
         except Error as e:
             if default is _DEFAULT:
@@ -254,11 +262,11 @@ class Config:
                         return self.defaults.getstringlist(section, option)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(list[str], default)
 
-    def setstringlist(self, section, option, values):
-        """Saves a list of unicode strings using the csv module"""
+    def setstringlist(self, section: str, option: str, values: list[str]) -> None:
+        """Saves a list of Unicode strings using the csv module"""
 
         sw = StringIO()
         values = [str(v) for v in values]
@@ -267,14 +275,20 @@ class Config:
         writer.writerow(values)
         self.set(section, option, sw.getvalue())
 
-    def setlist(self, section, option, values, sep=","):
+    def setlist(self, section: str, option: str, values: list[str], sep=",") -> None:
         """Saves a list of str using ',' as a separator and \\ for escaping"""
 
         values = [str(v) for v in values]
         joined = join_escape(values, sep)
         self.set(section, option, joined)
 
-    def getlist(self, section, option, default=_DEFAULT, sep=","):
+    def getlist(
+        self,
+        section: str,
+        option: str,
+        default: list[str] | _Default = _DEFAULT,
+        sep=",",
+    ) -> list[str]:
         """Returns a str list saved with setlist()"""
 
         try:
@@ -287,10 +301,10 @@ class Config:
                         return self.defaults.getlist(section, option, sep=sep)
                     except Error:
                         pass
-                raise Error(e) from e
-            return default
+                raise Error(str(e)) from e
+            return cast(list[str], default)
 
-    def set(self, section, option, value):
+    def set(self, section: str, option: str, value: Any) -> None:
         """Saves the string representation for the passed value
 
         Don't pass unicode, encode first.
@@ -301,7 +315,7 @@ class Config:
 
         # RawConfigParser only allows string values but doesn't
         # scream if they are not (and it only fails before the
-        # first config save..)
+        # first config save...)
         if not isinstance(value, str):
             value = str(value)
 
@@ -314,7 +328,7 @@ class Config:
             else:
                 raise
 
-    def settext(self, section, option, value):
+    def settext(self, section: str, option: str, value: Any) -> None:
         value = str(value)
 
         # make sure there are no surrogates
@@ -322,24 +336,24 @@ class Config:
 
         self.set(section, option, value)
 
-    def setbytes(self, section, option, value):
+    def setbytes(self, section: str, option: str, value: bytes) -> None:
         assert isinstance(value, bytes)
 
-        value = value.decode("utf-8", "surrogateescape")
+        str_value = value.decode("utf-8", "surrogateescape")
 
-        self.set(section, option, value)
+        self.set(section, option, str_value)
 
-    def write(self, filename):
+    def write(self, filename: fsnative) -> None:
         """Write config to filename.
 
-        Can raise EnvironmentError
+        :raises EnvironmentError: When writing the file fails.
         """
 
         assert isinstance(filename, fsnative)
 
         mkdir(os.path.dirname(filename))
 
-        # temporary set the new version for saving
+        # Temporarily set the new version for saving
         if self._version is not None:
             self.add_section("__config__")
             self.set("__config__", "version", self._version)
@@ -353,18 +367,18 @@ class Config:
             if self._loaded_version is not None:
                 self.set("__config__", "version", self._loaded_version)
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all sections."""
 
         for section in self._config.sections():
             self._config.remove_section(section)
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """Whether the config has any sections"""
 
         return not self._config.sections()
 
-    def read(self, filename):
+    def read(self, filename) -> None:
         """Reads the config from `filename` if the file exists,
         otherwise does nothing
 
@@ -373,8 +387,8 @@ class Config:
 
         try:
             with open(filename, "rb") as fileobj:
-                fileobj = StringIO(fileobj.read().decode("utf-8", "surrogateescape"))
-                self._config.read_file(fileobj, filename)
+                io = StringIO(fileobj.read().decode("utf-8", "surrogateescape"))
+                self._config.read_file(io, filename)
         except OSError:
             print_d(f"No config file found at {filename} – using defaults")
             return
@@ -385,31 +399,30 @@ class Config:
             for func in self._upgrade_funcs:
                 self._do_upgrade(func)
 
-    def has_option(self, section, option):
+    def has_option(self, section: str, option: str) -> bool:
         """If the given section exists, and contains the given option"""
 
         return self._config.has_option(section, option) or (
-            self.defaults and self.defaults.has_option(section, option)
+            self.defaults is not None and self.defaults.has_option(section, option)
         )
 
-    def has_section(self, section):
+    def has_section(self, section: str) -> bool:
         """If the given section exists"""
 
         return self._config.has_section(section) or (
-            self.defaults and self.defaults.has_section(section)
+            self.defaults is not None and self.defaults.has_section(section)
         )
 
-    def remove_option(self, section, option):
+    def remove_option(self, section: str, option: str) -> bool:
         """Remove the specified option from the specified section
 
-        Can raise Error.
+        :raises Error: If the section or option doesn't exist.
         """
 
         return self._config.remove_option(section, option)
 
-    def add_section(self, section):
-        """Add a section named section to the instance if it not already
-        exists."""
+    def add_section(self, section: str) -> None:
+        """Add a section to the instance if it doesn't already exist."""
 
         if not self._config.has_section(section):
             self._config.add_section(section)
@@ -433,14 +446,14 @@ class ConfigProxy:
     def _new_defaults(self, real_default_config):
         return ConfigProxy(real_default_config, self._section_name, False)
 
-    def _option(self, name):
+    def _option(self, name: str) -> str:
         """Override if you want to change option names. e.g. prefix them"""
 
         return name
 
     @classmethod
-    def _init_wrappers(cls):
-        def get_func(name):
+    def _init_wrappers(cls) -> None:
+        def get_func(name: str):
             def method(self, option, *args, **kwargs):
                 config_getter = getattr(self._real_config, name)
                 return config_getter(
