@@ -138,11 +138,11 @@ jobs:
             python3-pip \
             python3-polib \
             python3-pytest \
+            python3-pytest-xvfb \
             python3-setuptools \
             xvfb
 
           python3 -m pip install --user --upgrade \
-            pytest-xvfb \
             pytest-faulthandler \
             "ruff==0.7.3" \
             flaky
