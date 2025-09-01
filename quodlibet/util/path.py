@@ -5,7 +5,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+import functools
 import os
 import re
 import stat
@@ -13,7 +13,8 @@ import sys
 import errno
 import codecs
 import shlex
-from typing import Any
+from pathlib import Path
+from typing import Any, cast
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -493,49 +494,11 @@ def uri_is_valid(uri):
     return True
 
 
-class RootPathFile:
-    """Simple container used for discerning a pathfile's 'root' directory
-    and 'end' part. The variable depth of a pathfile's 'end' part renders
-    os.path built-ins (basename etc.) useless for this purpose"""
+def escape_parts(p: Path, safe: bytes = b" '\"") -> Path:
+    """Escapes each part of a path separately"""
+    escaper = functools.partial(escape_filename, safe=safe)
 
-    _root = ""  # 'root' of full file path
-    _pathfile = ""  # full file path
-
-    def __init__(self, root, pathfile):
-        self._root = root
-        self._pathfile = pathfile
-
-    @property
-    def root(self):
-        return self._root
-
-    @property
-    def end(self):
-        return self._pathfile[len(self._root) + len(os.sep) :]
-
-    @property
-    def pathfile(self):
-        return self._pathfile
-
-    @property
-    def end_escaped(self):
-        escaped = [escape_filename(part) for part in self.end.split(os.path.sep)]
-        return os.path.sep.join(escaped)
-
-    @property
-    def pathfile_escaped(self):
-        return os.path.sep.join([self.root, self.end_escaped])
-
-    @property
-    def valid(self):
-        valid = True
-        if os.path.exists(self.pathfile):
-            return valid
-        try:
-            with open(self.pathfile, "w", encoding="utf-8") as f:
-                f.close()  # do nothing
-        except OSError:
-            valid = False
-        if os.path.exists(self.pathfile):
-            os.remove(self.pathfile)
-        return valid
+    # Don't escape the root path ("/")
+    base = first if (first := p.parts[0]) == os.sep else escaper(first)
+    rest = [escaper(part) for part in p.parts[1:]]
+    return Path(cast(str, os.path.join(base, *rest)))
