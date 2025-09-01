@@ -142,7 +142,7 @@ jobs:
             xvfb
 
           python3 -m pip install --user --upgrade \
-            PyVirtualDisplay \
+            pytest-xvfb \
             pytest-faulthandler \
             "ruff==0.7.3" \
             flaky
