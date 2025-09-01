@@ -1,5 +1,5 @@
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
-#      2013-2023 Nick Boultbee
+#      2013-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@ import itertools
 from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
+from pathlib import Path
 from threading import Thread
 from collections.abc import Collection, Callable, Iterable
 from urllib.request import urlopen
@@ -129,7 +130,7 @@ class IRFile(RemoteFile):
         return b"\n".join(lines)
 
     @property
-    def lyric_filename(self) -> str | None:
+    def lyrics_path(self) -> Path | None:
         return None
 
     def can_change(self, k=None):

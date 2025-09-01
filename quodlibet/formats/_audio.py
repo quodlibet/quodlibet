@@ -19,6 +19,7 @@ import time
 from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Generic, TypeVar
+from collections.abc import Iterable
 
 from senf import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
 
@@ -502,12 +503,12 @@ class AudioFile(dict, ImageContainer, HasKey):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
-                lyric_filename = self.lyric_filename
-                if not lyric_filename:
+                lyrics_path = self.lyrics_path
+                if not lyrics_path:
                     return default
                 try:
-                    with open(lyric_filename, "rb") as fileobj:
-                        print_d(f"Reading lyrics from {lyric_filename!r}")
+                    with open(lyrics_path, "rb") as fileobj:
+                        print_d(f"Reading lyrics from {lyrics_path!s}")
                         text = fileobj.read().decode("utf-8", "replace")
                         # try to skip binary files
                         if "\0" in text:
@@ -620,8 +621,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         return "\n".join(descs)
 
     @property
-    def lyric_filename(self) -> str | None:
-        """Returns the validated, or default, lyrics filename for this file.
+    def lyrics_path(self) -> Path | None:
+        """Returns the validated, or default, lyrics file Path for this song.
         Config settings ``editing.lyric_dirs`` and ``editing.lyric_filenames``
         take precedence."""
 
@@ -670,14 +671,15 @@ class AudioFile(dict, ImageContainer, HasKey):
                     fn = ArbitraryExtensionFileFromPattern(fn).format(self)
                 path = d / escape_parts(Path(fn))
                 if path.exists():
-                    return str(path)
+                    return path
                 paths.append(path)
 
         # search even harder!
-        lyric_extensions = ["lyric", "lyrics", "lrc", "", "txt"]
+        lyric_extensions = ["lyric", "lyrics", "lrc", "txt"]
 
-        def alternate_extensions(path: Path):
-            return {path.with_suffix(f".{x}" if x else "") for x in lyric_extensions}
+        def alternate_extensions(path: Path) -> Iterable[Path]:
+            ext = path.suffix[1:]
+            return (path.with_suffix(f".{x}") for x in lyric_extensions if x != ext)
 
         # look for a match by modifying the extension for each of the
         # (now fully resolved) 'pathfiles_expanded' search items
@@ -685,10 +687,10 @@ class AudioFile(dict, ImageContainer, HasKey):
             for path_alt in alternate_extensions(path):
                 if path_alt.exists():
                     # persistence has paid off!
-                    return str(path_alt)
+                    return path_alt
 
         # default
-        return str(paths[0])
+        return paths[0]
 
     @property
     def has_rating(self):
