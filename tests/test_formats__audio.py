@@ -1203,7 +1203,7 @@ class TAudioFileLyrics(TestCase):
 
             if is_windows():
                 # account for 'os.path.normcase' santisatation
-                str_path = path.lower()
+                str_path = str(path).lower()
                 search = search.lower()  # compensate for the above
             else:
                 str_path = str(path)
