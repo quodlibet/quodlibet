@@ -8,6 +8,9 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk, GObject, Pango
+
+from quodlibet.qltk.bookmarks import EditBookmarksPane
+from quodlibet.qltk.lyrics import LyricsPane
 from senf import fsn2text
 
 from quodlibet import ngettext, _
@@ -36,18 +39,20 @@ class _ListEntry:
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
+    """Window for editing song properties, notably tags."""
+
     __gsignals__ = {"changed": (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
     def __init__(self, library, songs, parent=None):
         super().__init__(dialog=False)
         self.set_transient_for(qltk.get_top_parent(parent))
 
-        default_width = 600
+        default_width = 800
         config_suffix = ""
         if len(songs) <= 1:
             default_width -= 200
             config_suffix += "single"
-        self.set_default_size(default_width, 400)
+        self.set_default_size(default_width, 500)
 
         self.enable_window_tracking("quodlibet_properties", size_suffix=config_suffix)
 
@@ -56,16 +61,19 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         )
 
         paned = ConfigRPaned("memory", "quodlibet_properties_pos", 0.4)
-        notebook = qltk.Notebook()
+        self.notebook = notebook = qltk.Notebook()
         notebook.props.scrollable = True
         pages = []
         pages.extend(
             [Ctr(self, library) for Ctr in [EditTags, TagsFromPath, RenameFiles]]
         )
-        if len(songs) > 1:
+        if len(songs) == 1:
+            pages.append(EditBookmarksPane(library, songs[0]))
+            pages.append(LyricsPane(songs[0]))
+        else:
             pages.append(TrackNumbers(self, library))
         for page in pages:
-            page.show()
+            page.show_all()
             notebook.append_page(page)
 
         fbasemodel = ObjectStore()
@@ -103,7 +111,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        # only show the list if there are is more than one song
         if len(songs) > 1:
             sw.show_all()
 
@@ -202,3 +209,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         model, paths = selection.get_selected_rows()
         songs = [model[path][0].song for path in paths]
         self.emit("changed", songs)
+
+    def switch_to_lyrics(self):
+        self.notebook.set_current_page(4)
