@@ -98,7 +98,7 @@
                   libsoup_3
                   pcre2
                   shared-mime-info
-                  xvfb-run
+                  xorg.xvfb
                 ]
                 ++ (with gst_all_1; [
                   gstreamer

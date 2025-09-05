@@ -18,10 +18,6 @@ try:
 except ImportError as e:
     raise SystemExit("pytest missing: sudo apt-get install python3-pytest") from e
 
-try:
-    import pyvirtualdisplay
-except ImportError:
-    pyvirtualdisplay = None
 
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
@@ -160,7 +156,6 @@ def dbus_kill_user(info):
 
 
 _BUS_INFO = None
-_VDISPLAY = None
 
 
 def init_test_environ():
@@ -170,7 +165,7 @@ def init_test_environ():
     any resources created.
     """
 
-    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
+    global _TEMP_DIR, _BUS_INFO
 
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative("QL-TEST-"))
@@ -206,10 +201,6 @@ def init_test_environ():
     # Force the default theme so broken themes don't affect the tests
     os.environ["GTK_THEME"] = "Adwaita"
 
-    if pyvirtualdisplay is not None:
-        _VDISPLAY = pyvirtualdisplay.Display()
-        _VDISPLAY.start()
-
     _BUS_INFO = None
     if os.name != "nt" and sys.platform != "darwin":
         _BUS_INFO = dbus_launch_user()
@@ -234,7 +225,7 @@ def init_test_environ():
 def exit_test_environ():
     """Call after init_test_environ() and all tests are finished"""
 
-    global _TEMP_DIR, _BUS_INFO, _VDISPLAY
+    global _TEMP_DIR, _BUS_INFO
 
     try:
         shutil.rmtree(_TEMP_DIR)
@@ -242,10 +233,6 @@ def exit_test_environ():
         pass
 
     dbus_kill_user(_BUS_INFO)
-
-    if _VDISPLAY is not None:
-        _VDISPLAY.stop()
-        _VDISPLAY = None
 
 
 # we have to do this on import so the tests work with other test runners
