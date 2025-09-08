@@ -47,7 +47,6 @@ class LyricsPane(Gtk.VBox):
 
         bbox = Gtk.Box(spacing=9, orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_homogeneous(True)
-        add_css(bbox, "* { margin: 0px 12px }")
         bbox.pack_start(view_online, False, True, 0)
         bbox.pack_start(delete, False, True, 0)
         bbox.pack_start(save, False, True, 0)
