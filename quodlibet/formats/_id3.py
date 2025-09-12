@@ -42,7 +42,7 @@ class ID3File(AudioFile):
         "TIT2": "title",
         "TIT3": "version",
         "TPE1": "artist",
-        "TPE2": "performer",
+        "TPE2": "albumartist",
         "TPE3": "conductor",
         "TPE4": "arranger",
         "TEXT": "lyricist",
