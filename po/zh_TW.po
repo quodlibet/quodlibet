@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-08-18 08:02+0000\n"
+"PO-Revision-Date: 2025-09-14 01:01+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5456,13 +5456,12 @@ msgid "Revert to default"
 msgstr "重設還原成預設"
 
 #: quodlibet/qltk/advanced_prefs.py:296
-#, fuzzy
 msgid "Filename patterns for lyric files"
-msgstr "檔名型式："
+msgstr "檔案名稱型式用於歌詞檔案"
 
 #: quodlibet/qltk/advanced_prefs.py:302
 msgid "Directory strings or patterns for lyric files"
-msgstr ""
+msgstr "目錄字串或型式用於歌詞檔案"
 
 #: quodlibet/qltk/advanced_prefs.py:341
 msgid "I know what I'm doing!"
