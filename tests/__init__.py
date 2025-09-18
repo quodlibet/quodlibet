@@ -18,6 +18,10 @@ try:
 except ImportError as e:
     raise SystemExit("pytest missing: sudo apt-get install python3-pytest") from e
 
+try:
+    import pyvirtualdisplay
+except ImportError:
+    pyvirtualdisplay = None
 
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home

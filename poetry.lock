@@ -726,23 +726,6 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
-name = "pytest-xvfb"
-version = "3.1.1"
-description = "A pytest plugin to run Xvfb (or Xephyr/Xvnc) for tests."
-optional = false
-python-versions = ">=3.9"
-groups = ["dev"]
-markers = "sys_platform == \"linux\""
-files = [
-    {file = "pytest_xvfb-3.1.1-py3-none-any.whl", hash = "sha256:3270f91417cfa0652b7c5a90e93a676e3a80bec12ccbd20cae3b42511e4aba98"},
-    {file = "pytest_xvfb-3.1.1.tar.gz", hash = "sha256:90593634427d974b272e845793e4533f5b827c9d84c051879013624504175e44"},
-]
-
-[package.dependencies]
-pytest = ">=2.8.1"
-pyvirtualdisplay = ">=1.3"
-
-[[package]]
 name = "pyvirtualdisplay"
 version = "3.0"
 description = "python wrapper for Xvfb, Xephyr and Xvnc"
