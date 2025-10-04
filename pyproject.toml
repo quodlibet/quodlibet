@@ -18,6 +18,7 @@ dependencies = [
   "feedparser>=6.0.11,<7.0.0",
   "pycairo>=1.19,<2.0",
   "pygobject>=3.34.0,<4.0.0",
+  "pyobjc (>=11.1,<12.0)",
 ]
 
 [project.optional-dependencies]
