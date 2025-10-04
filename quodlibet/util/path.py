@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2024 Nick Boultbee
+#           2011-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -469,14 +469,8 @@ def is_hidden(path: _fsnative) -> bool:
     return basename.startswith(".") and basename[1:2] != "."
 
 
-def uri_is_valid(uri):
-    """Returns True if the passed in text is a valid URI (file, http, etc.)
-
-    Args:
-        uri(text or bytes)
-    Returns:
-        bool
-    """
+def uri_is_valid(uri: str | bytes) -> bool:
+    """Returns True if the passed in text is a valid URI (file, http, etc.)"""
 
     try:
         if isinstance(uri, bytes):

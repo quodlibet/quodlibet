@@ -1,6 +1,6 @@
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
-# Copyright 2013-2023 Nick Boultbee
+# Copyright 2013-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -478,7 +478,7 @@ class _FileFromPattern(PatternFormatter):
             value = limit_path(value)
 
             if os.sep in value and not os.path.isabs(value):
-                raise ValueError("Pattern is not rooted")
+                raise ValueError(f"Pattern is not rooted: {value!r}")
             return value
         return fsnative(value)
 
