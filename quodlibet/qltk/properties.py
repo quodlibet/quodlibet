@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2012 Nick Boultbee
+#             2012-25 Nick Boultbee
 #                2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -65,12 +65,9 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         notebook.props.scrollable = True
         pages = []
         pages.extend(
-            [Ctr(self, library) for Ctr in [EditTags, TagsFromPath, RenameFiles]]
+            [Ctr(self, library) for Ctr in [EditTags, TagsFromPath, RenameFiles, EditBookmarksPane, LyricsPane]]
         )
-        if len(songs) == 1:
-            pages.append(EditBookmarksPane(library, songs[0]))
-            pages.append(LyricsPane(songs[0]))
-        else:
+        if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
         for page in pages:
             page.show_all()

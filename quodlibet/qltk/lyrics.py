@@ -24,8 +24,9 @@ from quodlibet.util import connect_obj
 
 
 class LyricsPane(Gtk.VBox):
-    def __init__(self, song):
+    def __init__(self, parent, _library):
         super().__init__(spacing=12, margin=12)
+        self.song = None
         self.title = _("Lyrics")
         self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
@@ -37,11 +38,11 @@ class LyricsPane(Gtk.VBox):
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        buffer = view.get_buffer()
+        self.buffer = buffer = view.get_buffer()
 
-        save.connect("clicked", self.__save, song, buffer, delete)
-        delete.connect("clicked", self.__delete, song, save)
-        view_online.connect("clicked", self.__view_online, song)
+        save.connect("clicked", self.__save, buffer, delete)
+        delete.connect("clicked", self.__delete, save)
+        view_online.connect("clicked", self.__view_online)
 
         self.pack_start(sw, True, True, 0)
 
@@ -54,18 +55,41 @@ class LyricsPane(Gtk.VBox):
         box2.props.halign = Gtk.Align.END
         box2.pack_start(bbox, True, False, 0)
         self.pack_start(box2, False, False, 0)
-        save.set_sensitive(False)
         add_css(sw, "scrolledwindow { padding: 0px 6px; }")
-        lyrics = song("~lyrics")
-
-        if lyrics:
-            buffer.set_text(lyrics)
-        else:
-            buffer.set_text(_("(No lyrics found for this song)"))
-            delete.set_sensitive(False)
         connect_obj(buffer, "changed", save.set_sensitive, True)
+        parent.connect("changed", self.__parent_changed)
 
-    def __view_online(self, add, song):
+    def __parent_changed(self, parent, songs):
+        if len(songs) == 1:
+            self._set_enabled(True)
+
+            self.song = songs[0]
+            lyrics = self.song("~lyrics")
+
+            if lyrics:
+                self.buffer.set_text(lyrics)
+                self.delete.set_sensitive(True)
+                self.delete.set_tooltip_text(_("Delete the saved lyrics from this song"))
+                self.text_view.set_tooltip_text(None)
+            else:
+                self.buffer.set_text("")
+                self.text_view.set_tooltip_text("Enter lyrics here")
+                self.save.set_sensitive(False)
+                self.delete.set_sensitive(False)
+                self.delete.set_tooltip_text(None)
+
+        else:
+            self.song = None
+            msg = _("Select a single track to edit its lyrics")
+            self.text_view.set_tooltip_text(msg)
+            self.buffer.set_text("")
+            self._set_enabled(False)
+
+    def _set_enabled(self, value: bool) -> None:
+        self.set_sensitive(value)
+        self.text_view.set_sensitive(value)
+
+    def __view_online(self, add):
         # TODO: make this modular and plugin-friendly (#54, #3642 etc)
         def sanitise(s: str) -> str:
             return quote(
@@ -82,10 +106,10 @@ class LyricsPane(Gtk.VBox):
         title = sanitise(song.comma("title"))
         util.website(f"https://genius.com/{artist}-{title}-lyrics")
 
-    def __save(self, save, song, buffer, delete):
+    def __save(self, save, buffer, delete):
         start, end = buffer.get_bounds()
         text = buffer.get_text(start, end, True)
-        self._save_lyrics(song, text)
+        self._save_lyrics(self.song, text)
         delete.set_sensitive(True)
         save.set_sensitive(False)
 
@@ -124,7 +148,9 @@ class LyricsPane(Gtk.VBox):
         except OSError:
             errorhook()
 
-    def __delete(self, delete, song, save):
+    def __delete(self, delete, save):
+        if (song := self.song) is None:
+            return
         # First, delete lyrics from the tags.
         song.remove("lyrics")
         try:
