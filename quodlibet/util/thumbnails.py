@@ -82,11 +82,12 @@ def get_thumbnail_from_file(fileobj, boundary) -> GdkPixbuf.Pixbuf | None:
 
     assert fileobj
 
+    path = fileobj.name
+    assert isinstance(path, fsnative), path
     try:
-        path = fileobj.name
-        assert isinstance(path, fsnative), path
         return get_thumbnail(path, boundary)
-    except GLib.GError:
+    except GLib.GError as e:
+        print_d(f"Failed getting thumbnail from file ({e}), trying PixbufLoader")
         try:
             loader = GdkPixbuf.PixbufLoader()
             loader.set_size(*boundary)
@@ -96,7 +97,7 @@ def get_thumbnail_from_file(fileobj, boundary) -> GdkPixbuf.Pixbuf | None:
             # can return None in case of partial data
             return loader.get_pixbuf()
         except (OSError, GLib.GError) as e:
-            print_w(f"Couldn't load thumbnail with PixbufLoader either: {e}")
+            print_w(f"Couldn't load thumbnail at {path} from Pixbufloader ({e})")
     return None
 
 
