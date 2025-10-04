@@ -18,7 +18,7 @@ from quodlibet import _, print_d, print_w, app
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.errorreport import errorhook
-from quodlibet.formats import AudioFileError
+from quodlibet.formats import AudioFileError, AudioFile
 from quodlibet.qltk import Icons, add_css
 from quodlibet.util import connect_obj
 
@@ -32,8 +32,8 @@ class LyricsPane(Gtk.VBox):
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
-        save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
-        delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
+        self.save = save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
+        self.delete = delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
         view_online = qltk.Button(_("_View online"), Icons.APPLICATION_INTERNET)
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -59,7 +59,7 @@ class LyricsPane(Gtk.VBox):
         connect_obj(buffer, "changed", save.set_sensitive, True)
         parent.connect("changed", self.__parent_changed)
 
-    def __parent_changed(self, parent, songs):
+    def __parent_changed(self, parent, songs: list[AudioFile]):
         if len(songs) == 1:
             self._set_enabled(True)
 
@@ -69,7 +69,9 @@ class LyricsPane(Gtk.VBox):
             if lyrics:
                 self.buffer.set_text(lyrics)
                 self.delete.set_sensitive(True)
-                self.delete.set_tooltip_text(_("Delete the saved lyrics from this song"))
+                self.delete.set_tooltip_text(
+                    _("Delete the saved lyrics from this song")
+                )
                 self.text_view.set_tooltip_text(None)
             else:
                 self.buffer.set_text("")
@@ -102,8 +104,8 @@ class LyricsPane(Gtk.VBox):
                 .encode("utf-8")
             )
 
-        artist = sanitise(song.list("artist")[0])
-        title = sanitise(song.comma("title"))
+        artist = sanitise(self.song.list("artist")[0])
+        title = sanitise(self.song.comma("title"))
         util.website(f"https://genius.com/{artist}-{title}-lyrics")
 
     def __save(self, save, buffer, delete):

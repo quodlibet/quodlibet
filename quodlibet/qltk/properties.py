@@ -65,7 +65,16 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         notebook.props.scrollable = True
         pages = []
         pages.extend(
-            [Ctr(self, library) for Ctr in [EditTags, TagsFromPath, RenameFiles, EditBookmarksPane, LyricsPane]]
+            [
+                Ctr(self, library)
+                for Ctr in [
+                    EditTags,
+                    TagsFromPath,
+                    RenameFiles,
+                    EditBookmarksPane,
+                    LyricsPane,
+                ]
+            ]
         )
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))

@@ -13,6 +13,7 @@ from gi.repository import Gtk, Pango
 from quodlibet import qltk, print_w
 from quodlibet import util
 from quodlibet import _
+from quodlibet.formats import AudioFile
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
@@ -52,10 +53,23 @@ def MenuItems(marks, player, seekable):
 
 
 class EditBookmarksPane(Gtk.VBox):
-    def __init__(self, parent, library, close=False):
+    song: AudioFile | None
+
+    def __init__(
+        self,
+        parent,
+        library,
+        close: bool = False,
+        song: AudioFile | None = None,
+    ):
         super().__init__(spacing=12)
-        self.song = None
         self.title = _("Bookmarks")
+
+        self.model = model = Gtk.ListStore(int, str)
+        if song:
+            self._set_song(song)
+        else:
+            self.song = None
 
         self.hb = hb = Gtk.HBox(spacing=12)
         self.time = time = Gtk.Entry()
@@ -68,7 +82,6 @@ class EditBookmarksPane(Gtk.VBox):
         hb.pack_start(add, False, True, 0)
         self.pack_start(hb, False, True, 0)
 
-        self.model = model = Gtk.ListStore(int, str)
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -114,7 +127,7 @@ class EditBookmarksPane(Gtk.VBox):
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._csig = model.connect("row-changed", self._set_bookmarks, library)
-        self._isig  = model.connect("row-inserted", self._set_bookmarks, library)
+        self._isig = model.connect("row-inserted", self._set_bookmarks, library)
 
         selection = sw.get_child().get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -141,15 +154,14 @@ class EditBookmarksPane(Gtk.VBox):
         sw.get_child().connect("popup-menu", self.__popup, menu)
         sw.get_child().connect("key-press-event", self.__view_key_press, remove)
         connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
-        parent.connect("changed", self.__parent_changed)
+        if parent:
+            parent.connect("changed", self.__parent_changed)
 
     def __parent_changed(self, parent, songs):
         self.model.handler_block(self._csig)
         self.model.handler_block(self._isig)
         if len(songs) == 1:
-            self.song = songs[0]
-            self.__fill(self.model, self.song)
-            self._set_enabled(True)
+            self._set_song(songs[0])
         else:
             self.model.clear()
             self.song = None
@@ -157,10 +169,14 @@ class EditBookmarksPane(Gtk.VBox):
         self.model.handler_unblock(self._csig)
         self.model.handler_unblock(self._isig)
 
+    def _set_song(self, song: AudioFile):
+        self.song = song
+        self.__fill(self.model, self.song)
+        self._set_enabled(True)
+
     def _set_enabled(self, value: bool) -> None:
         self.set_sensitive(value)
         self.set_tooltip_text(_("Select a single track to edit its bookmarks"))
-
 
     def __view_key_press(self, view, event, remove):
         if event.keyval == Gtk.accelerator_parse("Delete")[0]:
@@ -210,6 +226,7 @@ class EditBookmarksPane(Gtk.VBox):
     def _set_bookmarks(self, model, a, b, library):
         if not self.song:
             return
+
         def stringify(s):
             return s.decode("utf-8") if isinstance(s, bytes) else s
 
@@ -235,7 +252,7 @@ class EditBookmarks(qltk.Window):
         self.set_default_size(350, 250)
         self.set_title(_("Bookmarks") + " - {}".format(player.song.comma("title")))
 
-        pane = EditBookmarksPane(library, player.song, close=True)
+        pane = EditBookmarksPane(None, library, song=player.song, close=True)
         self.add(pane)
 
         s = library.connect("removed", self.__check_lock, player.song)
