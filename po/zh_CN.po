@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-08-12 17:02+0000\n"
+"PO-Revision-Date: 2025-09-04 10:02+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.13.1-rc\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -208,7 +208,7 @@ msgstr "多个 %s 值"
 msgid "_Custom"
 msgstr "自定义(_C)"
 
-#: quodlibet/browsers/collection/prefs.py:88 quodlibet/browsers/iradio.py:376
+#: quodlibet/browsers/collection/prefs.py:88 quodlibet/browsers/iradio.py:377
 #: quodlibet/browsers/paned/prefs.py:121
 #: quodlibet/browsers/playlists/menu.py:86 quodlibet/browsers/podcasts.py:247
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:56
@@ -332,7 +332,7 @@ msgstr "被选定的文件无法被复制到其它曲目列表或队列。"
 msgid "_Add to Library"
 msgstr "加入到曲库(_A)"
 
-#: quodlibet/browsers/iradio.py:191
+#: quodlibet/browsers/iradio.py:192
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -343,218 +343,218 @@ msgstr ""
 "入：\n"
 "%s"
 
-#: quodlibet/browsers/iradio.py:229 quodlibet/browsers/iradio.py:272
-#: quodlibet/browsers/iradio.py:514
+#: quodlibet/browsers/iradio.py:230 quodlibet/browsers/iradio.py:273
+#: quodlibet/browsers/iradio.py:515
 msgid "Internet Radio"
 msgstr "网上广播"
 
-#: quodlibet/browsers/iradio.py:229
+#: quodlibet/browsers/iradio.py:230
 msgid "Add stations"
 msgstr "添加电台"
 
-#: quodlibet/browsers/iradio.py:272
+#: quodlibet/browsers/iradio.py:273
 msgid "Downloading station list"
 msgstr "正在下载电台列表"
 
-#: quodlibet/browsers/iradio.py:374
+#: quodlibet/browsers/iradio.py:375
 msgid "New Station"
 msgstr "新站点"
 
-#: quodlibet/browsers/iradio.py:375
+#: quodlibet/browsers/iradio.py:376
 msgid "Enter the location of an Internet radio station:"
 msgstr "输入网上广播站点的位置："
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:397
 msgid "Electronic"
 msgstr "Electronic 电子乐"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:401
 msgid "Hip Hop / Rap"
 msgstr "Hip Hop/Rap 嘻哈/说唱"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:402
 msgid "Oldies"
 msgstr "Oldies 经典老歌"
 
-#: quodlibet/browsers/iradio.py:402
+#: quodlibet/browsers/iradio.py:403
 msgid "R&B"
 msgstr "R&B 节奏布鲁斯"
 
-#: quodlibet/browsers/iradio.py:403
+#: quodlibet/browsers/iradio.py:404
 msgid "Japanese"
 msgstr "Japanese 日系"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:405
 msgid "Indian"
 msgstr "Indian 印度"
 
-#: quodlibet/browsers/iradio.py:406
+#: quodlibet/browsers/iradio.py:407
 msgid "Religious"
 msgstr "Religious 宗教"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:410
 msgid "Charts"
 msgstr "Charts 排行榜"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:411
 msgid "Turkish"
 msgstr "Turkish 土耳其"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:412
 msgid "Reggae / Dancehall"
 msgstr "Reggae/Dancehall 雷鬼/舞厅"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:413
 msgid "Latin"
 msgstr "拉丁"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:414
 msgid "College Radio"
 msgstr "College Radio 校园电台"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:415
 msgid "Talk / News"
 msgstr "Talk/News 访谈/新闻"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:416
 msgid "Ambient"
 msgstr "Ambient 氛围"
 
-#: quodlibet/browsers/iradio.py:416
+#: quodlibet/browsers/iradio.py:417
 msgid "Jazz"
 msgstr "Jazz 爵士"
 
-#: quodlibet/browsers/iradio.py:417 quodlibet/ext/events/equalizer.py:139
+#: quodlibet/browsers/iradio.py:418 quodlibet/ext/events/equalizer.py:139
 msgid "Classical"
 msgstr "Classical 古典"
 
-#: quodlibet/browsers/iradio.py:418 quodlibet/ext/events/equalizer.py:227
+#: quodlibet/browsers/iradio.py:419 quodlibet/ext/events/equalizer.py:227
 msgid "Pop"
 msgstr "Pop 流行"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:420
 msgid "Alternative"
 msgstr "Alternative 另类"
 
-#: quodlibet/browsers/iradio.py:420
+#: quodlibet/browsers/iradio.py:421
 msgid "Metal"
 msgstr "Metal 金属"
 
-#: quodlibet/browsers/iradio.py:421
+#: quodlibet/browsers/iradio.py:422
 msgid "Country"
 msgstr "Country 乡村"
 
-#: quodlibet/browsers/iradio.py:422
+#: quodlibet/browsers/iradio.py:423
 msgid "News"
 msgstr "News 新闻"
 
-#: quodlibet/browsers/iradio.py:423
+#: quodlibet/browsers/iradio.py:424
 msgid "Schlager"
 msgstr "Schlager 德语流行"
 
-#: quodlibet/browsers/iradio.py:424
+#: quodlibet/browsers/iradio.py:425
 msgid "Funk"
 msgstr "Funk 放克"
 
-#: quodlibet/browsers/iradio.py:425
+#: quodlibet/browsers/iradio.py:426
 msgid "Indie"
 msgstr "Indie 独立"
 
-#: quodlibet/browsers/iradio.py:426
+#: quodlibet/browsers/iradio.py:427
 msgid "Blues"
 msgstr "Blues 蓝调"
 
-#: quodlibet/browsers/iradio.py:427
+#: quodlibet/browsers/iradio.py:428
 msgid "Soul"
 msgstr "Soul 灵魂乐"
 
-#: quodlibet/browsers/iradio.py:428
+#: quodlibet/browsers/iradio.py:429
 msgid "Lounge"
 msgstr "Lounge 休闲"
 
-#: quodlibet/browsers/iradio.py:429
+#: quodlibet/browsers/iradio.py:430
 msgid "Punk"
 msgstr "朋克"
 
-#: quodlibet/browsers/iradio.py:430
+#: quodlibet/browsers/iradio.py:431
 msgid "Reggaeton"
 msgstr "Reggaeton 雷鬼舞曲"
 
-#: quodlibet/browsers/iradio.py:431
+#: quodlibet/browsers/iradio.py:432
 msgid "Slavic"
 msgstr "Slavic 斯拉夫语"
 
-#: quodlibet/browsers/iradio.py:432
+#: quodlibet/browsers/iradio.py:433
 msgid "Greek"
 msgstr "Greek 希腊语"
 
-#: quodlibet/browsers/iradio.py:433
+#: quodlibet/browsers/iradio.py:434
 msgid "Gothic"
 msgstr "Gothic 哥特"
 
-#: quodlibet/browsers/iradio.py:434 quodlibet/ext/events/equalizer.py:95
+#: quodlibet/browsers/iradio.py:435 quodlibet/ext/events/equalizer.py:95
 msgid "Rock"
 msgstr "Rock 摇滚"
 
-#: quodlibet/browsers/iradio.py:492
+#: quodlibet/browsers/iradio.py:493
 msgid "Would you like to load a list of popular radio stations?"
 msgstr "你想现在就获取一份流行的电台列表吗？"
 
-#: quodlibet/browsers/iradio.py:499
+#: quodlibet/browsers/iradio.py:500
 msgid "_Load Stations"
 msgstr "加载电台 (_L)"
 
-#: quodlibet/browsers/iradio.py:515
+#: quodlibet/browsers/iradio.py:516
 msgid "_Internet Radio"
 msgstr "网上广播(_I)"
 
-#: quodlibet/browsers/iradio.py:605
+#: quodlibet/browsers/iradio.py:606
 msgid "All Stations"
 msgstr "所有电台"
 
 #. Translators: Favorite radio stations
-#: quodlibet/browsers/iradio.py:608 quodlibet/browsers/soundcloud/main.py:77
+#: quodlibet/browsers/iradio.py:609 quodlibet/browsers/soundcloud/main.py:77
 msgid "Favorites"
 msgstr "收藏夹"
 
-#: quodlibet/browsers/iradio.py:615
+#: quodlibet/browsers/iradio.py:616
 msgid "No Category"
 msgstr "没有分类"
 
-#: quodlibet/browsers/iradio.py:671
+#: quodlibet/browsers/iradio.py:672
 msgid "_Add Station…"
 msgstr "添加电台(_A)…"
 
-#: quodlibet/browsers/iradio.py:673
+#: quodlibet/browsers/iradio.py:674
 msgid "_Update Stations"
 msgstr "更新电台 (_U)"
 
-#: quodlibet/browsers/iradio.py:858
+#: quodlibet/browsers/iradio.py:859
 msgid "No stations found"
 msgstr "没有发现站点"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "没有在 %s 发现网络电台。"
 
-#: quodlibet/browsers/iradio.py:872
+#: quodlibet/browsers/iradio.py:873
 msgid "Nothing to add"
 msgstr "没有新源可添加"
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "All stations listed are already in your library."
 msgstr "所有列出的站点都已经在您的曲库里。"
 
-#: quodlibet/browsers/iradio.py:896
+#: quodlibet/browsers/iradio.py:897
 msgid "Add to Favorites"
 msgstr "加入收藏"
 
-#: quodlibet/browsers/iradio.py:900
+#: quodlibet/browsers/iradio.py:901
 msgid "Remove from Favorites"
 msgstr "从收藏中删除"
 
-#: quodlibet/browsers/iradio.py:1005
+#: quodlibet/browsers/iradio.py:1006
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -656,7 +656,7 @@ msgstr "Quod Libet 只能导入 M3U/M3U8 和 PLS 格式的播放列表。"
 #: quodlibet/browsers/playlists/main.py:516
 #: quodlibet/browsers/playlists/util.py:42 quodlibet/browsers/podcasts.py:499
 #: quodlibet/qltk/delete.py:147 quodlibet/qltk/filesel.py:254
-#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/maskedbox.py:28
 #: quodlibet/qltk/songsmenu.py:464
 msgid "_Delete"
 msgstr "删除(_D)"
@@ -1767,7 +1767,7 @@ msgstr "用于保存的预设名称："
 #: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:73
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/msg.py:73
 #: quodlibet/qltk/renamefiles.py:259 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
@@ -4533,7 +4533,8 @@ msgstr "未找到 iFP 设备"
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
-msgstr "无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp-line "
+msgstr ""
+"无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp-line "
 "（{ifp_url}）。"
 
 #: quodlibet/ext/songsmenu/ifp.py:42
@@ -5452,7 +5453,15 @@ msgstr "用法"
 msgid "Revert to default"
 msgstr "退回到默认"
 
-#: quodlibet/qltk/advanced_prefs.py:328
+#: quodlibet/qltk/advanced_prefs.py:296
+msgid "Filename patterns for lyric files"
+msgstr "歌词文件的文件名格式"
+
+#: quodlibet/qltk/advanced_prefs.py:302
+msgid "Directory strings or patterns for lyric files"
+msgstr "歌词文件的目录字符串或模板"
+
+#: quodlibet/qltk/advanced_prefs.py:341
 msgid "I know what I'm doing!"
 msgstr "我知道我在做什么！"
 
@@ -6087,11 +6096,11 @@ msgstr "总大小："
 msgid "Files"
 msgstr "文件"
 
-#: quodlibet/qltk/lyrics.py:34
+#: quodlibet/qltk/lyrics.py:35
 msgid "_View online"
 msgstr "线上查看(_V)"
 
-#: quodlibet/qltk/lyrics.py:61
+#: quodlibet/qltk/lyrics.py:62
 msgid "No lyrics found for this song."
 msgstr "没有找到此歌曲的歌词。"
 

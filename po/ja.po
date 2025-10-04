@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-08-11 01:01+0000\n"
+"PO-Revision-Date: 2025-09-08 07:01+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -207,7 +207,7 @@ msgstr "複数の%s"
 msgid "_Custom"
 msgstr "カスタム(_C)"
 
-#: quodlibet/browsers/collection/prefs.py:88 quodlibet/browsers/iradio.py:376
+#: quodlibet/browsers/collection/prefs.py:88 quodlibet/browsers/iradio.py:377
 #: quodlibet/browsers/paned/prefs.py:121
 #: quodlibet/browsers/playlists/menu.py:86 quodlibet/browsers/podcasts.py:247
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:56
@@ -331,7 +331,7 @@ msgstr "選択されたファイルのソングリストまたはキューへの
 msgid "_Add to Library"
 msgstr "ライブラリに追加(_A)"
 
-#: quodlibet/browsers/iradio.py:191
+#: quodlibet/browsers/iradio.py:192
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -343,218 +343,218 @@ msgstr ""
 "せんでした:\n"
 "%s"
 
-#: quodlibet/browsers/iradio.py:229 quodlibet/browsers/iradio.py:272
-#: quodlibet/browsers/iradio.py:514
+#: quodlibet/browsers/iradio.py:230 quodlibet/browsers/iradio.py:273
+#: quodlibet/browsers/iradio.py:515
 msgid "Internet Radio"
 msgstr "インターネットラジオ"
 
-#: quodlibet/browsers/iradio.py:229
+#: quodlibet/browsers/iradio.py:230
 msgid "Add stations"
 msgstr "ラジオ局の追加"
 
-#: quodlibet/browsers/iradio.py:272
+#: quodlibet/browsers/iradio.py:273
 msgid "Downloading station list"
 msgstr "ラジオ局リストをダウンロード中"
 
-#: quodlibet/browsers/iradio.py:374
+#: quodlibet/browsers/iradio.py:375
 msgid "New Station"
 msgstr "新規ラジオ局"
 
-#: quodlibet/browsers/iradio.py:375
+#: quodlibet/browsers/iradio.py:376
 msgid "Enter the location of an Internet radio station:"
 msgstr "インターネットラジオ局の場所を入力してください:"
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:397
 msgid "Electronic"
 msgstr "エレクトロニック"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:401
 msgid "Hip Hop / Rap"
 msgstr "ヒップホップ/ラップ"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:402
 msgid "Oldies"
 msgstr "オールディーズ"
 
-#: quodlibet/browsers/iradio.py:402
+#: quodlibet/browsers/iradio.py:403
 msgid "R&B"
 msgstr "R&B"
 
-#: quodlibet/browsers/iradio.py:403
+#: quodlibet/browsers/iradio.py:404
 msgid "Japanese"
 msgstr "日本"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:405
 msgid "Indian"
 msgstr "インド"
 
-#: quodlibet/browsers/iradio.py:406
+#: quodlibet/browsers/iradio.py:407
 msgid "Religious"
 msgstr "宗教音楽"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:410
 msgid "Charts"
 msgstr "チャート"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:411
 msgid "Turkish"
 msgstr "トルコ"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:412
 msgid "Reggae / Dancehall"
 msgstr "レゲエ/ダンスホール"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:413
 msgid "Latin"
 msgstr "ラテン"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:414
 msgid "College Radio"
 msgstr "カレッジラジオ"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:415
 msgid "Talk / News"
 msgstr "トーク/ニュース"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:416
 msgid "Ambient"
 msgstr "アンビエント"
 
-#: quodlibet/browsers/iradio.py:416
+#: quodlibet/browsers/iradio.py:417
 msgid "Jazz"
 msgstr "ジャズ"
 
-#: quodlibet/browsers/iradio.py:417 quodlibet/ext/events/equalizer.py:139
+#: quodlibet/browsers/iradio.py:418 quodlibet/ext/events/equalizer.py:139
 msgid "Classical"
 msgstr "クラシック"
 
-#: quodlibet/browsers/iradio.py:418 quodlibet/ext/events/equalizer.py:227
+#: quodlibet/browsers/iradio.py:419 quodlibet/ext/events/equalizer.py:227
 msgid "Pop"
 msgstr "ポップ"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:420
 msgid "Alternative"
 msgstr "オルタナティブ"
 
-#: quodlibet/browsers/iradio.py:420
+#: quodlibet/browsers/iradio.py:421
 msgid "Metal"
 msgstr "メタル"
 
-#: quodlibet/browsers/iradio.py:421
+#: quodlibet/browsers/iradio.py:422
 msgid "Country"
 msgstr "カントリー"
 
-#: quodlibet/browsers/iradio.py:422
+#: quodlibet/browsers/iradio.py:423
 msgid "News"
 msgstr "ニュース"
 
-#: quodlibet/browsers/iradio.py:423
+#: quodlibet/browsers/iradio.py:424
 msgid "Schlager"
 msgstr "シュラーガー"
 
-#: quodlibet/browsers/iradio.py:424
+#: quodlibet/browsers/iradio.py:425
 msgid "Funk"
 msgstr "ファンク"
 
-#: quodlibet/browsers/iradio.py:425
+#: quodlibet/browsers/iradio.py:426
 msgid "Indie"
 msgstr "インディーズ"
 
-#: quodlibet/browsers/iradio.py:426
+#: quodlibet/browsers/iradio.py:427
 msgid "Blues"
 msgstr "ブルース"
 
-#: quodlibet/browsers/iradio.py:427
+#: quodlibet/browsers/iradio.py:428
 msgid "Soul"
 msgstr "ソウル"
 
-#: quodlibet/browsers/iradio.py:428
+#: quodlibet/browsers/iradio.py:429
 msgid "Lounge"
 msgstr "ラウンジ"
 
-#: quodlibet/browsers/iradio.py:429
+#: quodlibet/browsers/iradio.py:430
 msgid "Punk"
 msgstr "パンク"
 
-#: quodlibet/browsers/iradio.py:430
+#: quodlibet/browsers/iradio.py:431
 msgid "Reggaeton"
 msgstr "レゲトン"
 
-#: quodlibet/browsers/iradio.py:431
+#: quodlibet/browsers/iradio.py:432
 msgid "Slavic"
 msgstr "スラブ"
 
-#: quodlibet/browsers/iradio.py:432
+#: quodlibet/browsers/iradio.py:433
 msgid "Greek"
 msgstr "ギリシャ"
 
-#: quodlibet/browsers/iradio.py:433
+#: quodlibet/browsers/iradio.py:434
 msgid "Gothic"
 msgstr "ゴシック"
 
-#: quodlibet/browsers/iradio.py:434 quodlibet/ext/events/equalizer.py:95
+#: quodlibet/browsers/iradio.py:435 quodlibet/ext/events/equalizer.py:95
 msgid "Rock"
 msgstr "ロック"
 
-#: quodlibet/browsers/iradio.py:492
+#: quodlibet/browsers/iradio.py:493
 msgid "Would you like to load a list of popular radio stations?"
 msgstr "人気ラジオ局のリストをロードしますか?"
 
-#: quodlibet/browsers/iradio.py:499
+#: quodlibet/browsers/iradio.py:500
 msgid "_Load Stations"
 msgstr "ラジオ局のロード(_L)"
 
-#: quodlibet/browsers/iradio.py:515
+#: quodlibet/browsers/iradio.py:516
 msgid "_Internet Radio"
 msgstr "インターネットラジオ(_I)"
 
-#: quodlibet/browsers/iradio.py:605
+#: quodlibet/browsers/iradio.py:606
 msgid "All Stations"
 msgstr "全てのラジオ局"
 
 #. Translators: Favorite radio stations
-#: quodlibet/browsers/iradio.py:608 quodlibet/browsers/soundcloud/main.py:77
+#: quodlibet/browsers/iradio.py:609 quodlibet/browsers/soundcloud/main.py:77
 msgid "Favorites"
 msgstr "お気に入り"
 
-#: quodlibet/browsers/iradio.py:615
+#: quodlibet/browsers/iradio.py:616
 msgid "No Category"
 msgstr "カテゴリなし"
 
-#: quodlibet/browsers/iradio.py:671
+#: quodlibet/browsers/iradio.py:672
 msgid "_Add Station…"
 msgstr "ラジオ局の追加(_A)…"
 
-#: quodlibet/browsers/iradio.py:673
+#: quodlibet/browsers/iradio.py:674
 msgid "_Update Stations"
 msgstr "ラジオ局の更新(_U)"
 
-#: quodlibet/browsers/iradio.py:858
+#: quodlibet/browsers/iradio.py:859
 msgid "No stations found"
 msgstr "ラジオ局が見つかりません"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "%s にインターネットラジオ局が見つかりません。"
 
-#: quodlibet/browsers/iradio.py:872
+#: quodlibet/browsers/iradio.py:873
 msgid "Nothing to add"
 msgstr "追加するものはありません"
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "All stations listed are already in your library."
 msgstr "一覧にあるラジオ局は全てライブラリに登録されています。"
 
-#: quodlibet/browsers/iradio.py:896
+#: quodlibet/browsers/iradio.py:897
 msgid "Add to Favorites"
 msgstr "お気に入りに追加"
 
-#: quodlibet/browsers/iradio.py:900
+#: quodlibet/browsers/iradio.py:901
 msgid "Remove from Favorites"
 msgstr "お気に入りから削除"
 
-#: quodlibet/browsers/iradio.py:1005
+#: quodlibet/browsers/iradio.py:1006
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -657,7 +657,7 @@ msgstr ""
 #: quodlibet/browsers/playlists/main.py:516
 #: quodlibet/browsers/playlists/util.py:42 quodlibet/browsers/podcasts.py:499
 #: quodlibet/qltk/delete.py:147 quodlibet/qltk/filesel.py:254
-#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/maskedbox.py:28
 #: quodlibet/qltk/songsmenu.py:464
 msgid "_Delete"
 msgstr "削除(_D)"
@@ -1173,15 +1173,15 @@ msgid "Error details:"
 msgstr "エラー詳細:"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"エラーやシステムに関するさまざまな詳細が、サードパーティのオンラインサービス "
-"(<a href='https://www.sentry.io'>www.sentry.io</a>) に送信されます。送信前に"
-"データを確認することができます。"
+"エラーやシステムに関する様々な詳細情報が、サードパーティのオンラインサービス "
+"(<a href='{sentry_url}'>www.sentry.io</a>) "
+"に送信されます。送信されるデータは以下で確認できます。"
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1790,7 +1790,7 @@ msgstr "保存するプリセット名:"
 #: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:73
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/msg.py:73
 #: quodlibet/qltk/renamefiles.py:259 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
@@ -2000,16 +2000,16 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux デスクトップ統合 (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
-"ターフェースを使用して Quod Libet を制御できます。\n"
-"これにより様々な Linux デスクトップ統合 (マルチメディアキーなど) が可能になり"
-"ます。"
+"⏯️ <a href=\"{mpris_url}\">MPRIS 2</a> D-Bus インターフェースを使用して Quod "
+"Libet を制御できます。\n"
+"これにより様々な Linux デスクトップ統合 (マルチメディアキーなど) "
+"が可能になります。"
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -4627,14 +4627,14 @@ msgid "No iFP device found"
 msgstr "iFP デバイスが見つかりません"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
-"iFP デバイスに接続できません。デバイスの電源がオンになっていて接続されている"
-"こと、および ifp-line (http://ifp-driver.sf.net) がインストールされていること"
-"を確認してください。"
+"iFP "
+"デバイスに接続できません。デバイスが電源オンになっていて接続されていること、"
+"さらに ifp-line ({ifp_url}) がインストールされていることを確認してください。"
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -5580,7 +5580,15 @@ msgstr "使用法"
 msgid "Revert to default"
 msgstr "デフォルト値に戻す"
 
-#: quodlibet/qltk/advanced_prefs.py:328
+#: quodlibet/qltk/advanced_prefs.py:296
+msgid "Filename patterns for lyric files"
+msgstr "歌詞ファイルのファイル名パターン"
+
+#: quodlibet/qltk/advanced_prefs.py:302
+msgid "Directory strings or patterns for lyric files"
+msgstr "歌詞ファイルのディレクトリ文字列またはパターン"
+
+#: quodlibet/qltk/advanced_prefs.py:341
 msgid "I know what I'm doing!"
 msgstr "分かってるから任せて!"
 
@@ -6224,11 +6232,11 @@ msgstr "合計サイズ:"
 msgid "Files"
 msgstr "ファイル"
 
-#: quodlibet/qltk/lyrics.py:34
+#: quodlibet/qltk/lyrics.py:35
 msgid "_View online"
 msgstr "オンラインで表示(_V)"
 
-#: quodlibet/qltk/lyrics.py:61
+#: quodlibet/qltk/lyrics.py:62
 msgid "No lyrics found for this song."
 msgstr "この曲の歌詞は見つかりませんでした。"
 
