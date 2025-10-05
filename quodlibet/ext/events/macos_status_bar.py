@@ -7,33 +7,53 @@
 
 import sys, traceback
 from pathlib import Path
-from quodlibet import app
+from quodlibet import app, print_e
 from quodlibet.plugins.events import EventPlugin
 
+
 class MacOSStatusBarPlugin(EventPlugin):
-    PLUGIN_ID   = "macos_status_bar"
+    PLUGIN_ID = "macos_status_bar"
     PLUGIN_NAME = "MacOS Status Bar"
-    PLUGIN_DESC = "Status bar application with player controls, song/album/artist information, album cover, and real-playback_t playback monitoring (MacOS Only)."
+    PLUGIN_DESC = "Status bar application with player controls, song information, album cover, and real-time playback (MacOS Only)."
+    VERSION = "1.0"
 
     def __init__(self):
         super().__init__()
+
+        # Cocoa is Apple's native API, I just call this Cocoa for transparency
         self._cocoa = None
 
     def enabled(self):
         """
-        Enable the plugin with the plugin interface
+        Only enable the plugin on MacOS
         """
         if sys.platform != "darwin":
             return False
-        
+
         # Wait to import anything until we confirm we're running on a "Darwin" machine
         try:
             import objc
-            from AppKit import (NSCalibratedRGBColorSpace, NSImage, NSStatusBar, NSImageOnly, NSStatusBar, NSImage, NSApp, NSVariableStatusItemLength, NSMenu, NSMenuItem, NSView, NSImageView, NSColor, NSTextField, NSButton)
+            from AppKit import (
+                NSCalibratedRGBColorSpace,
+                NSImage,
+                NSStatusBar,
+                NSImageOnly,
+                NSStatusBar,
+                NSImage,
+                NSApp,
+                NSVariableStatusItemLength,
+                NSMenu,
+                NSMenuItem,
+                NSView,
+                NSImageView,
+                NSColor,
+                NSTextField,
+                NSButton,
+            )
             from Foundation import NSObject, NSTimer, NSRunLoop, NSRunLoopCommonModes
             from Quartz.CoreGraphics import CGColorCreateGenericRGB
-        except Exception:
-            traceback.print_exc()
+        except ImportError as e:
+            print_e(f"Unable to import required packages: {e}")
             return False
 
         @staticmethod
@@ -69,7 +89,7 @@ class MacOSStatusBarPlugin(EventPlugin):
             a = cg.alphaComponent()
 
             return CGColorCreateGenericRGB(r, g, b, a)
-        
+
         @staticmethod
         def _mmss(current=None, duration=None):
             """
@@ -78,11 +98,11 @@ class MacOSStatusBarPlugin(EventPlugin):
             if current:
                 minutes, seconds = divmod(current // 1000, 60)
                 return f"{minutes:02d}:{seconds:02d}"
-            
+
             if duration:
                 minutes, seconds = divmod(max(0, int(duration or 0)), 60)
                 return f"{minutes:02d}:{seconds:02d}"
-            
+
         @staticmethod
         def _cover_img_from_folder():
             """
@@ -93,9 +113,9 @@ class MacOSStatusBarPlugin(EventPlugin):
 
                 if not s:
                     return None
-                
+
                 # Attempt to locate the same directory where the audio file currently resides
-                fn = (s("~filename") or s("file") or s("location") or "").replace("file://","")
+                fn = (s("~filename") or s("file") or s("location") or "").replace("file://", "")
 
                 if not fn:
                     return None
@@ -104,28 +124,39 @@ class MacOSStatusBarPlugin(EventPlugin):
 
                 if not folder.exists():
                     return None
-                
+
                 # Search for a cover photo, defaults to the same directory as the audio file
                 # NOTE: This isn't required for the plugin, however, it makes it look a lot nicer as the status bar icon is actually the album cover (or just an image)
-                for name in ("cover.jpg", "cover.png", "folder.jpg", "folder.png", f"{folder.name}.jpg", f"{folder.name}.png"):
+                for name in (
+                    "cover.jpg",
+                    "cover.png",
+                    "folder.jpg",
+                    "folder.png",
+                    f"{folder.name}.jpg",
+                    f"{folder.name}.png",
+                ):
                     cover_img = folder / name
 
                     if cover_img.exists():
                         return cover_img
 
                 for cover_img in folder.iterdir():
-                    if cover_img.suffix.lower() in {".jpg",".jpeg",".png",".webp"} and cover_img.is_file():
+                    if (
+                        cover_img.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}
+                        and cover_img.is_file()
+                    ):
                         return cover_img
 
             except Exception:
                 pass
 
             return None
-        
+
         class StatusBarView(NSView):
             """
             The main class for handling drawing and events
             """
+
             PLUGIN_WIDTH = 320.0
             PLUGIN_HEIGHT = 150.0
             PADDING = 10.0
@@ -148,7 +179,9 @@ class MacOSStatusBarPlugin(EventPlugin):
                 self.setAutoresizesSubviews_(False)
 
                 # Configure the image's "container"
-                self.img_container = NSImageView.alloc().initWithFrame_(((0, 0), (self.PLUGIN_WIDTH, self.PLUGIN_HEIGHT)))
+                self.img_container = NSImageView.alloc().initWithFrame_(
+                    ((0, 0), (self.PLUGIN_WIDTH, self.PLUGIN_HEIGHT))
+                )
                 self.img_container.setImageScaling_(3)
                 self.img_container.setWantsLayer_(True)
                 self.img_container.layer().setMasksToBounds_(True)
@@ -163,17 +196,31 @@ class MacOSStatusBarPlugin(EventPlugin):
                 # Overlays a slight dark tint on the cover image section
                 self.overlay = NSView.alloc().initWithFrame_(self.img_container.frame())
                 self.overlay.setWantsLayer_(True)
-                self.overlay.layer().setBackgroundColor_(_ns_color_to_cg_color(NSColor.blackColor().colorWithAlphaComponent_(0.10)))
+                self.overlay.layer().setBackgroundColor_(
+                    _ns_color_to_cg_color(
+                        NSColor.blackColor().colorWithAlphaComponent_(0.10)
+                    )
+                )
                 self.addSubview_(self.overlay)
 
                 y = self.PLUGIN_HEIGHT + 10.0
 
                 # Here we handle the placement for certain text fields such as song name and album name
-                self.title = NSTextField.alloc().initWithFrame_(((self.PADDING, y), (self.PLUGIN_WIDTH - 20 * self.PADDING, 20.0)))
-                self.subtitle = NSTextField.alloc().initWithFrame_(((self.PADDING, y + 22.0), (self.PLUGIN_WIDTH - 2 * self.PADDING, 18.0)))
+                self.title = NSTextField.alloc().initWithFrame_(
+                    ((self.PADDING, y), (self.PLUGIN_WIDTH - 20 * self.PADDING, 20.0))
+                )
+                self.subtitle = NSTextField.alloc().initWithFrame_(
+                    (
+                        (self.PADDING, y + 22.0),
+                        (self.PLUGIN_WIDTH - 2 * self.PADDING, 18.0),
+                    )
+                )
 
                 # Set the size and color for the previously added text fields
-                for text_type, size, color in ((self.title, 14.0, NSColor.labelColor()), (self.subtitle, 12.0, NSColor.secondaryLabelColor())):
+                for text_type, size, color in (
+                    (self.title, 14.0, NSColor.labelColor()),
+                    (self.subtitle, 12.0, NSColor.secondaryLabelColor())
+                ):
                     text_type.setBezeled_(False)
                     text_type.setDrawsBackground_(False)
                     text_type.setEditable_(False)
@@ -188,12 +235,22 @@ class MacOSStatusBarPlugin(EventPlugin):
                 # This includes placement, text color, and icon specification
                 y += 55.0
 
-                self.btn_prev = self._make_icon_button("backward.fill", "prev", self.PLUGIN_WIDTH / 2 - 80)
-                self.btn_play = self._make_icon_button("play.fill", "playpause", self.PLUGIN_WIDTH / 2 - 14)
-                self.btn_next = self._make_icon_button("forward.fill", "next", self.PLUGIN_WIDTH / 2 + 50)
-                self.addSubview_(self.btn_prev); self.addSubview_(self.btn_play); self.addSubview_(self.btn_next)
+                self.btn_prev = self._make_icon_button(
+                    "backward.fill", "prev", self.PLUGIN_WIDTH / 2 - 80
+                )
+                self.btn_play = self._make_icon_button(
+                    "play.fill", "playpause", self.PLUGIN_WIDTH / 2 - 14
+                )
+                self.btn_next = self._make_icon_button(
+                    "forward.fill", "next", self.PLUGIN_WIDTH / 2 + 50
+                )
+                self.addSubview_(self.btn_prev)
+                self.addSubview_(self.btn_play)
+                self.addSubview_(self.btn_next)
 
-                self.playback_t = NSTextField.alloc().initWithFrame_(((self.PLUGIN_WIDTH - 85, y - 50.0), (80, 16)))
+                self.playback_t = NSTextField.alloc().initWithFrame_(
+                    ((self.PLUGIN_WIDTH - 85, y - 50.0), (80, 16))
+                )
                 self.playback_t.setBezeled_(False)
                 self.playback_t.setDrawsBackground_(False)
                 self.playback_t.setEditable_(False)
@@ -212,7 +269,9 @@ class MacOSStatusBarPlugin(EventPlugin):
                 Here we try to use builtin symbols/images provided by MacOS (mainly "play.fill" and "pause.fill" for dynamic play/pause within the plugin)
                 """
                 try:
-                    img_symbol = NSImage.imageWithSystemSymbolName_accessibilityDescription_(name, None)
+                    img_symbol = (
+                        NSImage.imageWithSystemSymbolName_accessibilityDescription_(name, None)
+                    )
 
                     if img_symbol:
                         try:
@@ -254,7 +313,9 @@ class MacOSStatusBarPlugin(EventPlugin):
                 """
                 Create the play/pause, next, and previous buttons at the bottom of the status bar widget using SF symbol syntax
                 """
-                b = NSButton.alloc().initWithFrame_(((x,  self.PLUGIN_HEIGHT + 60), (28.0, 28.0)))
+                b = NSButton.alloc().initWithFrame_(
+                    ((x, self.PLUGIN_HEIGHT + 60), (28.0, 28.0))
+                )
                 img = self._symbol(sf_symbol)
 
                 if img:
@@ -262,24 +323,30 @@ class MacOSStatusBarPlugin(EventPlugin):
                 else:
                     # A fallback for certain symbols
                     # This can break the appearence of the player controls, but not the functionality
-                    b.setTitle_({"prev":"«","playpause":"▶/⏸","next":"»"}.get(action, "•"))
+                    b.setTitle_(
+                        {"prev": "«", "playpause": "▶/⏸", "next": "»"}.get(action, "•")
+                    )
 
                 self._image_only(b)
                 b.setTarget_(self)
                 b.setAction_(action + ":")
                 b.setWantsLayer_(True)
                 b.layer().setCornerRadius_(14.0)
-                b.layer().setBackgroundColor_(_ns_color_to_cg_color(NSColor.whiteColor().colorWithAlphaComponent_(0.18)))
+                b.layer().setBackgroundColor_(
+                    _ns_color_to_cg_color(
+                        NSColor.whiteColor().colorWithAlphaComponent_(0.18)
+                    )
+                )
                 return b
-            
+
             # Time for the Objective-C selectors
-            def prev_(self, sender):
+            def prev_(self, _):
                 app.player.previous()
 
-            def playpause_(self, sender):
+            def playpause_(self, _):
                 app.player.playpause()
 
-            def next_(self, sender):
+            def next_(self, _):
                 app.player.next()
 
             def update_content(self):
@@ -290,7 +357,11 @@ class MacOSStatusBarPlugin(EventPlugin):
                     s = app.player.song
 
                     # If unable to locate an artist's name, return "N/A"
-                    artist = (s.comma("~people") if s else "") or (s("artist") if s else "") or "N/A"
+                    artist = (
+                        (s.comma("~people") if s else "")
+                        or (s("artist") if s else "")
+                        or "N/A"
+                    )
 
                     # If unable to locate an title, return plugin name
                     title = (s("title") if s else "") or "MacOS Status Bar"
@@ -300,7 +371,9 @@ class MacOSStatusBarPlugin(EventPlugin):
                     self.title.setStringValue_(title)
 
                     # The artist and album divider
-                    self.subtitle.setStringValue_(" • ".join(p for p in (artist, album) if p))
+                    self.subtitle.setStringValue_(
+                        " • ".join(p for p in (artist, album) if p)
+                    )
 
                     # We want to make sure to get updates on the current position of the track's playback
                     current = int(app.player.get_position() or 0)
@@ -309,13 +382,18 @@ class MacOSStatusBarPlugin(EventPlugin):
                     duration = int(float(s("~#length") or 0)) if s else 0
 
                     # Here we display the data in widget. Thanks to `_mmss`, we can display it in a more comfortable format
-                    self.playback_t.setStringValue_(f"{_mmss(current=current)} / {_mmss(duration=duration)}")
+                    self.playback_t.setStringValue_(
+                        f"{_mmss(current=current)} / {_mmss(duration=duration)}"
+                    )
 
                     # Collect and display the cover image (checks the same directory as the audio file)
                     cov = _cover_img_from_folder()
 
                     # If no cover image is found, we just default to the application icon image
-                    img = NSImage.alloc().initWithContentsOfFile_(str(cov)) if cov else NSApp.applicationIconImage()
+                    img = (
+                        NSImage.alloc().initWithContentsOfFile_(str(cov))
+                        if cov else NSApp.applicationIconImage()
+                    )
                     self.img_container.setImage_(img)
                     self.overlay.setFrame_(self.img_container.frame())
 
@@ -330,13 +408,16 @@ class MacOSStatusBarPlugin(EventPlugin):
                         self.btn_play.setImage_(icon)
                         self._image_only(self.btn_play)
 
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    print_e(f"Unable to update MacOS status bar content: {e}")
 
         class StatusBarController(NSObject):
             """
             The controller is just a simple class for handling some miscellaneous operations and making sure everything is tied together. The only real notable functions are `tick_` and `NSRunLoop.currentRunLoop()`
+
+            Think of this as a mini-wrapper for Apple's Cocoa interface
             """
+
             def init(self):
                 self = objc.super(StatusBarController, self).init()
 
@@ -354,7 +435,10 @@ class MacOSStatusBarPlugin(EventPlugin):
                 if app_icon:
                     _set_status_bar_icon(self.button, app_icon)
 
-                self.status_bar_view = StatusBarView.alloc().initWithFrame_(((0.0, 0.0), (StatusBarView.PLUGIN_WIDTH, StatusBarView.PLUGIN_HEIGHT + 28.0)))
+                self.status_bar_view = StatusBarView.alloc().initWithFrame_((
+                    (0.0, 0.0),
+                    (StatusBarView.PLUGIN_WIDTH, StatusBarView.PLUGIN_HEIGHT + 28.0)
+                ))
                 self.status_bar_view.update_content()
                 self.header_item = NSMenuItem.alloc().init()
                 self.header_item.setView_(self.status_bar_view)
@@ -369,32 +453,36 @@ class MacOSStatusBarPlugin(EventPlugin):
                     pass
 
                 self.tick_(None)
-                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(1.0, self, "tick:", None, True)
+                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
+                    1.0, self, "tick:", None, True
+                )
 
                 # This is what allows us to share the playback data in real-time via the plugin's UI
                 # NSRunLoop:Timer basically comes down to this:
                 # Per Apple: "A timer that fires after a certain time interval has elapsed, sending a specified message to a target object"
-                NSRunLoop.currentRunLoop().addTimer_forMode_(self.timer, NSRunLoopCommonModes)
+                NSRunLoop.currentRunLoop().addTimer_forMode_(
+                    self.timer, NSRunLoopCommonModes
+                )
 
                 return self
-    
+
             def prevAction_(self, _):
                 try:
                     app.player.previous()
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    print_e(f"Issue with player's previous action: {e}")
 
             def playPauseAction_(self, _):
                 try:
                     app.player.playpause()
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    print_e(f"Issue with player's pause action: {e}")
 
             def nextAction_(self, _):
                 try:
                     app.player.next()
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    print_e(f"Issue with player's next action: {e}")
 
             def tick_(self, _):
                 """
@@ -404,7 +492,10 @@ class MacOSStatusBarPlugin(EventPlugin):
                     if self.status_bar_view:
                         self.status_bar_view.update_content()
 
-                    img = self.status_bar_view.img_container.image() if self.status_bar_view else None
+                    img = (
+                        self.status_bar_view.img_container.image()
+                        if self.status_bar_view else None
+                    )
 
                     if img:
                         _set_status_bar_icon(self.button, img)
@@ -415,8 +506,8 @@ class MacOSStatusBarPlugin(EventPlugin):
                         if fallback:
                             _set_status_bar_icon(self.button, fallback)
 
-                except Exception:
-                    traceback.print_exc()
+                except Exception as e:
+                    print_e(f"Problem with maint event loop: {e}")
 
             # Everything beyond this point handles disabling the plugin and making sure it gracefully disables
 
@@ -432,11 +523,11 @@ class MacOSStatusBarPlugin(EventPlugin):
         try:
             self._cocoa = StatusBarController.alloc().init()
         except Exception:
-            traceback.print_exc()
+            print_e(f"Problem initializing status bar controller: {e}")
             return False
 
         return True
-    
+
     def disabled(self):
         try:
             if self._cocoa:
