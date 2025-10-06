@@ -14,13 +14,15 @@ PLUGIN_ID = "macos_status_bar"
 class TestMacOSStatusBar(PluginTestCase):
     """
     Minimal testing for the MacOS Status bar plugin (using existing PluginTestCase)
-    - For most "in-depth" tests, it would require us to import AppKit (i.e. run the tests on a MacOS)
-    - This still verifies that the plugin is recognized and discoverable + that the device is a MacOS device
+    - For most "in-depth" tests,
+    it would require us to import AppKit (i.e. run the tests on a MacOS)
+    - This still verifies that the plugin is recognized and discoverable
+    and that the device is a MacOS device
     """
 
     def _plugin_class(self):
         mod = self.modules[PLUGIN_ID]
-        return getattr(mod, "MacOSStatusBarPlugin")
+        return mod.MacOSStatusBarPlugin
 
     def test_plugin_is_discoverable(self):
         """
@@ -43,7 +45,8 @@ class TestMacOSStatusBar(PluginTestCase):
 
     def test_no_cocoa_off_macos(self):
         """
-        The plugin should only be enabled on MacOS (even if the user checks it in the interfae)
+        The plugin should only be enabled on MacOS
+        (even if the user checks it in the interface)
         """
         # Linux
         prev = sys.platform
@@ -52,10 +55,13 @@ class TestMacOSStatusBar(PluginTestCase):
             sys.platform = "linux"
             plugin = self._plugin_class()()
 
-            # Since we already have a check within the plugin, the main reason for this is to make sure Apple Cocoa doesn't cause issues on other platforms
+            # Since we already have a check within the plugin
+            # the main reason for this is to make sure Apple Cocoa
+            # doesn't cause issues on other platforms
             self.assertIsNone(
                 getattr(plugin, "_cocoa", None),
-                "Plugin should not create Cocoa controller on any other platform (Linux)",
+                "Plugin should not create Cocoa controller" \
+                "on any other platform (Linux)",
             )
         finally:
             sys.platform = prev
@@ -69,7 +75,8 @@ class TestMacOSStatusBar(PluginTestCase):
 
             self.assertIsNone(
                 getattr(plugin, "_cocoa", None),
-                "Plugin should not create Cocoa controller on any other platform (Windows)",
+                "Plugin should not create Cocoa controller" \
+                "on any other platform (Windows)",
             )
         finally:
             sys.platform = prev
@@ -77,11 +84,11 @@ class TestMacOSStatusBar(PluginTestCase):
     @unittest.skipUnless(sys.platform == "darwin", "Check if running on MacOS")
     def test_macos_enable_and_disable_once(self):
         """
-        We don't want to explicitly fail if running on something other than MacOS, so we just skip if not running on MacOS. However, if running the plugin, this test will need to pass since the plugin is MacOS only.
+        We don't want to explicitly fail if running on something other than MacOS
         """
         try:
-            import objc
-            from AppKit import NSApplication
+            import objc #noqa
+            from AppKit import NSApplication #noqa
         except Exception:
             self.skipTest("PyObjC/AppKit not available in this environment")
 
