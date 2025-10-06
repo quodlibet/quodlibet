@@ -316,7 +316,9 @@ def _main_setup_osx(window):
             return False
 
         def applicationDockMenu_(self, sender):  # noqa
-            if gtk_delegate is not None and hasattr(gtk_delegate, "applicationDockMenu_"):
+            if gtk_delegate is not None and hasattr(
+                gtk_delegate, "applicationDockMenu_"
+            ):
                 return gtk_delegate.applicationDockMenu_(sender)
 
             return None
