@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import sys, traceback
+import sys
 from pathlib import Path
 from quodlibet import app, print_e
 from quodlibet.plugins.events import EventPlugin
@@ -14,7 +14,7 @@ from quodlibet.plugins.events import EventPlugin
 class MacOSStatusBarPlugin(EventPlugin):
     PLUGIN_ID = "macos_status_bar"
     PLUGIN_NAME = "MacOS Status Bar"
-    PLUGIN_DESC = "Status bar application with player controls, song information, album cover, and real-time playback (MacOS Only)."
+    PLUGIN_DESC = "Status bar plugin with player controls, song information, and real-time playback (MacOS Only)." #noqa
     VERSION = "1.0"
 
     def __init__(self):
@@ -23,7 +23,7 @@ class MacOSStatusBarPlugin(EventPlugin):
         # Cocoa is Apple's native API, I just call this Cocoa for transparency
         self._cocoa = None
 
-    def enabled(self):
+    def enabled(self): #noqa
         """
         Only enable the plugin on MacOS
         """
@@ -35,8 +35,6 @@ class MacOSStatusBarPlugin(EventPlugin):
             import objc
             from AppKit import (
                 NSCalibratedRGBColorSpace,
-                NSImage,
-                NSStatusBar,
                 NSImageOnly,
                 NSStatusBar,
                 NSImage,
@@ -59,7 +57,8 @@ class MacOSStatusBarPlugin(EventPlugin):
         @staticmethod
         def _set_status_bar_icon(button, image: NSImage):
             """
-            Set an image as the status bar icon. This is set to the album cover by default
+            Set an image as the status bar icon.
+            This is set to the album cover by default
             """
             thickness = NSStatusBar.systemStatusBar().thickness()
             side = max(1.0, thickness - 1.0 * 2)
@@ -93,7 +92,7 @@ class MacOSStatusBarPlugin(EventPlugin):
         @staticmethod
         def _mmss(current=None, duration=None):
             """
-            Handle the millisecond -> MM:SS conversion for real-playback_t playback playback_t
+            Handle the millisecond -> MM:SS conversion
             """
             if current:
                 minutes, seconds = divmod(current // 1000, 60)
@@ -102,6 +101,8 @@ class MacOSStatusBarPlugin(EventPlugin):
             if duration:
                 minutes, seconds = divmod(max(0, int(duration or 0)), 60)
                 return f"{minutes:02d}:{seconds:02d}"
+
+            return "N/A"
 
         @staticmethod
         def _cover_img_from_folder():
@@ -114,8 +115,11 @@ class MacOSStatusBarPlugin(EventPlugin):
                 if not s:
                     return None
 
-                # Attempt to locate the same directory where the audio file currently resides
-                fn = (s("~filename") or s("file") or s("location") or "").replace("file://", "")
+                # Attempt to locate the same directory
+                # where the audio file currently resides
+                fn = (
+                    s("~filename") or s("file") or s("location") or ""
+                ).replace("file://", "")
 
                 if not fn:
                     return None
@@ -125,8 +129,8 @@ class MacOSStatusBarPlugin(EventPlugin):
                 if not folder.exists():
                     return None
 
-                # Search for a cover photo, defaults to the same directory as the audio file
-                # NOTE: This isn't required for the plugin, however, it makes it look a lot nicer as the status bar icon is actually the album cover (or just an image)
+                # Search for a cover photo
+                # Defaults to the same directory as the audio file
                 for name in (
                     "cover.jpg",
                     "cover.png",
@@ -169,7 +173,8 @@ class MacOSStatusBarPlugin(EventPlugin):
 
             def initWithFrame_(self, frame):
                 """
-                Initialize the frame and configure various aspects of the plugin using the rectangle specifications
+                Initialize the frame and configure
+                various aspects of the plugin using the rectangle specifications
                 """
                 self = objc.super(StatusBarView, self).initWithFrame_(frame)
 
@@ -205,7 +210,8 @@ class MacOSStatusBarPlugin(EventPlugin):
 
                 y = self.PLUGIN_HEIGHT + 10.0
 
-                # Here we handle the placement for certain text fields such as song name and album name
+                # Here we handle the placement for certain text fields
+                # such as song name and album name
                 self.title = NSTextField.alloc().initWithFrame_(
                     ((self.PADDING, y), (self.PLUGIN_WIDTH - 20 * self.PADDING, 20.0))
                 )
@@ -231,7 +237,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                 self.addSubview_(self.title)
                 self.addSubview_(self.subtitle)
 
-                # Here we configure the player controls (buttons) and playback playback_t
+                # Here we configure the player controls (buttons) and playback
                 # This includes placement, text color, and icon specification
                 y += 55.0
 
@@ -266,11 +272,15 @@ class MacOSStatusBarPlugin(EventPlugin):
             @objc.python_method
             def _symbol(self, name: str):
                 """
-                Here we try to use builtin symbols/images provided by MacOS (mainly "play.fill" and "pause.fill" for dynamic play/pause within the plugin)
+                Here we try to use builtin symbols/images provided by MacOS.
+                Mainly "play.fill" and "pause.fill"
+                for dynamic play/pause within the plugin
                 """
                 try:
                     img_symbol = (
-                        NSImage.imageWithSystemSymbolName_accessibilityDescription_(name, None)
+                        NSImage.imageWithSystemSymbolName_accessibilityDescription_(
+                            name, None
+                        )
                     )
 
                     if img_symbol:
@@ -288,7 +298,8 @@ class MacOSStatusBarPlugin(EventPlugin):
             @objc.python_method
             def _image_only(self, btn):
                 """
-                A simple function for mainly just cleaning up the appearence of the symbol buttons after assigning them
+                A simple function for cleaning up the appearence of
+                the symbol buttons after assigning them
                 """
                 try:
                     btn.setTitle_("")
@@ -311,7 +322,8 @@ class MacOSStatusBarPlugin(EventPlugin):
             @objc.python_method
             def _make_icon_button(self, sf_symbol: str, action: str, x: float):
                 """
-                Create the play/pause, next, and previous buttons at the bottom of the status bar widget using SF symbol syntax
+                Create the play/pause, next, and previous buttons
+                at the bottom of the status bar widget using SF symbol syntax
                 """
                 b = NSButton.alloc().initWithFrame_(
                     ((x, self.PLUGIN_HEIGHT + 60), (28.0, 28.0))
@@ -322,7 +334,8 @@ class MacOSStatusBarPlugin(EventPlugin):
                     b.setImage_(img)
                 else:
                     # A fallback for certain symbols
-                    # This can break the appearence of the player controls, but not the functionality
+                    # This can break the appearence of the player controls
+                    # but not the functionality
                     b.setTitle_(
                         {"prev": "«", "playpause": "▶/⏸", "next": "»"}.get(action, "•")
                     )
@@ -375,21 +388,22 @@ class MacOSStatusBarPlugin(EventPlugin):
                         " • ".join(p for p in (artist, album) if p)
                     )
 
-                    # We want to make sure to get updates on the current position of the track's playback
+                    # Get updates on the current position of the track's playback
                     current = int(app.player.get_position() or 0)
 
                     # The full duration of the song
                     duration = int(float(s("~#length") or 0)) if s else 0
 
-                    # Here we display the data in widget. Thanks to `_mmss`, we can display it in a more comfortable format
+                    # Thanks to `_mmss`, we can display it in a more comfortable format
                     self.playback_t.setStringValue_(
                         f"{_mmss(current=current)} / {_mmss(duration=duration)}"
                     )
 
-                    # Collect and display the cover image (checks the same directory as the audio file)
+                    # Collect and display the cover image
+                    # Checks the same directory as the audio file
                     cov = _cover_img_from_folder()
 
-                    # If no cover image is found, we just default to the application icon image
+                    # Default to the application icon image, if no cover image is found
                     img = (
                         NSImage.alloc().initWithContentsOfFile_(str(cov))
                         if cov else NSApp.applicationIconImage()
@@ -413,7 +427,11 @@ class MacOSStatusBarPlugin(EventPlugin):
 
         class StatusBarController(NSObject):
             """
-            The controller is just a simple class for handling some miscellaneous operations and making sure everything is tied together. The only real notable functions are `tick_` and `NSRunLoop.currentRunLoop()`
+            The controller is for handling some miscellaneous operations
+            and making sure everything is tied together.
+
+            The only real notable functions are
+            `tick_` and `NSRunLoop.currentRunLoop()`
 
             Think of this as a mini-wrapper for Apple's Cocoa interface
             """
@@ -424,7 +442,9 @@ class MacOSStatusBarPlugin(EventPlugin):
                 if self is None:
                     return None
 
-                self.status_item = NSStatusBar.systemStatusBar().statusItemWithLength_(NSVariableStatusItemLength)
+                self.status_item = NSStatusBar.systemStatusBar().statusItemWithLength_(
+                    NSVariableStatusItemLength
+                )
                 self.button = self.status_item.button()
                 self.button.setTitle_("MacOS Status Bar")
 
@@ -453,13 +473,17 @@ class MacOSStatusBarPlugin(EventPlugin):
                     pass
 
                 self.tick_(None)
-                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
+                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_( #noqa
                     1.0, self, "tick:", None, True
                 )
 
-                # This is what allows us to share the playback data in real-time via the plugin's UI
-                # NSRunLoop:Timer basically comes down to this:
-                # Per Apple: "A timer that fires after a certain time interval has elapsed, sending a specified message to a target object"
+                """
+                Use the NSRunLoop Foundation class within Appkit for real-time playback
+
+                Per Apple:
+                "A timer that fires after a certain time interval has elapsed,
+                sending a specified message to a target object"
+                """
                 NSRunLoop.currentRunLoop().addTimer_forMode_(
                     self.timer, NSRunLoopCommonModes
                 )
@@ -486,7 +510,8 @@ class MacOSStatusBarPlugin(EventPlugin):
 
             def tick_(self, _):
                 """
-                Every "tick_", we run the `update_content()` method, alongside updating the image/cover
+                Every "tick_", we run the `update_content()` method,
+                alongside updating the image/cover
                 """
                 try:
                     if self.status_bar_view:
@@ -509,7 +534,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                 except Exception as e:
                     print_e(f"Problem with maint event loop: {e}")
 
-            # Everything beyond this point handles disabling the plugin and making sure it gracefully disables
+            # Everything beyond this point handles disabling the plugin
 
             def teardown(self):
                 try:
@@ -522,7 +547,7 @@ class MacOSStatusBarPlugin(EventPlugin):
         # Instantiate controller
         try:
             self._cocoa = StatusBarController.alloc().init()
-        except Exception:
+        except Exception as e:
             print_e(f"Problem initializing status bar controller: {e}")
             return False
 
