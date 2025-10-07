@@ -60,7 +60,7 @@ class TestMacOSStatusBar(PluginTestCase):
             # doesn't cause issues on other platforms
             self.assertIsNone(
                 getattr(plugin, "_cocoa", None),
-                "Plugin should not create Cocoa controller" \
+                "Plugin should not create Cocoa controller"
                 "on any other platform (Linux)",
             )
         finally:
@@ -75,7 +75,7 @@ class TestMacOSStatusBar(PluginTestCase):
 
             self.assertIsNone(
                 getattr(plugin, "_cocoa", None),
-                "Plugin should not create Cocoa controller" \
+                "Plugin should not create Cocoa controller"
                 "on any other platform (Windows)",
             )
         finally:
@@ -87,8 +87,8 @@ class TestMacOSStatusBar(PluginTestCase):
         We don't want to explicitly fail if running on something other than MacOS
         """
         try:
-            import objc #noqa
-            from AppKit import NSApplication #noqa
+            import objc # noqa
+            from AppKit import NSApplication # noqa
         except Exception:
             self.skipTest("PyObjC/AppKit not available in this environment")
 

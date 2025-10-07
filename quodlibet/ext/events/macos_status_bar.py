@@ -14,7 +14,7 @@ from quodlibet.plugins.events import EventPlugin
 class MacOSStatusBarPlugin(EventPlugin):
     PLUGIN_ID = "macos_status_bar"
     PLUGIN_NAME = "MacOS Status Bar"
-    PLUGIN_DESC = "Status bar plugin with player controls, song information, and real-time playback (MacOS Only)." #noqa
+    PLUGIN_DESC = "Status bar plugin with player controls, song information, and real-time playback (MacOS Only)." # noqa
     VERSION = "1.0"
 
     def __init__(self):
@@ -23,7 +23,7 @@ class MacOSStatusBarPlugin(EventPlugin):
         # Cocoa is Apple's native API, I just call this Cocoa for transparency
         self._cocoa = None
 
-    def enabled(self): #noqa
+    def enabled(self): # noqa
         """
         Only enable the plugin on MacOS
         """
@@ -117,9 +117,9 @@ class MacOSStatusBarPlugin(EventPlugin):
 
                 # Attempt to locate the same directory
                 # where the audio file currently resides
-                fn = (
-                    s("~filename") or s("file") or s("location") or ""
-                ).replace("file://", "")
+                fn = (s("~filename") or s("file") or s("location") or "").replace(
+                    "file://", ""
+                )
 
                 if not fn:
                     return None
@@ -225,7 +225,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                 # Set the size and color for the previously added text fields
                 for text_type, size, color in (
                     (self.title, 14.0, NSColor.labelColor()),
-                    (self.subtitle, 12.0, NSColor.secondaryLabelColor())
+                    (self.subtitle, 12.0, NSColor.secondaryLabelColor()),
                 ):
                     text_type.setBezeled_(False)
                     text_type.setDrawsBackground_(False)
@@ -406,7 +406,8 @@ class MacOSStatusBarPlugin(EventPlugin):
                     # Default to the application icon image, if no cover image is found
                     img = (
                         NSImage.alloc().initWithContentsOfFile_(str(cov))
-                        if cov else NSApp.applicationIconImage()
+                        if cov
+                        else NSApp.applicationIconImage()
                     )
                     self.img_container.setImage_(img)
                     self.overlay.setFrame_(self.img_container.frame())
@@ -455,10 +456,15 @@ class MacOSStatusBarPlugin(EventPlugin):
                 if app_icon:
                     _set_status_bar_icon(self.button, app_icon)
 
-                self.status_bar_view = StatusBarView.alloc().initWithFrame_((
-                    (0.0, 0.0),
-                    (StatusBarView.PLUGIN_WIDTH, StatusBarView.PLUGIN_HEIGHT + 28.0)
-                ))
+                self.status_bar_view = StatusBarView.alloc().initWithFrame_(
+                    (
+                        (0.0, 0.0),
+                        (
+                            StatusBarView.PLUGIN_WIDTH,
+                            StatusBarView.PLUGIN_HEIGHT + 28.0
+                        ),
+                    )
+                )
                 self.status_bar_view.update_content()
                 self.header_item = NSMenuItem.alloc().init()
                 self.header_item.setView_(self.status_bar_view)
@@ -473,7 +479,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                     pass
 
                 self.tick_(None)
-                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_( #noqa
+                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_( # noqa
                     1.0, self, "tick:", None, True
                 )
 
@@ -519,7 +525,8 @@ class MacOSStatusBarPlugin(EventPlugin):
 
                     img = (
                         self.status_bar_view.img_container.image()
-                        if self.status_bar_view else None
+                        if self.status_bar_view
+                        else None
                     )
 
                     if img:
