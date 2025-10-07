@@ -87,8 +87,8 @@ class TestMacOSStatusBar(PluginTestCase):
         We don't want to explicitly fail if running on something other than MacOS
         """
         try:
-            import objc # noqa
-            from AppKit import NSApplication # noqa
+            import objc  # noqa
+            from AppKit import NSApplication  # noqa
         except Exception:
             self.skipTest("PyObjC/AppKit not available in this environment")
 

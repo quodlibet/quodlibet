@@ -14,7 +14,7 @@ from quodlibet.plugins.events import EventPlugin
 class MacOSStatusBarPlugin(EventPlugin):
     PLUGIN_ID = "macos_status_bar"
     PLUGIN_NAME = "MacOS Status Bar"
-    PLUGIN_DESC = "Status bar plugin with player controls, song information, and real-time playback (MacOS Only)." # noqa
+    PLUGIN_DESC = "Status bar plugin with player controls, song information, and real-time playback (MacOS Only)."  # noqa
     VERSION = "1.0"
 
     def __init__(self):
@@ -23,7 +23,7 @@ class MacOSStatusBarPlugin(EventPlugin):
         # Cocoa is Apple's native API, I just call this Cocoa for transparency
         self._cocoa = None
 
-    def enabled(self): # noqa
+    def enabled(self):  # noqa
         """
         Only enable the plugin on MacOS
         """
@@ -461,7 +461,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                         (0.0, 0.0),
                         (
                             StatusBarView.PLUGIN_WIDTH,
-                            StatusBarView.PLUGIN_HEIGHT + 28.0
+                            StatusBarView.PLUGIN_HEIGHT + 28.0,
                         ),
                     )
                 )
@@ -479,7 +479,7 @@ class MacOSStatusBarPlugin(EventPlugin):
                     pass
 
                 self.tick_(None)
-                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_( # noqa
+                self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(  # noqa
                     1.0, self, "tick:", None, True
                 )
 
