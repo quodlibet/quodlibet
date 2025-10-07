@@ -11,6 +11,7 @@ from tests.plugin import PluginTestCase
 
 PLUGIN_ID = "macos_status_bar"
 
+
 class TestMacOSStatusBar(PluginTestCase):
     """
     Minimal testing for the MacOS Status bar plugin (using existing PluginTestCase)
