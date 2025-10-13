@@ -979,7 +979,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         ag.add_action_with_accel(act, "<Primary>Q")
 
         act = Action(
-            name="EditTags", label=_("Edit _Tags"), icon_name=Icons.DOCUMENT_PROPERTIES
+            name="EditTags", label=_("_Edit…"), icon_name=Icons.DOCUMENT_PROPERTIES
         )
         act.connect("activate", self.__current_song_prop)
         ag.add_action(act)
