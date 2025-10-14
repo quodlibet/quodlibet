@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-12-17 06:00+0000\n"
-"Last-Translator: Distant Prince <distantprinceca@gmail.com>\n"
+"PO-Revision-Date: 2025-10-09 02:07+0000\n"
+"Last-Translator: btbt_bt <belegdal@yahoo.ca>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/en_CA/>\n"
 "Language: en_CA\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -608,13 +608,13 @@ msgid "Columnar"
 msgstr "Column"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
-"%s"
+"Tag pattern with optional markup e.g. %(short)s or\n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -1182,15 +1182,15 @@ msgid "Error details:"
 msgstr "Error details:"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
 "Various details regarding the error and your system will be send to a third "
-"party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
-"You can review the data before sending it below."
+"party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
+"review the data before sending it below."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -2011,14 +2011,14 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Linux Desktop Integration (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</"
+"a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -3885,7 +3885,7 @@ msgid "unidentified Squeezebox server"
 msgstr "unidentified Squeezebox server"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy, python-format
+#, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "unidentified Squeezebox player: %r"
 
@@ -4200,9 +4200,9 @@ msgid "No covers found"
 msgstr "No covers found"
 
 #: quodlibet/ext/songsmenu/cover_download.py:350
-#, fuzzy, python-format
+#, python-format
 msgid "%(size)d ✕ %(size)d px"
-msgstr "{size} ✕ {size} px"
+msgstr "%(size)d ✕ %(size)d px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:363
 msgid "Preview size"
@@ -4657,13 +4657,13 @@ msgid "No iFP device found"
 msgstr "No iFP device found"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Unable to contact your iFP device. Check that the device is powered on and "
-"plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
+"plugged in, and that you have ifp-line ({ifp_url}) installed."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -4895,16 +4895,16 @@ msgstr "Create Sort Tags"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:83
 msgid "Guesses sort tags for albums and people."
-msgstr ""
+msgstr "Guesses sort tags for albums and people."
 
 #: quodlibet/ext/songsmenu/makesorttags.py:83
 msgid "e.g."
-msgstr ""
+msgstr "e.g."
 
 #: quodlibet/ext/songsmenu/makesorttags.py:88
 #, python-format
 msgid "Applies to tags: <tt>%s</tt>."
-msgstr ""
+msgstr "Applies to tags: <tt>%s</tt>."
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -5025,12 +5025,11 @@ msgstr "Split out disc number."
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "Split Genre"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "Split into multiple _values"
+msgstr "Split a single genre tag into multiple tags."
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5439,7 +5438,7 @@ msgid "Buffering"
 msgstr "Buffering"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Could not create GStreamer pipeline (%s)"
 
@@ -5532,19 +5531,18 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
-"{extra}"
+"Couldn't find module {module!r}. Perhaps you need to install the "
+"package?{extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "Couldn't find GStreamer element '{element}'."
+msgstr ""
+"Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -5614,13 +5612,12 @@ msgid "Revert to default"
 msgstr "Revert to default"
 
 #: quodlibet/qltk/advanced_prefs.py:296
-#, fuzzy
 msgid "Filename patterns for lyric files"
-msgstr "Filename pattern:"
+msgstr "Filename patterns for lyric files"
 
 #: quodlibet/qltk/advanced_prefs.py:302
 msgid "Directory strings or patterns for lyric files"
-msgstr ""
+msgstr "Directory strings or patterns for lyric files"
 
 #: quodlibet/qltk/advanced_prefs.py:341
 msgid "I know what I'm doing!"
@@ -6418,7 +6415,7 @@ msgstr "No plugins found."
 
 #: quodlibet/qltk/pluginwin.py:335
 msgid "(undocumented)"
-msgstr ""
+msgstr "(undocumented)"
 
 #: quodlibet/qltk/pluginwin.py:375
 msgid "Plugins"
