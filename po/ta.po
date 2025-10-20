@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-11 01:01+0000\n"
-"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"PO-Revision-Date: 2025-10-20 04:50+0000\n"
+"Last-Translator: தமிழ்நேரம் <tamilneram247@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ta/>\n"
 "Language: ta\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1180,15 +1180,15 @@ msgid "Error details:"
 msgstr "பிழை விவரங்கள்:"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"பிழை மற்றும் உங்கள் கணினி தொடர்பான பல்வேறு விவரங்கள் மூன்றாம் தரப்பு நிகழ்நிலை சேவைக்கு "
-"அனுப்பப்படும் (<a href = 'https: //www.sentry.io'> www.sentry.io </a>). தரவை "
-"கீழே அனுப்புவதற்கு முன்பு நீங்கள் மதிப்பாய்வு செய்யலாம்."
+"பிழை மற்றும் உங்கள் கணினி தொடர்பான பல்வேறு விவரங்கள் மூன்றாம் தரப்பு நிகழ்நிலை சேவைக்கு அனுப்பப்படும் "
+"(<a href='{sentry_url}'>www.sentry.io</a>). தரவைக் கீழே அனுப்புவதற்கு முன்பு நீங்கள் மதிப்பாய்வு "
+"செய்யலாம்."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -2008,16 +2008,15 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "லினக்ச் டெச்க்டாப் ஒருங்கிணைப்பு (MPRIS D-PUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"A <a href = \"https://mpris2.readthedocs.io/en/latest/\"> mpris 2 </a> டி-பச் "
-"இடைமுகத்தைப் பயன்படுத்தி QUOD லிபெட்டைக் கட்டுப்படுத்த அனுமதிக்கிறது.\n"
-" இது பல்வேறு லினக்ச் டெச்க்டாப் ஒருங்கிணைப்புகளை அனுமதிக்கிறது (எ.கா. மல்டிமீடியா "
-"விசைகள்)."
+"⏯️ <a href=\"{mpris_url}\">MPRIS 2</a> டி-பச் இடைமுகத்தைப் பயன்படுத்தி Quod லிபெட்டைக் "
+"கட்டுப்படுத்த அனுமதிக்கிறது.\n"
+"இது பல்வேறு லினக்ச் டெஸ்க்டாப் ஒருங்கிணைப்புகளை (எ.கா. மல்டிமீடியா விசைகள்) அனுமதிக்கிறது."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
