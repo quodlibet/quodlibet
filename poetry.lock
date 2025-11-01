@@ -792,14 +792,14 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "77.0.3"
+version = "78.1.1"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "setuptools-77.0.3-py3-none-any.whl", hash = "sha256:67122e78221da5cf550ddd04cf8742c8fe12094483749a792d56cd669d6cf58c"},
-    {file = "setuptools-77.0.3.tar.gz", hash = "sha256:583b361c8da8de57403743e756609670de6fb2345920e36dc5c2d914c319c945"},
+    {file = "setuptools-78.1.1-py3-none-any.whl", hash = "sha256:c3a9c4211ff4c309edb8b8c4f1cbfa7ae324c4ba9f91ff254e3d305b9fd54561"},
+    {file = "setuptools-78.1.1.tar.gz", hash = "sha256:fcc17fd9cd898242f6b4adfaca46137a9edef687f43e6f78469692a5e70d851d"},
 ]
 
 [package.extras]
@@ -1171,4 +1171,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "soco"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "068ef167414c9394c410552ec8f0b66308970ddb4b05fc6a56d03e9ffbeb59af"
+content-hash = "cee5dc3d1f905c52d62744ea3c78a38d83bdeb4363a97e31f61af6284b905d82"
