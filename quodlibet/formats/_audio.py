@@ -180,7 +180,6 @@ class AudioFile(dict, ImageContainer, HasKey):
             self[key] = value
         for key, value in kwargs.items():
             self[key] = value
-        self._vdata = {}
 
     def __song_key(self):
         return (

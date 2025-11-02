@@ -209,22 +209,22 @@ class BasePlayer(GObject.GObject, Equalizer):
     def set_ab_points(self, a, b):
         if self.song:
             if a is not None:
-                self.song._vdata["A-repeat"] = a
+                self.song["~#ab_repeat_a"] = a
             else:
-                self.song._vdata.pop("A-repeat", None)
+                self.song.pop("~#ab_repeat_a", None)
             if b is not None:
-                self.song._vdata["B-repeat"] = b
+                self.song["~#ab_repeat_b"] = b
             else:
-                self.song._vdata.pop("B-repeat", None)
+                self.song.pop("~#ab_repeat_b", None)
         self.emit(
             "ab-seek-points-changed",
-            a if a is not None else -1,
-            b if b is not None else -1,
+            int(a) if a is not None else -1,
+            int(b) if b is not None else -1,
         )
 
     def get_ab_points(self):
         if self.song:
-            return self.song._vdata.get("A-repeat"), self.song._vdata.get("B-repeat")
+            return self.song.get("~#ab_repeat_a"), self.song.get("~#ab_repeat_b")
         return None, None
 
     def setup(self, source, song, seek_pos, explicit=True):
