@@ -136,6 +136,10 @@ def load_audio_files(data, process=True):
     except AttributeError as e:
         raise SerializationError(e) from e
 
+    for i in items:
+        if not hasattr(i, "_vdata"):
+            i._vdata = {}
+
     return items
 
 

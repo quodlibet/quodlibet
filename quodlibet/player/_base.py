@@ -79,6 +79,11 @@ class BasePlayer(GObject.GObject, Equalizer):
         "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
         # Signal error (song, PlayerError)
         "error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "ab-seek-points-changed": (
+            GObject.SignalFlags.RUN_LAST,
+            None,
+            (GObject.TYPE_INT, GObject.TYPE_INT),
+        ),
     }
 
     __gproperties__ = {
@@ -200,6 +205,27 @@ class BasePlayer(GObject.GObject, Equalizer):
         """
 
         raise NotImplementedError
+
+    def set_ab_points(self, a, b):
+        if self.song:
+            if a is not None:
+                self.song._vdata["A-repeat"] = a
+            else:
+                self.song._vdata.pop("A-repeat", None)
+            if b is not None:
+                self.song._vdata["B-repeat"] = b
+            else:
+                self.song._vdata.pop("B-repeat", None)
+        self.emit(
+            "ab-seek-points-changed",
+            a if a is not None else -1,
+            b if b is not None else -1,
+        )
+
+    def get_ab_points(self):
+        if self.song:
+            return self.song._vdata.get("A-repeat"), self.song._vdata.get("B-repeat")
+        return None, None
 
     def setup(self, source, song, seek_pos, explicit=True):
         """Connect to a PlaylistModel, and load a song.
