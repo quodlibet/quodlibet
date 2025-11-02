@@ -52,6 +52,4 @@ class ABRepeatEventPlugin(EventPlugin, PluginConfigMixin):
         app.player.seek(seconds * 1000)
 
     def PluginPreferences(self, parent):
-        vb = Gtk.VBox(spacing=12)
-
-        return vb
+        return Gtk.VBox(spacing=12)

@@ -136,8 +136,6 @@ def load_audio_files(data, process=True):
     except AttributeError as e:
         raise SerializationError(e) from e
 
-
-
     return items
 
 
