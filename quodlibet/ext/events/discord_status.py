@@ -15,6 +15,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet.formats import AudioFile
 
+import regex as re
 from gi.repository import Gtk
 
 try:
@@ -31,6 +32,12 @@ DISCORD_APP_ID = '974521025356242984'
 QL_LOGO_IMAGE_URL = "io-github-quodlibet-quodlibet"
 
 QL_HOMEPAGE_LINK = "https://github.com/quodlibet/quodlibet"
+
+DISCORD_RP_DETAILS_MIN_CODEUNITS = 2
+DISCORD_RP_DETAILS_MAX_CODEUNITS = 128
+DISCORD_RP_DETAILS_TRUNC_SUFFIX = "…"
+
+GRAPHEME_PATTERN = re.compile(r'\X', re.UNICODE)
 
 VERSION = "1.0"
 
@@ -116,19 +123,76 @@ class DiscordStatusMessage(EventPlugin):
             # XXX Discord was closed?
             self.discordrp = None
 
+    @staticmethod
+    def truncate_unicode_text(text: str, num: int) -> str:
+        """
+        Truncate a given unicode string to a string that is less than the given
+        number of unicode code points that has an affixed truncation indicator
+        character.
+        In this plugin, this is used to ensure details and state strings are
+        fit to publish to rich presence without error.
+
+        :param text: A unicode string to truncate.
+        :type text: str
+        :param num: The number of unicode code points to truncate to.
+        :type num: int
+        :return: The truncated string in UTF-16.
+        :rtype: str
+        """
+        # Return the same text [in UTF-16] if it doesn't need to be truncated
+        if len(text.encode('utf-16-le')) <= num:
+            return str(text.encode('utf-16'), encoding='utf-16')
+
+        # Cache the byte lengths of the truncation indicator/suffix
+        trunc_char_len = len(DISCORD_RP_DETAILS_TRUNC_SUFFIX.encode('utf-16-le'))
+
+        # Include the code point length of the truncation character
+        clen: int = trunc_char_len
+        # Iterate through unicode graphemes and build the string to return
+        x: str = ''
+        for grapheme_match in GRAPHEME_PATTERN.finditer(text):
+            # O(num) worst case
+            grapheme: str = grapheme_match[0]
+            # Append the number of code points for the grapheme
+            # (bytes divided by 2)
+            clen += len(grapheme.encode('utf-16-le')) / 2
+            # Break when the total found code point length exceeds the limit
+            if clen > num:
+                break
+            x += grapheme
+
+        return str((x + DISCORD_RP_DETAILS_TRUNC_SUFFIX).encode('utf-16'),
+                   encoding='utf-16')
+
     def update_details(self):
         if self.song:
             details = Pattern(discord_status_config.rp_line1) % self.song
             state = Pattern(discord_status_config.rp_line2) % self.song
 
-            # The details and state fields must be atleast 2 characters.
-            if len(details) < 2:
+            # The details and state fields must be at least 2 UTF-16 code units
+            # (DISCORD_RP_DETAILS_MIN_CODEUNITS) and less than or equal to 128
+            # UTF-16 code units (DISCORD_RP_DETAILS_MAX_CODEUNITS), minus the
+            # byte-order mark.
+            if len(details) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 details = None
             elif app.player.paused:
-                details = details + " " + _("(Paused)")
+                pause_suffix = ' ' + _('(Paused)')
+                details = self.truncate_unicode_text(
+                    details,
+                    DISCORD_RP_DETAILS_MAX_CODEUNITS -
+                    len(pause_suffix.encode('utf-16-le')))
+                details += pause_suffix
+            else:
+                details = self.truncate_unicode_text(
+                    details,
+                    DISCORD_RP_DETAILS_MAX_CODEUNITS)
 
-            if len(state) < 2:
+            if len(state) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 state = None
+            else:
+                state = self.truncate_unicode_text(
+                    state,
+                    DISCORD_RP_DETAILS_MAX_CODEUNITS)
 
             self.state = state
             self.details = details
