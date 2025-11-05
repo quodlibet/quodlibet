@@ -56,6 +56,10 @@ class DiscordStatusConfig:
 discord_status_config = DiscordStatusConfig()
 
 
+def _utf16_cu_len(text: str) -> int:
+    return len(text.encode('utf-16-le')) / 2
+
+
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
     PLUGIN_NAME = _("Discord Status Message")
@@ -140,13 +144,13 @@ class DiscordStatusMessage(EventPlugin):
         :rtype: str
         """
         # Return the same text [in UTF-16] if it doesn't need to be truncated
-        if len(text.encode('utf-16-le')) <= num:
+        if _utf16_cu_len(text) <= num:
             return str(text.encode('utf-16'), encoding='utf-16')
 
         # Cache the byte lengths of the truncation indicator/suffix
-        trunc_char_len = len(DISCORD_RP_DETAILS_TRUNC_SUFFIX.encode('utf-16-le'))
+        trunc_char_len: int = _utf16_cu_len(DISCORD_RP_DETAILS_TRUNC_SUFFIX)
 
-        # Include the code point length of the truncation character
+        # Factor in the code point length of the truncation character
         clen: int = trunc_char_len
         # Iterate through unicode graphemes and build the string to return
         x: str = ''
@@ -155,7 +159,7 @@ class DiscordStatusMessage(EventPlugin):
             grapheme: str = grapheme_match[0]
             # Append the number of code points for the grapheme
             # (bytes divided by 2)
-            clen += len(grapheme.encode('utf-16-le')) / 2
+            clen += _utf16_cu_len(grapheme)
             # Break when the total found code point length exceeds the limit
             if clen > num:
                 break
@@ -173,21 +177,24 @@ class DiscordStatusMessage(EventPlugin):
             # (DISCORD_RP_DETAILS_MIN_CODEUNITS) and less than or equal to 128
             # UTF-16 code units (DISCORD_RP_DETAILS_MAX_CODEUNITS), minus the
             # byte-order mark.
-            if len(details) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
+            # The use of `utf-16-le` encoding strips the BOM mark to get the
+            # actual length of the string in pure code units.
+
+            if _utf16_cu_len(details) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 details = None
             elif app.player.paused:
                 pause_suffix = ' ' + _('(Paused)')
                 details = self.truncate_unicode_text(
                     details,
                     DISCORD_RP_DETAILS_MAX_CODEUNITS -
-                    len(pause_suffix.encode('utf-16-le')))
+                    _utf16_cu_len(pause_suffix))
                 details += pause_suffix
             else:
                 details = self.truncate_unicode_text(
                     details,
                     DISCORD_RP_DETAILS_MAX_CODEUNITS)
 
-            if len(state) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
+            if _utf16_cu_len(state) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 state = None
             else:
                 state = self.truncate_unicode_text(
