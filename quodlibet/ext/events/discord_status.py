@@ -20,22 +20,27 @@ from gi.repository import Gtk
 
 try:
     from pypresence import (
-            Presence, InvalidID, DiscordNotFound,
-            ActivityType, StatusDisplayType
-        )
-except ImportError:
+        Presence,
+        InvalidID,
+        DiscordNotFound,
+        ActivityType,
+        StatusDisplayType,
+    )
+except ImportError as err:
     from quodlibet.plugins import MissingModulePluginException
-    raise MissingModulePluginException("pypresence")
+
+    raise MissingModulePluginException("pypresence") from err
 
 try:
     import regex as re
-except ImportError:
+except ImportError as err:
     from quodlibet.plugins import MissingModulePluginException
-    raise MissingModulePluginException("regex")
+
+    raise MissingModulePluginException("regex") from err
 
 
 # The below resources are from/uploaded-to the Discord Application portal.
-DISCORD_APP_ID = '974521025356242984'
+DISCORD_APP_ID = "974521025356242984"
 QL_LOGO_IMAGE_URL = "io-github-quodlibet-quodlibet"
 
 QL_HOMEPAGE_LINK = "https://github.com/quodlibet/quodlibet"
@@ -44,7 +49,7 @@ DISCORD_RP_DETAILS_MIN_CODEUNITS = 2
 DISCORD_RP_DETAILS_MAX_CODEUNITS = 128
 DISCORD_RP_DETAILS_TRUNC_SUFFIX = "…"
 
-GRAPHEME_PATTERN = re.compile(r'\X', re.UNICODE)
+GRAPHEME_PATTERN = re.compile(r"\X", re.UNICODE)
 
 VERSION = "1.0"
 
@@ -64,14 +69,16 @@ discord_status_config = DiscordStatusConfig()
 
 
 def _utf16_cu_len(text: str) -> int:
-    return len(text.encode('utf-16-le')) // 2
+    return len(text.encode("utf-16-le")) // 2
 
 
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
     PLUGIN_NAME = _("Discord Status Message")
-    PLUGIN_DESC = _("Change your Discord status message according to what "
-                    "you're currently listening to.")
+    PLUGIN_DESC = _(
+        "Change your Discord status message according to what "
+        "you're currently listening to."
+    )
     VERSION = VERSION
 
     def __init__(self):
@@ -84,9 +91,9 @@ class DiscordStatusMessage(EventPlugin):
         except (DiscordNotFound, ConnectionRefusedError):
             self.discordrp = None
 
-    def update_discordrp(self,
-                         time_start: int | None = None,
-                         time_end: int | None = None) -> None:
+    def update_discordrp(
+        self, time_start: int | None = None, time_end: int | None = None
+    ) -> None:
         """
         Update the Discord Rich Presence via the open Discord instance, if
         possible.
@@ -127,7 +134,6 @@ class DiscordStatusMessage(EventPlugin):
                 status_display_type=StatusDisplayType.DETAILS,
                 activity_type=ActivityType.LISTENING,
                 large_image=QL_LOGO_IMAGE_URL,
-                #large_url=QL_HOMEPAGE_LINK,
                 large_text=app.name,
             )
         except InvalidID:
@@ -152,7 +158,7 @@ class DiscordStatusMessage(EventPlugin):
         """
         # Return the same text [in UTF-16] if it doesn't need to be truncated
         if _utf16_cu_len(text) <= num:
-            return str(text.encode('utf-16'), encoding='utf-16')
+            return str(text.encode("utf-16"), encoding="utf-16")
 
         # Cache the byte lengths of the truncation indicator/suffix
         trunc_char_len: int = _utf16_cu_len(DISCORD_RP_DETAILS_TRUNC_SUFFIX)
@@ -160,7 +166,7 @@ class DiscordStatusMessage(EventPlugin):
         # Factor in the code point length of the truncation character
         clen: int = trunc_char_len
         # Iterate through unicode graphemes and build the string to return
-        x: str = ''
+        x: str = ""
         for grapheme_match in GRAPHEME_PATTERN.finditer(text):
             # O(num) worst case
             grapheme: str = grapheme_match[0]
@@ -172,8 +178,9 @@ class DiscordStatusMessage(EventPlugin):
                 break
             x += grapheme
 
-        return str((x + DISCORD_RP_DETAILS_TRUNC_SUFFIX).encode('utf-16'),
-                   encoding='utf-16')
+        return str(
+            (x + DISCORD_RP_DETAILS_TRUNC_SUFFIX).encode("utf-16"), encoding="utf-16"
+        )
 
     def update_details(self):
         if self.song:
@@ -190,23 +197,23 @@ class DiscordStatusMessage(EventPlugin):
             if _utf16_cu_len(details) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 details = None
             elif app.player.paused:
-                pause_suffix = ' ' + _('(Paused)')
+                pause_suffix = " " + _("(Paused)")
                 details = self.truncate_unicode_text(
                     details,
-                    DISCORD_RP_DETAILS_MAX_CODEUNITS -
-                    _utf16_cu_len(pause_suffix))
+                    DISCORD_RP_DETAILS_MAX_CODEUNITS - _utf16_cu_len(pause_suffix),
+                )
                 details += pause_suffix
             else:
                 details = self.truncate_unicode_text(
-                    details,
-                    DISCORD_RP_DETAILS_MAX_CODEUNITS)
+                    details, DISCORD_RP_DETAILS_MAX_CODEUNITS
+                )
 
             if _utf16_cu_len(state) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 state = None
             else:
                 state = self.truncate_unicode_text(
-                    state,
-                    DISCORD_RP_DETAILS_MAX_CODEUNITS)
+                    state, DISCORD_RP_DETAILS_MAX_CODEUNITS
+                )
 
             self.state = state
             self.details = details
@@ -294,10 +301,11 @@ class DiscordStatusMessage(EventPlugin):
 
         status_line1 = Gtk.Entry()
         status_line1.set_text(discord_status_config.rp_line1)
-        status_line1.connect('changed', rp_line1_changed)
+        status_line1.connect("changed", rp_line1_changed)
 
-        status_line1_box.pack_start(Gtk.Label(label=_("Status Line #1")),
-                                    False, True, 0)
+        status_line1_box.pack_start(
+            Gtk.Label(label=_("Status Line #1")), False, True, 0
+        )
         status_line1_box.pack_start(status_line1, True, True, 0)
 
         status_line2_box = Gtk.HBox(spacing=3)
@@ -305,10 +313,11 @@ class DiscordStatusMessage(EventPlugin):
 
         status_line2 = Gtk.Entry()
         status_line2.set_text(discord_status_config.rp_line2)
-        status_line2.connect('changed', rp_line2_changed)
+        status_line2.connect("changed", rp_line2_changed)
 
-        status_line2_box.pack_start(Gtk.Label(label=_('Status Line #2')),
-                                    False, True, 0)
+        status_line2_box.pack_start(
+            Gtk.Label(label=_("Status Line #2")), False, True, 0
+        )
         status_line2_box.pack_start(status_line2, True, True, 0)
 
         vb.pack_start(status_line1_box, True, True, 0)
