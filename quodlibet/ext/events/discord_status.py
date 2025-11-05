@@ -16,7 +16,6 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet.formats import AudioFile
 
-import regex as re
 from gi.repository import Gtk
 
 try:
@@ -27,6 +26,13 @@ try:
 except ImportError:
     from quodlibet.plugins import MissingModulePluginException
     raise MissingModulePluginException("pypresence")
+
+try:
+    import regex as re
+except ImportError:
+    from quodlibet.plugins import MissingModulePluginException
+    raise MissingModulePluginException("regex")
+
 
 # The below resources are from/uploaded-to the Discord Application portal.
 DISCORD_APP_ID = '974521025356242984'
