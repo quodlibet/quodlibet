@@ -6,6 +6,7 @@ PLUGINS_DEPENDS := \
 	musicbrainzngs \
 	dbus-python \
 	pypresence \
+	regex \
 	soco \
 	paho-mqtt
 

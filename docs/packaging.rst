@@ -125,6 +125,10 @@ These can be installed with pip (as well as OS-level packages in some places).
 **pypresence**:
     * For the Discord plugin
 
+**regex**
+    * For the Discord plugin (Unicode grapheme decomposition for truncating
+      status text)
+
 Build Dependencies
 ------------------
 

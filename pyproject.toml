@@ -28,6 +28,7 @@ plugins = [
   # 0.28 switched to lxml which is proving tricky on Windows
   "soco>=0.27,<0.28",
   "pypresence>=4.2.1,<5.0.0",
+  "regex>=2025.9.18",
   "paho-mqtt>=1.6.1,<2.0.0",
 ]
 
