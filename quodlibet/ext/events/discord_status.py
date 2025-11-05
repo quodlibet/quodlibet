@@ -1,6 +1,7 @@
 # discord_status: Set Discord status as current song.
 #
 # Copyright (c) 2022 Aditi K <105543244+teeleafs@users.noreply.github.com>
+#               2025 W. Connor Yates <self@wcyates.xyz>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -57,7 +58,7 @@ discord_status_config = DiscordStatusConfig()
 
 
 def _utf16_cu_len(text: str) -> int:
-    return len(text.encode('utf-16-le')) / 2
+    return len(text.encode('utf-16-le')) // 2
 
 
 class DiscordStatusMessage(EventPlugin):
