@@ -40,32 +40,32 @@ except ImportError as err:
 
 
 # The below resources are from/uploaded-to the Discord Application portal.
-DISCORD_APP_ID = "974521025356242984"
-QL_LOGO_IMAGE_URL = "io-github-quodlibet-quodlibet"
+DISCORD_APP_ID: str = "974521025356242984"
+QL_LOGO_IMAGE_URL: str = "io-github-quodlibet-quodlibet"
 
-QL_HOMEPAGE_LINK = "https://github.com/quodlibet/quodlibet"
+QL_HOMEPAGE_LINK: str = "https://github.com/quodlibet/quodlibet"
 
-DISCORD_RP_DETAILS_MIN_CODEUNITS = 2
-DISCORD_RP_DETAILS_MAX_CODEUNITS = 128
-DISCORD_RP_DETAILS_TRUNC_SUFFIX = "…"
+DISCORD_RP_DETAILS_MIN_CODEUNITS: int = 2
+DISCORD_RP_DETAILS_MAX_CODEUNITS: int = 128
+DISCORD_RP_DETAILS_TRUNC_SUFFIX: str = "…"
 
-GRAPHEME_PATTERN = re.compile(r"\X", re.UNICODE)
+GRAPHEME_PATTERN: re.Pattern = re.compile(r"\X", re.UNICODE)
 
-VERSION = "1.0"
+VERSION: str = "1.0"
 
 # Default Rich Presence status lines.
-CONFIG_DEFAULT_RP_LINE1 = "<artist> / <title>"
-CONFIG_DEFAULT_RP_LINE2 = "<album>"
+CONFIG_DEFAULT_RP_LINE1: str = "<artist> / <title>"
+CONFIG_DEFAULT_RP_LINE2: str = "<album>"
 
 
 class DiscordStatusConfig:
-    _config = PluginConfig(__name__)
+    _config: PluginConfig = PluginConfig(__name__)
 
-    rp_line1 = ConfProp(_config, "rp_line1", CONFIG_DEFAULT_RP_LINE1)
-    rp_line2 = ConfProp(_config, "rp_line2", CONFIG_DEFAULT_RP_LINE2)
+    rp_line1: ConfProp = ConfProp(_config, "rp_line1", CONFIG_DEFAULT_RP_LINE1)
+    rp_line2: ConfProp = ConfProp(_config, "rp_line2", CONFIG_DEFAULT_RP_LINE2)
 
 
-discord_status_config = DiscordStatusConfig()
+discord_status_config: DiscordStatusConfig = DiscordStatusConfig()
 
 
 def _utf16_cu_len(text: str) -> int:
@@ -73,20 +73,22 @@ def _utf16_cu_len(text: str) -> int:
 
 
 class DiscordStatusMessage(EventPlugin):
-    PLUGIN_ID = _("Discord status message")
-    PLUGIN_NAME = _("Discord Status Message")
-    PLUGIN_DESC = _(
+    PLUGIN_ID: str = _("Discord status message")
+    PLUGIN_NAME: str = _("Discord Status Message")
+    PLUGIN_DESC: str = _(
         "Change your Discord status message according to what "
         "you're currently listening to."
     )
-    VERSION = VERSION
+    VERSION: str = VERSION
 
     def __init__(self):
-        self.song: AudioFile = None
-        self.details: str = None
-        self.state: str = None
+        self.song: AudioFile | None = None
+        self.details: str | None = None
+        self.state: str | None = None
+        self.discordrp: Presence | None = None
+
         try:
-            self.discordrp = Presence(DISCORD_APP_ID, pipe=0)
+            self.discordrp: Presence | None = Presence(DISCORD_APP_ID, pipe=0)
             self.discordrp.connect()
         except (DiscordNotFound, ConnectionRefusedError):
             self.discordrp = None
@@ -184,8 +186,8 @@ class DiscordStatusMessage(EventPlugin):
 
     def update_details(self):
         if self.song:
-            details = Pattern(discord_status_config.rp_line1) % self.song
-            state = Pattern(discord_status_config.rp_line2) % self.song
+            details: str = Pattern(discord_status_config.rp_line1) % self.song
+            state: str = Pattern(discord_status_config.rp_line2) % self.song
 
             # The details and state fields must be at least 2 UTF-16 code units
             # (DISCORD_RP_DETAILS_MIN_CODEUNITS) and less than or equal to 128
@@ -197,7 +199,7 @@ class DiscordStatusMessage(EventPlugin):
             if _utf16_cu_len(details) < DISCORD_RP_DETAILS_MIN_CODEUNITS:
                 details = None
             elif app.player.paused:
-                pause_suffix = " " + _("(Paused)")
+                pause_suffix: str = " " + _("(Paused)")
                 details = self.truncate_unicode_text(
                     details,
                     DISCORD_RP_DETAILS_MAX_CODEUNITS - _utf16_cu_len(pause_suffix),
@@ -229,19 +231,19 @@ class DiscordStatusMessage(EventPlugin):
     def handle_unpaused(self):
         if not self.song:
             self.song = app.player.song
-        position = app.player.get_position() // 1000
-        ts_now = int(time()) - position
-        ts_before = ts_now
-        ts_left = ts_now + self.song["~#length"]
+        position: int = app.player.get_position() // 1000
+        ts_now: int = round(time()) - position
+        ts_before: int = ts_now
+        ts_left: int = ts_now + self.song["~#length"]
         self.update_details()
         self.update_discordrp(time_start=ts_before, time_end=ts_left)
 
     def plugin_on_seek(self, song, msec):
         if not app.player.paused:
-            position = app.player.get_position() // 1000
-            ts_now = round(time()) - position
-            ts_before = ts_now
-            ts_left = ts_now + song["~#length"]
+            position: int = app.player.get_position() // 1000
+            ts_now: int = round(time()) - position
+            ts_before: int = ts_now
+            ts_left: int = ts_now + song["~#length"]
             self.update_discordrp(time_start=ts_before, time_end=ts_left)
 
     def plugin_on_song_started(self, song):
@@ -249,9 +251,9 @@ class DiscordStatusMessage(EventPlugin):
         if song is not None:
             if not app.player.paused:
                 # a new song is being played
-                ts_now = round(time())
-                ts_before = ts_now
-                ts_left = ts_now + self.song["~#length"]
+                ts_now: int = round(time())
+                ts_before: int = ts_now
+                ts_left: int = ts_now + self.song["~#length"]
 
                 self.update_details()
                 self.update_discordrp(ts_before, ts_left)
@@ -284,7 +286,7 @@ class DiscordStatusMessage(EventPlugin):
             self.song = None
 
     def PluginPreferences(self, parent):
-        vb = Gtk.VBox(spacing=6)
+        vb: Gtk.VBox = Gtk.VBox(spacing=6)
 
         def rp_line1_changed(entry):
             discord_status_config.rp_line1 = entry.get_text()
@@ -296,10 +298,10 @@ class DiscordStatusMessage(EventPlugin):
             if not app.player.paused:
                 self.plugin_on_unpaused()
 
-        status_line1_box = Gtk.HBox(spacing=6)
+        status_line1_box: Gtk.HBox = Gtk.HBox(spacing=6)
         status_line1_box.set_border_width(3)
 
-        status_line1 = Gtk.Entry()
+        status_line1: Gtk.Entry = Gtk.Entry()
         status_line1.set_text(discord_status_config.rp_line1)
         status_line1.connect("changed", rp_line1_changed)
 
@@ -308,10 +310,10 @@ class DiscordStatusMessage(EventPlugin):
         )
         status_line1_box.pack_start(status_line1, True, True, 0)
 
-        status_line2_box = Gtk.HBox(spacing=3)
+        status_line2_box: Gtk.HBox = Gtk.HBox(spacing=3)
         status_line2_box.set_border_width(3)
 
-        status_line2 = Gtk.Entry()
+        status_line2: Gtk.Entry = Gtk.Entry()
         status_line2.set_text(discord_status_config.rp_line2)
         status_line2.connect("changed", rp_line2_changed)
 
