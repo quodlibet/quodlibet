@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-09-08 07:01+0000\n"
+"PO-Revision-Date: 2025-10-20 04:50+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -5073,7 +5073,6 @@ msgid "Search at %(website)s"
 msgstr "検索先 %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:74
-#, fuzzy
 msgid "Edit…"
 msgstr "編集(_E)…"
 
@@ -5625,7 +5624,7 @@ msgstr "分:秒"
 
 #: quodlibet/qltk/bookmarks.py:179
 msgid "Select a single track to edit its bookmarks"
-msgstr ""
+msgstr "ブックマークを編集するには、1つのトラックを選択してください"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -6247,13 +6246,12 @@ msgid "_View online"
 msgstr "オンラインで表示(_V)"
 
 #: quodlibet/qltk/lyrics.py:73
-#, fuzzy
 msgid "Delete the saved lyrics from this song"
-msgstr "選択した曲を削除する"
+msgstr "この曲に保存された歌詞を削除します"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr ""
+msgstr "歌詞を編集するには、1つのトラックを選択してください"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
