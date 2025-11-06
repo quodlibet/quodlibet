@@ -27,16 +27,16 @@ try:
         StatusDisplayType,
     )
 except ImportError as err:
-    from quodlibet.plugins import MissingModulePluginException
+    from quodlibet.plugins import MissingModulePluginError
 
-    raise MissingModulePluginException("pypresence") from err
+    raise MissingModulePluginError("pypresence") from err
 
 try:
     import regex as re
 except ImportError as err:
-    from quodlibet.plugins import MissingModulePluginException
+    from quodlibet.plugins import MissingModulePluginError
 
-    raise MissingModulePluginException("regex") from err
+    raise MissingModulePluginError("regex") from err
 
 
 # The below resources are from/uploaded-to the Discord Application portal.
@@ -229,22 +229,22 @@ class DiscordStatusMessage(EventPlugin):
     def handle_unpaused(self):
         if not self.song:
             self.song = app.player.song
-        position = app.player.get_position() / 1000
+        position = app.player.get_position() // 1000
         ts_now = int(time()) - position
         ts_before = ts_now
         ts_left = ts_now + self.song["~#length"]
         self.update_details()
         self.update_discordrp(time_start=ts_before, time_end=ts_left)
 
-    def plugin_on_seek(self, song: AudioFile, msec: int):
+    def plugin_on_seek(self, song, msec):
         if not app.player.paused:
-            position = app.player.get_position() / 1000
+            position = app.player.get_position() // 1000
             ts_now = round(time()) - position
             ts_before = ts_now
-            ts_left = ts_now + self.song["~#length"]
+            ts_left = ts_now + song["~#length"]
             self.update_discordrp(time_start=ts_before, time_end=ts_left)
 
-    def plugin_on_song_started(self, song: AudioFile):
+    def plugin_on_song_started(self, song):
         self.song = song
         if song is not None:
             if not app.player.paused:
