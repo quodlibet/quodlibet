@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-09-14 01:01+0000\n"
+"PO-Revision-Date: 2025-10-16 11:07+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -37,7 +37,7 @@ msgstr "日期(_D)"
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60
 msgid "_Date Added"
-msgstr "日期已加入(_D)"
+msgstr "日期已經加入(_D)"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:61
@@ -167,7 +167,7 @@ msgstr "關閉(_C)"
 
 #: quodlibet/browsers/_base.py:145 quodlibet/browsers/_base.py:148
 msgid "Library Browser"
-msgstr "音樂庫瀏覽窗"
+msgstr "音樂庫瀏覽"
 
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
@@ -560,11 +560,11 @@ msgstr[0] "%(count)d 站台"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:65
 msgid "Paned Browser"
-msgstr "窗格瀏覽窗"
+msgstr "分格瀏覽"
 
 #: quodlibet/browsers/paned/main.py:42
 msgid "_Paned Browser"
-msgstr "窗格瀏覽窗(_P)"
+msgstr "面板瀏覽(_P)"
 
 #: quodlibet/browsers/paned/main.py:91
 msgid "Select _All"
@@ -608,7 +608,7 @@ msgstr ""
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
-msgstr "窗格瀏覽窗偏好設定"
+msgstr "面板瀏覽偏好設定"
 
 #: quodlibet/browsers/paned/prefs.py:239
 msgid "Column layout"
@@ -620,7 +620,7 @@ msgstr "欄位內容"
 
 #: quodlibet/browsers/paned/prefs.py:246
 msgid "Equal pane width"
-msgstr "窗格均等寬度"
+msgstr "面板均等寬度"
 
 #: quodlibet/browsers/playlists/main.py:53
 #: quodlibet/browsers/playlists/main.py:639 quodlibet/qltk/pluginwin.py:37
@@ -700,7 +700,7 @@ msgstr "樣本播放清單"
 
 #: quodlibet/browsers/playlists/prefs.py:51
 msgid "Playlist Browser Preferences"
-msgstr "播放清單瀏覽窗偏好設定"
+msgstr "播放清單瀏覽偏好設定"
 
 #: quodlibet/browsers/playlists/prefs.py:56
 msgid "Playlist display"
@@ -806,7 +806,7 @@ msgstr "%s 無法加入。伺服器可能關機中，或是此位置可能不是
 #: quodlibet/browsers/podcasts.py:589
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
-msgstr "目前音訊後端不支援 URLs, Podcast 播客瀏覽窗已停用。"
+msgstr "目前音訊後端不支援 URLs, Podcast 播客瀏覽已經停用。"
 
 #: quodlibet/browsers/tracks.py:33
 msgid "_Limit Results"
@@ -831,7 +831,7 @@ msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:51
 msgid "Soundcloud Browser"
-msgstr "Soundcloud 瀏覽窗"
+msgstr "Soundcloud 瀏覽"
 
 #: quodlibet/browsers/soundcloud/main.py:52
 msgid "Sound_cloud"
@@ -852,12 +852,12 @@ msgstr "跳至 %s"
 
 #: quodlibet/browsers/soundcloud/main.py:469
 msgid "Connected"
-msgstr "已連線"
+msgstr "已經連線"
 
 #: quodlibet/browsers/soundcloud/main.py:470
 #, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "Quod Libet 現已連線， %s ！"
+msgstr "Quod Libet 現在已經連線， %s ！"
 
 #: quodlibet/browsers/soundcloud/main.py:485
 #, python-format
@@ -955,15 +955,15 @@ msgstr "顯示播放器狀態"
 
 #: quodlibet/cli.py:136
 msgid "Hide main window"
-msgstr "隱藏主視窗"
+msgstr "隱藏主要視窗"
 
 #: quodlibet/cli.py:137
 msgid "Show main window"
-msgstr "顯示主視窗"
+msgstr "顯示主要視窗"
 
 #: quodlibet/cli.py:138
 msgid "Toggle main window visibility"
-msgstr "切換主視窗可見性"
+msgstr "切換主要視窗可見性"
 
 #: quodlibet/cli.py:139
 msgid "Focus the running player"
@@ -971,7 +971,7 @@ msgstr "焦點移到執行中的播放器"
 
 #: quodlibet/cli.py:140
 msgid "Remove active browser filters"
-msgstr "移除現行瀏覽窗篩選"
+msgstr "移除現行瀏覽篩選"
 
 #: quodlibet/cli.py:141
 msgid "Refresh and rescan library"
@@ -979,7 +979,7 @@ msgstr "重新整理重新掃瞄音樂庫"
 
 #: quodlibet/cli.py:142
 msgid "List available browsers"
-msgstr "列出可用的瀏覽窗"
+msgstr "列出可用的瀏覽"
 
 #: quodlibet/cli.py:143
 msgid "Print the current playlist"
@@ -1057,7 +1057,7 @@ msgstr "播放中曲目設定評分"
 
 #: quodlibet/cli.py:162
 msgid "Set the current browser"
-msgstr "設定當前的瀏覽窗"
+msgstr "設定目前的瀏覽"
 
 #: quodlibet/cli.py:163
 msgid "Stop after the playing song"
@@ -1065,7 +1065,7 @@ msgstr "播放曲目完結後停止"
 
 #: quodlibet/cli.py:164
 msgid "Open a new browser"
-msgstr "開啟新的瀏覽窗"
+msgstr "開啟新的瀏覽"
 
 #: quodlibet/cli.py:165
 msgid "Show or hide the queue"
@@ -1454,12 +1454,12 @@ msgid ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 msgstr ""
-"播放或跳過一首曲目時，將會檢查該歌曲的專輯。如果專輯中的每首曲目都已評分，而"
-"且至少一首沒有評分或播放計數存儲在檔案裡，則該插件會將標籤寫入歌曲的檔案"
-"裡。\n"
+"播放或跳過一首曲目時，將會檢查該歌曲的專輯。如果專輯中的每首曲目都已經評分，"
+"而且至少一首沒有評分或播放計數存儲在檔案裡，則該插件會將標籤寫入歌曲的檔案裡"
+"。\n"
 "\n"
 "如此用來避免不斷地的檔案更新，但請注意，一旦更新了專輯，在您需要修改評分及播"
-"放計數寫入檔案裡時，就必須使用“更新檔案標籤”插件。"
+"放計數寫入檔案時，就必須使用〔更新檔案標籤〕外掛。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:69
 #, python-format
@@ -1497,7 +1497,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"以下設定已被啟用，由於此插件運作需求：\n"
+"以下設定已經啟用，由於此插件運作需求：\n"
 "\n"
 "%s"
 
@@ -1508,7 +1508,7 @@ msgstr "儲存評分及播放次數於標籤(_C)"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:118
 msgid "Settings updated"
-msgstr "設定已更新"
+msgstr "設定已經更新"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:145
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:388
@@ -1976,7 +1976,7 @@ msgstr ""
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
 msgid "Hide main window on close"
-msgstr "關閉時隱藏主視窗"
+msgstr "關閉時隱藏主要視窗"
 
 #: quodlibet/ext/events/mqtt.py:58
 #, python-format
@@ -2170,7 +2170,7 @@ msgstr "使用通知即時顯示書籤/註記。適用於 Soundcloud 瀏覽器�
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
-msgstr "請查探外掛視窗去設定 QLScrobbler 為上。在此之前，曲目將不會提交。"
+msgstr "請查看外掛視窗去設定好 QLScrobbler 。在此之前，曲目將不會提交。"
 
 #: quodlibet/ext/events/qlscrobbler.py:272
 #, python-format
@@ -2373,7 +2373,7 @@ msgstr "當 GNOME 螢幕保護作用時暫停播放。"
 
 #: quodlibet/ext/events/searchprovider.py:77
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr "沒有 GNOME Shell 搜尋提供器用於 Quod Libet 已安裝的。"
+msgstr "沒有 GNOME Shell 搜尋提供器用於 Quod Libet 已經安裝的。"
 
 #: quodlibet/ext/events/searchprovider.py:79
 #, python-format
@@ -2396,7 +2396,7 @@ msgstr "替用尋找列"
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
-msgstr "替用尋找列總是顯見，並跨越整個視窗寬度。."
+msgstr "替用尋找列總是顯見，並跨越整個視窗寬度。"
 
 #: quodlibet/ext/events/seekpoints.py:20
 msgid "Seekpoint Bookmarks"
@@ -2551,11 +2551,11 @@ msgstr "同步至裝置"
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
-msgstr "將所選取已存的搜索中將全部曲目與指定的文件夾同步。"
+msgstr "同步全部曲目，來自所選取已經儲存的搜索，在指定的資料夾。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:146
 msgid "Synchronize the following saved searches:"
-msgstr "同步以下已存的搜尋："
+msgstr "同步以下已經儲存的搜尋："
 
 #: quodlibet/ext/events/synchronize_to_device.py:153
 msgid "The absolute path to your export location"
@@ -2565,7 +2565,7 @@ msgstr "絕對路徑至您的匯出位置"
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
-msgstr "目標資料夾中尚未列入已經儲存的搜索中預先存在的檔案，將全部被刪除。"
+msgstr "全部預先存在的檔案於目標資料夾中，尚未列入已經儲存的搜索，將全部刪除。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:178
 msgid ""
@@ -2588,7 +2588,7 @@ msgstr "路徑型式"
 #: quodlibet/ext/events/synchronize_to_device.py:199
 #: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:117
 msgid "Edit saved patterns…"
-msgstr "編輯已存型式…"
+msgstr "編輯已經儲存型式…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:205
 msgid "The structure of the exported filenames, based on their tags"
@@ -2668,11 +2668,11 @@ msgstr "停止同步預覽"
 
 #: quodlibet/ext/events/synchronize_to_device.py:736
 msgid "Synchronization preview was stopped."
-msgstr "同步預覽已被停止。"
+msgstr "同步預覽已經停止。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:738
 msgid "Synchronization preview has finished."
-msgstr "同步預覽已經停止。"
+msgstr "同步預覽已經結束。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:768
 msgid "Stopped synchronization preview"
@@ -2742,7 +2742,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:939
 msgid "No saved searches selected"
-msgstr "沒有已存搜尋被選取"
+msgstr "沒有已經儲存搜尋被選取"
 
 #: quodlibet/ext/events/synchronize_to_device.py:940
 msgid "Please select at least one saved search."
@@ -2804,19 +2804,19 @@ msgstr "停止曲目同步"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1052
 msgid "Synchronization was stopped."
-msgstr "曲目同步已補停止。"
+msgstr "同步已經停止。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1054
 msgid "Synchronization has finished."
-msgstr "曲目同步已結束。"
+msgstr "同步已經結束。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1088
 msgid "Stopped song synchronization"
-msgstr "已停止曲目同步"
+msgstr "已經停止曲目同步"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1092
 msgid "A different plugin was selected - stop synchronization"
-msgstr "不同的外掛已被選取 - 停止同步"
+msgstr "不同的外掛已經選取 - 停止同步"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1096
 #, python-brace-format
@@ -2829,7 +2829,7 @@ msgstr "正在移除 \"{}\""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1187
 msgid "Synchronization has:"
-msgstr "同步已至："
+msgstr "同步有："
 
 #: quodlibet/ext/events/synchronize_to_device.py:1196
 #, python-brace-format
@@ -2865,7 +2865,7 @@ msgstr[0] "無法同步 {count} 檔案"
 #, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
-msgstr[0] "跳過 {count} 檔案先前已同步過"
+msgstr[0] "跳過 {count} 檔案先前已經同步過"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:28
 msgid "Synchronized Lyrics"
@@ -3518,7 +3518,7 @@ msgid ""
 msgstr ""
 "限制曲目播放至佇列的限制。\n"
 "\n"
-"在主要視窗選擇此播放順序，然後點按二下任何曲目，將可進入佇列，而非播放。"
+"在主要視窗選擇此播放順序，然後點按二下任何曲目，將可排入佇列，而非播放。"
 
 #: quodlibet/ext/playorder/queue.py:31
 msgid "Queue only"
@@ -3706,11 +3706,11 @@ msgstr ""
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
-msgstr "包括已儲存搜尋"
+msgstr "包括已經儲存搜尋"
 
 #: quodlibet/ext/query/savedsearch.py:22
 msgid "💾 Include the results of a saved search as part of another query."
-msgstr "💾 將已存的查尋結果作為另一個查尋的一部分。"
+msgstr "💾 包含已經儲存搜尋的結果作為另一個查詢的一部分。"
 
 #: quodlibet/ext/query/savedsearch.py:25
 msgid "@(saved: search-name)"
@@ -4006,7 +4006,7 @@ msgstr "Python 控表"
 
 #: quodlibet/ext/songsmenu/console.py:42
 msgid "Interactive Python console. Opens a new window."
-msgstr "交互式 Python 控制台。開啟新視窗。"
+msgstr "交互式 Python 控制台。開啟新的視窗。"
 
 #: quodlibet/ext/songsmenu/console.py:50
 #, python-brace-format
@@ -4021,7 +4021,7 @@ msgstr "Python Console 側邊欄"
 msgid ""
 "Interactive Python console sidebar, that follows the selected songs in the "
 "main window."
-msgstr "交互式 Python 控制台側邊列，依循在主要視窗所選取的曲目。"
+msgstr "交互式 Python 控制台側邊列，依循主要視窗所選取的曲目。"
 
 #: quodlibet/ext/songsmenu/console.py:81
 msgid "You can access the following objects by default:"
@@ -4234,11 +4234,11 @@ msgstr "重複 key expression 是 '%s'"
 
 #: quodlibet/ext/songsmenu/duplicates.py:360
 msgid "Duplicates Browser"
-msgstr "重複瀏覽窗"
+msgstr "重複瀏覽"
 
 #: quodlibet/ext/songsmenu/duplicates.py:361
 msgid "Finds and displays similarly tagged versions of songs."
-msgstr "找出並顯示相類似已標籤的曲目版本。"
+msgstr "找出並顯示相類似已有標籤的曲目版本。"
 
 #: quodlibet/ext/songsmenu/duplicates.py:401
 msgid ""
@@ -4371,7 +4371,7 @@ msgstr "篩選於目錄"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
-msgstr "篩選器於新瀏覽器視窗中的目錄上。"
+msgstr "篩選於新瀏覽視窗中的目錄。"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:31
 msgid "Acoustic Fingerprint Lookup"
@@ -4510,7 +4510,7 @@ msgstr "更新檔案中的標籤"
 msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
-msgstr "更新已有修改標籤的檔案。此可確保播放計次及評分是最新的。"
+msgstr "更新所修改的標籤於檔案中。如此可以確保播放計次及評分是最新的。"
 
 #: quodlibet/ext/songsmenu/html.py:64 quodlibet/ext/songsmenu/html.py:73
 msgid "Export to HTML"
@@ -4549,7 +4549,7 @@ msgstr "上傳 %(current)d/%(total)d"
 #: quodlibet/ext/songsmenu/ifp.py:66
 #, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
-msgstr "無法上傳 %s。此裝置可能已無空間，或是已關閉了。"
+msgstr "無法上傳 %s。此裝置可能已無空間，或是已經關閉了。"
 
 #: quodlibet/ext/songsmenu/ifp.py:70
 msgid "Error uploading"
@@ -4967,9 +4967,8 @@ msgid "Search at %(website)s"
 msgstr "搜尋於 %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:74
-#, fuzzy
 msgid "Edit…"
-msgstr "編輯(_E)…"
+msgstr "編輯…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:79 quodlibet/qltk/edittags.py:466
 msgid "Edit Tags"
@@ -5412,9 +5411,8 @@ msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
-msgstr ""
-"過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗加以重新設定 "
-"ListerBainz。在此之前，不會提交聆聽。"
+msgstr "過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗去重新設定 ListerBainz"
+"。在此之前，不會提交聆聽。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:366
 msgid "ListenBrainz Submission"
@@ -5500,7 +5498,7 @@ msgstr "MM:SS"
 
 #: quodlibet/qltk/bookmarks.py:179
 msgid "Select a single track to edit its bookmarks"
-msgstr ""
+msgstr "選擇單一曲目來編輯其書籤"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -5512,7 +5510,7 @@ msgstr "新近播放過的(_P)"
 
 #: quodlibet/qltk/browser.py:66
 msgid "Recently _Added"
-msgstr "新近已加入的(_A)"
+msgstr "新近加入的(_A)"
 
 #: quodlibet/qltk/browser.py:69
 msgid "_Top 40"
@@ -5562,11 +5560,11 @@ msgstr "設定值(_V)："
 
 #: quodlibet/qltk/cbes.py:266
 msgid "Saved Values"
-msgstr "已儲存設定值"
+msgstr "已經儲存設定值"
 
 #: quodlibet/qltk/cbes.py:267
 msgid "Edit saved values…"
-msgstr "編輯已儲存設定值…"
+msgstr "編輯已經儲存設定值…"
 
 #: quodlibet/qltk/controls.py:118
 msgid "Auto_matic"
@@ -5695,7 +5693,7 @@ msgstr "刪除檔案失敗。"
 
 #: quodlibet/qltk/download.py:37
 msgid "Browser"
-msgstr "瀏覽窗"
+msgstr "瀏覽"
 
 #: quodlibet/qltk/download.py:37
 msgid "Downloading files"
@@ -6006,7 +6004,7 @@ msgstr[0] "%(n)d 次"
 
 #: quodlibet/qltk/information.py:234 quodlibet/util/tags.py:148
 msgid "added"
-msgstr "已加入"
+msgstr "已經加入"
 
 #: quodlibet/qltk/information.py:235 quodlibet/util/tags.py:149
 msgid "last played"
@@ -6064,7 +6062,7 @@ msgstr "額外加入"
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
-msgstr[0] "%d 已選取"
+msgstr[0] "%d 已經選取"
 
 #: quodlibet/qltk/information.py:410
 msgid "Track unavailable"
@@ -6078,7 +6076,7 @@ msgstr[0] "%d 曲目無專輯資訊"
 
 #: quodlibet/qltk/information.py:491
 msgid "Selected Discography"
-msgstr "已選擇音樂碟片分類"
+msgstr "已經選擇的音樂碟片分類"
 
 #: quodlibet/qltk/information.py:536
 #, python-format
@@ -6111,13 +6109,12 @@ msgid "_View online"
 msgstr "線上檢視(_V)"
 
 #: quodlibet/qltk/lyrics.py:73
-#, fuzzy
 msgid "Delete the saved lyrics from this song"
-msgstr "刪除所選曲目"
+msgstr "刪除已經儲存的歌詞來自此歌曲"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr ""
+msgstr "選擇單一曲目來編輯其歌詞"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -6155,7 +6152,7 @@ msgstr "放棄標籤的變更？"
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
-msgstr "標籤已被改變但尚未儲存。要儲存檔案或是還原並放棄變更？"
+msgstr "標籤已經改變但尚未儲存。要儲存檔案？或是還原並放棄變更？"
 
 #: quodlibet/qltk/msg.py:75 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:114
@@ -6388,7 +6385,7 @@ msgstr "搜尋"
 
 #: quodlibet/qltk/prefs.py:328 quodlibet/qltk/shortcuts.py:25
 msgid "Browsers"
-msgstr "瀏覽窗"
+msgstr "瀏覽"
 
 #: quodlibet/qltk/prefs.py:334
 msgid "Confirm _multiple ratings"
@@ -6437,7 +6434,7 @@ msgstr "專輯藝術設計"
 
 #: quodlibet/qltk/prefs.py:436
 msgid "Playback"
-msgstr "回復播放"
+msgstr "播放"
 
 #: quodlibet/qltk/prefs.py:443
 msgid "Output Configuration"
@@ -6799,7 +6796,7 @@ msgstr "確定要更改全部l %d 曲目的評分？"
 
 #: quodlibet/qltk/ratingsmenu.py:27
 msgid "The saved ratings will be removed"
-msgstr "已存的評分將會被移除"
+msgstr "已經儲存的評分將會移除"
 
 #: quodlibet/qltk/ratingsmenu.py:28 quodlibet/qltk/ratingsmenu.py:61
 msgid "_Remove Rating"
@@ -6891,8 +6888,8 @@ msgid ""
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"重新命名 %(old-name)s 成 %(new-name)s 時失敗。可能目標檔案已存在，或者是您沒"
-"有足夠的權限來建立新檔案或移除舊檔案。"
+"重新命名 %(old-name)s 成 %(new-name)s 時失敗。可能目標檔案已經存在，或者是您"
+"沒有足夠的權限來建立新檔案或移除舊檔案。"
 
 #: quodlibet/qltk/renamefiles.py:371
 msgid "Ignore _All Errors"
@@ -7006,11 +7003,11 @@ msgstr "好的，進行移動！"
 
 #: quodlibet/qltk/searchbar.py:65
 msgid "Saved Searches"
-msgstr "已儲存搜尋值"
+msgstr "已經儲存搜尋"
 
 #: quodlibet/qltk/searchbar.py:66
 msgid "Edit saved searches…"
-msgstr "編輯已儲存搜尋…"
+msgstr "編輯已經儲存搜尋…"
 
 #: quodlibet/qltk/searchbar.py:92
 msgid "Search your library, using free text or QL queries"
@@ -7066,7 +7063,7 @@ msgstr "重設篩選並跳到播放曲目"
 
 #: quodlibet/qltk/shortcuts.py:33
 msgid "Open the information window for the selected songs"
-msgstr "開啟資訊視窗來選取曲目"
+msgstr "開啟資訊視窗用於所選曲目"
 
 #: quodlibet/qltk/shortcuts.py:34
 msgid "Open the tag editor for the selected songs"
@@ -7362,7 +7359,7 @@ msgid ""
 msgstr ""
 "更新版本 %(new-version)s 現已推出\n"
 "\n"
-"您目使用版本 %(old-version)s\n"
+"您目前使用的版本 %(old-version)s\n"
 "\n"
 "請前往 <a href='%(url)s'>網站</a>"
 
@@ -7377,7 +7374,7 @@ msgstr "播放清單必須設置名稱"
 #: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
-msgstr "名為 %(name)s 的播放清單已存在於 %(path)s"
+msgstr "名為 %(name)s 的播放清單已經儲存於 %(path)s"
 
 #: quodlibet/util/cover/built_in.py:37
 msgid "Embedded album covers"
