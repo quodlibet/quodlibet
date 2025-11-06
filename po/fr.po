@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-09-03 06:01+0000\n"
+"PO-Revision-Date: 2025-10-15 05:07+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.13.1-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5192,9 +5192,8 @@ msgid "Search at %(website)s"
 msgstr "Rechercher dans %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:74
-#, fuzzy
 msgid "Edit…"
-msgstr "_Éditer …"
+msgstr "Modifier…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:79 quodlibet/qltk/edittags.py:466
 msgid "Edit Tags"
@@ -5753,7 +5752,7 @@ msgstr "MM:SS"
 
 #: quodlibet/qltk/bookmarks.py:179
 msgid "Select a single track to edit its bookmarks"
-msgstr ""
+msgstr "Sélectionnez une piste unique pour modifier ses signets"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -6396,13 +6395,12 @@ msgid "_View online"
 msgstr "_Voir en ligne"
 
 #: quodlibet/qltk/lyrics.py:73
-#, fuzzy
 msgid "Delete the saved lyrics from this song"
-msgstr "Supprimer les titres sélectionnés"
+msgstr "Supprimer les paroles enregistrées de cette chanson"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr ""
+msgstr "Sélectionnez une seule piste pour modifier ses paroles"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
