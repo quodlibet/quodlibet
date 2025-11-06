@@ -140,13 +140,15 @@ jobs:
             python3-polib \
             python3-pytest \
             python3-setuptools \
+            python3-regex \
             xvfb
 
           python3 -m pip install --user --upgrade \
             PyVirtualDisplay \
             pytest-faulthandler \
             "ruff==0.7.3" \
-            flaky
+            flaky \
+            "pypresence>=4.6.1"
 
       - name: Run tests
         run: |

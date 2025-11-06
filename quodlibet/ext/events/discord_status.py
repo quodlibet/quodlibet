@@ -186,8 +186,8 @@ class DiscordStatusMessage(EventPlugin):
 
     def update_details(self):
         if self.song:
-            details: str = Pattern(discord_status_config.rp_line1) % self.song
-            state: str = Pattern(discord_status_config.rp_line2) % self.song
+            details: str | None = Pattern(discord_status_config.rp_line1) % self.song
+            state: str | None = Pattern(discord_status_config.rp_line2) % self.song
 
             # The details and state fields must be at least 2 UTF-16 code units
             # (DISCORD_RP_DETAILS_MIN_CODEUNITS) and less than or equal to 128
