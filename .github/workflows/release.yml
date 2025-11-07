@@ -34,7 +34,7 @@ jobs:
 
       - name: Create source dist
         run: |
-          poetry install
+          poetry install --with docs
           git clean -f
           poetry run ./setup.py distcheck
           cd dist
