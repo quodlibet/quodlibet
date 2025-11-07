@@ -174,7 +174,7 @@ jobs:
             pkg-config \
             pipx \
             xvfb
-          pipx install "poetry==2.1.2"
+          pipx install "poetry==2.2.1"
           pipx ensurepath
 
       - name: Check Poetry project
