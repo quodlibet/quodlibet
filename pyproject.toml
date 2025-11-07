@@ -44,9 +44,6 @@ quodlibet = "quodlibet.main:main"
 dev = [
   "pytest>=8,<9",
   "polib>=1.2.0,<2",
-  "sphinx>=7.2.2,<9",
-  "sphinx_rtd_theme>=2,<4",
-  "sphinx-autobuild>=2024.10.3,<2025",
   "coverage[toml]>=7.2.1,<8",
   "mypy>=1.14.1,<2",
   "flaky>=3.7.0,<4",
@@ -58,10 +55,18 @@ dev = [
   "packaging>=24.2",
   "ruff==0.7.3 ; sys_platform == 'linux'",
 ]
+docs = [
+  "sphinx>=7.2.2,<9",
+  "sphinx_rtd_theme>=2,<4",
+  "sphinx-autobuild>=2024.10.3,<2025",
+]
 
 [tool.poetry]
 requires-poetry = ">=2.2"
 package-mode = false
+
+[tool.poetry.group.docs]
+optional = true
 
 [tool.ruff]
 target-version = "py310"
