@@ -26,7 +26,7 @@ jobs:
           sudo apt install -qqy \
             gettext \
             libcairo2-dev \
-            libgirepository1.0-dev \
+            libgirepository-2.0-dev \
             libdbus-glib-1-dev \
             pkg-config \
             python3-dev \

@@ -25,7 +25,7 @@ jobs:
             gir1.2-soup-3.0 \
             gstreamer1.0-plugins-good \
             libcairo2-dev \
-            libgirepository1.0-dev \
+            libgirepository-2.0-dev \
             pkg-config \
             pipx \
             xvfb
