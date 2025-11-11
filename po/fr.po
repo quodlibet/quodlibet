@@ -1669,15 +1669,15 @@ msgstr "Berceuse"
 msgid "Fades out and pauses your music."
 msgstr "Abaisse le son et met votre musique en pause."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Message de statut Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Message de Statut Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
@@ -1685,15 +1685,16 @@ msgstr ""
 "Modifiez votre message de statut Discord en fonction de ce que vous écoutez "
 "actuellement."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "En pause"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Ligne d'état #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Ligne d'état #2"
 
@@ -7852,8 +7853,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"La date doit être saisie au format 'AAAA', 'AAAA-MM-JJ' ou 'AAAA-MM-JJ HH:MM:"
-"SS'."
+"La date doit être saisie au format 'AAAA', 'AAAA-MM-JJ' ou 'AAAA-MM-JJ "
+"HH:MM:SS'."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

@@ -1629,29 +1629,30 @@ msgstr "ララバイ"
 msgid "Fades out and pauses your music."
 msgstr "音楽をフェードアウトして一時停止します。"
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discordステータスメッセージ"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Discordステータスメッセージ"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "現在聴いている曲に従って、Discord のステータスメッセージを変更します。"
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "一時停止"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "ステータスライン#1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "ステータスライン#2"
 
@@ -8737,8 +8738,8 @@ msgstr ""
 #~ "    <b>pipeline = %(sink)s</b>\n"
 #~ "line in ~/.quodlibet/config."
 #~ msgstr ""
-#~ "Quod Libetは'autosink'と'%(sink)s' ドライバへのアクセスに失敗しました。~/."
-#~ "quodlibet/configの\n"
+#~ "Quod Libetは'autosink'と'%(sink)s' ドライバへのアクセスに失敗しました。"
+#~ "~/.quodlibet/configの\n"
 #~ "    <b>pipeline = %(sink)s</b>\n"
 #~ "を編集してGStreamerのパイプラインを変更してください。"
 

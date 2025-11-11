@@ -1698,33 +1698,33 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Descartar as modificacións nas etiquetas?"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Descartar as modificacións nas etiquetas?"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "_Parar"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "padrom"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "padrom"
@@ -5629,8 +5629,8 @@ msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
 msgstr ""
-"Non se atopou o dispositivo de son %r. Verifica as opcións do Xine en ~/."
-"quodlibet/config."
+"Non se atopou o dispositivo de son %r. Verifica as opcións do Xine en "
+"~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
 msgid ""
@@ -7947,8 +7947,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"A data há ser inserida nos formatos  'YYYY', 'YYYY-MM-DD' ou 'YYYY-MM-DD HH:"
-"MM:SS'."
+"A data há ser inserida nos formatos  'YYYY', 'YYYY-MM-DD' ou 'YYYY-MM-DD "
+"HH:MM:SS'."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

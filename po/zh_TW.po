@@ -1170,8 +1170,8 @@ msgid ""
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"有關錯誤及系統各樣細節將會傳送至第三方線上服務 (<a href='{sentry_url}'>www."
-"sentry.io</a>)，傳送之前您可以查看資料。"
+"有關錯誤及系統各樣細節將會傳送至第三方線上服務 (<a "
+"href='{sentry_url}'>www.sentry.io</a>)，傳送之前您可以查看資料。"
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1455,8 +1455,8 @@ msgid ""
 "want modified ratings and play counts to be written to the files."
 msgstr ""
 "播放或跳過一首曲目時，將會檢查該歌曲的專輯。如果專輯中的每首曲目都已經評分，"
-"而且至少一首沒有評分或播放計數存儲在檔案裡，則該插件會將標籤寫入歌曲的檔案裡"
-"。\n"
+"而且至少一首沒有評分或播放計數存儲在檔案裡，則該插件會將標籤寫入歌曲的檔案"
+"裡。\n"
 "\n"
 "如此用來避免不斷地的檔案更新，但請注意，一旦更新了專輯，在您需要修改評分及播"
 "放計數寫入檔案時，就必須使用〔更新檔案標籤〕外掛。"
@@ -1606,29 +1606,30 @@ msgstr "催眠曲"
 msgid "Fades out and pauses your music."
 msgstr "漸漸淡出音響並暫止音樂。"
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "放棄狀態訊息"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "放棄狀態訊息"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "變更您的放棄狀態訊息，根據您目前所收聽的。"
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "暫停"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "狀態行列 #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "狀態行列 #2"
 
@@ -5411,8 +5412,9 @@ msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
-msgstr "過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗去重新設定 ListerBainz"
-"。在此之前，不會提交聆聽。"
+msgstr ""
+"過多的連續提交失敗 (%d)。設定為離線模式。請查看外掛視窗去重新設定 "
+"ListerBainz。在此之前，不會提交聆聽。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:366
 msgid "ListenBrainz Submission"

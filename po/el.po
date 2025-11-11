@@ -1653,34 +1653,34 @@ msgstr "Νανούρισμα"
 msgid "Fades out and pauses your music."
 msgstr "Σταδιακή σίγαση και μετά παύση της μουσικής σας."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Μήνυμα Κατάστασης Gajim"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Μήνυμα Κατάστασης Gajim"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Αλλαγή του μηνύματος κατάστασης του Gajim σύμφωνα με το τι ακούτε."
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "Παυμένο:"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Κατάσταση"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Κατάσταση"
@@ -2052,8 +2052,8 @@ msgstr "Απόκρυψη του κυρίου παραθύρου στο κλεί�
 #, fuzzy, python-format
 msgid "Accepts QL Patterns e.g. %s"
 msgstr ""
-"Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π."
-"χ. %s"
+"Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL "
+"π.χ. %s"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "MQTT Publisher"
@@ -3035,8 +3035,8 @@ msgstr "Παυμένο:"
 #, python-format
 msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
 msgstr ""
-"Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL π."
-"χ. %s"
+"Μήνυμα κατάστασης όταν κάποιο τραγούδι είναι παυμένο. Δέχεται πρότυπα QL "
+"π.χ. %s"
 
 #: quodlibet/ext/events/telepathy_status.py:167
 msgid "Plain text for status when there is no current song"
@@ -5623,8 +5623,8 @@ msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
 msgstr ""
-"Η συσκευή ήχου %r δεν βρέθηκε. Ελέγξτε τις ρυθμίσεις του Xine στο ~/."
-"quodlibet/config."
+"Η συσκευή ήχου %r δεν βρέθηκε. Ελέγξτε τις ρυθμίσεις του Xine στο "
+"~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
 #, fuzzy
@@ -8941,8 +8941,8 @@ msgstr ""
 
 #~ msgid ""
 #~ "You can access the following objects by default:\\n  '%s' (SongWrapper "
-#~ "objects)\\n  '%s' (Song dictionaries)\\n  '%s' (Filename list)\\n  "
-#~ "'%s' (Application instance)"
+#~ "objects)\\n  '%s' (Song dictionaries)\\n  '%s' (Filename list)\\n  '%s' "
+#~ "(Application instance)"
 #~ msgstr ""
 #~ "Έχετε πρόσβαση σε αυτά τα αντικείμενα εξ' ορισμού:\n"
 #~ "  '%s' (SongWrapper objects)\n"

@@ -1645,30 +1645,31 @@ msgstr "Hällilaul"
 msgid "Fades out and pauses your music."
 msgstr "Aegamisi summutab muusika ja peatab esituse."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discordi olekuteade"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Discordi olekuteade"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 "Muuda Discordis oma olekuteadet vastavalt sellele, mida sa hetkel kuulad."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "Peatatud"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Olekuteate 1. rida"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Olekuteate 2. rida"
 
@@ -2025,8 +2026,8 @@ msgid ""
 msgstr ""
 "⏯️ Võimaldab Quod Libeti juhtimist <a href=\"{mpris_url}\">MPRIS 2</a> D-Bus "
 "liidestuse abil.\n"
-"See võimaldab näiteks erinevate Linuxi töölaua lõimingute kasutamist "
-"(nt. multimeedianupud)."
+"See võimaldab näiteks erinevate Linuxi töölaua lõimingute kasutamist (nt. "
+"multimeedianupud)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -5035,8 +5036,8 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
-"Muusikakogu lugusid ei leidunud vanas stiilis esitusloendis "
-"„%(filename)r“ (suurusega %(size).1f kB)."
+"Muusikakogu lugusid ei leidunud vanas stiilis esitusloendis „%(filename)r“ "
+"(suurusega %(size).1f kB)."
 
 #: quodlibet/library/playlist.py:85
 msgid "Have you changed library root dir(s), but not this playlist?"

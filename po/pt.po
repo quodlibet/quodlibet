@@ -1661,36 +1661,36 @@ msgstr ""
 
 # Tentei seguir as traduções do próprio Gajim.
 # Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Status do Gajim"
 
 # Tentei seguir as traduções do próprio Gajim.
 # Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Status do Gajim"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Altera a mensagem de estado do Gajim conforme o que escuta."
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "Pausado:"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Status"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Status"
@@ -3877,8 +3877,8 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
-"Permite o uso de Python nas consultas. A sintaxe é \"@(python: "
-"expression)\".\n"
+"Permite o uso de Python nas consultas. A sintaxe é \"@(python: expression)"
+"\".\n"
 "A variável \"s\" referencia a música em reprodução e a variável \"a\" o "
 "álbum.\n"
 "\"_ts\" é horário do início da consulta, expresso como um número real.\n"
@@ -4343,8 +4343,8 @@ msgid ""
 msgstr ""
 "Se especificado, um parâmetro cujas ocorrências serão substituídas por um "
 "valor especificado pelo usuário.\n"
-"Por exemplo, se o parâmetro for \"PARAM\", todas as instâncias de "
-"\"{PARAM}\" no seu comando terão o valor providenciado pelo usuário"
+"Por exemplo, se o parâmetro for \"PARAM\", todas as instâncias de \"{PARAM}"
+"\" no seu comando terão o valor providenciado pelo usuário"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:59
 msgid ""
@@ -7881,8 +7881,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"A data deve ser expressa nos formatos AAAA, AAAA-MM-DD ou AAAA-MM-DD HH:MM:"
-"SS."
+"A data deve ser expressa nos formatos AAAA, AAAA-MM-DD ou AAAA-MM-DD "
+"HH:MM:SS."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

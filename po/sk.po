@@ -1297,8 +1297,8 @@ msgstr "_Japonský text na latinku"
 #: quodlibet/ext/editing/kakasi.py:67
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
 msgstr ""
-"Nepodarilo sa nájsť „Nástroj na jednoduché prevedenie znakov kana/"
-"kanji“ (kakasi)."
+"Nepodarilo sa nájsť „Nástroj na jednoduché prevedenie znakov kana/kanji“ "
+"(kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1655,29 +1655,30 @@ msgstr "Uspávanka"
 msgid "Fades out and pauses your music."
 msgstr "Stlmí a pozastaví prehrávanie."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discord stavová správa"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Discord Stavová Správa"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Zmení stavovú správu Discord podľa toho, čo práve počúvate."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "Pozastavené"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Stavová Línia #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Stavová Línia #2"
 
@@ -2031,8 +2032,8 @@ msgid ""
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Umožňuje kontrolovať Quod Libet pomocou <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Rozhranie.\n"
+"⏯️ Umožňuje kontrolovať Quod Libet pomocou <a href=\"https://"
+"mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Rozhranie.\n"
 "To umožňuje rôzne Linux desktopové integrácie (napr. multimediálne kľúče)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
@@ -4553,8 +4554,8 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
-"Vytvára zvukové odtlačky pomocou Chromaprintu a odovzdáva ich na acoustid."
-"org."
+"Vytvára zvukové odtlačky pomocou Chromaprintu a odovzdáva ich na "
+"acoustid.org."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:65
 msgid "API Key Missing"
@@ -4710,8 +4711,8 @@ msgid ""
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Nepodarilo sa spojiť s vašim iFP zariadením. Overte, či je zariadenie "
-"zapnuté a pripojené, a či máte nainštalovaný ifp-line (http://ifp-driver.sf."
-"net)."
+"zapnuté a pripojené, a či máte nainštalovaný ifp-line (http://ifp-"
+"driver.sf.net)."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -5587,8 +5588,8 @@ msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
 msgstr ""
-"Zvukové zariadenie %r sa nenašlo. Preverte vaše nastavenie Xine v ~/."
-"quodlibet/config."
+"Zvukové zariadenie %r sa nenašlo. Preverte vaše nastavenie Xine v "
+"~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
 #, fuzzy

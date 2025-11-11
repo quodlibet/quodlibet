@@ -1650,29 +1650,30 @@ msgstr "Ukolébavka"
 msgid "Fades out and pauses your music."
 msgstr "Postupně ztlumí zvuk a nakonec pozastaví přehrávání."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Stavová zpráva pro Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Stavová zpráva pro Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Změní stavovou zprávu na Discordu podle toho co právě posloucháte."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "Pozastaveno"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Stavový řádek #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Stavový řádek #2"
 
@@ -2708,8 +2709,8 @@ msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
 msgstr ""
-"Existující soubory v cíli budou smazány (s výjimkou souborů s názvem 'cover."
-"jpg')!"
+"Existující soubory v cíli budou smazány (s výjimkou souborů s názvem "
+"'cover.jpg')!"
 
 #: quodlibet/ext/events/synchronize_to_device.py:313
 msgid "Start synchronization"
@@ -4536,8 +4537,8 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
-"Vytvoří zvukové otisky prostřednictvím chromaprint a zveřejní je na acoustid."
-"org."
+"Vytvoří zvukové otisky prostřednictvím chromaprint a zveřejní je na "
+"acoustid.org."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:65
 msgid "API Key Missing"
@@ -7777,8 +7778,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Datum musí být vloženo ve formátu ‚YYYY‘, ‚YYYY-MM-DD‘ nebo ‚YYYY-MM-DD HH:"
-"MM:SS‘."
+"Datum musí být vloženo ve formátu ‚YYYY‘, ‚YYYY-MM-DD‘ nebo ‚YYYY-MM-DD "
+"HH:MM:SS‘."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
@@ -8647,9 +8648,9 @@ msgstr ""
 #~ "send <b>%(mini-dump-path)s</b> instead with a description of what you "
 #~ "were doing."
 #~ msgstr ""
-#~ "V aplikaci Quod Libet došlo k výjimce. Zpráva o ní byla uložena do<b "
-#~ ">%(dump-path)s</b>, může pomoci závadu odstranit. Prosíme, ohlašte ji na "
-#~ "%(new-issue-url)s a uvedenou zprávu přiložte, nebo vložte přímo její "
+#~ "V aplikaci Quod Libet došlo k výjimce. Zpráva o ní byla uložena do<b >%"
+#~ "(dump-path)s</b>, může pomoci závadu odstranit. Prosíme, ohlašte ji na %"
+#~ "(new-issue-url)s a uvedenou zprávu přiložte, nebo vložte přímo její "
 #~ "obsah. Soubor se zprávou může obsahovat informace o vás nebo vašem "
 #~ "systému, jako například seznam naposled hraných skladeb. Pokud je to pro "
 #~ "vás nepřijatelné, pošlete místo toho <b>%(mini-dump-path)s</b> s popisem, "
