@@ -1645,29 +1645,30 @@ msgstr "Nattasang"
 msgid "Fades out and pauses your music."
 msgstr "Toner ut og setter musikk på pause."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discord-statusmelding"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Discord-statusmelding"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Legg det du hører på nå i en Discord-statusmelding."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "På pause"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Statuslinje #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Statuslinje #2"
 
@@ -2018,10 +2019,10 @@ msgid ""
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Tillater kontroll av Quod Libet ved bruk av <a href=\"https://mpris2."
-"readthedocs.io/en/latest/\">MPRIS 2</a>-D-Bus-grensesnittsspesifikasjonen. "
-"Dette tillater forskjellig integrasjon i Linux-skrivebord (f.eks. "
-"multimediataster)."
+"Tillater kontroll av Quod Libet ved bruk av <a href=\"https://"
+"mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>-D-Bus-"
+"grensesnittsspesifikasjonen. Dette tillater forskjellig integrasjon i Linux-"
+"skrivebord (f.eks. multimediataster)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -2697,8 +2698,8 @@ msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
 msgstr ""
-"Eksisterende filer i målmappa blir slettet, unntatt filer som heter 'cover."
-"jpg'!"
+"Eksisterende filer i målmappa blir slettet, unntatt filer som heter "
+"'cover.jpg'!"
 
 #: quodlibet/ext/events/synchronize_to_device.py:313
 msgid "Start synchronization"
@@ -7742,8 +7743,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Dato må skrives inn i form av «ÅÅÅÅ», «ÅÅÅÅ-MM-DD» eller «ÅÅÅÅ-MM-DD TT:MM:"
-"SS»."
+"Dato må skrives inn i form av «ÅÅÅÅ», «ÅÅÅÅ-MM-DD» eller «ÅÅÅÅ-MM-DD "
+"TT:MM:SS»."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

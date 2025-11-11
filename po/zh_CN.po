@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-10-15 05:07+0000\n"
+"PO-Revision-Date: 2025-11-11 04:51+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1607,29 +1607,29 @@ msgstr "摇篮曲"
 msgid "Fades out and pauses your music."
 msgstr "淡出并暂停播放音乐。"
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discord 状态消息"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Dscord 状态消息"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "根据您当前正在收听的内容更改 Discord 状态消息。"
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
-msgstr "暂停"
+#: quodlibet/ext/events/discord_status.py:202
+msgid "(Paused)"
+msgstr "(已暂停)"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "状态行 #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "状态行 #2"
 

@@ -1650,30 +1650,31 @@ msgstr "Kehtolaulu"
 msgid "Fades out and pauses your music."
 msgstr "Häivyttää ja keskeyttää musiikin toiston."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Discord-tilaviesti"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Discord-tilaviesti"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 "Muuttaa Discordin tilaviestiä kullakin hetkellä soivan kappaleen mukaan."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "Keskeytetty"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Tilarivi 1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Tilarivi 2"
 
@@ -1974,8 +1975,8 @@ msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
 msgstr ""
-"Paljastaa kaikki albumit Rygel UPnP Media Serverille MediaServer2 D-Bus -"
-"rajapinnan kautta."
+"Paljastaa kaikki albumit Rygel UPnP Media Serverille MediaServer2 D-Bus "
+"-rajapinnan kautta."
 
 #: quodlibet/ext/events/mediaserver.py:48
 msgid ""
@@ -2027,8 +2028,8 @@ msgid ""
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Mahdollistaa Quod Libetin hallinnan <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus -liittymän avulla.\n"
+"⏯️ Mahdollistaa Quod Libetin hallinnan <a href=\"https://"
+"mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus -liittymän avulla.\n"
 "Tämä mahdollistaa erilaiset Linux-työpöytäintegraatiot (esim. "
 "multimedianäppäimet)."
 
@@ -2532,8 +2533,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
-"Asetukset ovat yhteiset <a href=\"%(plugin_link)s\">Vie Squeezeboxiin</a> -"
-"liitännäisen kanssa."
+"Asetukset ovat yhteiset <a href=\"%(plugin_link)s\">Vie Squeezeboxiin</a> "
+"-liitännäisen kanssa."
 
 #: quodlibet/ext/events/squeezebox_sync.py:66
 #: quodlibet/ext/playlist/export_to_squeezebox.py:100
@@ -3074,8 +3075,8 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
-"Lisää mahdollisuuden arvostella kappaleita antamalla peukalo ylös / alas -"
-"ääniä. Arvostelun tulos muunnetaan arvosanaksi. Voi käyttää yhteisäänten "
+"Lisää mahdollisuuden arvostella kappaleita antamalla peukalo ylös / alas "
+"-ääniä. Arvostelun tulos muunnetaan arvosanaksi. Voi käyttää yhteisäänten "
 "laskemiseen ja kappaleiden järjestämiseen <b><tt>~#score</tt></b>-tunnisteen "
 "mukaan."
 
@@ -4545,8 +4546,8 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
-"Luo akustiset sormenjäljet käyttäen chromaprintiä ja lähettää ne acoustid."
-"org-palveluun."
+"Luo akustiset sormenjäljet käyttäen chromaprintiä ja lähettää ne "
+"acoustid.org-palveluun."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:65
 msgid "API Key Missing"
@@ -4631,8 +4632,8 @@ msgid ""
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
 "Kappaleilla pitää olla asetettuna joko <i><b>musicbrainz_trackid</b></i>, "
-"tai <i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></i> -"
-"tunnisteet, jotta ne voidaan lähettää."
+"tai <i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></i> "
+"-tunnisteet, jotta ne voidaan lähettää."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Fingerprints:"
@@ -5582,8 +5583,8 @@ msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
 msgstr ""
-"Äänilaitetta %r ei löytynyt. Tarkista Xinen asetukset tiedostossa ~/."
-"quodlibet/config."
+"Äänilaitetta %r ei löytynyt. Tarkista Xinen asetukset tiedostossa "
+"~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:67
 #, fuzzy
@@ -7783,8 +7784,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Päivämäärä täytyy antaa muodossa ”VVVV”, ”VVVV-KK-PP” tai ”VVVV-KK-PP HH:MM:"
-"SS”."
+"Päivämäärä täytyy antaa muodossa ”VVVV”, ”VVVV-KK-PP” tai ”VVVV-KK-PP "
+"HH:MM:SS”."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
@@ -7829,8 +7830,8 @@ msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"Kappaleen %s tallentaminen epäonnistui. Tiedosto saattaa olla vain luku -"
-"muodossa, viallinen, tai sen muokkaamiseen ei ole oikeuksia."
+"Kappaleen %s tallentaminen epäonnistui. Tiedosto saattaa olla vain luku "
+"-muodossa, viallinen, tai sen muokkaamiseen ei ole oikeuksia."
 
 #: quodlibet/util/string/__init__.py:33 quodlibet/util/string/__init__.py:44
 msgid "[Invalid Encoding]"
@@ -8305,8 +8306,8 @@ msgstr ""
 #~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "
 #~ "Specification."
 #~ msgstr ""
-#~ "Mahdollistaa Quod Libetin hallinnan käyttäen MPRIS 2 D-Bus -"
-#~ "rajapintamäärittelyä."
+#~ "Mahdollistaa Quod Libetin hallinnan käyttäen MPRIS 2 D-Bus "
+#~ "-rajapintamäärittelyä."
 
 #~ msgid "Searching for lyrics…"
 #~ msgstr "Etsitään laulun sanoja…"

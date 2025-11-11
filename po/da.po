@@ -1641,17 +1641,17 @@ msgstr "Godnatsang"
 msgid "Fades out and pauses your music."
 msgstr "Udtoner og sætter din musik på pause."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Gajim-statusmeddelelse"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Gajim-statusmeddelelse"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
@@ -1659,17 +1659,17 @@ msgid ""
 msgstr ""
 "Skifter Gajim-statusmeddelelse i henhold til hvad du lytter til i øjeblikket."
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "Sat på pause:"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Statustekst"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Statustekst"
@@ -3826,8 +3826,8 @@ msgstr ""
 "Brug Python-udtryk i forespørgsler. Syntaksen er '@(python: udtryk)'. "
 "Variablen 's' (eller 'a') er sangen/albummet som der matches på. '_ts' er et "
 "(real-tal) tidsstempel i begyndelsen af forespørgslen. Modulerne 'time' og "
-"'random' er også tilgængelige, samme gælder klassen 'Random' (==random."
-"Random)."
+"'random' er også tilgængelige, samme gælder klassen 'Random' "
+"(==random.Random)."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -7802,8 +7802,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Datoen skal indtastes i formaterne 'YYYY', 'YYYY-MM-DD' eller 'YYYY-MM-DD HH:"
-"MM:SS'."
+"Datoen skal indtastes i formaterne 'YYYY', 'YYYY-MM-DD' eller 'YYYY-MM-DD "
+"HH:MM:SS'."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

@@ -1195,8 +1195,9 @@ msgid ""
 "review the data before sending it below."
 msgstr ""
 "Dettagli vari riguardanti l'errore e il tuo sistema saranno inviati ad un "
-"servizio online di terze parti (<a href='https://www.sentry.io'>www.sentry."
-"io</a>). Qui sotto puoi rivedere i dati prima di inviarli."
+"servizio online di terze parti (<a href='https://"
+"www.sentry.io'>www.sentry.io</a>). Qui sotto puoi rivedere i dati prima di "
+"inviarli."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1663,17 +1664,17 @@ msgstr "Ninna nanna"
 msgid "Fades out and pauses your music."
 msgstr "Sfuma e mette in pausa la tua musica."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Messaggio di stato di Gajim"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Messaggio di stato di Gajim"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
@@ -1682,17 +1683,17 @@ msgstr ""
 "Cambia il messaggio di stato di Gajim in accordo con quello che stai "
 "ascoltando."
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "In pausa:"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Testo di stato"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Testo di stato"
@@ -2008,8 +2009,8 @@ msgstr ""
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
-"Assicurati che il seguente sia nel tuo file di configurazione rygel  (~/."
-"config/rygel.conf):"
+"Assicurati che il seguente sia nel tuo file di configurazione rygel  "
+"(~/.config/rygel.conf):"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid "MPD Server"
@@ -4778,8 +4779,8 @@ msgid ""
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Impossibile contattare il tuo dispositivo iFP. Controlla che il dispositivo "
-"sia alimentato e collegato, e che tu abbia ifp-line (http://ifp-driver.sf."
-"net) installato."
+"sia alimentato e collegato, e che tu abbia ifp-line (http://ifp-"
+"driver.sf.net) installato."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -7938,8 +7939,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"I formati di data corretti sono: 'AAAA', 'AAAA-MM-GG' oppuure 'AAAA-MM-GG HH:"
-"MM:SS'."
+"I formati di data corretti sono: 'AAAA', 'AAAA-MM-GG' oppuure 'AAAA-MM-GG "
+"HH:MM:SS'."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

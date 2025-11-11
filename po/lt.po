@@ -1691,33 +1691,33 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Atšaukti žymių pakeitimus?"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Atšaukti žymių pakeitimus?"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "Groti/Pristabdyti"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Kelio šablonai"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Kelio šablonai"

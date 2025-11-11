@@ -1622,34 +1622,34 @@ msgstr "자장가 모드"
 msgid "Fades out and pauses your music."
 msgstr "페이드 아웃하고 음악 재생을 중지합니다."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 #, fuzzy
 msgid "Discord status message"
 msgstr "Gajim 상태 메세지"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Gajim 상태 메세지"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Gajim 상태 메시지를 최근 들은 곡에 따라 변경합니다."
 
-#: quodlibet/ext/events/discord_status.py:91
+#: quodlibet/ext/events/discord_status.py:202
 #, fuzzy
-msgid "Paused"
+msgid "(Paused)"
 msgstr "멈춤"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 #, fuzzy
 msgid "Status Line #1"
 msgstr "양식"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 #, fuzzy
 msgid "Status Line #2"
 msgstr "양식"

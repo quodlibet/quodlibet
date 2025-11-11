@@ -1186,9 +1186,9 @@ msgid ""
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"பிழை மற்றும் உங்கள் கணினி தொடர்பான பல்வேறு விவரங்கள் மூன்றாம் தரப்பு நிகழ்நிலை சேவைக்கு அனுப்பப்படும் "
-"(<a href='{sentry_url}'>www.sentry.io</a>). தரவைக் கீழே அனுப்புவதற்கு முன்பு நீங்கள் மதிப்பாய்வு "
-"செய்யலாம்."
+"பிழை மற்றும் உங்கள் கணினி தொடர்பான பல்வேறு விவரங்கள் மூன்றாம் தரப்பு நிகழ்நிலை சேவைக்கு "
+"அனுப்பப்படும் (<a href='{sentry_url}'>www.sentry.io</a>). தரவைக் கீழே அனுப்புவதற்கு "
+"முன்பு நீங்கள் மதிப்பாய்வு செய்யலாம்."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1642,29 +1642,30 @@ msgstr "தாலாட்டு"
 msgid "Fades out and pauses your music."
 msgstr "மங்கிவிட்டு உங்கள் இசையை இடைநிறுத்துகிறது."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "முரண்பாடு நிலை செய்தி"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "முரண்பாடு நிலை செய்தி"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "நீங்கள் தற்போது கேட்பதற்கு ஏற்ப உங்கள் முரண்பாடு நிலை செய்தியை மாற்றவும்."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "இடைநிறுத்தப்பட்டது"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "நிலை வரி #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "நிலை வரி #2"
 
@@ -2014,9 +2015,10 @@ msgid ""
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ <a href=\"{mpris_url}\">MPRIS 2</a> டி-பச் இடைமுகத்தைப் பயன்படுத்தி Quod லிபெட்டைக் "
-"கட்டுப்படுத்த அனுமதிக்கிறது.\n"
-"இது பல்வேறு லினக்ச் டெஸ்க்டாப் ஒருங்கிணைப்புகளை (எ.கா. மல்டிமீடியா விசைகள்) அனுமதிக்கிறது."
+"⏯️ <a href=\"{mpris_url}\">MPRIS 2</a> டி-பச் இடைமுகத்தைப் பயன்படுத்தி Quod "
+"லிபெட்டைக் கட்டுப்படுத்த அனுமதிக்கிறது.\n"
+"இது பல்வேறு லினக்ச் டெஸ்க்டாப் ஒருங்கிணைப்புகளை (எ.கா. மல்டிமீடியா விசைகள்) "
+"அனுமதிக்கிறது."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -4261,8 +4263,8 @@ msgid ""
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
 "of '{PARAM}' in your command will have the value prompted for when run"
 msgstr ""
-"குறிப்பிடப்பட்டால், கட்டளையில் நிகழும் ஒரு அளவுரு பயனர் வழங்கிய மதிப்புடன் மாற்றப்படும், எ."
-"கா. உங்கள் கட்டளையில் '{PARAM}' இன் அனைத்து நிகழ்வுகளையும் 'பரம்' பயன்படுத்துவதன் மூலம் "
+"குறிப்பிடப்பட்டால், கட்டளையில் நிகழும் ஒரு அளவுரு பயனர் வழங்கிய மதிப்புடன் மாற்றப்படும், "
+"எ.கா. உங்கள் கட்டளையில் '{PARAM}' இன் அனைத்து நிகழ்வுகளையும் 'பரம்' பயன்படுத்துவதன் மூலம் "
 "இயங்கும் போது மதிப்பிடப்படும் மதிப்பு இருக்கும்"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:59

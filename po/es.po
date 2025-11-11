@@ -1662,15 +1662,15 @@ msgstr "Arrullo"
 msgid "Fades out and pauses your music."
 msgstr "Disminuye gradualmente el volumen de la música y la pone en pausa."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Mensaje de estado de Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Mensaje de estado de Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
@@ -1678,15 +1678,16 @@ msgstr ""
 "Cambia el mensaje de estado de Discord según lo que esté escuchando en este "
 "momento."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "En pausa"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "1.ᵉʳ renglón de estado"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "2.º renglón de estado"
 
@@ -4702,8 +4703,8 @@ msgid ""
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "No se pudo contactar con el dispositivo iFP. Cerciórese de que esté "
-"encendido y conectado y de que se haya instalado ifp-line (http://ifp-driver."
-"sf.net)."
+"encendido y conectado y de que se haya instalado ifp-line (http://ifp-"
+"driver.sf.net)."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -8337,8 +8338,8 @@ msgstr ""
 
 #~ msgid "Exports metadata of selected songs as a .tags file."
 #~ msgstr ""
-#~ "Exporta los metadatos de las canciones seleccionadas como un archivo ."
-#~ "tags."
+#~ "Exporta los metadatos de las canciones seleccionadas como un "
+#~ "archivo .tags."
 
 #~ msgid "Import Metadata"
 #~ msgstr "Importar metadatos"

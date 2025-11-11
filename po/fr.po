@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-10-15 05:07+0000\n"
+"PO-Revision-Date: 2025-11-11 04:51+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1669,15 +1669,15 @@ msgstr "Berceuse"
 msgid "Fades out and pauses your music."
 msgstr "Abaisse le son et met votre musique en pause."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Message de statut Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Message de Statut Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
@@ -1685,15 +1685,15 @@ msgstr ""
 "Modifiez votre message de statut Discord en fonction de ce que vous écoutez "
 "actuellement."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
-msgstr "En pause"
+#: quodlibet/ext/events/discord_status.py:202
+msgid "(Paused)"
+msgstr "(En pause)"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Ligne d'état #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Ligne d'état #2"
 
@@ -7852,8 +7852,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"La date doit être saisie au format 'AAAA', 'AAAA-MM-JJ' ou 'AAAA-MM-JJ HH:MM:"
-"SS'."
+"La date doit être saisie au format 'AAAA', 'AAAA-MM-JJ' ou 'AAAA-MM-JJ "
+"HH:MM:SS'."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

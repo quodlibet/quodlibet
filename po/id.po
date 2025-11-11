@@ -1606,29 +1606,30 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Pesan status Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Pesan Status Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Ubah pesan status Discord Anda tergantung apa yang Anda sedang dengar."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
+#: quodlibet/ext/events/discord_status.py:202
+#, fuzzy
+msgid "(Paused)"
 msgstr "Dijeda"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Baris Status #1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Baris Status #2"
 
@@ -1933,8 +1934,8 @@ msgstr ""
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
-"Pastikan baris berikut ada di berkas konfigurasi rygel Anda (~/.config/rygel."
-"conf):"
+"Pastikan baris berikut ada di berkas konfigurasi rygel Anda (~/.config/"
+"rygel.conf):"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid "MPD Server"

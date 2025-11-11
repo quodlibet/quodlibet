@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-16 11:07+0000\n"
+"PO-Revision-Date: 2025-11-11 04:51+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1660,30 +1660,30 @@ msgstr "Cançó de bressol"
 msgid "Fades out and pauses your music."
 msgstr "Esvaeix la música i la posa en pausa."
 
-#: quodlibet/ext/events/discord_status.py:46
+#: quodlibet/ext/events/discord_status.py:76
 msgid "Discord status message"
 msgstr "Missatge d'estat de Discord"
 
-#: quodlibet/ext/events/discord_status.py:47
+#: quodlibet/ext/events/discord_status.py:77
 msgid "Discord Status Message"
 msgstr "Missatge d'estat de Discord"
 
-#: quodlibet/ext/events/discord_status.py:49
+#: quodlibet/ext/events/discord_status.py:79
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 "Canvia el missatge d'estat de Discord en funció del que escolteu actualment."
 
-#: quodlibet/ext/events/discord_status.py:91
-msgid "Paused"
-msgstr "En pausa"
+#: quodlibet/ext/events/discord_status.py:202
+msgid "(Paused)"
+msgstr "(En pausa)"
 
-#: quodlibet/ext/events/discord_status.py:143
+#: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
 msgstr "Línia d'estat 1"
 
-#: quodlibet/ext/events/discord_status.py:155
+#: quodlibet/ext/events/discord_status.py:321
 msgid "Status Line #2"
 msgstr "Línia d'estat 2"
 
@@ -1993,8 +1993,8 @@ msgstr ""
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
-"Assegureu-vos d'afegir el següent al fitxer de configuració del Rygel (~/."
-"config/rygel.conf):"
+"Assegureu-vos d'afegir el següent al fitxer de configuració del Rygel "
+"(~/.config/rygel.conf):"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid "MPD Server"
@@ -4571,8 +4571,8 @@ msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
-"Genera empremtes digitals acústiques amb Chromaprint i les envia a acoustid."
-"org."
+"Genera empremtes digitals acústiques amb Chromaprint i les envia a "
+"acoustid.org."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:65
 msgid "API Key Missing"
@@ -7825,8 +7825,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"La data s'ha d'introduir en el format «AAAA», «AAAA-MM-DD» o «AAAA-MM-DD HH:"
-"MM:SS»."
+"La data s'ha d'introduir en el format «AAAA», «AAAA-MM-DD» o «AAAA-MM-DD "
+"HH:MM:SS»."
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
