@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-10-15 05:07+0000\n"
+"PO-Revision-Date: 2025-11-11 04:51+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1622,9 +1622,8 @@ msgid ""
 msgstr "根据您当前正在收听的内容更改 Discord 状态消息。"
 
 #: quodlibet/ext/events/discord_status.py:202
-#, fuzzy
 msgid "(Paused)"
-msgstr "暂停"
+msgstr "(已暂停)"
 
 #: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
