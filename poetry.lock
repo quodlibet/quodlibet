@@ -819,7 +819,7 @@ description = "Discord RPC client written in Python"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"plugins\""
+markers = "extra == \"plugins\" or extra == \"plugins-test\""
 files = [
     {file = "pypresence-4.6.1-py3-none-any.whl", hash = "sha256:33d4549fcdf4102f81935df4ba587bacb22193e0c50c541d1ab9329b21df33cd"},
     {file = "pypresence-4.6.1.tar.gz", hash = "sha256:05199516a3b4e182b637b3cd5415aab7ba542707664f634f35a7220c4f10334f"},
@@ -872,7 +872,7 @@ description = "Alternative regular expression module, to replace re."
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"plugins\""
+markers = "extra == \"plugins\" or extra == \"plugins-test\""
 files = [
     {file = "regex-2025.11.3-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:2b441a4ae2c8049106e8b39973bfbddfb25a179dda2bdb99b0eeb60c40a6a3af"},
     {file = "regex-2025.11.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:2fa2eed3f76677777345d2f81ee89f5de2f5745910e805f7af7386a920fa7313"},
@@ -1697,8 +1697,9 @@ test = ["pytest", "pytest-cov"]
 
 [extras]
 plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "regex", "soco"]
+plugins-test = ["pypresence", "regex"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "c89b45dab633423b7ca5c0fb126d7d93f538dd0c87a688b59d115d100ebbfb65"
+content-hash = "d8922d3fdd79e756a522aebdc7d0a961910e87498ca9364d6a4dc56f138acd5e"
