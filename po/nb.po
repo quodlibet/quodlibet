@@ -8150,7 +8150,7 @@ msgstr "Lytt til, bla gjennom eller rediger lydsamling"
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
 #, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libet-instillinger"
+msgstr "Quod Libet-innstillinger"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
@@ -8870,7 +8870,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Custom _Sort..."
-#~ msgstr "Kolonne_instillinger..."
+#~ msgstr "Kolonne_innstillinger..."
 
 #, fuzzy
 #~ msgid "Track Headers"
