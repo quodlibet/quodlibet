@@ -228,3 +228,5 @@ quodlibet/util/massagers.py
 quodlibet/util/songwrapper.py
 quodlibet/util/string/__init__.py
 quodlibet/util/tags.py
+quodlibet/ext/events/abrepeat_event.py
+quodlibet/qltk/abrepeatwidget.py
