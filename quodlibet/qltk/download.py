@@ -57,11 +57,28 @@ class DownloadProgress(GObject.Object):
         path, song = data
         try:
             headers = msg.get_property("response-headers")
-            size = int(headers.get("content-length"))
-            content_type = headers.get("content-type")
+
+            # Taille (en octets) depuis les headers HTTP
+            try:
+                size = headers.get_content_length()
+            except AttributeError:
+                size = None
+
+            # Type MIME depuis les headers HTTP
+            try:
+                ct = headers.get_content_type()  # retourne (mimetype, params) en libsoup3
+                content_type = ct[0] if isinstance(ct, tuple) else str(ct)
+            except AttributeError:
+                content_type = "application/octet-stream"
+
+            size_str = format_size(size) if (size is not None and size > 0) else "unknown size"
+
             print_d(
-                f"Downloaded {format_size(size)} of {content_type}: {song('title')}"
+                f"Downloaded {size_str} of {content_type}: {song('title')}"
             )
+            print_d(f"SONG KEYS: {song.keys()}")
+
+            # Détermination du nom de fichier
             _, ext = splitext(urlparse(song("~uri")).path)
             fn = (
                 escape_filename(song("~artist~title")[:100], safe=b" ,';")
@@ -69,10 +86,14 @@ class DownloadProgress(GObject.Object):
                 or f"download-{hash(song('~filename'))}"
             )
             path = path / Path(fn + ext)
+
+            # Si le fichier existe déjà, on ne retélécharge pas
             if path.is_file() and path.stat():
                 print_w(f"{path!s} already exists. Skipping download")
                 self.success(song)
                 return
+
+            # Écriture du fichier téléchargé
             with open(path, "wb") as f:
                 f.write(result)
             self.success(song)
