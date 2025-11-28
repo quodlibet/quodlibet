@@ -77,7 +77,7 @@ class DownloadProgress(GObject.Object):
                 format_size(size) if (size is not None and size > 0) else "unknown size"
             )
             print_d(
-                f"Downloaded {format_size(size)} of {content_type}: {song('title')}"
+                f"Downloaded {format_size(size_str)} of {content_type}: {song('title')}"
             )
             # Détermination du nom de fichier
             _, ext = splitext(urlparse(song("~uri")).path)
