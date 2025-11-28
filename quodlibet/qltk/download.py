@@ -66,18 +66,16 @@ class DownloadProgress(GObject.Object):
 
             # Type MIME depuis les headers HTTP
             try:
-                ct = headers.get_content_type()  # retourne (mimetype, params) en libsoup3
+                ct = (
+                    headers.get_content_type()
+                )  # retourne (mimetype, params) en libsoup3
                 content_type = ct[0] if isinstance(ct, tuple) else str(ct)
             except AttributeError:
                 content_type = "application/octet-stream"
 
-            size_str = format_size(size) if (size is not None and size > 0) else "unknown size"
-
-            print_d(
-                f"Downloaded {size_str} of {content_type}: {song('title')}"
+            size_str = (
+                format_size(size) if (size is not None and size > 0) else "unknown size"
             )
-            print_d(f"SONG KEYS: {song.keys()}")
-
             # Détermination du nom de fichier
             _, ext = splitext(urlparse(song("~uri")).path)
             fn = (
