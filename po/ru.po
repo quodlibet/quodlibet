@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-05-27 20:42+0000\n"
+"PO-Revision-Date: 2025-12-01 00:00+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -22,9 +22,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.12-dev\n"
+"Plural-Forms: nplurals=3; plural="
+"(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? "
+"1 : 2);\n"
+"X-Generator: Weblate 5.15-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:226
@@ -183,7 +184,7 @@ msgstr "_Закрыть"
 
 #: quodlibet/browsers/_base.py:145 quodlibet/browsers/_base.py:148
 msgid "Library Browser"
-msgstr "Браузер фонотеки"
+msgstr "Обозреватель фонотеки"
 
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
@@ -420,7 +421,7 @@ msgstr "Турецкий"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Reggae / Dancehall"
-msgstr "Регги / Дэнсхолл"
+msgstr "Регги / дэнсхолл"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Latin"
@@ -516,7 +517,7 @@ msgstr "Рок"
 
 #: quodlibet/browsers/iradio.py:493
 msgid "Would you like to load a list of popular radio stations?"
-msgstr "Загрузить список популярных радиостанций?"
+msgstr "Хотите загрузить список популярных радиостанций?"
 
 #: quodlibet/browsers/iradio.py:500
 msgid "_Load Stations"
@@ -721,7 +722,7 @@ msgstr "пусто"
 
 #: quodlibet/browsers/playlists/prefs.py:41
 msgid "Example Playlist"
-msgstr "Новый плейлист"
+msgstr "Пример плейлиста"
 
 #: quodlibet/browsers/playlists/prefs.py:51
 msgid "Playlist Browser Preferences"
@@ -1198,15 +1199,15 @@ msgid "Error details:"
 msgstr "Сведения об ошибке:"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
-"Различные сведения об ошибке и вашей системе будут отправлены на стороннюю "
-"интернет-службу (<a href='https://www.sentry.io'>www.sentry.io</a>). Ниже вы "
-"можете просмотреть отправляемые данные."
+"Различные сведения об ошибке и вашей системе будут отправлены в стороннюю "
+"интернет-службу (<a href='{sentry_url}'>www.sentry.io</a>). Ниже вы можете "
+"просмотреть отправляемые данные."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1675,9 +1676,8 @@ msgid ""
 msgstr "Обновляет ваш статус Discord в соответствии с воспроизводимым треком."
 
 #: quodlibet/ext/events/discord_status.py:202
-#, fuzzy
 msgid "(Paused)"
-msgstr "Пауза"
+msgstr "(На паузе)"
 
 #: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
@@ -2022,14 +2022,14 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Интеграция с рабочим столом Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Позволяет управлять Quod Libet с помощью интерфейса D-Bus <a "
-"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> .\n"
+"⏯️ Позволяет управлять Quod Libet с помощью интерфейса D-Bus <a href="
+"\"{mpris_url}\">MPRIS 2</a> .\n"
 "Это позволяет интегрировать в рабочий стол Linux различные функции "
 "(например, мультимедийные клавиши)."
 
@@ -2322,8 +2322,8 @@ msgstr ""
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
-"Шаблон форматирования заголовка для отправки. Оставьте пустым длязначения по "
-"умолчанию."
+"Шаблон форматирования заголовка для отправки. Оставьте пустым для значения "
+"по умолчанию."
 
 #: quodlibet/ext/events/qlscrobbler.py:637
 msgid "Songs matching this filter will not be submitted"
@@ -4636,7 +4636,7 @@ msgstr "Отпечатки:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:124
 msgid "Songs with MBIDs:"
-msgstr "Треки с MBID:"
+msgstr "Песни с MBID:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:126
 msgid "Songs with sufficient tags:"
@@ -4692,13 +4692,13 @@ msgid "No iFP device found"
 msgstr "Устройство iFP не найдено"
 
 #: quodlibet/ext/songsmenu/ifp.py:33
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line ({ifp_url}) installed."
 msgstr ""
 "Не удаётся связаться с устройством iFP. Убедитесь, что устройство включено и "
-"подключено, и у вас установлен ifp-line (http://ifp-driver.sf.net)."
+"подключено, и у вас установлен ifp-line ({ifp_url})."
 
 #: quodlibet/ext/songsmenu/ifp.py:42
 #, python-format
@@ -5138,9 +5138,8 @@ msgid "Search at %(website)s"
 msgstr "Искать на %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:74
-#, fuzzy
 msgid "Edit…"
-msgstr "_Изменить…"
+msgstr "Изменить…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:79 quodlibet/qltk/edittags.py:466
 msgid "Edit Tags"
@@ -5574,19 +5573,18 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:67
-#, fuzzy
 msgid ""
 "Couldn't find module {module!r}. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Не удалось найти модуль «{module}». Возможно, вам нужно установить пакет?"
-"{extra}"
+"Не удалось найти модуль {module!r}. Возможно, вам нужно установить "
+"пакет?{extra}"
 
 #: quodlibet/plugins/__init__.py:82
-#, fuzzy
 msgid ""
 "Couldn't find GStreamer element {element!r}, from the {category!r} plugins."
-msgstr "Не удалось найти элемент GStreamer: '{element}'."
+msgstr ""
+"Не удалось найти элемент GStreamer {element!r}, из плагинов {category!r}."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:228
 msgid ""
@@ -5639,9 +5637,9 @@ msgstr "Песни, соответствующие этому фильтру, н
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] "Запустить плагин \"%(name)s\" для %(count)s плейлиста?"
-msgstr[1] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
-msgstr[2] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
+msgstr[0] "Запустить плагин «%(name)s» для %(count)s плейлиста?"
+msgstr[1] "Запустить плагин «%(name)s» для %(count)s плейлистов?"
+msgstr[2] "Запустить плагин «%(name)s» для %(count)s плейлистов?"
 
 #: quodlibet/plugins/playlist.py:32 quodlibet/qltk/songsmenu.py:64
 #: quodlibet/qltk/songsmenu.py:77
@@ -5657,13 +5655,12 @@ msgid "Revert to default"
 msgstr "Вернуться к умолчанию"
 
 #: quodlibet/qltk/advanced_prefs.py:296
-#, fuzzy
 msgid "Filename patterns for lyric files"
-msgstr "Шаблон имени файла:"
+msgstr "Шаблон имени файлов для текстов песен"
 
 #: quodlibet/qltk/advanced_prefs.py:302
 msgid "Directory strings or patterns for lyric files"
-msgstr ""
+msgstr "Строки каталога или шаблоны для файлов текстов песен"
 
 #: quodlibet/qltk/advanced_prefs.py:341
 msgid "I know what I'm doing!"
@@ -5696,7 +5693,7 @@ msgstr "ММ:СС"
 
 #: quodlibet/qltk/bookmarks.py:179
 msgid "Select a single track to edit its bookmarks"
-msgstr ""
+msgstr "Выберите одну дорожку для изменения её закладок"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -6066,7 +6063,7 @@ msgstr ""
 
 #: quodlibet/qltk/_editutils.py:29
 msgid "Tag may not be accurate"
-msgstr "Возможно неправильный тег"
+msgstr "Тег может быть неточным"
 
 #: quodlibet/qltk/_editutils.py:33
 #, python-format
@@ -6343,13 +6340,12 @@ msgid "_View online"
 msgstr "_Показать онлайн"
 
 #: quodlibet/qltk/lyrics.py:73
-#, fuzzy
 msgid "Delete the saved lyrics from this song"
-msgstr "Удалить выбранные треки"
+msgstr "Удалить сохранённый текст из этой песни"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr ""
+msgstr "Выберите одну дорожку для изменения её текста песни"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -7455,17 +7451,17 @@ msgstr "Удалить из фонотеки"
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
-msgstr[0] "Запустить плагин '%(name)s' для %(count)d трека?"
-msgstr[1] "Запустить плагин '%(name)s' для %(count)d треков?"
-msgstr[2] "Запустить плагин '%(name)s' для %(count)d треков?"
+msgstr[0] "Запустить плагин «%(name)s» для %(count)d трека?"
+msgstr[1] "Запустить плагин «%(name)s» для %(count)d треков?"
+msgstr[2] "Запустить плагин «%(name)s» для %(count)d треков?"
 
 #: quodlibet/qltk/songsmenu.py:72
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
-msgstr[0] "Запустить плагин '%(name)s' для %(count)d альбома?"
-msgstr[1] "Запустить плагин '%(name)s' для %(count)d альбомов?"
-msgstr[2] "Запустить плагин '%(name)s' для %(count)d альбомов?"
+msgstr[0] "Запустить плагин «%(name)s» для %(count)d альбома?"
+msgstr[1] "Запустить плагин «%(name)s» для %(count)d альбомов?"
+msgstr[2] "Запустить плагин «%(name)s» для %(count)d альбомов?"
 
 #: quodlibet/qltk/songsmenu.py:140
 msgid "Configure Plugins…"
