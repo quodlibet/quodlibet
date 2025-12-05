@@ -119,9 +119,8 @@ class FilesystemCover(CoverSourcePlugin):
                 escaped_path = os.path.join(glob.escape(base), filename)
                 for path in safe_glob(escaped_path):
                     images.append((score, path))
-
-                # So names and patterns at the start are preferred
-                score -= 1
+                    # Adhere to the user-defined filename/pattern order
+                    score -= 1
 
         if not images:
             entries = []
