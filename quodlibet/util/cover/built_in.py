@@ -67,7 +67,7 @@ class FilesystemCover(CoverSourcePlugin):
     cover_subdirs = {"scan", "scans", "images", "covers", "artwork"}
     cover_exts = {"jpg", "jpeg", "png", "gif"}
 
-    cover_name_regexes = {word_regex(s) for s in ("^folder$", "^cover$", "^front$")}
+    cover_name_regexes = {re.compile(s) for s in ("^folder$", "^cover$", "^front$")}
     cover_positive_regexes = {
         word_regex(s)
         for s in [".+front", "frontcover", "jacket", "albumart", "edited", ".+cover"]
