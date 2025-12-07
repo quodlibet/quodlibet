@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2014-2021 Nick Boultbee
+#      2014-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -124,7 +124,8 @@ class CoverManager(GObject.Object):
             cover = provider.cover
             if cover:
                 name = provider.__class__.__name__
-                print_d(f"Found local cover via {name} for {song.key}")
+                key = song.key if song else None
+                print_d(f"Found local cover via {name} for {key}")
                 callback(True, cover)
             else:
                 provider.connect("fetch-success", success)
