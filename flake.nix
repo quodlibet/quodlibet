@@ -1,7 +1,7 @@
 {
   description = "Development Flake for Quod Libet";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -12,9 +12,6 @@
         inputs.treefmt-nix.flakeModule
       ];
 
-      flake = {
-        # Put your original flake attributes here.
-      };
       systems = [
         # systems for which you want to build the `perSystem` attributes
         "x86_64-linux"
