@@ -1,7 +1,7 @@
 [project]
 name = "quodlibet"
 description = "A music library, tagger, and player"
-license = "GPL-2.0-or-later"
+license = { text = "GPL-2.0-or-later" }
 keywords = ["audio", "music", "player", "tags", "gtk"]
 version = "4.7.0-pre"
 authors = [
