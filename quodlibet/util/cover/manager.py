@@ -124,7 +124,7 @@ class CoverManager(GObject.Object):
             cover = provider.cover
             if cover:
                 name = provider.__class__.__name__
-                print_d(f"Found local cover from {name}: {cover}")
+                print_d(f"Found local cover via {name} for {song.key}")
                 callback(True, cover)
             else:
                 provider.connect("fetch-success", success)
@@ -138,8 +138,8 @@ class CoverManager(GObject.Object):
     def acquire_cover_sync(self, song, embedded=True, external=True):
         """Gets *cached* cover synchronously.
 
-        As CoverSource fetching functionality is asynchronous it is only
-        possible to check for already fetched cover.
+        As CoverSource fetching functionality is asynchronous,
+        it is only possible to check for already fetched cover.
         """
 
         return self.acquire_cover_sync_many([song], embedded, external)

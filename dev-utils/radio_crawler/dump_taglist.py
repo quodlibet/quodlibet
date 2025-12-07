@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 """
-Takes the cache file and writes a text list parse-able by QL containing 
+Takes the cache file and writes a text list parse-able by QL containing
 only streams which have enough meta data
 """
 
@@ -19,12 +19,27 @@ from util import get_cache, LISTENERPEAK, LISTENERCURRENT
 
 
 # tags that get written to the final list if available
-TAGS = ["organization", "location", "genre", "channel-mode",
-        "audio-codec", "bitrate", LISTENERPEAK]
+TAGS = [
+    "organization",
+    "location",
+    "genre",
+    "channel-mode",
+    "audio-codec",
+    "bitrate",
+    LISTENERPEAK,
+]
 
 # blacklisted values
-VBL = ["http://www.shoutcast.com", "http://localhost/", "Default genre",
-       "None", "http://", "Unnamed Server", "Unspecified", "N/A"]
+VBL = [
+    "http://www.shoutcast.com",
+    "http://localhost/",
+    "Default genre",
+    "None",
+    "http://",
+    "Unnamed Server",
+    "Unspecified",
+    "N/A",
+]
 
 NEEDED = ["organization", "audio-codec", "bitrate"]
 
@@ -39,7 +54,7 @@ def main():
     key2=value2
     key=value3
 
-    Each uri starts a new entry; there are no newlines; multiple values
+    Each URI starts a new entry; there are no newlines; multiple values
     get transformed to multiple key=value pairs.
 
     tags that start with ~ are metadata not retrieved from the stream.
