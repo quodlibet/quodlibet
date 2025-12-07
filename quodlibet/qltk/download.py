@@ -58,17 +58,17 @@ class DownloadProgress(GObject.Object):
         try:
             headers = msg.get_property("response-headers")
 
-            # Taille (en octets) depuis les headers HTTP
+            # Size (in bytes) from the HTTP headers
             try:
                 size = headers.get_content_length()
             except AttributeError:
                 size = None
 
-            # Type MIME depuis les headers HTTP
+            # MIME type from the HTTP headers
             try:
                 ct = (
                     headers.get_content_type()
-                )  # retourne (mimetype, params) en libsoup3
+                )  # returns (mimetype, params) in libsoup3
                 content_type = ct[0] if isinstance(ct, tuple) else str(ct)
             except AttributeError:
                 content_type = "application/octet-stream"
@@ -77,9 +77,9 @@ class DownloadProgress(GObject.Object):
                 format_size(size) if (size is not None and size > 0) else "unknown size"
             )
             print_d(
-                f"Downloaded {format_size(size_str)} of {content_type}: {song('title')}"
+                f"Downloaded {size_str} of {content_type}: {song('title')}"
             )
-            # Détermination du nom de fichier
+            # Determinin filename
             _, ext = splitext(urlparse(song("~uri")).path)
             fn = (
                 escape_filename(song("~artist~title")[:100], safe=b" ,';")
@@ -88,13 +88,13 @@ class DownloadProgress(GObject.Object):
             )
             path = path / Path(fn + ext)
 
-            # Si le fichier existe déjà, on ne retélécharge pas
+            # If file already exist, no new download
             if path.is_file() and path.stat():
                 print_w(f"{path!s} already exists. Skipping download")
                 self.success(song)
                 return
 
-            # Écriture du fichier téléchargé
+            # write file
             with open(path, "wb") as f:
                 f.write(result)
             self.success(song)
