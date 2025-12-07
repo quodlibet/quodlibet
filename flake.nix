@@ -1,7 +1,7 @@
 {
   description = "Development Flake for Quod Libet";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -12,9 +12,6 @@
         inputs.treefmt-nix.flakeModule
       ];
 
-      flake = {
-        # Put your original flake attributes here.
-      };
       systems = [
         # systems for which you want to build the `perSystem` attributes
         "x86_64-linux"
@@ -38,8 +35,9 @@
               nixfmt.package = pkgs.nixfmt-rfc-style;
               shellcheck.enable = true;
               shfmt.enable = true;
-              # Respect editorconfig
-              shfmt.indent_size = null;
+              # TODO: migrate on next release (https://github.com/numtide/treefmt-nix/pull/443)
+              # shfmt.useEditorConfig = true;
+              shfmt.indent_size = 4;
               statix.enable = true;
               deadnix.enable = true;
               prettier.enable = true;
@@ -75,39 +73,38 @@
               # Allow libpcre to... work
               LD_LIBRARY_PATH = "${glib.out}/lib";
               GIO_MODULE_DIR = "${glib-networking}/lib/gio/modules/";
-              packages =
-                [
-                  qlPoetry
-                  qlPython
-                  adwaita-icon-theme
-                  cairo
-                  file
-                  gdk-pixbuf
-                  glib
-                  glib-networking
-                  glibcLocales
-                  gobject-introspection
-                  gtk3
-                  gtksourceview4
-                  kakasi
-                  keybinder3
-                  libappindicator-gtk3
-                  libmodplug
-                  libnotify
-                  librsvg
-                  libsoup_3
-                  pcre2
-                  shared-mime-info
-                  xorg.xvfb
-                ]
-                ++ (with gst_all_1; [
-                  gstreamer
-                  gst-plugins-bad
-                  gst-plugins-base
-                  gst-plugins-good
-                  gst-plugins-ugly
-                  gst-libav
-                ]);
+              packages = [
+                qlPoetry
+                qlPython
+                adwaita-icon-theme
+                cairo
+                file
+                gdk-pixbuf
+                glib
+                glib-networking
+                glibcLocales
+                gobject-introspection
+                gtk3
+                gtksourceview4
+                kakasi
+                keybinder3
+                libappindicator-gtk3
+                libmodplug
+                libnotify
+                librsvg
+                libsoup_3
+                pcre2
+                shared-mime-info
+                xorg.xvfb
+              ]
+              ++ (with gst_all_1; [
+                gstreamer
+                gst-plugins-bad
+                gst-plugins-base
+                gst-plugins-good
+                gst-plugins-ugly
+                gst-libav
+              ]);
             };
         };
     };

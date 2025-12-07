@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2023 Nick Boultbee
+#           2016-2025 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -477,7 +477,7 @@ class PlayQueue(SongList):
         if not self._should_write(force, diff):
             self._pending += 1
             return
-        print_d(f"Saving play queue after {diff:.1f}s")
+        print_d(f"Saving play queue after {diff:.0f}s")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:

@@ -87,9 +87,7 @@ def _decode_surrogatepass(data, codec):
 def _merge_surrogates(text):
     """Returns a copy of the text with all surrogate pairs merged"""
 
-    return _decode_surrogatepass(
-        text.encode("utf-16-le", _surrogatepass),
-        "utf-16-le")
+    return _decode_surrogatepass(text.encode("utf-16-le", _surrogatepass), "utf-16-le")
 
 
 def fsn2norm(path):
@@ -159,14 +157,14 @@ def _fsnative(text):
             path = text.encode("utf-8", _surrogatepass)
 
         if b"\x00" in path:
-            path = path.replace(b"\x00", fsn2bytes(_fsnative(u"\uFFFD"), None))
+            path = path.replace(b"\x00", fsn2bytes(_fsnative("\ufffd"), None))
 
         if PY3:
             return path.decode(_encoding, "surrogateescape")
         return path
     else:
-        if u"\x00" in text:
-            text = text.replace(u"\x00", u"\uFFFD")
+        if "\x00" in text:
+            text = text.replace("\x00", "\ufffd")
         text = fsn2norm(text)
         return text
 
@@ -176,7 +174,6 @@ def _create_fsnative(type_):
     # work
 
     class meta(type):
-
         def __instancecheck__(self, instance):
             return _typecheck_fsnative(instance)
 
@@ -222,7 +219,7 @@ def _create_fsnative(type_):
         the `str` only contains ASCII and no NULL.
         """
 
-        def __new__(cls, text=u""):
+        def __new__(cls, text=""):
             return _fsnative(text)
 
     new_type = meta("fsnative", (object,), dict(impl.__dict__))
@@ -246,7 +243,7 @@ def _typecheck_fsnative(path):
         return False
 
     if PY3 or is_win:
-        if u"\x00" in path:
+        if "\x00" in path:
             return False
 
         if is_unix:
@@ -276,8 +273,10 @@ def _fsn2native(path):
     """
 
     if not isinstance(path, fsnative_type):
-        raise TypeError("path needs to be %s, not %s" % (
-            fsnative_type.__name__, type(path).__name__))
+        raise TypeError(
+            "path needs to be %s, not %s"
+            % (fsnative_type.__name__, type(path).__name__)
+        )
 
     if is_unix:
         if PY3:
@@ -290,12 +289,13 @@ def _fsn2native(path):
                 raise TypeError(
                     "path contained Unicode code points not valid in"
                     "the current path encoding. To create a valid "
-                    "path from Unicode use text2fsn()")
+                    "path from Unicode use text2fsn()"
+                )
 
         if b"\x00" in path:
             raise TypeError("fsnative can't contain nulls")
     else:
-        if u"\x00" in path:
+        if "\x00" in path:
             raise TypeError("fsnative can't contain nulls")
 
     return path
@@ -356,7 +356,7 @@ def path2fsn(path):
                 raise ValueError("embedded null")
             path = fsn2norm(path)
         else:
-            if u"\x00" in path:
+            if "\x00" in path:
                 raise ValueError("embedded null")
             path = fsn2norm(path)
 
@@ -394,8 +394,7 @@ def fsn2text(path, strict=False):
     errors = "strict" if strict else "replace"
 
     if is_win:
-        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le",
-                                                               errors)
+        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le", errors)
     else:
         return path.decode(_encoding, errors)
 
@@ -496,7 +495,7 @@ def bytes2fsn(data, encoding="utf-8"):
             path = _decode_surrogatepass(data, encoding)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
-        if u"\x00" in path:
+        if "\x00" in path:
             raise ValueError("contains nulls")
         return path
     else:
@@ -525,10 +524,10 @@ def uri2fsn(uri):
         if isinstance(uri, text_type):
             uri = uri.encode("utf-8")
         if not isinstance(uri, bytes):
-            raise TypeError("uri needs to be ascii str or unicode")
+            raise TypeError("URI needs to be ascii str or unicode")
     else:
         if not isinstance(uri, str):
-            raise TypeError("uri needs to be str")
+            raise TypeError("URI needs to be str")
 
     parsed = urlparse(uri)
     scheme = parsed.scheme
@@ -560,7 +559,7 @@ def uri2fsn(uri):
             path = "\\\\" + path
         if PY2:
             path = path.decode("utf-8")
-        if u"\x00" in path:
+        if "\x00" in path:
             raise ValueError("embedded null")
         return path
     else:
@@ -606,7 +605,7 @@ def fsn2uri(path):
             winapi.UrlCreateFromPathW(path, buf, ctypes.byref(length), flags)
         except WindowsError as e:
             raise ValueError(e)
-        uri = buf[:length.value]
+        uri = buf[: length.value]
         # https://bitbucket.org/pypy/pypy/issues/3133
         uri = _merge_surrogates(uri)
 
@@ -622,4 +621,4 @@ def fsn2uri(path):
         return _quote_path(uri.encode("utf-8", _surrogatepass))
 
     else:
-        return u"file://" + _quote_path(path)
+        return "file://" + _quote_path(path)

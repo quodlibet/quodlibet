@@ -42,7 +42,7 @@ def mkdir(dir_, *args):
 
 
 def uri2gsturi(uri):
-    """Takes a correct uri and returns a gstreamer-compatible uri"""
+    """Takes a correct URI and returns a gstreamer-compatible URI"""
     if not is_windows():
         return uri
     try:

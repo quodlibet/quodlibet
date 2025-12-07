@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2011-2024 Nick Boultbee
+#           2011-2025 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -10,6 +10,7 @@
 
 import os
 import shutil
+import time
 from typing import TypeVar, Optional, Generic
 from collections.abc import (
     Collection,
@@ -272,12 +273,13 @@ class PicklingMixin:
             filename = self.filename
 
         print_d(f"Saving contents to {filename!r}", self._name)
-
+        start = time.monotonic()
         try:
             dirname = os.path.dirname(filename)
             mkdir(dirname)
+            content = self.get_content()
             with atomic_save(filename, "wb") as fileobj:
-                fileobj.write(dump_audio_files(self.get_content()))
+                fileobj.write(dump_audio_files(content))
         except SerializationError:
             # Can happen when we try to pickle while the library is being
             # modified, like in the periodic 15min save.
@@ -287,6 +289,8 @@ class PicklingMixin:
             print_w(f"Couldn't save library to path {filename!r}")
         else:
             self.dirty = False
+        duration = time.monotonic() - start
+        print_d(f"Saved contents to {filename!r} in {duration:.1f}s", self._name)
 
 
 def iter_paths(

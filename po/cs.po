@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-11-06 19:51+0000\n"
+"PO-Revision-Date: 2025-11-17 21:51+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -1665,9 +1665,8 @@ msgid ""
 msgstr "Změní stavovou zprávu na Discordu podle toho co právě posloucháte."
 
 #: quodlibet/ext/events/discord_status.py:202
-#, fuzzy
 msgid "(Paused)"
-msgstr "Pozastaveno"
+msgstr "(Pozastaveno)"
 
 #: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
