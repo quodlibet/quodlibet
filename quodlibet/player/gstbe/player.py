@@ -757,9 +757,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return None
         self._in_gapless_transition = True
 
-        print_d("Select next song in mainloop..")
+        print_d("Select next song in mainloop…")
         self._source.next_ended()
-        print_d("..done.")
+        print_d("…next song done.")
 
         song = self._source.current
         if song is not None:
@@ -779,17 +779,17 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # in the mainloop before our function gets scheduled.
             # In this case abort and do nothing, which results
             # in a non-gapless transition.
-            print_e(f"About to finish (async): {e}")
+            print_e(f"About to finish (async): {e!r}")
             return
         except MainRunnerAbortedError as e:
-            print_e(f"About to finish (async): {e}")
+            print_e(f"About to finish (async): {e!r}")
             return
         except MainRunnerError:
             util.print_exc()
             return
 
         if uri is not None:
-            print_d("About to finish (async): setting uri")
+            print_d(f"About to finish (async): setting URI to {uri}")
             self._set_uri(uri)
         print_d("About to finish (async): done")
 

@@ -9,6 +9,8 @@ import os
 import threading
 import ctypes
 
+from quodlibet.util.dprint import print_w
+
 if os.name == "nt":
     from . import winapi
 
@@ -153,8 +155,9 @@ class NamedPipeServer(threading.Thread):
 
                 if winapi.DisconnectNamedPipe(handle) == 0:
                     raise ctypes.WinError()
-            except OSError:
-                # better not loop forever..
+            except OSError as e:
+                # better not loop forever...
+                print_w(f"Error during pipe communication: {e}")
                 break
             finally:
                 if self._stopped:
