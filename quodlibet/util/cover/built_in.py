@@ -20,10 +20,6 @@ from quodlibet.util.dprint import print_w, print_d
 from quodlibet import config
 
 
-def get_ext(s):
-    return os.path.splitext(s)[1].lstrip(".")
-
-
 def prefer_embedded():
     return config.getboolean("albumart", "prefer_embedded", False)
 
@@ -65,7 +61,7 @@ class FilesystemCover(CoverSourcePlugin):
     DEBUG = False
 
     cover_subdirs = {"scan", "scans", "images", "covers", "artwork"}
-    cover_exts = {"jpg", "jpeg", "png", "gif"}
+    cover_exts = (".jpg", ".jpeg", ".png", ".gif")
 
     cover_name_regexes = {re.compile(s) for s in ("^folder$", "^cover$", "^front$")}
     cover_positive_regexes = {
@@ -132,7 +128,7 @@ class FilesystemCover(CoverSourcePlugin):
             fns = []
             for entry in entries:
                 lentry = entry.lower()
-                if get_ext(lentry) in self.cover_exts:
+                if lentry.endswith(self.cover_exts):
                     fns.append((None, entry))
                 if lentry in self.cover_subdirs:
                     subdir = os.path.join(base, entry)
@@ -143,7 +139,7 @@ class FilesystemCover(CoverSourcePlugin):
                         pass
                     for sub_entry in sub_entries:
                         lsub_entry = sub_entry.lower()
-                        if get_ext(lsub_entry) in self.cover_exts:
+                        if lsub_entry.endswith(self.cover_exts):
                             fns.append((entry, sub_entry))
 
             for sub, fn in fns:
