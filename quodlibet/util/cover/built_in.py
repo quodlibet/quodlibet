@@ -10,7 +10,6 @@
 import glob
 import os.path
 import re
-import sre_constants
 
 from senf import fsn2text
 
@@ -97,15 +96,6 @@ class FilesystemCover(CoverSourcePlugin):
         base = self.song("~dirname")
         images = []
 
-        def safe_glob(*args, **kwargs):
-            try:
-                return glob.glob(*args, **kwargs)
-            except sre_constants.error:
-                # https://github.com/python/cpython/issues/89973
-                # old glob would fail with invalid ranges, newer one
-                # handles it correctly.
-                return []
-
         if config.getboolean("albumart", "force_filename"):
             score = 100
             for filename in config.get("albumart", "filename").split(","):
@@ -113,7 +103,7 @@ class FilesystemCover(CoverSourcePlugin):
                 filename = filename.strip()
 
                 escaped_path = os.path.join(glob.escape(base), filename)
-                for path in safe_glob(escaped_path):
+                for path in glob.glob(escaped_path):
                     images.append((score, path))
                     # Adhere to the user-defined filename/pattern order
                     score -= 1
