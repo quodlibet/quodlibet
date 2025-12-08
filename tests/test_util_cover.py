@@ -4,10 +4,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import glob
 import os
 import shutil
 from os.path import basename
+from pathlib import Path
 
 from gi.repository import Gio
 
@@ -44,19 +44,19 @@ class TCoverManager(TestCase):
         config.init()
 
         self.manager = CoverManager()
-        self.dir = mkdtemp()
+        self.dir: Path = Path(mkdtemp())
         self.song = self.an_album_song()
 
         # Safety check
-        assert not glob.glob(os.path.join(self.dir + "*.jpg"))
-        files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
-        for f in files:
-            open(f, "w").close()
+        assert not list(self.dir.glob("*.jpg"))
+        paths = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
+        for p in paths:
+            p.write_bytes(os.urandom(1024))
 
     def an_album_song(self, fn="asong.ogg"):
         return AudioFile(
             {
-                "~filename": os.path.join(self.dir, fn),
+                "~filename": str(self.full_path(fn)),
                 "album": "Quuxly",
                 "artist": "Some One",
             }
@@ -66,11 +66,11 @@ class TCoverManager(TestCase):
         shutil.rmtree(self.dir)
         config.quit()
 
-    def _find_cover(self, song):
+    def _find_cover(self, song: AudioFile):
         return self.manager.get_cover(song)
 
-    def full_path(self, path):
-        return os.path.join(self.dir, path)
+    def full_path(self, fn: str) -> Path:
+        return self.dir / fn
 
     def test_dir_not_exist(self):
         assert not self._find_cover(bar_2_1)
@@ -80,10 +80,8 @@ class TCoverManager(TestCase):
 
     def test_labelid(self):
         self.song["labelid"] = "12345"
-        assert path_equal(
-            os.path.abspath(self._find_cover(self.song).name),
-            self.full_path("12345.jpg"),
-        )
+        actual = Path(self._find_cover(self.song).name)
+        assert actual == self.full_path("12345.jpg")
         del self.song["labelid"]
 
     def test_regular(self):
@@ -93,10 +91,10 @@ class TCoverManager(TestCase):
             "Quuxly - front.png",
             "Quuxly_front_folder_cover.gif",
         ]:
-            f = self.add_file(fn)
+            p = self.add_file(fn)
             cover = self._find_cover(self.song)
             assert cover, f"No cover found after adding {fn}"
-            assert path_equal(os.path.abspath(cover.name), f)
+            assert Path(cover.name).absolute() == p
         self.test_labelid()  # labelid must work with other files present
 
     def test_file_encoding(self):
@@ -104,14 +102,16 @@ class TCoverManager(TestCase):
         assert isinstance(self.song("album"), str)
         h = self._find_cover(self.song)
         assert h, "Nothing found"
-        self.assertEqual(normalize_path(h.name), normalize_path(f))
+        assert h.name == normalize_path(f)
 
     def test_glob(self):
         config.set("albumart", "force_filename", str(True))
         config.set("albumart", "filename", "foo.*")
         for fn in ["foo.jpg", "foo.png"]:
-            f = self.add_file(fn)
-            assert path_equal(os.path.abspath(self._find_cover(self.song).name), f)
+            p = self.add_file(fn)
+            actual = Path(self._find_cover(self.song).name)
+            assert actual == p
+            (Path(self.dir) / fn).unlink()
 
     def test_invalid_glob(self):
         config.set("albumart", "force_filename", str(True))
@@ -128,7 +128,7 @@ class TCoverManager(TestCase):
         # Make a dir which contains an invalid glob
         path = os.path.join(self.full_path("[a-2]"), "cover.jpg")
         mkdir(os.path.dirname(path))
-        f = self.add_file(path)
+        p = self.add_file(path)
 
         # Change the song's path to contain the invalid glob
         old_song_path = self.song["~filename"]
@@ -139,7 +139,7 @@ class TCoverManager(TestCase):
 
         # The glob in the dirname should be ignored, while the
         # glob in the filename/basename is honored
-        assert path_equal(os.path.abspath(self._find_cover(self.song).name), f)
+        assert Path(self._find_cover(self.song).name) == p
 
         self.song["~filename"] = old_song_path
 
@@ -151,8 +151,9 @@ class TCoverManager(TestCase):
         config.set("albumart", "filename", "bar*,foo.png, foo.jpg ")
 
         for fn in ["foo.jpg", "foo.png", "bar.jpg"]:
-            f = self.add_file(fn)
-            assert path_equal(os.path.abspath(self._find_cover(self.song).name), f)
+            p = self.add_file(fn)
+            actual = Path(self._find_cover(self.song).name)
+            assert actual == p, f"{p.name} should have trumped, not {actual.name}"
 
     def test_intelligent(self):
         song = self.song
@@ -166,14 +167,14 @@ class TCoverManager(TestCase):
             "Q-man - Quuxly (FRONT).jpg",
         ]
         for fn in fns:
-            f = self.add_file(fn)
+            p = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
-                actual = os.path.abspath(cover.name)
-                assert path_equal(actual, f)
+                actual = Path(cover.name).absolute()
+                assert actual == p
             else:
                 # Here, no cover is better than the back...
-                assert path_equal(f, self.full_path("Quuxly - back.jpg"))
+                assert path_equal(p, self.full_path("Quuxly - back.jpg"))
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
@@ -182,7 +183,7 @@ class TCoverManager(TestCase):
 
         song = AudioFile(
             {
-                "~filename": fsnative(os.path.join(self.dir, "asong.ogg")),
+                "~filename": str(self.full_path("asong.ogg")),
                 "album": "foobar",
                 "title": "Ode to Baz",
                 "artist": "Q-Man",
@@ -209,10 +210,10 @@ class TCoverManager(TestCase):
             else:
                 assert not should_find, f"Couldn't find {f} for {song('~filename')}"
 
-    def add_file(self, fn):
-        f = self.full_path(fn)
-        open(f, "wb").close()
-        return f
+    def add_file(self, fn: str) -> Path:
+        p = self.dir / fn
+        p.write_bytes(os.urandom(1024))
+        return p.absolute()
 
     def test_multiple_people(self):
         song = AudioFile(

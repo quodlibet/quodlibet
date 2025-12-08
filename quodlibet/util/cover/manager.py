@@ -7,8 +7,10 @@
 # (at your option) any later version.
 
 from itertools import chain
+from typing import IO
+from collections.abc import Iterable
 
-from gi.repository import GObject
+from gi.repository import GObject, GdkPixbuf
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
@@ -169,16 +171,16 @@ class CoverManager(GObject.Object):
                     return cover
         return None
 
-    def get_cover(self, song):
+    def get_cover(self, song) -> IO | None:
         """Returns a cover file object for one song or None.
 
-        Compared to acquire_cover_sync() this respects the prefer_embedded
-        setting.
+        Compared to ``acquire_cover_sync()``,
+        this respects the ``prefer_embedded`` setting.
         """
 
         return self.get_cover_many([song])
 
-    def get_cover_many(self, songs):
+    def get_cover_many(self, songs: Iterable[AudioFile]) -> IO | None:
         """Returns a cover file object for many songs or None.
 
         Returns the first found image for a group of songs.
@@ -187,7 +189,9 @@ class CoverManager(GObject.Object):
 
         return self.acquire_cover_sync_many(songs)
 
-    def get_pixbuf_many(self, songs, width, height):
+    def get_pixbuf_many(
+        self, songs: Iterable[AudioFile], width: int, height: int
+    ) -> GdkPixbuf:
         """Returns a Pixbuf which fits into the boundary defined by width
         and height or None.
 
@@ -200,7 +204,7 @@ class CoverManager(GObject.Object):
 
         return get_thumbnail_from_file(fileobj, (width, height))
 
-    def get_pixbuf(self, song, width, height):
+    def get_pixbuf(self, song: AudioFile, width: int, height: int) -> GdkPixbuf:
         """see get_pixbuf_many()"""
 
         return self.get_pixbuf_many([song], width, height)
