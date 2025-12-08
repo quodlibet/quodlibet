@@ -7253,11 +7253,11 @@ msgid ""
 "Uses commonly named images found in common directories alongside the song."
 msgstr ""
 
-#: quodlibet/util/cover/manager.py:231
+#: quodlibet/util/cover/manager.py:232
 msgid "Cover Art"
 msgstr ""
 
-#: quodlibet/util/cover/manager.py:231
+#: quodlibet/util/cover/manager.py:232
 msgid "Querying album art providers"
 msgstr ""
 
