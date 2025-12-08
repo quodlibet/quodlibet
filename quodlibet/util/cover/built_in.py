@@ -109,10 +109,10 @@ class FilesystemCover(CoverSourcePlugin):
                     score -= 1
 
         if not images:
-            entries = []
             try:
                 entries = os.listdir(base)
             except OSError:
+                entries = []
                 print_w(f"Can't list album art directory {base}")
 
             fns = []
@@ -121,15 +121,12 @@ class FilesystemCover(CoverSourcePlugin):
                 if lentry.endswith(self.cover_exts):
                     fns.append((None, entry))
                 if lentry in self.cover_subdirs:
-                    subdir = os.path.join(base, entry)
-                    sub_entries = []
                     try:
-                        sub_entries = os.listdir(subdir)
+                        sub_entries = os.listdir(os.path.join(base, entry))
                     except OSError:
-                        pass
+                        sub_entries = []
                     for sub_entry in sub_entries:
-                        lsub_entry = sub_entry.lower()
-                        if lsub_entry.endswith(self.cover_exts):
+                        if sub_entry.lower().endswith(self.cover_exts):
                             fns.append((entry, sub_entry))
 
             for sub, fn in fns:
