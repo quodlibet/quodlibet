@@ -65,7 +65,7 @@ class TCoverManager(TestCase):
         return self.manager.get_cover(song)
 
     def full_path(self, fn: str) -> Path:
-        return self.dir / fn
+        return (self.dir / fn).resolve()
 
     def test_dir_not_exist(self):
         assert not self._find_cover(bar_2_1)
@@ -163,7 +163,7 @@ class TCoverManager(TestCase):
             p = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
-                actual = Path(cover.name).absolute()
+                actual = Path(cover.name).resolve()
                 assert actual == p
             else:
                 # Here, no cover is better than the back...
@@ -196,7 +196,7 @@ class TCoverManager(TestCase):
             p = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
-                actual = Path(cover.name).absolute()
+                actual = Path(cover.name).resolve()
                 assert actual == p, f"{p.name!r} should trump {actual.name!r}"
             else:
                 assert not should_find, f"Couldn't find {p} for {song('~filename')}"
@@ -204,7 +204,7 @@ class TCoverManager(TestCase):
     def add_file(self, fn: str | Path) -> Path:
         p = self.dir / fn
         p.write_bytes(urandom(1024))
-        return p.absolute()
+        return p.resolve()
 
     def test_multiple_people(self):
         song = AudioFile(
