@@ -71,8 +71,7 @@ class PreferencesWindow(UniqueWindow):
                     "jump",
                     populate=True,
                     tooltip=_(
-                        "When the playing song changes, "
-                        "scroll to it in the song list"
+                        "When the playing song changes, scroll to it in the song list"
                     ),
                 )
                 autosort_button = CS(
@@ -372,23 +371,22 @@ class PreferencesWindow(UniqueWindow):
             )
             vb.pack_start(sw, False, True, 0)
 
-            preferred_image_filename_tooltip = _(
-                "The album art image file(s) to use when available "
-                "(supports wildcards). If you want to supply more "
-                "than one, separate them with commas."
+            allowed_image_filename_tooltip = _(
+                "Only allow these filenames. "
+                "Separate multiple files with commas. Supports wildcards."
             )
 
             sw = CS(
-                _("_Preferred fixed image filename(s)"),
+                _("Restrict image filename(s)"),
                 "albumart",
                 "force_filename",
                 populate=True,
-                tooltip=preferred_image_filename_tooltip,
+                tooltip=_("Restrict album art to the specified filenames."),
             )
             vb.pack_start(sw, False, True, 0)
 
             entry = UndoEntry()
-            entry.set_tooltip_text(preferred_image_filename_tooltip)
+            entry.set_tooltip_text(allowed_image_filename_tooltip)
             entry.set_text(config.get("albumart", "filename"))
             entry.connect("changed", self.__changed_text, "filename")
             # Disable entry when not forcing

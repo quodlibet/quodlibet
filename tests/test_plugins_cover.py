@@ -6,6 +6,7 @@
 import io
 import os
 import shutil
+from pathlib import Path
 
 from gi.repository import GdkPixbuf
 
@@ -19,7 +20,6 @@ from quodlibet.formats.mp3 import MP3File
 from quodlibet.formats import AudioFile, EmbeddedImage
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.cover.manager import CoverPluginHandler, CoverManager
-from quodlibet.util.path import path_equal
 
 from .helper import get_temp_copy
 
@@ -319,7 +319,7 @@ class TCoverManagerBuiltin(TestCase):
         assert not self.is_embedded(cover_for([song2, song1]))
 
     def is_embedded(self, fileobj):
-        return not path_equal(fileobj.name, self.external_cover, True)
+        return Path(fileobj.name).resolve() != Path(self.external_cover).resolve()
 
     def test_acquire_prefer_embedded(self):
         # embed one cover...
