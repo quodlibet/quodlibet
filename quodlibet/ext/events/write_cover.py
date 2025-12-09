@@ -1,13 +1,14 @@
 # Copyright 2005 Joe Wreschnig
-#           2018 Nick Boultbee
+#        2018-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import os
+
 import shutil
+from pathlib import Path
 
 from gi.repository import Gtk
 
@@ -19,13 +20,13 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
 
 
-def get_path():
-    default = os.path.join(quodlibet.get_user_dir(), "current.cover")
-    return config.get("plugins", __name__, default=default)
+def get_path() -> Path:
+    default = Path(quodlibet.get_user_dir()) / "current.cover"
+    return Path(config.get("plugins", __name__, default=default))
 
 
 def set_path(value):
-    config.set("plugins", __name__, value)
+    config.set("plugins", __name__, str(value))
 
 
 class PictureSaver(EventPlugin):
@@ -35,22 +36,18 @@ class PictureSaver(EventPlugin):
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
-        def delete(outfile):
-            try:
-                os.unlink(outfile)
-            except OSError as e:
-                print_w(f"Couldn't delete {outfile!r} ({e})")
+        def delete(p: Path):
+            p.unlink(missing_ok=True)
 
-        outfile = get_path()
+        path = get_path()
         if song is None:
-            delete(outfile)
+            delete(path)
         else:
             cover = app.cover_manager.get_cover(song)
             if cover is None:
-                delete(outfile)
+                delete(path)
             else:
-                with open(outfile, "wb") as f:
-                    f.write(cover.read())
+                path.write_bytes(cover.read())
 
     def PluginPreferences(self, parent):
         def changed(entry):
