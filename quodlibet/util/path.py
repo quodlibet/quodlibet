@@ -407,10 +407,6 @@ else:
     normalize_path = _normalize_path
 
 
-def path_equal(p1, p2, canonicalise=False):
-    return normalize_path(p1, canonicalise) == normalize_path(p2, canonicalise)
-
-
 def limit_path(path, ellipsis=True):
     """Reduces the filename length of all filenames in the given path
     to the common maximum length for current platform.

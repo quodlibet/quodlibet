@@ -4,13 +4,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import os
 import shutil
-from os.path import basename
+from os import urandom
 from pathlib import Path
 
 from gi.repository import Gio
-
 from senf import fsnative
 
 from quodlibet import config
@@ -19,10 +17,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.plugins import Plugin
 from quodlibet.util.cover.http import escape_query_value
 from quodlibet.util.cover.manager import CoverManager
-from quodlibet.util.path import normalize_path, path_equal, mkdir
-
 from tests import TestCase, mkdtemp
-
 
 bar_2_1 = AudioFile(
     {
@@ -51,7 +46,7 @@ class TCoverManager(TestCase):
         assert not list(self.dir.glob("*.jpg"))
         paths = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
         for p in paths:
-            p.write_bytes(os.urandom(1024))
+            p.write_bytes(urandom(1024))
 
     def an_album_song(self, fn="asong.ogg"):
         return AudioFile(
@@ -98,11 +93,11 @@ class TCoverManager(TestCase):
         self.test_labelid()  # labelid must work with other files present
 
     def test_file_encoding(self):
-        f = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
+        p = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
         assert isinstance(self.song("album"), str)
         h = self._find_cover(self.song)
         assert h, "Nothing found"
-        assert h.name == normalize_path(f)
+        assert Path(h.name) == p
 
     def test_glob(self):
         config.set("albumart", "force_filename", str(True))
@@ -117,7 +112,7 @@ class TCoverManager(TestCase):
         config.set("albumart", "force_filename", str(True))
         config.set("albumart", "filename", "[a-2].jpg")
 
-        # Invalid glob range, should not match anything
+        # Invalid glob range: should not match anything
         self.add_file("a.jpg")
         assert self._find_cover(self.song) is None
 
@@ -126,15 +121,13 @@ class TCoverManager(TestCase):
         config.set("albumart", "filename", "*.jpg")
 
         # Make a dir which contains an invalid glob
-        path = os.path.join(self.full_path("[a-2]"), "cover.jpg")
-        mkdir(os.path.dirname(path))
+        path = self.full_path("[a-2]") / "cover.jpg"
+        path.parent.mkdir()
         p = self.add_file(path)
 
         # Change the song's path to contain the invalid glob
         old_song_path = self.song["~filename"]
-        new_song_path = os.path.join(
-            os.path.dirname(path), os.path.basename(old_song_path)
-        )
+        new_song_path = path.parent / Path(old_song_path).name
         self.song["~filename"] = new_song_path
 
         # The glob in the dirname should be ignored, while the
@@ -174,7 +167,7 @@ class TCoverManager(TestCase):
                 assert actual == p
             else:
                 # Here, no cover is better than the back...
-                assert path_equal(p, self.full_path("Quuxly - back.jpg"))
+                assert p == self.full_path("Quuxly - back.jpg")
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
@@ -200,25 +193,23 @@ class TCoverManager(TestCase):
             ("Q-man - foobar (cover).jpg", True),
         ]
         for fn, should_find in data:
-            f = self.add_file(fn)
+            p = self.add_file(fn)
             cover = self._find_cover(song)
             if cover:
-                actual = os.path.abspath(cover.name)
-                assert path_equal(
-                    actual, f
-                ), f"{basename(f)!r} should trump {basename(actual)!r}"
+                actual = Path(cover.name).absolute()
+                assert actual == p, f"{p.name!r} should trump {actual.name!r}"
             else:
-                assert not should_find, f"Couldn't find {f} for {song('~filename')}"
+                assert not should_find, f"Couldn't find {p} for {song('~filename')}"
 
-    def add_file(self, fn: str) -> Path:
+    def add_file(self, fn: str | Path) -> Path:
         p = self.dir / fn
-        p.write_bytes(os.urandom(1024))
+        p.write_bytes(urandom(1024))
         return p.absolute()
 
     def test_multiple_people(self):
         song = AudioFile(
             {
-                "~filename": os.path.join(self.dir, "asong.ogg"),
+                "~filename": str(self.dir / "asong.ogg"),
                 "album": "foobar",
                 "title": "Ode to Baz",
                 "performer": "The Performer",
@@ -232,12 +223,12 @@ class TCoverManager(TestCase):
             "The Composer - The Performer - foobar.jpg",
             "The Composer - The Conductor, The Performer - foobar.jpg",
         ]:
-            f = self.add_file(fn)
+            p = self.add_file(fn)
             cover = self._find_cover(song)
             assert cover
-            actual = os.path.abspath(cover.name)
+            actual = Path(cover.name).absolute()
             cover.close()
-            assert path_equal(actual, f, f'"{f}" should trump "{actual}"')
+            assert actual == p, f'"{p}" should trump "{actual}"'
 
     def test_get_thumbnail(self):
         assert self.manager.get_pixbuf(self.song, 10, 10) is None
@@ -245,9 +236,7 @@ class TCoverManager(TestCase):
 
     def test_get_many(self):
         songs = [
-            AudioFile(
-                {"~filename": os.path.join(self.dir, "song.ogg"), "title": "Ode to Baz"}
-            ),
+            AudioFile({"~filename": str(self.dir / "song.ogg"), "title": "Ode to Baz"}),
             self.an_album_song(),
         ]
         plugin = Plugin(ArtworkUrlCover)
