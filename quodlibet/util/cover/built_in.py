@@ -16,7 +16,8 @@ from quodlibet.util.dprint import print_w, print_d
 from quodlibet import config
 
 
-def get_ext(p: Path):
+def get_ext(p: Path) -> str:
+    "Gets lowercase extension (no dot)"
     return p.suffix.lower().strip(".")
 
 
@@ -188,7 +189,7 @@ class FilesystemCover(CoverSourcePlugin):
                 if score > 2:
                     if sub is not None:
                         path = Path(sub) / path
-                    images.append((score, base / path))
+                    images.append((score, path))
 
         for _score, path in sorted(images, reverse=True):
             # could be a directory
