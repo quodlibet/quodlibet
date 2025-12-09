@@ -53,7 +53,7 @@ class TCoverManager(TestCase):
         return AudioFile(
             {
                 "~filename": str(self.full_path(fn)),
-                "album": "Quuxly",
+                "album": "AlbumName",
                 "artist": "Some One",
             }
         )
@@ -84,8 +84,8 @@ class TCoverManager(TestCase):
         for fn in [
             "cover.png",
             "folder.jpg",
-            "Quuxly - front.png",
-            "Quuxly_front_folder_cover.gif",
+            "AlbumName - front.png",
+            "AlbumName_front_folder_cover.gif",
         ]:
             p = self.add_file(fn)
             cover = self._find_cover(self.song)
@@ -94,7 +94,7 @@ class TCoverManager(TestCase):
         self.test_labelid()  # labelid must work with other files present
 
     def test_file_encoding(self):
-        p = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
+        p = self.add_file(fsnative("öäü - AlbumName - cover.jpg"))
         assert isinstance(self.song("album"), str)
         h = self._find_cover(self.song)
         assert h, "Nothing found"
@@ -150,7 +150,7 @@ class TCoverManager(TestCase):
             assert actual == p, f"{p.name} should have trumped, not {actual.name}"
 
     def test_back_excluded(self):
-        self.add_file("Quuxly - back.jpg")
+        self.add_file("AlbumName - back.jpg")
         assert not self._find_cover(self.song)
 
     def test_intelligent(self):
@@ -158,10 +158,10 @@ class TCoverManager(TestCase):
         song["artist"] = "Q-Man"
         song["title"] = "First Q falls hardest"
         fns = [
-            "Quuxly.jpg",
-            "q-man - quxxly.jpg",
+            "AlbumName.jpg",
             "folder.jpeg",
-            "Q-man - Quuxly (FRONT).jpg",
+            "q-MAN - albumname.jpg",
+            "Q-man - AlbumName (FRONT).jpg",
         ]
         for fn in fns:
             p = self.add_file(fn)
