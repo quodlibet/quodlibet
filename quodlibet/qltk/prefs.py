@@ -372,16 +372,16 @@ class PreferencesWindow(UniqueWindow):
             vb.pack_start(sw, False, True, 0)
 
             allowed_image_filename_tooltip = _(
-                "The only album art image file(s) to use (supports wildcards)."
-                "To supply more than one, separate them with commas."
+                "Only allow these filenames. "
+                "Separate multiple files with commas. Supports wildcards."
             )
 
             sw = CS(
-                _("_Allowed image filename(s)"),
+                _("Restrict image filename(s)"),
                 "albumart",
                 "force_filename",
                 populate=True,
-                tooltip=allowed_image_filename_tooltip,
+                tooltip=_("Restrict album art to the specified filenames."),
             )
             vb.pack_start(sw, False, True, 0)
 
