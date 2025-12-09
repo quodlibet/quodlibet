@@ -319,7 +319,7 @@ class TCoverManagerBuiltin(TestCase):
         assert not self.is_embedded(cover_for([song2, song1]))
 
     def is_embedded(self, fileobj):
-        return Path(fileobj.name).absolute() != Path(self.external_cover).absolute()
+        return Path(fileobj.name).resolve() != Path(self.external_cover).resolve()
 
     def test_acquire_prefer_embedded(self):
         # embed one cover...

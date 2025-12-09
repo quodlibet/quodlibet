@@ -3,12 +3,14 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+import os.path
 import shutil
 from os import urandom
 from pathlib import Path
 
 from gi.repository import Gio
+
+from quodlibet.util.path import normalize_path
 from senf import fsnative
 
 from quodlibet import config
@@ -166,8 +168,10 @@ class TCoverManager(TestCase):
                 actual = Path(cover.name).resolve()
                 assert actual == p
             else:
+                actual = normalize_path(str(p))
                 # Here, no cover is better than the back...
-                assert p == self.full_path("Quuxly - back.jpg")
+                expected = normalize_path(str(self.full_path("Quuxly - back.jpg")))
+                assert actual == expected
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
@@ -226,7 +230,7 @@ class TCoverManager(TestCase):
             p = self.add_file(fn)
             cover = self._find_cover(song)
             assert cover
-            actual = Path(cover.name).absolute()
+            actual = Path(cover.name).resolve()
             cover.close()
             assert actual == p, f'"{p}" should trump "{actual}"'
 
