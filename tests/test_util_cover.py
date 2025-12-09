@@ -149,12 +149,15 @@ class TCoverManager(TestCase):
             actual = Path(self._find_cover(self.song).name)
             assert actual == p, f"{p.name} should have trumped, not {actual.name}"
 
+    def test_back_excluded(self):
+        self.add_file("Quuxly - back.jpg")
+        assert not self._find_cover(self.song)
+
     def test_intelligent(self):
         song = self.song
         song["artist"] = "Q-Man"
         song["title"] = "First Q falls hardest"
         fns = [
-            "Quuxly - back.jpg",
             "Quuxly.jpg",
             "q-man - quxxly.jpg",
             "folder.jpeg",
@@ -163,14 +166,8 @@ class TCoverManager(TestCase):
         for fn in fns:
             p = self.add_file(fn)
             cover = self._find_cover(song)
-            if cover:
-                actual = Path(cover.name).resolve()
-                assert actual == p
-            else:
-                actual = normalize_path(str(p))
-                # Here, no cover is better than the back...
-                expected = normalize_path(str(self.full_path("Quuxly - back.jpg")))
-                assert actual == expected
+            actual = normalize_path(cover.name)
+            assert actual == normalize_path(str(p))
 
     def test_embedded_special_cover_words(self):
         """Tests that words incidentally containing embedded "special" words
