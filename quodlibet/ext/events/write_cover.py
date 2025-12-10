@@ -13,7 +13,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_w
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
@@ -21,8 +21,8 @@ from quodlibet.qltk import Icons
 
 
 def get_path() -> Path:
-    default = Path(quodlibet.get_user_dir()) / "current.cover"
-    return Path(config.get("plugins", __name__, default=default))
+    p = config.get("plugins", __name__, default="")
+    return Path(p) if p else Path(quodlibet.get_user_dir()) / "current.cover"
 
 
 def set_path(value):
@@ -54,8 +54,8 @@ class PictureSaver(EventPlugin):
             fn = entry.get_text()
             try:
                 shutil.move(get_path(), fn)
-            except OSError:
-                pass
+            except OSError as e:
+                print_w(f"Couldn't save to new path {fn} ({e})")
             else:
                 set_path(fn)
 
