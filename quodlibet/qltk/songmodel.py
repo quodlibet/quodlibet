@@ -112,7 +112,6 @@ class PlaylistMux:
         source should be the right PlaylistModel in case song is an iter.
         """
 
-        print_d("Told to go to {!r}".format(getattr(song, "key", song)))
         main, other = self.pl, self.q
         if source is not None:
             assert source in (self.pl, self.q)
@@ -276,8 +275,6 @@ class PlaylistModel(TrackCurrentModel):
         """
 
         assert source is None or source is self
-
-        print_d("Told to go to {!r}".format(getattr(song_or_iter, "key", song_or_iter)))
 
         iter_ = None
         if isinstance(song_or_iter, Gtk.TreeIter):
