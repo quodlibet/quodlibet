@@ -13,7 +13,7 @@ from pathlib import Path
 from gi.repository import Gtk
 
 import quodlibet
-from quodlibet import _, print_w
+from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
