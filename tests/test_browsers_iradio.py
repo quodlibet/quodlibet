@@ -89,27 +89,39 @@ class TQuestionBar(TestCase):
 class TInternetRadio(TestCase):
     def setUp(self):
         quodlibet.config.init()
-        self.bar = InternetRadio(SongLibrary())
+        # Ugh
+        InternetRadio._InternetRadio__fav_stations = None
+        InternetRadio._InternetRadio__stations = None
+        self.browser = InternetRadio(SongLibrary())
 
     def test_can_filter(self):
-        assert self.bar.can_filter("foo")
-        assert self.bar.can_filter_text()
+        assert self.browser.can_filter("foo")
+        assert self.browser.can_filter_text()
 
     def test_status_bar_text(self):
-        self.assertEqual(self.bar.status_text(1), "1 station")
-        self.assertEqual(self.bar.status_text(101, 123), "101 stations")
+        assert self.browser.status_text(1) == "1 station"
+        assert self.browser.status_text(101, 123) == "101 stations"
 
     @pytest.mark.network
     @skipIf(is_windows() or is_osx(), "Don't need to test downloads all the time")
     def test_click_add_station(self):
-        self.bar._update_button.emit("clicked")
-        assert not self.bar.has_stations
+        self.browser._update_button.emit("clicked")
+        assert not self.browser.has_stations
         # Run the actual download from real URL
         run_gtk_loop()
-        assert self.bar.has_stations
+        assert self.browser.has_stations
+
+    def test_qbar_visible_by_default(self):
+        assert self.browser.qbar.is_visible()
+
+    def test_qbar_invisible_with_faves(self):
+        InternetRadio._InternetRadio__fav_stations = [1, 2, 3]
+        self.browser = InternetRadio(SongLibrary())
+        assert not self.browser.qbar.is_visible()
+        self.browser.destroy()
 
     def tearDown(self):
-        self.bar.destroy()
+        self.browser.destroy()
         quodlibet.config.quit()
 
 
