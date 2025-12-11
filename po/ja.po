@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-11-11 04:51+0000\n"
+"PO-Revision-Date: 2025-12-10 22:09+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -5933,8 +5933,7 @@ msgstr "「%s」を追加できません"
 #: quodlibet/qltk/edittags.py:795
 #, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr ""
-"選択されているファイルには「%s」タグに複数の値を設定することができません。"
+msgstr "選択されているファイルは「%s」タグに複数の値を設定することができません。"
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:821 quodlibet/qltk/edittags.py:1006
@@ -6566,15 +6565,16 @@ msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
 msgstr ""
+"これらのファイル名のみ許可します。複数のファイルはカンマで区切ってください。"
+"ワイルドカードも使用できます。"
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "固定の画像ファイル名を優先する(_P)"
+msgstr "画像ファイル名を制限する"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "アルバムアートを指定されたファイル名に制限します。"
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
