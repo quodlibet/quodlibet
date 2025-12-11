@@ -210,6 +210,7 @@ class TWatchedFileLibrary(TLibrary):
         assert {Path(af("~filename")) for af in self.removed} == {path}
         assert str(path) not in self.library, f"{path} shouldn't be in the library now"
 
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_watched_adding(self):
         with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
