@@ -9,8 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
 "PO-Revision-Date: 2025-12-10 12:02+0000\n"
-"Last-Translator: 大王叫我来巡山 "
-"<hamburger2048@users.noreply.hosted.weblate.org>\n"
+"Last-Translator: Sketch6580 <sketch6580@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -38,7 +37,7 @@ msgstr "日期(_D)"
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60
 msgid "_Date Added"
-msgstr "添加日期"
+msgstr "添加日期(_D)"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:61
@@ -215,7 +214,7 @@ msgstr "自定义(_C)"
 #: quodlibet/qltk/edittags.py:335 quodlibet/qltk/quodlibetwindow.py:1362
 #: quodlibet/qltk/scanbox.py:67
 msgid "_Add"
-msgstr "添加"
+msgstr "添加(_A)"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:92
@@ -231,7 +230,7 @@ msgstr "添加"
 #: quodlibet/qltk/maskedbox.py:86 quodlibet/qltk/queue.py:520
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:70
 msgid "_Remove"
-msgstr "删除 (_R)"
+msgstr "移除(_R)"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:60
@@ -253,7 +252,7 @@ msgstr "专辑集合首选项"
 #: quodlibet/ext/songsmenu/exact_rating.py:37
 #: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr "应用"
+msgstr "应用(_A)"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:254
@@ -281,7 +280,7 @@ msgstr "应用"
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
 msgid "_Cancel"
-msgstr "取消"
+msgstr "取消(_C)"
 
 #: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
@@ -502,7 +501,7 @@ msgstr "你想现在就获取一份流行的电台列表吗？"
 
 #: quodlibet/browsers/iradio.py:500
 msgid "_Load Stations"
-msgstr "加载电台 (_L)"
+msgstr "加载电台(_L)"
 
 #: quodlibet/browsers/iradio.py:516
 msgid "_Internet Radio"
@@ -527,7 +526,7 @@ msgstr "添加电台(_A)…"
 
 #: quodlibet/browsers/iradio.py:674
 msgid "_Update Stations"
-msgstr "更新电台 (_U)"
+msgstr "更新电台(_U)"
 
 #: quodlibet/browsers/iradio.py:859
 msgid "No stations found"
@@ -639,7 +638,7 @@ msgstr "从播放列表里删除(_R)"
 
 #: quodlibet/browsers/playlists/main.py:212 quodlibet/qltk/data_editors.py:95
 msgid "_New"
-msgstr "新建"
+msgstr "新建(_N)"
 
 #: quodlibet/browsers/playlists/main.py:214
 msgid "_Import…"
@@ -740,7 +739,7 @@ msgstr "输入新播放列表的名字："
 
 #: quodlibet/browsers/playlists/util.py:77
 msgid "_Create"
-msgstr "_创建"
+msgstr "创建(_C)"
 
 #: quodlibet/browsers/playlists/util.py:113
 #, python-format
@@ -767,7 +766,7 @@ msgstr "播客"
 
 #: quodlibet/browsers/podcasts.py:319
 msgid "_Podcasts"
-msgstr "_播客"
+msgstr "播客(_P)"
 
 #: quodlibet/browsers/podcasts.py:421
 msgid "_Add Feed…"
@@ -784,7 +783,7 @@ msgstr "搜索新节目源"
 
 #: quodlibet/browsers/podcasts.py:494
 msgid "_Rebuild"
-msgstr "_重建"
+msgstr "重建(_R)"
 
 #: quodlibet/browsers/podcasts.py:496
 msgid "Remove all existing episodes then reload from source"
@@ -837,7 +836,7 @@ msgstr "Soundcloud 浏览器"
 
 #: quodlibet/browsers/soundcloud/main.py:52
 msgid "Sound_cloud"
-msgstr "Soundcloud 浏览器"
+msgstr "Soundcloud 浏览器(_C)"
 
 #: quodlibet/browsers/soundcloud/main.py:74 quodlibet/qltk/searchbar.py:91
 msgid "Search"
@@ -1183,7 +1182,7 @@ msgstr "(可选) 请简单描述在错误发生之前您的操作过程："
 
 #: quodlibet/errorreport/ui.py:106
 msgid "_Send"
-msgstr "发送"
+msgstr "发送(_S)"
 
 #: quodlibet/errorreport/ui.py:112
 msgid "Short description…"
@@ -1263,7 +1262,7 @@ msgstr "重命名前将日文假名/汉字转换为罗马拼音。"
 
 #: quodlibet/ext/editing/kakasi.py:34
 msgid "Romanize _Japanese text"
-msgstr "将日文字符转换为罗马音"
+msgstr "将日文字符转换为罗马音(_J)"
 
 #: quodlibet/ext/editing/kakasi.py:67
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
@@ -1293,11 +1292,11 @@ msgstr "标题大小写标签(_C)"
 
 #: quodlibet/ext/editing/titlecase.py:50
 msgid "Allow _ALL-CAPS in tags"
-msgstr "允许标签内全大写"
+msgstr "允许标签内全大写(_A)"
 
 #: quodlibet/ext/editing/titlecase.py:53
 msgid "_Human title case"
-msgstr "适合阅读的标题大小写"
+msgstr "适合阅读的标题大小写(_H)"
 
 #: quodlibet/ext/editing/titlecase.py:55
 msgid ""
@@ -1363,15 +1362,15 @@ msgstr "颜色"
 
 #: quodlibet/ext/events/animosd/prefs.py:264
 msgid "_Shadows"
-msgstr "阴影"
+msgstr "阴影(_S)"
 
 #: quodlibet/ext/events/animosd/prefs.py:265
 msgid "_Outline"
-msgstr "边框"
+msgstr "边框(_O)"
 
 #: quodlibet/ext/events/animosd/prefs.py:266
 msgid "Rou_nded Corners"
-msgstr "圆角"
+msgstr "圆角(_N)"
 
 #: quodlibet/ext/events/animosd/prefs.py:286
 msgid "_Delay:"
@@ -1383,7 +1382,7 @@ msgstr "效果"
 
 #: quodlibet/ext/events/animosd/prefs.py:298
 msgid "Ed_it Display Pattern…"
-msgstr "编辑显示模式(_i)…"
+msgstr "编辑显示模式(_I)…"
 
 #: quodlibet/ext/events/animosd/prefs.py:301
 #: quodlibet/ext/events/synchronize_to_device.py:219
@@ -1771,7 +1770,7 @@ msgstr "用于保存的预设名称："
 #: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
-msgstr "保存"
+msgstr "保存(_S)"
 
 #: quodlibet/ext/events/gajim_status.py:30
 msgid "online"
@@ -2989,13 +2988,13 @@ msgstr "从系统托盘控制 Quod Libet。"
 #: quodlibet/ext/events/trayicon/menu.py:40
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr "显示(_S) %(application-name)s"
+msgstr "显示 %(application-name)s(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:59
 #: quodlibet/qltk/quodlibetwindow.py:209 quodlibet/qltk/quodlibetwindow.py:998
 #: quodlibet/qltk/quodlibetwindow.py:1211
 msgid "_Play"
-msgstr "播放 (_P)"
+msgstr "播放(_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:62
 #: quodlibet/qltk/quodlibetwindow.py:211 quodlibet/qltk/quodlibetwindow.py:1213
@@ -3522,7 +3521,7 @@ msgstr "仅队列"
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "_Queue only"
-msgstr "仅队列"
+msgstr "仅队列(_Q)"
 
 #: quodlibet/ext/playorder/queue.py:37
 msgid "Automatically start playing double-clicked songs"
@@ -3624,7 +3623,7 @@ msgstr "跳过标记不喜欢的歌曲"
 
 #: quodlibet/ext/playorder/skip_disliked.py:32
 msgid "Skip _disliked tracks"
-msgstr "跳过标记不喜欢的歌曲"
+msgstr "跳过标记不喜欢的歌曲(_D)"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
@@ -4266,7 +4265,7 @@ msgstr "删除标点(_P)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:419
 msgid "Case _Insensitive"
-msgstr "不区分大小写"
+msgstr "不区分大小写(_I)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:427
 msgid "Matching options"
@@ -4456,7 +4455,7 @@ msgstr "生成指纹："
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:63
 msgid "_Details"
-msgstr "细节(_D)"
+msgstr "详情(_D)"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:87
 msgid "_Submit"
@@ -5264,7 +5263,7 @@ msgstr "优先播放高评分曲目"
 
 #: quodlibet/order/reorder.py:39
 msgid "Prefer _higher rated"
-msgstr "优先播放高评分曲目(_h)"
+msgstr "优先播放高评分曲目(_H)"
 
 #: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
@@ -5272,7 +5271,7 @@ msgstr "重复当前曲目"
 
 #: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
-msgstr "重复此曲目(_t)"
+msgstr "重复此曲目(_T)"
 
 #: quodlibet/order/repeat.py:60
 msgid "Repeat all"
@@ -5280,7 +5279,7 @@ msgstr "重复所有"
 
 #: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
-msgstr "重复所有(_a)"
+msgstr "重复所有(_A)"
 
 #: quodlibet/order/repeat.py:76
 msgid "One song"
@@ -5288,7 +5287,7 @@ msgstr "单曲"
 
 #: quodlibet/order/repeat.py:77
 msgid "One _song"
-msgstr "单曲(_s)"
+msgstr "单曲(_S)"
 
 #: quodlibet/player/gstbe/player.py:119
 msgid "Stream"
@@ -5423,7 +5422,7 @@ msgstr "将收听提交到 ListenBrainz。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:463
 msgid "User _token:"
-msgstr "用户令牌(_t)："
+msgstr "用户令牌(_T)："
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:499
 msgid "T_ags:"
@@ -5509,7 +5508,7 @@ msgstr "最近播放(_P)"
 
 #: quodlibet/qltk/browser.py:66
 msgid "Recently _Added"
-msgstr "最近添加"
+msgstr "最近添加(_A)"
 
 #: quodlibet/qltk/browser.py:69
 msgid "_Top 40"
@@ -5521,7 +5520,7 @@ msgstr "全部歌曲(_S)"
 
 #: quodlibet/qltk/browser.py:78
 msgid "On Current _Genre(s)"
-msgstr "根据当前风格"
+msgstr "根据当前流派(_G)"
 
 #: quodlibet/qltk/browser.py:79
 msgid "On Current _Artist(s)"
@@ -5529,7 +5528,7 @@ msgstr "根据当前表演者"
 
 #: quodlibet/qltk/browser.py:80
 msgid "On Current Al_bum"
-msgstr "根据当前专辑"
+msgstr "根据当前专辑(_B)"
 
 #: quodlibet/qltk/browser.py:91
 msgid "Random _Genre"
@@ -5580,7 +5579,7 @@ msgstr "专辑模式(_A)"
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:129
 msgid "_Mute"
-msgstr "静音"
+msgstr "静音(_M)"
 
 #: quodlibet/qltk/controls.py:136
 msgid "_Replay Gain Mode"
@@ -5873,15 +5872,15 @@ msgstr "更多选项(_M)…"
 
 #: quodlibet/qltk/entry.py:80
 msgid "_Undo"
-msgstr "撤销"
+msgstr "撤销(_U)"
 
 #: quodlibet/qltk/entry.py:82
 msgid "_Redo"
-msgstr "重做"
+msgstr "重做(_R)"
 
 #: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:1021
 msgid "_About"
-msgstr "关于"
+msgstr "关于(_A)"
 
 #: quodlibet/qltk/exfalsowindow.py:103 quodlibet/qltk/quodlibetwindow.py:1045
 msgid "_Check for Updates…"
@@ -6131,7 +6130,7 @@ msgstr "取消隐藏"
 
 #: quodlibet/qltk/maskedbox.py:84
 msgid "_Unhide"
-msgstr "取消隐藏"
+msgstr "取消隐藏(_U)"
 
 #: quodlibet/qltk/matchdialog.py:25
 msgid ""
@@ -6297,7 +6296,7 @@ msgstr "长度(_L)"
 
 #: quodlibet/qltk/prefs.py:69
 msgid "_Jump to playing song automatically"
-msgstr "自动跳到正在播放的曲目"
+msgstr "自动跳转到正在播放的歌曲(_J)"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "When the playing song changes, scroll to it in the song list"
@@ -6353,7 +6352,7 @@ msgstr "列首选项"
 
 #: quodlibet/qltk/prefs.py:163
 msgid "_Update Columns"
-msgstr "更新列 (_U)"
+msgstr "更新列(_U)"
 
 #: quodlibet/qltk/prefs.py:166
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6400,7 +6399,7 @@ msgstr "在一次更改多首歌曲的评级之前要求确认"
 
 #: quodlibet/qltk/prefs.py:344
 msgid "Enable _one-click ratings"
-msgstr "允许一键评分"
+msgstr "允许一键评分(_O)"
 
 #: quodlibet/qltk/prefs.py:349
 msgid "Enable rating by clicking on the rating column in the song list"
@@ -6454,7 +6453,7 @@ msgstr "如果歌曲没有重播增益信息可用，则按此值调整音量"
 
 #: quodlibet/qltk/prefs.py:455
 msgid "_Fall-back gain:"
-msgstr "回退增益 (_F)："
+msgstr "回退增益(_F)："
 
 #: quodlibet/qltk/prefs.py:466
 msgid ""
@@ -6515,7 +6514,7 @@ msgstr "评分和播放次数将保存在此电子邮件地址的标签中"
 
 #: quodlibet/qltk/prefs.py:687
 msgid "_Auto-save tag changes"
-msgstr "自动保存标签变化 (_A)"
+msgstr "自动保存标签更改(_A)"
 
 #: quodlibet/qltk/prefs.py:692
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -6671,11 +6670,11 @@ msgstr "您还没有设置曲库，需要现在设置吗？"
 
 #: quodlibet/qltk/quodlibetwindow.py:425
 msgid "_Not Now"
-msgstr "暂时不要"
+msgstr "以后再说(_N)"
 
 #: quodlibet/qltk/quodlibetwindow.py:426
 msgid "_Set Up"
-msgstr "现在设置"
+msgstr "现在设置(_S)"
 
 #: quodlibet/qltk/quodlibetwindow.py:896
 msgid "Unable to add songs"
@@ -6688,7 +6687,7 @@ msgstr "%s 使用不受支持的协议。"
 
 #: quodlibet/qltk/quodlibetwindow.py:926
 msgid "_Jump to Playing Song"
-msgstr "跳到正在播放的曲目(_J)"
+msgstr "跳转到正在播放的歌曲(_J)"
 
 #: quodlibet/qltk/quodlibetwindow.py:933
 msgid "_File"
@@ -6716,15 +6715,15 @@ msgstr "帮助(_H)"
 
 #: quodlibet/qltk/quodlibetwindow.py:945
 msgid "_Add a Folder…"
-msgstr "添加一个文件夹(_A)…"
+msgstr "添加文件夹(_A)…"
 
 #: quodlibet/qltk/quodlibetwindow.py:950
 msgid "_Add a File…"
-msgstr "加入文件(_A)…"
+msgstr "添加文件(_A)…"
 
 #: quodlibet/qltk/quodlibetwindow.py:955
 msgid "_Add a Location…"
-msgstr "加入位置(_A)…"
+msgstr "添加位置(_A)…"
 
 #: quodlibet/qltk/quodlibetwindow.py:987
 msgid "Edit Bookmarks…"
@@ -6740,7 +6739,7 @@ msgstr "当前歌曲结束后停止播放"
 
 #: quodlibet/qltk/quodlibetwindow.py:1017
 msgid "_Keyboard Shortcuts"
-msgstr "快捷键"
+msgstr "键盘快捷键(_K)"
 
 #: quodlibet/qltk/quodlibetwindow.py:1026
 msgid "Online Help"
@@ -6819,7 +6818,7 @@ msgstr "修改评分(_R)"
 
 #: quodlibet/qltk/renamefiles.py:52
 msgid "Replace spaces with _underscores"
-msgstr "用下划线替换空格"
+msgstr "用下划线替换空格(_U)"
 
 #: quodlibet/qltk/renamefiles.py:62
 msgid "Replace [semi]colon delimiting with hyphens"
