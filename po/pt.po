@@ -3302,15 +3302,15 @@ msgstr "Quantidade de busca ao rolar (milissegundos):"
 msgid "Waveform height (pixels):"
 msgstr ""
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Salvar imagens"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Salva a imagem de capa do álbum da música em reprodução num ficheiro."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "Arquivo:"
 

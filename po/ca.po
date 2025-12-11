@@ -3296,15 +3296,15 @@ msgstr "Increment de desplaçament (mil·lisegons):"
 msgid "Waveform height (pixels):"
 msgstr "Alçada de l'ona (en píxels):"
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Desament d'imatges"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Desa la imatge de coberta de la cançó actual en un fitxer."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "Fitxer:"
 

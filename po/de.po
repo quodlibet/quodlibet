@@ -3319,15 +3319,15 @@ msgid "Waveform height (pixels):"
 msgstr ""
 
 # »Grafiksicherer« oder »Grafikspeicherer« ist in meinen Augen weniger klar
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Grafik speichern"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Speichert das Coverbild des aktuell abgespielten Titels in eine Datei."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "Datei:"
 

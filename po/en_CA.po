@@ -3252,15 +3252,15 @@ msgstr "Seek amount when scrolling (milliseconds):"
 msgid "Waveform height (pixels):"
 msgstr "Waveform height (pixels):"
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Picture Saver"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Saves the cover image of the current song to a file."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "File:"
 

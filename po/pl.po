@@ -3288,15 +3288,15 @@ msgstr "O ile przewijać podczas przewijania myszą (w milisekundach):"
 msgid "Waveform height (pixels):"
 msgstr ""
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Zapisywanie obrazów"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Zapisuje okładkę obecnego utworu do pliku."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "Plik:"
 

@@ -3256,15 +3256,15 @@ msgstr "ச்க்ரோலிங் செய்யும் போது (�
 msgid "Waveform height (pixels):"
 msgstr "அலைவடிவ உயரம் (பிக்சல்கள்):"
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "பட சேமிப்பாளர்"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "தற்போதைய பாடலின் கவர் படத்தை ஒரு கோப்பில் சேமிக்கிறது."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "கோப்பு:"
 

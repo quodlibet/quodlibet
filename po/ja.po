@@ -3231,15 +3231,15 @@ msgstr "スクロール時のシーク量(ミリ秒):"
 msgid "Waveform height (pixels):"
 msgstr "波形の高さ (ピクセル):"
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "画像保存"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "再生中の曲のカバー画像をファイルに保存します。"
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "ファイル:"
 
@@ -5933,7 +5933,8 @@ msgstr "「%s」を追加できません"
 #: quodlibet/qltk/edittags.py:795
 #, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "選択されているファイルは「%s」タグに複数の値を設定することができません。"
+msgstr ""
+"選択されているファイルは「%s」タグに複数の値を設定することができません。"
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:821 quodlibet/qltk/edittags.py:1006

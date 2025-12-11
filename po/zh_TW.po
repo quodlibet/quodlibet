@@ -3163,15 +3163,15 @@ msgstr "滾輪定位值量(毫秒)："
 msgid "Waveform height (pixels):"
 msgstr "波形高度(像素)："
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "圖片存入檔案"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "儲存封面圖片至目前歌曲檔案。"
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "檔案："
 

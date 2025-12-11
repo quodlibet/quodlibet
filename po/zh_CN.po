@@ -3157,15 +3157,15 @@ msgstr "在进度条处滚动滚轮时前进/后退的毫秒数："
 msgid "Waveform height (pixels):"
 msgstr "波形高度（像素）："
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "图片保存器"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "将当前歌曲的封面图像保存到文件。"
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "文件："
 

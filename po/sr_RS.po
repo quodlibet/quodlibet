@@ -3270,15 +3270,15 @@ msgstr "Корак мотања приликом скроловања (мили�
 msgid "Waveform height (pixels):"
 msgstr ""
 
-#: quodlibet/ext/events/write_cover.py:33
+#: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
 msgstr "Чувач слика"
 
-#: quodlibet/ext/events/write_cover.py:34
+#: quodlibet/ext/events/write_cover.py:35
 msgid "Saves the cover image of the current song to a file."
 msgstr "Ћува слику омота тренутне песме у датотеку."
 
-#: quodlibet/ext/events/write_cover.py:67
+#: quodlibet/ext/events/write_cover.py:64
 msgid "File:"
 msgstr "Датотека:"
 
