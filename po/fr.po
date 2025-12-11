@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-11-11 04:51+0000\n"
+"PO-Revision-Date: 2025-12-10 12:02+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -6721,15 +6721,16 @@ msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
 msgstr ""
+"Seuls ces noms de fichiers sont autorisés. Séparez plusieurs fichiers par "
+"des virgules. Les caractères génériques sont pris en charge."
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "_Nom(s) de fichier d'image(s) fixe(s) préférée(s)"
+msgstr "Restreindre le(s) nom(s) de fichier(s) d'image(s)"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "Restreindre les pochettes d'album aux noms de fichiers spécifiés."
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
