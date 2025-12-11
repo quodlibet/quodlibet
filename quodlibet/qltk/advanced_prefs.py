@@ -180,8 +180,9 @@ class AdvancedPreferencesPane(Gtk.VBox):
             text_config(
                 "albumart",
                 "search_filenames",
-                "Album art search filenames",
-                "Which specific files are (also) tried for album art",
+                "Album art search filename patterns",
+                "Which files are searched for when renaming / moving tracks. "
+                "Supports patterns",
             ),
             boolean_config(
                 "settings",
