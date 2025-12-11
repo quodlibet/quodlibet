@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-11-11 04:51+0000\n"
+"PO-Revision-Date: 2025-12-10 12:02+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -6424,16 +6424,15 @@ msgstr "选择使用音频中嵌入的艺术作品（如果可用）而不是其
 msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
-msgstr ""
+msgstr "仅允许这些文件名。用英文逗号分隔多个文件名。支持通配符。"
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "首选固定的图像文件名(_P)"
+msgstr "限制图像文件名"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "限制专辑图只能使用指定的名称。"
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
