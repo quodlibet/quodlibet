@@ -1,4 +1,4 @@
-# Copyright 2016-2022 Nick Boultbee
+# Copyright 2016-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,8 +41,8 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
     def url(self):
         return self.song.get("artwork_url", None)
 
-    def fetch_cover(self):
-        if not self.url:
-            return self.fail("artwork_url missing")
-        self.download(Soup.Message.new("GET", self.url))
-        return None
+    def fetch_cover(self) -> None:
+        if self.url:
+            self.download(Soup.Message.new("GET", self.url))
+        else:
+            self.fail("artwork_url missing", log=False)

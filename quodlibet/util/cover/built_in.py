@@ -10,6 +10,7 @@
 import re
 from pathlib import Path
 
+
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin
 from quodlibet.util.dprint import print_w, print_d
@@ -48,8 +49,12 @@ class EmbeddedCover(CoverSourcePlugin):
     @property
     def cover(self):
         if self.song.has_images:
-            image = self.song.get_primary_image()
-            return image.file if image else None
+            if image := self.song.get_primary_image():
+                print_d(
+                    f"Found local embedded cover: {image}",
+                    context=self.context,
+                )
+                return image.file
         return None
 
 
@@ -94,10 +99,10 @@ class FilesystemCover(CoverSourcePlugin):
         # TODO: still deserves some more refactoring
         if not self.song.is_file:
             return None
-        print_d(f"Searching for local cover for {self.song('~filename')}")
-        base = Path(self.song("~dirname"))
+        print_d("Searching for local cover", context=self.context)
+        base = Path(self.song("~dirname")).resolve()
         if not (base.exists() and base.is_dir()):
-            print_w(f"Directory doesn't exist: {base}")
+            print_w(f"Directory doesn't exist: {base}", context=self.context)
             return None
         images = []
 
@@ -113,8 +118,9 @@ class FilesystemCover(CoverSourcePlugin):
             if not images:
                 # See #4488
                 print_d(
-                    f"No allowed cover files ({' | '.join(fns)}) found, "
-                    f"so giving up for {self.song.key}."
+                    f"No allowed cover files [{' | '.join(fns)}] found, "
+                    f"so giving up for {self.song.key}.",
+                    context=self.context,
                 )
                 return None
         else:
@@ -122,7 +128,7 @@ class FilesystemCover(CoverSourcePlugin):
             try:
                 paths = base.iterdir()
             except OSError:
-                print_w(f"Can't list album art directory {base}")
+                print_w(f"Can't list album art directory {base}", context=self.context)
 
             tuples = []
             for path in paths:
@@ -198,6 +204,6 @@ class FilesystemCover(CoverSourcePlugin):
             try:
                 return path.open("rb")
             except OSError:
-                print_w(f'Failed reading album art "{path}"')
+                print_w(f'Failed reading album art "{path}"', context=self.context)
 
         return None
