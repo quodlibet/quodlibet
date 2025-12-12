@@ -545,32 +545,32 @@ msgstr "_Нова станица…"
 msgid "_Update Stations"
 msgstr "_Ажурирај станице"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "Нису пронађене станице"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Интернет радио станица није нађена на %s."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr ""
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "Излистане станице су већ у вашој библиотеци."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "Додај у омиљене"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "Уклони из омиљених"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -5668,16 +5668,16 @@ msgstr ""
 msgid "Revert to default"
 msgstr "Поништи на подразумевано"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 #, fuzzy
 msgid "Filename patterns for lyric files"
 msgstr "Шаблон имена датотеке:"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr ""
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Знам шта радим"

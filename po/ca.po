@@ -535,32 +535,32 @@ msgstr "_Afegeix una emissora…"
 msgid "_Update Stations"
 msgstr "_Actualitza les emissores"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "No s'ha trobat cap emissora"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "No s'ha trobat cap emissora de ràdio per Internet a %s."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "No hi ha res a afegir"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "Totes les emissores de la llista ja són a la biblioteca."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "Afegeix a les preferides"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "Suprimeix de les preferides"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -5693,15 +5693,15 @@ msgstr "Ús"
 msgid "Revert to default"
 msgstr "Reinicialitza"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 msgid "Filename patterns for lyric files"
 msgstr "Patrons de noms dels fitxers de lletra"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr "Cadenes o patrons de carpetes dels fitxers de lletra"
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 msgid "I know what I'm doing!"
 msgstr "Sé què faig!"
 

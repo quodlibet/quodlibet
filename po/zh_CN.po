@@ -528,32 +528,32 @@ msgstr "添加电台(_A)…"
 msgid "_Update Stations"
 msgstr "更新电台(_U)"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "没有发现站点"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "没有在 %s 发现网络电台。"
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "没有新源可添加"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "所有列出的站点都已经在您的曲库里。"
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "加入收藏"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "从收藏中删除"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -5457,15 +5457,15 @@ msgstr "用法"
 msgid "Revert to default"
 msgstr "退回到默认"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 msgid "Filename patterns for lyric files"
 msgstr "歌词文件的文件名格式"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr "歌词文件的目录字符串或模板"
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 msgid "I know what I'm doing!"
 msgstr "我知道我在做什么！"
 
