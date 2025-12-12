@@ -533,32 +533,32 @@ msgstr "_ADD நிலையம்…"
 msgid "_Update Stations"
 msgstr "_வாத நிலையங்கள்"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "நிலையங்கள் எதுவும் கிடைக்கவில்லை"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "இணைய வானொலி நிலையங்கள் எதுவும் %s இல் காணப்படவில்லை."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "சேர்க்க எதுவும் இல்லை"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "பட்டியலிடப்பட்ட அனைத்து நிலையங்களும் ஏற்கனவே உங்கள் நூலகத்தில் உள்ளன."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "பிடித்தவைகளிலிருந்து அகற்று"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -5629,16 +5629,16 @@ msgstr "பயன்பாடு"
 msgid "Revert to default"
 msgstr "இயல்புநிலைக்கு திரும்பவும்"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 #, fuzzy
 msgid "Filename patterns for lyric files"
 msgstr "கோப்பு பெயர் முறை:"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr ""
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 msgid "I know what I'm doing!"
 msgstr "நான் என்ன செய்கிறேன் என்று எனக்குத் தெரியும்!"
 

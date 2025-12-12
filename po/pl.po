@@ -544,32 +544,32 @@ msgstr "_Nowa stacja…"
 msgid "_Update Stations"
 msgstr "Zakt_ualizuj stacje"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "Nie odnaleziono żadnych stacji"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Nie odnaleziono internetowych stacji radiowych w %s."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "Nie ma nic do dodania"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "Wszystkie podane stacje już znajdują się w kolekcji."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "Dodaj do ulubionych"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "Usuń z ulubionych"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, fuzzy, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -5707,16 +5707,16 @@ msgstr "Użycie"
 msgid "Revert to default"
 msgstr "Przywróć domyślne"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 #, fuzzy
 msgid "Filename patterns for lyric files"
 msgstr "Wzorzec nazw plików:"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr ""
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 #, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Wiem, co robię"
