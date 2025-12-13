@@ -32,12 +32,15 @@
     <screenshots>
         <screenshot type="default">
             <image>https://quodlibet.github.io/appdata/quodlibet_1.png</image>
+            <caption>Album list view</caption>
         </screenshot>
         <screenshot>
             <image>https://quodlibet.github.io/appdata/quodlibet_2.png</image>
+            <caption>Track list</caption>
         </screenshot>
         <screenshot>
             <image>https://quodlibet.github.io/appdata/quodlibet_3.png</image>
+            <caption>Paned Browser</caption>
         </screenshot>
     </screenshots>
 
