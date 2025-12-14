@@ -561,6 +561,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:65
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:43
 msgid "Paned Browser"
 msgstr ""
 
@@ -7780,10 +7781,22 @@ msgid ""
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
 
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
+msgid "Tag editing interface"
+msgstr ""
+
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
+msgstr ""
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
+msgid "Album list view"
+msgstr ""
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
+msgid "Track list"
 msgstr ""
