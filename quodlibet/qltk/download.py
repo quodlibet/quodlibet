@@ -14,7 +14,6 @@ from collections.abc import Collection
 from urllib.parse import urlparse
 
 from gi.repository import Soup, GObject
-from urllib3.util import parse_url
 
 from quodlibet import print_d, print_w, _, print_e
 from quodlibet.formats import AudioFile
@@ -111,7 +110,7 @@ class DownloadProgress(GObject.Object):
     def download_songs(self, path: Path):
         for s in self.songs:
             uri = s("~uri")
-            if parse_url(uri).scheme not in ("http", "https"):
+            if urlparse(uri).scheme not in ("http", "https"):
                 print_w(f"Skipping non-HTTP URI {uri} for {s('~filename')}")
                 self.failure(s)
                 continue

@@ -11,10 +11,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 from collections.abc import Callable
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from gi.repository import GObject, Gio, Soup, GLib
-from urllib3.util import parse_url
 
 from quodlibet import util, config
 from quodlibet.formats import AudioFile
@@ -124,7 +123,7 @@ class SoundcloudApiClient(RestApi):
     API_ROOT = "https://api.soundcloud.com"
     AUTH_ROOT = "https://secure.soundcloud.com"
     REDIRECT_URI = "https://quodlibet.github.io/callbacks/soundcloud.html"
-    PAGE_SIZE = 50
+    PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
     COUNT_TAGS = {
         f"{t}_count"
@@ -274,7 +273,6 @@ class SoundcloudApiClient(RestApi):
             return
         if data.startswith(b"#EXTM3U"):
             m3u8 = data.decode("utf-8")
-            print_d("Got m3u8 data (for HLS)", context=song("title"))
             with tempfile.NamedTemporaryFile(
                 mode="w",
                 encoding="utf-8",
@@ -284,7 +282,7 @@ class SoundcloudApiClient(RestApi):
                 f.write(m3u8 + "\n")
                 f.flush()
             uri = Path(f.name).as_uri()
-            print_d(f"Wrote m3u8 to {uri}", context=song("title"))
+            print_d(f"Wrote HLS m3u8 data to {uri}", context=song("title"))
             self.emit("stream-uri-received", song, uri)
         elif data.startswith(b"ID3") or data[:2] == b"\xff\xfb":
             # Should probably have found this already by the HEAD method
@@ -307,14 +305,14 @@ class SoundcloudApiClient(RestApi):
             or json.get("hls_aac_96_url")
         )
         if uri:
-            path = parse_url(uri).path
+            path = urlparse(uri).path
             if path:
                 self._get(
                     path, self._on_track_playlist_stream_data, song, return_json=False
                 )
         else:
             uri = json["http_mp3_128_url"]
-            path = parse_url(uri).path
+            path = urlparse(uri).path
             if path:
                 self._head(path, self._on_track_head_response, song)
 
