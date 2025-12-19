@@ -381,8 +381,8 @@ class SongsMenu(Gtk.Menu):
             warning = Message(
                 Gtk.MessageType.INFO,
                 app.window,
-                _("Downloads complete"),
-                msg,
+                title=_("Downloads complete"),
+                description=msg,
                 escape_desc=False,
             )
             warning.run()
