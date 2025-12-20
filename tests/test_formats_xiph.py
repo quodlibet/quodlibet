@@ -101,7 +101,8 @@ class TVCFileMixin:
         self.song.write()
         config.set("editing", "save_email", const.EMAIL)
         song = type(self.song)(self.filename)
-        self.assertEqual(song("~#rating"), RATINGS.default)
+        # expect custom rating because de-facto standard rating comment is always written
+        self.assertEqual(song("~#rating"), 0.2)
 
         song.write()
         config.set("editing", "save_email", "foo@Bar.org")
