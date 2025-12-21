@@ -12,7 +12,7 @@ import pytest
 from gi.repository import GLib, Gio
 from senf import fsn2bytes, bytes2fsn
 
-from . import TestCase, skipIf
+from . import TestCase
 from .helper import temp_filename
 
 import quodlibet
@@ -33,7 +33,7 @@ class Mock:
         return self.resp
 
 
-@skipIf(is_windows(), "unix only")
+@pytest.mark.skipif(is_windows(), reason="unix only")
 class TUnixRemote(TestCase):
     def test_fifo(self):
         mock = Mock()
@@ -54,7 +54,7 @@ class TUnixRemote(TestCase):
                 self.assertEqual(h.read(), b"resp")
 
 
-@skipIf(is_windows(), "unix only")
+@pytest.mark.skipif(is_windows(), reason="unix only")
 class TUnixRemoteFifoFullCycle(TestCase):
     @pytest.fixture(autouse=True)
     def tmp_fifo_path(self, tmp_path):

@@ -372,17 +372,17 @@ class SongsMenu(Gtk.PopoverMenu):
 
         def _finished(p, successes, failures):
             msg = (
-                f"{util.bold(successes)} "
+                f"{util.bold(str(successes))} "
                 + _("successful")
-                + f"\n{util.bold(failures)} "
+                + f"\n{util.bold(str(failures))} "
                 + _("failed")
             )
             print_d(msg.replace("\n", "; "))
             warning = Message(
                 Gtk.MessageType.INFO,
                 app.window,
-                _("Downloads complete"),
-                msg,
+                title=_("Downloads complete"),
+                description=msg,
                 escape_desc=False,
             )
             warning.run()
@@ -446,7 +446,7 @@ class SongsMenu(Gtk.PopoverMenu):
 
     def init_edit(self, accels, songs, librarian):
         self.separate()
-        b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
+        b = qltk.MenuItem(_("_Edit…"), Icons.EDIT)
         b.set_sensitive(bool(songs))
         if accels:
             qltk.add_fake_accel(b, "<alt>Return")

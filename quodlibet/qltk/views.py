@@ -1048,7 +1048,7 @@ class RCMTreeView(BaseView):
         self.add_controller(controller)
 
     def __button_press(self, view, event):
-        if event.button == Gdk.BUTTON_SECONDARY:
+        if event.triggers_context_menu():
             return self.__check_popup(event)
         return None
 

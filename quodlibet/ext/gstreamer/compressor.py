@@ -1,4 +1,5 @@
 # Copyright 2012 Christoph Reiter
+#           2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,7 +9,7 @@
 from gi.repository import Gst, Gtk, GObject
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportError
+from quodlibet.plugins import MissingGstreamerElementPluginError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.qltk.util import GSignals
 from quodlibet import qltk
@@ -135,6 +136,4 @@ class Compressor(GStreamerPlugin):
 
 
 if not Compressor.setup_element():
-    raise PluginImportError(
-        "GStreamer element 'audiodynamic' missing (gst-plugins-good)"
-    )
+    raise MissingGstreamerElementPluginError("audiodynamic", "good")

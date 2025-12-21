@@ -9,7 +9,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, Pango
 
 from quodlibet import _
 
@@ -85,7 +85,7 @@ class SongInfo(Gtk.Box):
             player.playpause()
 
     def _on_button_press_event(self, widget, event, player, library):
-        if event.button == Gdk.BUTTON_SECONDARY:
+        if event.triggers_context_menu():
             menu = self._get_menu(player, library)
             menu.attach_to_widget(widget, None)
             menu.popup(None, None, None, None, event.button, event.time)

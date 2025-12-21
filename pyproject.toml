@@ -21,13 +21,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Use with poetry install -E plugins
+# Use with "poetry install -E plugins" or "uv sync --extra plugins"
 plugins = [
   "musicbrainzngs>=0.0.0,<1.0.0",
   "dbus-python; platform_system == 'Linux'",
   # 0.28 switched to lxml which is proving tricky on Windows
   "soco>=0.27,<0.28",
-  "pypresence>=4.2.1,<5.0.0",
+  "pypresence>=4.6.1,<5.0.0",
+  "regex>=2025.9.18",
   "paho-mqtt>=1.6.1,<2.0.0",
 ]
 
@@ -40,25 +41,33 @@ documentation = "https://quodlibet.readthedocs.io/"
 # Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
 quodlibet = "quodlibet.main:main"
 
+[dependency-groups]
+dev = [
+  "pytest>=8,<10",
+  "polib>=1.2.0,<2",
+  "coverage[toml]>=7.2.1,<8",
+  "mypy>=1.14.1,<1.19",
+  "flaky>=3.7.0,<4",
+  "types-docutils>=0.21.0,<0.22",
+  "types-certifi>=2021.10.8.3,<2022",
+  "types-requests>=2.28.11.15,<3",
+  "pyvirtualdisplay~=3.0 ; sys_platform == 'linux'",
+  "setuptools>=78.1.1,<81",
+  "packaging>=24.2",
+  "ruff==0.7.3 ; sys_platform == 'linux'",
+]
+docs = [
+  "sphinx>=7.2.2,<9",
+  "sphinx_rtd_theme>=2,<4",
+  "sphinx-autobuild>=2024.10.3,<2025",
+]
+
 [tool.poetry]
-requires-poetry = '>=2.0'
+requires-poetry = ">=2.2"
 package-mode = false
 
-[tool.poetry.group.dev.dependencies]
-pytest = '^7.2.2'
-polib = '^1.2.0'
-sphinx = '^7.2.6'
-sphinx_rtd_theme = '^1.2.0'
-sphinx-autobuild = "^2021.3.14"
-coverage = { extras = ["toml"], version = "^7.2.1" }
-mypy = "^1.14.1"
-flaky = "^3.7.0"
-types-docutils = "^0.19.0"
-types-certifi = "^2021.10.8.3"
-types-requests = "^2.28.11.15"
-pyvirtualdisplay = { version = "^3.0", platform = "linux" }
-setuptools = "^75.2.0"
-ruff = { version = "0.7.3", platform = "linux" }
+[tool.poetry.group.docs]
+optional = true
 
 [tool.ruff]
 target-version = "py310"

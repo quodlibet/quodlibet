@@ -1,5 +1,5 @@
 # Copyright 2012 Christoph Reiter
-#           2017 Nick Boultbee
+#        2017-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,8 +40,8 @@ class TBookmarks(TestCase):
 
     def test_add_bookmark_directly(self):
         song = self.player.song
-        pane = EditBookmarksPane(self.library, song, close=True)
+        pane = EditBookmarksPane(None, self.library, close=True, song=song)
         model = [(31, "thirty-one seconds"), (180, b"three minutes")]
-        pane._set_bookmarks(model, None, None, self.library, song)
-        self.assertEqual(len(song.bookmarks), 2)
-        self.assertEqual(song.bookmarks[1], (180, "three minutes"))
+        pane._set_bookmarks(model, None, None, self.library)
+        assert len(song.bookmarks) == 2
+        assert song.bookmarks[1] == (180, "three minutes")

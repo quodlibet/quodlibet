@@ -17,15 +17,6 @@ def iter_backends():
         return
 
     try:
-        from .gnome import GnomeBackend, GnomeBackendOldName, MateBackend
-    except MMKeysImportError:
-        pass
-    else:
-        yield GnomeBackend
-        yield GnomeBackendOldName
-        yield MateBackend
-
-    try:
         from .keybinder import KeybinderBackend
     except MMKeysImportError:
         pass

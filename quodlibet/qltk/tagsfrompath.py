@@ -105,7 +105,7 @@ class TagsFromPath(Gtk.Box):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         self.set_border_width(12)
         hbox = Gtk.Box(spacing=6)

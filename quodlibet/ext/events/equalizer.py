@@ -8,7 +8,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import app
@@ -573,5 +573,5 @@ class Equalizer(EventPlugin):
         return main_vbox
 
     def __rightclick(self, hs, event):
-        if event.button == Gdk.BUTTON_SECONDARY:
+        if event.triggers_context_menu():
             hs.set_value(0)

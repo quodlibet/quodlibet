@@ -314,7 +314,12 @@ def _main_setup_osx(window):
             return False
 
         def applicationDockMenu_(self, sender):  # noqa
-            return gtk_delegate.applicationDockMenu_(sender)
+            if gtk_delegate is not None and hasattr(
+                gtk_delegate, "applicationDockMenu_"
+            ):
+                return gtk_delegate.applicationDockMenu_(sender)
+
+            return None
 
         def application_openFile_(self, sender, filename):  # noqa
             return app.window.open_file(filename.encode("utf-8"))

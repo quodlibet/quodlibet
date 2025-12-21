@@ -147,6 +147,16 @@ def main(argv=None):
         restore_cb=lambda: GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH),
     )
 
+    def set_up_watching():
+        watch = config.getboolean("library", "watch")
+        if watch:
+            from quodlibet.util.library import get_scan_dirs
+
+            app.library.start_watching(get_scan_dirs())
+
+    # Delay costly watching till after UI init (issue #4719)
+    GLib.idle_add(set_up_watching)
+
     app.player_options = PlayerOptions(window)
 
     from quodlibet.qltk.window import Window

@@ -83,9 +83,9 @@ class SubmitErrorDialog(Gtk.MessageDialog):
         secondary_text = _(
             "Various details regarding the error and your system will be send "
             "to a third party online service "
-            "(<a href='https://www.sentry.io'>www.sentry.io</a>). You can "
+            "(<a href='{sentry_url}'>www.sentry.io</a>). You can "
             "review the data before sending it below."
-        )
+        ).format(sentry_url="https://www.sentry.io")
 
         secondary_text += "\n\n"
 

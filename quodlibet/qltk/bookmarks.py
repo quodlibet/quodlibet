@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#        2016-17 Nick Boultbee
+#        2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,10 +13,11 @@ from gi.repository import Gtk, Pango
 from quodlibet import qltk, print_w
 from quodlibet import util
 from quodlibet import _
+from quodlibet.formats import AudioFile
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 
 
 def MenuItems(marks, player, seekable):
@@ -51,25 +52,41 @@ def MenuItems(marks, player, seekable):
     return items
 
 
-class EditBookmarksPane(Gtk.Box):
-    def __init__(self, library, song, close=False):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+class EditBookmarksPane(Gtk.VBox):
+    song: AudioFile | None
 
-        hb = Gtk.Box(spacing=12)
+    def __init__(
+        self,
+        parent,
+        library,
+        close: bool = False,
+        song: AudioFile | None = None,
+    ):
+        super().__init__(spacing=12)
+        self.title = _("Bookmarks")
+
+        self.model = model = Gtk.ListStore(int, str)
+        if song:
+            self._set_song(song)
+        else:
+            self.song = None
+
+        self.hb = hb = Gtk.HBox(spacing=12)
         self.time = time = Gtk.Entry()
         time.set_width_chars(5)
+        time.set_size_request(65, -1)
         self.markname = name = Gtk.Entry()
-        add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
-        hb.prepend(time, False, True, 0)
-        hb.prepend(name, True, True, 0)
-        hb.prepend(add, False, True, 0)
-        self.prepend(hb, False, True, 0)
+        self.add = add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        hb.pack_start(time, False, True, 0)
+        hb.pack_start(name, True, True, 0)
+        hb.pack_start(add, False, True, 0)
+        self.pack_start(hb, False, True, 0)
 
-        model = Gtk.ListStore(int, str)
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(RCMHintedTreeView(model=model))
+        add_css(sw, "* { padding: 12px } ")
 
         render = Gtk.CellRendererText()
 
@@ -91,11 +108,12 @@ class EditBookmarksPane(Gtk.Box):
         render.set_property("editable", True)
         render.connect("edited", self.__edit_name, model)
         sw.get_child().append_column(col)
-        self.prepend(sw, True, True, 0)
+        self.pack_start(sw, True, True, 0)
+        add_css(self, "* { margin: 12px } ")
         self.accels = Gtk.AccelGroup()
 
         hbox = Gtk.HButtonBox()
-        remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
+        self.remove = remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
         hbox.prepend(remove, True, True, 0)
         if close:
@@ -108,25 +126,25 @@ class EditBookmarksPane(Gtk.Box):
         connect_obj(add, "clicked", self.__add, model, time, name)
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        model.connect("row-changed", self._set_bookmarks, library, song)
-        model.connect("row-inserted", self._set_bookmarks, library, song)
+        self._csig = model.connect("row-changed", self._set_bookmarks, library)
+        self._isig = model.connect("row-inserted", self._set_bookmarks, library)
 
         selection = sw.get_child().get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         selection.connect("changed", self.__check_selection, remove)
-        remove.connect("clicked", self.__remove, selection, library, song)
+        remove.connect("clicked", self.__remove, selection, library)
 
         connect_obj(time, "changed", self.__check_entry, add, time, name)
         connect_obj(name, "changed", self.__check_entry, add, time, name)
         connect_obj(name, "activate", Gtk.Button.clicked, add)
 
-        time.set_text(_("MM:SS"))
+        time.set_placeholder_text(_("MM:SS"))
         connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
-        name.set_text(_("Bookmark Name"))
+        name.set_placeholder_text(_("Bookmark Name"))
 
         menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        remove.connect("activate", self.__remove, selection, library, song)
+        remove.connect("activate", self.__remove, selection, library)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
             "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
@@ -135,9 +153,30 @@ class EditBookmarksPane(Gtk.Box):
         menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
         sw.get_child().connect("key-press-event", self.__view_key_press, remove)
-        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        if parent:
+            parent.connect("changed", self.__parent_changed)
 
-        self.__fill(model, song)
+    def __parent_changed(self, parent, songs):
+        self.model.handler_block(self._csig)
+        self.model.handler_block(self._isig)
+        if len(songs) == 1:
+            self._set_song(songs[0])
+        else:
+            self.model.clear()
+            self.song = None
+            self._set_enabled(False)
+        self.model.handler_unblock(self._csig)
+        self.model.handler_unblock(self._isig)
+
+    def _set_song(self, song: AudioFile):
+        self.song = song
+        self.__fill(self.model, self.song)
+        self._set_enabled(True)
+
+    def _set_enabled(self, value: bool) -> None:
+        self.set_sensitive(value)
+        self.set_tooltip_text(_("Select a single track to edit its bookmarks"))
 
     def __view_key_press(self, view, event, remove):
         if event.keyval == Gtk.accelerator_parse("Delete")[0]:
@@ -177,24 +216,27 @@ class EditBookmarksPane(Gtk.Box):
     def __check_selection(self, selection, remove):
         remove.set_sensitive(bool(selection.get_selected_rows()[1]))
 
-    def __remove(self, remove, selection, library, song):
+    def __remove(self, remove, selection, library):
         model, paths = selection.get_selected_rows()
         if model:
             for path in paths:
                 model.remove(model.get_iter(path))
-            self._set_bookmarks(model, None, None, library, song)
+            self._set_bookmarks(model, None, None, library)
 
-    def _set_bookmarks(self, model, a, b, library, song):
+    def _set_bookmarks(self, model, a, b, library):
+        if not self.song:
+            return
+
         def stringify(s):
             return s.decode("utf-8") if isinstance(s, bytes) else s
 
         try:
-            song.bookmarks = [(t, stringify(l)) for t, l in model]
+            self.song.bookmarks = [(t, stringify(l)) for t, l in model]
         except (AttributeError, ValueError) as e:
-            print_w(f"Couldn't save bookmark for {song('~filename')} ({e})")
+            print_w(f"Couldn't save bookmark for {self.song('~filename')} ({e})")
         else:
             if library is not None:
-                library.changed([song])
+                library.changed([self.song])
 
     def __fill(self, model, song):
         model.clear()
@@ -210,7 +252,7 @@ class EditBookmarks(qltk.Window):
         self.set_default_size(350, 250)
         self.set_title(_("Bookmarks") + " - {}".format(player.song.comma("title")))
 
-        pane = EditBookmarksPane(library, player.song, close=True)
+        pane = EditBookmarksPane(None, library, song=player.song, close=True)
         self.add(pane)
 
         s = library.connect("removed", self.__check_lock, player.song)

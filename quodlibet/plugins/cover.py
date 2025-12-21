@@ -1,11 +1,12 @@
 # Copyright 2013 Simonas Kazlauskas
-#           2022 Nick Boultbee
+#        2022-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os.path
 from os import path, makedirs
 from hashlib import sha1
 
@@ -33,7 +34,7 @@ class CoverSourcePlugin(GObject.Object):
 
     __gsignals__ = {
         "fetch-success": (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
         "search-complete": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
     PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
@@ -141,7 +142,7 @@ class CoverSourcePlugin(GObject.Object):
         try:
             return open(cp, "rb") if cp and path.isfile(cp) else None
         except OSError:
-            print_w(f'Failed reading album art "{path}"')
+            print_w(f'Failed reading album art "{path}"', context=self.context)
 
     def search(self):
         """
@@ -152,32 +153,38 @@ class CoverSourcePlugin(GObject.Object):
         `album`, `artist` and `cover` keys as an argument. If search was
         unsuccessful, empty list should be returned.
 
-        By convention better quality and more accurate covers are expected to
+        By convention, better quality and more accurate covers are expected to
         appear first in the list.
         """
         self.emit("search-complete", [])
 
-    def fetch_cover(self):
+    def fetch_cover(self) -> None:
         """
-        Method to ask source fetch the cover from its source into location at
-        `self.cover_path`.
+        Method to ask the source to fetch the cover
+        from its source into location at `self.cover_path`.
 
         If this method succeeds in putting the image from its source into
         `self.cover_path`, `fetch-success` signal shall be emitted and
         `fetch-failure` otherwise.
-
-        Return value of this function doesn't have any meaning whatsoever.
         """
-        self.fail("This source is incapable of fetching covers")
+        self.fail("This source is incapable of fetching covers", log=False)
 
-    def fail(self, message):
+    def fail(self, message: str, *, log: bool = True) -> None:
         """
         Shorthand method for emitting `fetch-failure` signals.
 
-        Most common use pattern would be:
-            return self.fail("Failure message")
+        Use:
+            return self.fail("Transient failure message")
+
+        :param message: A string message to record about the failure
+        :param log: Whether to log the failure message
         """
-        self.emit("fetch-failure", message)
+        self.emit("fetch-failure", message, log)
+
+    @property
+    def context(self) -> str:
+        """Useful for logging purposes"""
+        return os.path.basename(self.song.key)
 
 
 cover_dir = path.join(get_cache_dir(), "covers")

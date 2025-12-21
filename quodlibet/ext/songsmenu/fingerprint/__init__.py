@@ -1,5 +1,5 @@
 # Copyright 2011,2013 Christoph Reiter
-#                2016 Nick Boultbee
+#             2016,25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@ from gi.repository import Gtk, Gst
 if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
 
-    raise plugins.MissingGstreamerElementPluginError("chromaprint")
+    raise plugins.MissingGstreamerElementPluginError("chromaprint", "bad")
 
 from .submit import FingerprintDialog
 from .util import get_api_key

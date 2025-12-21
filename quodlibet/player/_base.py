@@ -1,6 +1,7 @@
 # Copyright 2007-2008 Joe Wreschnig
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
+#           2020-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +12,7 @@
 from gi.repository import GObject
 
 from quodlibet.formats import AudioFile
-from quodlibet.util import print_d, format_time
+from quodlibet.util import format_time
 from quodlibet import config
 
 
@@ -306,8 +307,6 @@ class BasePlayer(GObject.GObject, Equalizer):
 
         Returns True if there is an active song after the call returns.
         """
-
-        print_d("Going to {!r}".format(getattr(song_or_iter, "key", song_or_iter)))
 
         if self._source.go_to(song_or_iter, explicit, source):
             self._end(True)

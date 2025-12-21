@@ -1,11 +1,11 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2024 Nick Boultbee
+#           2011-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+import functools
 import os
 import re
 import stat
@@ -13,7 +13,8 @@ import sys
 import errno
 import codecs
 import shlex
-from typing import Any
+from pathlib import Path
+from typing import Any, cast
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -41,7 +42,7 @@ def mkdir(dir_, *args):
 
 
 def uri2gsturi(uri):
-    """Takes a correct uri and returns a gstreamer-compatible uri"""
+    """Takes a correct URI and returns a gstreamer-compatible URI"""
     if not is_windows():
         return uri
     try:
@@ -406,10 +407,6 @@ else:
     normalize_path = _normalize_path
 
 
-def path_equal(p1, p2, canonicalise=False):
-    return normalize_path(p1, canonicalise) == normalize_path(p2, canonicalise)
-
-
 def limit_path(path, ellipsis=True):
     """Reduces the filename length of all filenames in the given path
     to the common maximum length for current platform.
@@ -468,14 +465,8 @@ def is_hidden(path: _fsnative) -> bool:
     return basename.startswith(".") and basename[1:2] != "."
 
 
-def uri_is_valid(uri):
-    """Returns True if the passed in text is a valid URI (file, http, etc.)
-
-    Args:
-        uri(text or bytes)
-    Returns:
-        bool
-    """
+def uri_is_valid(uri: str | bytes) -> bool:
+    """Returns True if the passed in text is a valid URI (file, http, etc.)"""
 
     try:
         if isinstance(uri, bytes):
@@ -493,49 +484,11 @@ def uri_is_valid(uri):
     return True
 
 
-class RootPathFile:
-    """Simple container used for discerning a pathfile's 'root' directory
-    and 'end' part. The variable depth of a pathfile's 'end' part renders
-    os.path built-ins (basename etc.) useless for this purpose"""
+def escape_parts(p: Path, safe: bytes = b" '\"") -> Path:
+    """Escapes each part of a path separately"""
+    escaper = functools.partial(escape_filename, safe=safe)
 
-    _root = ""  # 'root' of full file path
-    _pathfile = ""  # full file path
-
-    def __init__(self, root, pathfile):
-        self._root = root
-        self._pathfile = pathfile
-
-    @property
-    def root(self):
-        return self._root
-
-    @property
-    def end(self):
-        return self._pathfile[len(self._root) + len(os.sep) :]
-
-    @property
-    def pathfile(self):
-        return self._pathfile
-
-    @property
-    def end_escaped(self):
-        escaped = [escape_filename(part) for part in self.end.split(os.path.sep)]
-        return os.path.sep.join(escaped)
-
-    @property
-    def pathfile_escaped(self):
-        return os.path.sep.join([self.root, self.end_escaped])
-
-    @property
-    def valid(self):
-        valid = True
-        if os.path.exists(self.pathfile):
-            return valid
-        try:
-            with open(self.pathfile, "w", encoding="utf-8") as f:
-                f.close()  # do nothing
-        except OSError:
-            valid = False
-        if os.path.exists(self.pathfile):
-            os.remove(self.pathfile)
-        return valid
+    # Don't escape the root path ("/")
+    base = first if (first := p.parts[0]) == os.sep else escaper(first)
+    rest = [escaper(part) for part in p.parts[1:]]
+    return Path(cast(str, os.path.join(base, *rest)))

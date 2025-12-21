@@ -25,16 +25,16 @@ jobs:
             gir1.2-soup-3.0 \
             gstreamer1.0-plugins-good \
             libcairo2-dev \
-            libgirepository1.0-dev \
+            libgirepository-2.0-dev \
             pkg-config \
             pipx \
             xvfb
-          pipx install "poetry==2.1.3"
+          pipx install "poetry==2.2.1"
           pipx ensurepath
 
       - name: Create source dist
         run: |
-          poetry install
+          poetry install --with docs
           git clean -f
           poetry run ./setup.py distcheck
           cd dist

@@ -39,10 +39,10 @@ class MPRIS(EventPlugin):
     PLUGIN_NAME = _("Linux Desktop Integration (MPRIS D-Bus)")
     PLUGIN_DESC_MARKUP = _(
         "⏯️ Allows control of Quod Libet using the "
-        '<a href="https://mpris2.readthedocs.io/en/latest/">MPRIS 2</a> '
+        '<a href="{mpris_url}">MPRIS 2</a> '
         "D-Bus Interface.\n"
         "This allows various Linux desktop integrations (e.g. multimedia keys)."
-    )
+    ).format(mpris_url="https://mpris2.readthedocs.io/en/latest/")
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     def PluginPreferences(self, parent):

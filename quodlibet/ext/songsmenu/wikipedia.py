@@ -71,7 +71,7 @@ class WikiSearch(SongsMenuPlugin):
                 config.setlist("plugins", "wiki_tags", widget.tags)
 
             tags = config.getlist("plugins", "wiki_tags", cls.DEFAULT_TAGS)
-            editor = TagListEditor(_("Edit Tags"), [] if tags == [""] else tags)
+            editor = TagListEditor(_("Edit…"), [] if tags == [""] else tags)
             editor.set_transient_for(get_top_parent(parent))
             editor.connect("destroy", _editor_closed)
             editor.show()

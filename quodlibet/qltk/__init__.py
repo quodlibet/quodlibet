@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#        2016-24 Nick Boultbee
+#        2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@ def show_uri(label, uri):
     """Shows a URI. The URI can be anything handled by GIO or a quodlibet
     specific one.
 
-    Currently handled quodlibet uris:
+    Currently handled quodlibet URIs:
         - quodlibet:///prefs/plugins/<plugin id>
 
     Args:
         label (str)
-        uri (str) the uri to show
+        uri (str) the URI to show
     Returns:
         True on success, False on error
     """

@@ -64,7 +64,7 @@ html_static_path = [
 ]
 
 html_theme_options = {
-    "display_version": False,
+    "version_selector": False,
 }
 
 html_favicon = "favicon/favicon.ico"

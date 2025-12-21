@@ -1,5 +1,5 @@
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2022 Nick Boultbee
+#           2011-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -563,7 +563,7 @@ class EditTags(Gtk.Box):
         # Add and Remove [tags] buttons
         buttonbox = Gtk.Box(spacing=18)
         bbox1 = Gtk.HButtonBox()
-        bbox1.set_spacing(6)
+        bbox1.set_spacing(9)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
         add = qltk.Button(_("_Add…"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
@@ -582,7 +582,7 @@ class EditTags(Gtk.Box):
         # Revert and save buttons
         # Both can have customised translated text (and thus accels)
         bbox2 = Gtk.HButtonBox()
-        bbox2.set_spacing(6)
+        bbox2.set_spacing(9)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
         # Translators: Revert button in the tag editor
         revert = Button(C_("edittags", "_Revert"), Icons.DOCUMENT_REVERT)

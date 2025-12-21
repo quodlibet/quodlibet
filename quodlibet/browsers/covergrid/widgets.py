@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 
-from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango, Gdk
+from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango
 from cairo import Surface
 from .models import AlbumListItem
 
@@ -138,7 +138,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         self.model.format_label(self.props.display_pattern)
 
     def __rightclick(self, widget, event):
-        if event.button == Gdk.BUTTON_SECONDARY:
+        if event.triggers_context_menu():
             self.emit("songs-menu")
 
     def __tooltip(self, widget, x, y, keyboard_tip, tooltip):

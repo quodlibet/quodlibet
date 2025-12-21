@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2015-2020 Nick Boultbee
+#      2015-2025 Nick Boultbee
 #           2019 Joschua Gandert
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,12 +7,9 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import glob
-import os.path
 import re
-import sre_constants
+from pathlib import Path
 
-from senf import fsn2text
 
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin
@@ -20,8 +17,9 @@ from quodlibet.util.dprint import print_w, print_d
 from quodlibet import config
 
 
-def get_ext(s):
-    return os.path.splitext(s)[1].lstrip(".")
+def get_ext(p: Path) -> str:
+    "Gets lowercase extension (no dot)"
+    return p.suffix.lower().strip(".")
 
 
 def prefer_embedded():
@@ -51,8 +49,12 @@ class EmbeddedCover(CoverSourcePlugin):
     @property
     def cover(self):
         if self.song.has_images:
-            image = self.song.get_primary_image()
-            return image.file if image else None
+            if image := self.song.get_primary_image():
+                print_d(
+                    f"Found local embedded cover: {image}",
+                    context=self.context,
+                )
+                return image.file
         return None
 
 
@@ -67,7 +69,7 @@ class FilesystemCover(CoverSourcePlugin):
     cover_subdirs = {"scan", "scans", "images", "covers", "artwork"}
     cover_exts = {"jpg", "jpeg", "png", "gif"}
 
-    cover_name_regexes = {word_regex(s) for s in ("^folder$", "^cover$", "^front$")}
+    cover_name_regexes = {re.compile(r) for r in (r"^folder$", r"^cover$", r"^front$")}
     cover_positive_regexes = {
         word_regex(s)
         for s in [".+front", "frontcover", "jacket", "albumart", "edited", ".+cover"]
@@ -94,61 +96,57 @@ class FilesystemCover(CoverSourcePlugin):
 
     @property
     def cover(self):
-        # TODO: Deserves some refactoring
+        # TODO: still deserves some more refactoring
         if not self.song.is_file:
             return None
-        print_d(f"Searching for local cover for {self.song('~filename')}")
-        base = self.song("~dirname")
+        print_d("Searching for local cover", context=self.context)
+        base = Path(self.song("~dirname")).resolve()
+        if not (base.exists() and base.is_dir()):
+            print_w(f"Directory doesn't exist: {base}", context=self.context)
+            return None
         images = []
-
-        def safe_glob(*args, **kwargs):
-            try:
-                return glob.glob(*args, **kwargs)
-            except sre_constants.error:
-                # https://github.com/python/cpython/issues/89973
-                # old glob would fail with invalid ranges, newer one
-                # handles it correctly.
-                return []
 
         if config.getboolean("albumart", "force_filename"):
             score = 100
-            for filename in config.get("albumart", "filename").split(","):
-                # Remove white space to avoid confusion (e.g. "name, name2")
+            fns = config.get("albumart", "filename").split(",")
+            for filename in fns:
+                # Remove whitespace to avoid confusion (e.g. "name, name2")
                 filename = filename.strip()
-
-                escaped_path = os.path.join(glob.escape(base), filename)
-                for path in safe_glob(escaped_path):
+                for path in base.glob(filename):
                     images.append((score, path))
-
-                # So names and patterns at the start are preferred
-                score -= 1
-
-        if not images:
-            entries = []
+                    score -= 1
+            if not images:
+                # See #4488
+                print_d(
+                    f"No allowed cover files [{' | '.join(fns)}] found, "
+                    f"so giving up for {self.song.key}.",
+                    context=self.context,
+                )
+                return None
+        else:
+            paths = []
             try:
-                entries = os.listdir(base)
+                paths = base.iterdir()
             except OSError:
-                print_w(f"Can't list album art directory {base}")
+                print_w(f"Can't list album art directory {base}", context=self.context)
 
-            fns = []
-            for entry in entries:
-                lentry = entry.lower()
-                if get_ext(lentry) in self.cover_exts:
-                    fns.append((None, entry))
-                if lentry in self.cover_subdirs:
-                    subdir = os.path.join(base, entry)
+            tuples = []
+            for path in paths:
+                if get_ext(path) in self.cover_exts:
+                    tuples.append((None, path))
+                if path.name.lower() in self.cover_subdirs:
+                    subdir = base / path
                     sub_entries = []
                     try:
-                        sub_entries = os.listdir(subdir)
+                        sub_entries = subdir.iterdir()
                     except OSError:
                         pass
-                    for sub_entry in sub_entries:
-                        lsub_entry = sub_entry.lower()
-                        if get_ext(lsub_entry) in self.cover_exts:
-                            fns.append((entry, sub_entry))
+                    for p in sub_entries:
+                        if get_ext(p) in self.cover_exts:
+                            tuples.append((path, p))
 
-            for sub, fn in fns:
-                dec_lfn = os.path.splitext(fsn2text(fn))[0].lower()
+            for sub, path in tuples:
+                dec_lfn = path.stem.lower()
 
                 score = 0
                 # check for the album label number
@@ -169,7 +167,7 @@ class FilesystemCover(CoverSourcePlugin):
                 # Matching tag values are very good
                 score += 3 * sum([value in dec_lfn for value in lowers])
 
-                # Well known names matching exactly (folder.jpg)
+                # Well-known names matching exactly (folder.jpg)
                 score += 4 * sum(
                     r.search(dec_lfn) is not None for r in self.cover_name_regexes
                 )
@@ -187,7 +185,7 @@ class FilesystemCover(CoverSourcePlugin):
                 if self.DEBUG:
                     print(
                         f"[{self.song('~~people~title')}]: "
-                        f"Album art {fn!r}{sub_text} "
+                        f"Album art {path}{sub_text} "
                         f"scores {score} ({length_penalty})"
                     )
                 score += length_penalty
@@ -196,17 +194,16 @@ class FilesystemCover(CoverSourcePlugin):
                 # This allows other sources to kick in
                 if score > 2:
                     if sub is not None:
-                        fn = os.path.join(sub, fn)
-                    images.append((score, os.path.join(base, fn)))
+                        path = Path(sub) / path
+                    images.append((score, path))
 
-        images.sort(reverse=True)
-        for _score, path in images:
+        for _score, path in sorted(images, reverse=True):
             # could be a directory
-            if not os.path.isfile(path):
+            if not path.is_file():
                 continue
             try:
-                return open(path, "rb")
+                return path.open("rb")
             except OSError:
-                print_w(f'Failed reading album art "{path}"')
+                print_w(f'Failed reading album art "{path}"', context=self.context)
 
         return None

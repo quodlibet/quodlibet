@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2014-2021 Nick Boultbee
+#      2014-2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,8 +7,10 @@
 # (at your option) any later version.
 
 from itertools import chain
+from typing import IO
+from collections.abc import Iterable
 
-from gi.repository import GObject
+from gi.repository import GObject, GdkPixbuf, Soup
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
@@ -36,11 +38,11 @@ class CoverPluginHandler(PluginHandler):
 
     def plugin_enable(self, plugin):
         self.providers.add(plugin)
-        print_d(f"Registered {plugin.cls.__name__} cover source")
+        print_d("Registered cover source", context=plugin.cls.__name__)
 
     def plugin_disable(self, plugin):
         self.providers.remove(plugin)
-        print_d(f"Unregistered {plugin.cls.__name__} cover source")
+        print_d("Unregistered cover source", context=plugin.cls.__name__)
 
     @property
     def sources(self):
@@ -100,16 +102,17 @@ class CoverManager(GObject.Object):
         sources = self.sources
 
         def success(source, result):
-            name = source.__class__.__name__
-            print_d(f"Successfully got cover from {name}")
+            name = type(source).__name__
+            print_d("Successfully got cover", context=name)
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
                 callback(True, result)
 
-        def failure(source, msg):
-            name = source.__class__.__name__
-            print_d(f"Didn't get cover from {name}: {msg}")
+        def failure(source: GObject, msg: Soup.Message, log: bool = True) -> None:
+            name = type(source).__name__
+            if log:
+                print_d(f"Didn't get cover: {msg}", context=name)
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
@@ -123,8 +126,9 @@ class CoverManager(GObject.Object):
 
             cover = provider.cover
             if cover:
-                name = provider.__class__.__name__
-                print_d(f"Found local cover from {name}: {cover}")
+                name = type(provider).__name__
+                key = song.key if song else None
+                print_d(f"Found local cover for {key}", context=name)
                 callback(True, cover)
             else:
                 provider.connect("fetch-success", success)
@@ -138,8 +142,8 @@ class CoverManager(GObject.Object):
     def acquire_cover_sync(self, song, embedded=True, external=True):
         """Gets *cached* cover synchronously.
 
-        As CoverSource fetching functionality is asynchronous it is only
-        possible to check for already fetched cover.
+        As CoverSource fetching functionality is asynchronous,
+        it is only possible to check for already fetched cover.
         """
 
         return self.acquire_cover_sync_many([song], embedded, external)
@@ -168,16 +172,16 @@ class CoverManager(GObject.Object):
                     return cover
         return None
 
-    def get_cover(self, song):
+    def get_cover(self, song) -> IO | None:
         """Returns a cover file object for one song or None.
 
-        Compared to acquire_cover_sync() this respects the prefer_embedded
-        setting.
+        Compared to ``acquire_cover_sync()``,
+        this respects the ``prefer_embedded`` setting.
         """
 
         return self.get_cover_many([song])
 
-    def get_cover_many(self, songs):
+    def get_cover_many(self, songs: Iterable[AudioFile]) -> IO | None:
         """Returns a cover file object for many songs or None.
 
         Returns the first found image for a group of songs.
@@ -186,7 +190,9 @@ class CoverManager(GObject.Object):
 
         return self.acquire_cover_sync_many(songs)
 
-    def get_pixbuf_many(self, songs, width, height):
+    def get_pixbuf_many(
+        self, songs: Iterable[AudioFile], width: int, height: int
+    ) -> GdkPixbuf:
         """Returns a Pixbuf which fits into the boundary defined by width
         and height or None.
 
@@ -199,7 +205,7 @@ class CoverManager(GObject.Object):
 
         return get_thumbnail_from_file(fileobj, (width, height))
 
-    def get_pixbuf(self, song, width, height):
+    def get_pixbuf(self, song: AudioFile, width: int, height: int) -> GdkPixbuf:
         """see get_pixbuf_many()"""
 
         return self.get_pixbuf_many([song], width, height)
@@ -261,10 +267,11 @@ class CoverManager(GObject.Object):
                 self.emit("covers-found", provider, covers)
             provider.disconnect_by_func(search_complete)
 
-        def failure(provider, result):
+        def failure(provider: CoverManager, message: str, log: bool = True):
             finished(provider, False)
             name = provider.__class__.__name__
-            print_d(f"Failed to get cover from {name!r} ({result})")
+            if log:
+                print_d(f"Failed to get cover ({message})", context=name)
             provider.disconnect_by_func(failure)
 
         def song_groups(songs, sources):

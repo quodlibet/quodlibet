@@ -194,4 +194,4 @@ class Crossfeed(GStreamerPlugin):
 
 
 if not Crossfeed.setup_element():
-    raise plugins.MissingGstreamerElementPluginError("bs2b")
+    raise plugins.MissingGstreamerElementPluginError("bs2b", "bad")

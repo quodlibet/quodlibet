@@ -170,7 +170,7 @@ class RenameFiles(Gtk.Box):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.__skip_interactive = False
         self.set_border_width(12)
 
@@ -199,8 +199,6 @@ class RenameFiles(Gtk.Box):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
         self.prepend(sw, True, True, 0)
-
-        self.prepend(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, ), False, True, 0)
 
         # rename options
         rename_options = Gtk.Box()

@@ -102,7 +102,7 @@ class IndicatorMenu(Gtk.PopoverMenu):
 
         browse.set_submenu(browse_sub)
 
-        self._props = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
+        self._props = qltk.MenuItem(_("_Edit…"), Icons.EDIT)
 
         def on_properties(*args):
             song = player.song

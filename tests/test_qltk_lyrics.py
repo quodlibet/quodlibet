@@ -4,7 +4,6 @@
 # (at your option) any later version.
 
 import os
-from senf import fsnative
 
 import quodlibet.config
 from quodlibet.formats import AudioFile
@@ -15,6 +14,7 @@ from tests import TestCase, init_fake_app, destroy_fake_app, get_data_path
 from tests.helper import get_temp_copy
 
 LYRICS = "foobär...\nMore cowbell!©"
+from gi.repository import Gtk
 
 
 def AF(*args, **kwargs):
@@ -27,8 +27,8 @@ class TLyricsPane(TestCase):
     def setUp(self):
         quodlibet.config.init()
         init_fake_app()
-        self.pane = None
         self.library = SongLibrary()
+        self.pane = LyricsPane(self.library, Gtk.EventBox())
 
     def tearDown(self):
         destroy_fake_app()
@@ -37,30 +37,24 @@ class TLyricsPane(TestCase):
         if self.pane:
             self.pane.destroy()
 
-    def test_construction(self):
-        af = AF({"~filename": fsnative("/dev/null")})
-        self.pane = LyricsPane(af)
-
     def test_save_lyrics(self):
         af = self.temp_mp3()
-        self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
         self.assertEqual(af("~lyrics"), LYRICS)
 
     def test_save_encoded_lyrics(self):
         af = self.temp_mp3()
-        self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
         self.assertEqual(af("~lyrics"), LYRICS)
 
     def test_save_lyrics_deletes_lyric_file(self):
         af = self.temp_mp3()
-        lf_name = af.lyric_filename
+        lf_name = af.lyrics_path
         os.makedirs(os.path.dirname(lf_name))
         with open(lf_name, "wb") as f:
             f.write(LYRICS.encode("utf-8"))
         assert os.path.exists(lf_name)
-        self.pane = LyricsPane(af)
+        self.pane = LyricsPane(self.library, Gtk.EventBox())
         self.pane._save_lyrics(af, LYRICS)
         assert not os.path.exists(lf_name)
 

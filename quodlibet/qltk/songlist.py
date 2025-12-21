@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2023 Nick Boultbee
+#      2011-2025 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1308,7 +1308,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     def __showmenu(self, column, event=None):
         time = event.time if event else Gtk.get_current_event_time()
 
-        if event is not None and event.button != Gdk.BUTTON_SECONDARY:
+        if event is not None and not event.triggers_context_menu():
             return False
 
         menu = self._menu(column)
