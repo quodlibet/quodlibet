@@ -313,18 +313,30 @@ class Align(Gtk.Widget):
 
 
 def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
-    """An ImageMenuItem with a custom label and stock image."""
+    """A GTK4 menu item using Button.
 
-    if icon_name is None:
-        return Gtk.MenuItem.new_with_mnemonic(label)
+    Note: In GTK4, menus should use Gio.Menu with actions, but for compatibility
+    we provide a widget-based fallback using Button."""
 
-    item = Gtk.ImageMenuItem.new_with_mnemonic(label)
+    # Create a box to hold icon and label if needed
+    if icon_name:
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        image = Gtk.Image.new_from_icon_name(icon_name)
+        box.append(image)
+        label_widget = Gtk.Label(label=label, use_underline=True)
+        box.append(label_widget)
+
+        item = Gtk.Button()
+        item.set_child(box)
+    else:
+        item = Gtk.Button(label=label, use_underline=True)
+
     if tooltip:
         item.set_tooltip_text(tooltip)
-    item.set_always_show_image(True)
-    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.NORMAL)
-    image.show()
-    item.set_image(image)
+
+    # Remove default button styling for menu-like appearance
+    item.add_css_class("flat")
+
     return item
 
 
@@ -404,19 +416,42 @@ def EntryCompletion(words):
 
 
 def RadioMenuItem(*args, **kwargs):
-    """RadioMenuItem that allows None for group"""
+    """GTK4 RadioMenuItem replacement using ModelButton with radio mode.
 
-    if kwargs.get("group", None) is None:
-        kwargs.pop("group", None)
-    return Gtk.RadioMenuItem(*args, **kwargs)
+    In GTK4, radio menu items should ideally use Gio.Menu with radio actions,
+    but for compatibility we use ModelButton which can act as a radio button."""
+
+    label = kwargs.pop("label", None)
+    if args and not label:
+        label = args[0]
+
+    tooltip_text = kwargs.pop("tooltip_text", None)
+    group = kwargs.pop("group", None)
+
+    item = Gtk.CheckButton()
+    if label:
+        item.set_label(label)
+
+    if tooltip_text:
+        item.set_tooltip_text(tooltip_text)
+
+    if group is not None:
+        item.set_group(group)
+
+    # Store the group reference for later use
+    if not hasattr(item, '_radio_group'):
+        item._radio_group = group
+
+    return item
 
 
 def SeparatorMenuItem(*args, **kwargs):
-    # https://bugzilla.gnome.org/show_bug.cgi?id=670575
-    # PyGObject 3.2 always sets a label in __init__
-    if not args and not kwargs:
-        return Gtk.SeparatorMenuItem.new()
-    return Gtk.SeparatorMenuItem(*args, **kwargs)
+    """GTK4 SeparatorMenuItem replacement using Separator.
+
+    In GTK4, menu separators are typically handled by Gio.Menu,
+    but for widget-based menus we use a regular Separator."""
+
+    return Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
 
 
 def SymbolicIconImage(name, size, fallbacks=None):

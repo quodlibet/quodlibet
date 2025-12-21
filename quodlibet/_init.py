@@ -261,6 +261,14 @@ def _init_gtk():
     if not initialized:
         raise SystemExit("Gtk.init failed")
 
+    # GTK4 compatibility: Add show_all/hide_all/set_no_show_all as no-ops
+    if not hasattr(Gtk.Widget, 'show_all'):
+        Gtk.Widget.show_all = lambda self: None
+    if not hasattr(Gtk.Widget, 'hide_all'):
+        Gtk.Widget.hide_all = lambda self: self.set_visible(False)
+    if not hasattr(Gtk.Widget, 'set_no_show_all'):
+        Gtk.Widget.set_no_show_all = lambda self, value: None
+
     # TODO: include our own icon theme directory
     # theme = Gtk.IconTheme.get_default()
     # theme_search_path = get_image_dir()

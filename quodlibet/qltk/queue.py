@@ -122,6 +122,8 @@ class QueueExpander(Gtk.Expander):
         left.prepend(hb2)
 
         menu = Gtk.PopoverMenu()
+        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        menu.set_child(menu_box)
 
         self.count_label = count_label = Gtk.Label()
         self.count_label.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -153,13 +155,15 @@ class QueueExpander(Gtk.Expander):
         outer.prepend(toggle)
 
         mode_menu = Gtk.PopoverMenu()
+        mode_menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        mode_menu.set_child(mode_menu_box)
 
         norm_mode_item = RadioMenuItem(
             label=_("Ephemeral"),
             tooltip_text=_("Remove songs from the queue after playing them"),
             group=None,
         )
-        mode_menu.append(norm_mode_item)
+        mode_menu_box.append(norm_mode_item)
         norm_mode_item.set_active(True)
         norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
 
@@ -168,27 +172,29 @@ class QueueExpander(Gtk.Expander):
             tooltip_text=_("Keep songs in the queue after playing them"),
             group=norm_mode_item,
         )
-        mode_menu.append(keep_mode_item)
+        mode_menu_box.append(keep_mode_item)
         keep_mode_item.connect("toggled", lambda b: self.__keep_songs_enable(True))
         keep_mode_item.set_active(
             config.getboolean("memory", "queue_keep_songs", False)
         )
 
         mode_item = MenuItem(_("Mode"), Icons.SYSTEM_RUN)
-        mode_item.set_submenu(mode_menu)
-        menu.append(mode_item)
+        # GTK4: ModelButton doesn't support submenus directly
+        # For now, skip submenu functionality - needs proper Gio.Menu implementation
+        # mode_item.set_submenu(mode_menu)
+        menu_box.append(mode_item)
 
         rand_checkbox = ConfigCheckMenuItem(
             _("_Random"), "memory", "shufflequeue", populate=True
         )
         rand_checkbox.connect("toggled", self.__queue_shuffle)
         self.set_shuffled(rand_checkbox.get_active())
-        menu.append(rand_checkbox)
+        menu_box.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
             _("Stop at End"), "memory", "queue_stop_at_end", populate=True
         )
-        menu.append(stop_checkbox)
+        menu_box.append(stop_checkbox)
 
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
@@ -210,7 +216,7 @@ class QueueExpander(Gtk.Expander):
         outer.prepend(close_button)
 
         self.set_label_widget(outer)
-        self.add(sw)
+        self.set_child(sw)
         self.connect("notify::expanded", self.__expand, button)
         self.connect("notify::expanded", self.__expand, button)
 

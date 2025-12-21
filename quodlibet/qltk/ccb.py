@@ -50,9 +50,9 @@ class ConfigSwitch(Gtk.Box):
         if label is not None:
             self.label = Gtk.Label(label, use_underline=True)
             self.label.set_mnemonic_widget(self.switch)
-            eb.add(self.label)
-        self.prepend(eb, False, True, 0)
-        self.append(self.switch, False, True, 0)
+            eb.append(self.label)
+        self.prepend(eb)
+        self.append(self.switch)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)
 
@@ -79,11 +79,13 @@ class ConfigSwitch(Gtk.Box):
         config.set(section, option, str(switch.get_active()).lower())
 
 
-class ConfigCheckMenuItem(Gtk.Label):
-    """A CheckMenuItem that connects to QL's config module, and toggles
-    a boolean configuration value when it is toggled.
+class ConfigCheckMenuItem(Gtk.CheckButton):
+    """A CheckButton (for menu use) that connects to QL's config module,
+    and toggles a boolean configuration value when it is toggled.
 
-    It is initialised to the current config value if `populate` is set True."""
+    It is initialised to the current config value if `populate` is set True.
+
+    Note: In GTK4, this uses CheckButton as menu items are widget-based in PopoverMenus."""
 
     def __init__(self, label, section, option, populate=False, default=False):
         super().__init__(label=label, use_underline=True)
