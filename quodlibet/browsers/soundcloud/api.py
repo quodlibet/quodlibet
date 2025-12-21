@@ -1,4 +1,4 @@
-# Copyright 2016-23 Nick Boultbee
+# Copyright 2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,9 +6,12 @@
 # (at your option) any later version.
 
 import json
+import tempfile
 from datetime import datetime
+from pathlib import Path
 from typing import Any
-from urllib.parse import urlencode
+from collections.abc import Callable
+from urllib.parse import urlencode, urlparse
 
 from gi.repository import GObject, Gio, Soup, GLib
 
@@ -16,7 +19,13 @@ from quodlibet import util, config
 from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.http import download_json, download, HTTPRequest, FailureCallback
+from quodlibet.util.http import (
+    download_json,
+    download,
+    HTTPRequest,
+    FailureCallback,
+    JsonDict,
+)
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 
@@ -34,11 +43,37 @@ class RestApi(GObject.Object):
     def _default_params(self):
         return {}
 
-    def _get(self, path, callback, data=None, **kwargs):
+    def _get(
+        self,
+        path: str,
+        callback: Callable[[Soup.Message, Any, Any], None],
+        context: Any | None = None,
+        return_json: bool = True,
+        **kwargs,
+    ):
         args = self._default_params()
         args.update(kwargs)
         msg = self._add_auth_to(Soup.Message.new("GET", self._url(path, args)))
-        download_json(msg, self._cancellable, callback, data, self._on_failure)
+        if return_json:
+            download_json(msg, self._cancellable, callback, context, self._on_failure)
+        else:
+            download(msg, self._cancellable, callback, context, False, self._on_failure)
+
+    def _head(
+        self,
+        path: str,
+        callback: Callable[[Soup.Message, Any], None],
+        context: Any | None = None,
+        **kwargs,
+    ):
+        args = self._default_params()
+        args.update(kwargs)
+        msg = self._add_auth_to(Soup.Message.new("HEAD", self._url(path, args)))
+
+        def no_data_cb(msg, _data: JsonDict | bytes | None, ctx: Any):
+            callback(msg, ctx)
+
+        download(msg, self._cancellable, no_data_cb, context, False, self._on_failure)
 
     def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
         if self.access_token:
@@ -47,15 +82,19 @@ class RestApi(GObject.Object):
             )
         return msg
 
-    def _post(self, path, callback, **kwargs):
+    def _post(
+        self,
+        path: str,
+        callback: Callable[[Soup.Message, Any, Any], None],
+        **kwargs,
+    ):
         args = self._default_params()
         args.update(kwargs)
         msg = self._add_auth_to(Soup.Message.new("POST", self._url(path)))
-        post_body = urlencode(args)
-        if not isinstance(post_body, bytes):
-            post_body = post_body.encode("ascii")
+        body = urlencode(args)
+        post_bytes = body if isinstance(body, bytes) else body.encode("ascii")
         msg.set_request_body_from_bytes(
-            "application/x-www-form-urlencoded", GLib.Bytes.new(post_body)
+            "application/x-www-form-urlencoded", GLib.Bytes.new(post_bytes)
         )
         download_json(msg, self._cancellable, callback, None, self._on_failure)
 
@@ -82,6 +121,7 @@ class SoundcloudApiClient(RestApi):
     __CLIENT_SECRET = "ca2b69301bd1f73985a9b47224a2a239"
     __CLIENT_ID = "5acc74891941cfc73ec8ee2504be6617"
     API_ROOT = "https://api.soundcloud.com"
+    AUTH_ROOT = "https://secure.soundcloud.com"
     REDIRECT_URI = "https://quodlibet.github.io/callbacks/soundcloud.html"
     PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
@@ -124,10 +164,10 @@ class SoundcloudApiClient(RestApi):
         self.username = None
 
     @property
-    def online(self):
+    def online(self) -> bool:
         return bool(self.access_token)
 
-    def _on_failure(self, req: HTTPRequest, _exc: Exception, data: Any) -> None:
+    def _on_failure(self, req: HTTPRequest, _exc: Exception, _data: Any) -> None:
         """Callback for HTTP failures."""
         code = req.message.get_property("status-code")
         if code in (401,):
@@ -140,17 +180,14 @@ class SoundcloudApiClient(RestApi):
                 print_w("Refreshing didn't work either, oh dear.")
                 self.log_out()
 
-    def _default_params(self):
-        return {}
-
-    def authenticate_user(self):
-        # create client object with app credentials
+    def authenticate_user(self) -> None:
+        # Create a client object with app credentials
         if self.access_token:
             print_d("Ignoring saved Soundcloud token...")
-        # redirect user to authorize URL
+        # Redirect user to the authorisation URL
         website(self._authorize_url)
 
-    def log_out(self):
+    def log_out(self) -> None:
         print_d("Destroying access token...")
         self.access_token = None
         self.user_id = None
@@ -185,7 +222,7 @@ class SoundcloudApiClient(RestApi):
             # Just in case we don't get it...
             self.refresh_token = refresh_token
             print_d("Got refresh token.")
-
+        assert self.access_token, "No access token received"
         print_d(f"Got an access token: ...{self.access_token[-6:]}")
         self.save_auth()
         if not self.user_id:
@@ -223,18 +260,75 @@ class SoundcloudApiClient(RestApi):
         except Exception as e:
             print_w(f"Problem getting stream URL for {song} ({e})")
 
-    @json_callback
-    def _on_track_stream_urls_data(self, json, song):
-        uri = json["http_mp3_128_url"]
-        self.emit("stream-uri-received", song, uri)
+    def _on_track_head_response(self, message: Soup.Message, song: AudioFile) -> None:
+        content_type, _params = message.props.response_headers.get_content_type()
+        if content_type and content_type.startswith("audio/"):
+            uri = message.get_uri().to_string()
+            self.emit("stream-uri-received", song, uri)
+
+    def _on_track_playlist_stream_data(
+        self, message: Soup.Message, data: bytes | None, song: AudioFile
+    ) -> None:
+        if not data:
+            return
+        if data.startswith(b"#EXTM3U"):
+            m3u8 = data.decode("utf-8")
+            with tempfile.NamedTemporaryFile(
+                mode="w",
+                encoding="utf-8",
+                suffix=".m3u8",
+                delete=False,
+            ) as f:
+                f.write(m3u8 + "\n")
+                f.flush()
+            uri = Path(f.name).as_uri()
+            print_d(f"Wrote HLS m3u8 data to {uri}", context=song("title"))
+            self.emit("stream-uri-received", song, uri)
+        elif data.startswith(b"ID3") or data[:2] == b"\xff\xfb":
+            # Should probably have found this already by the HEAD method
+            uri = message.get_uri().to_string()
+            print_w(
+                f"Downloaded entire raw HTTP MP3. Will play anyway from {uri}",
+                context=song("title"),
+            )
+            self.emit("stream-uri-received", song, uri)
+        else:
+            print_w(f"Got unknown data type: {data[:16]!r}…", context=song("title"))
 
     @json_callback
-    def _on_track_data(self, json, _data):
-        songs = list(filter(None, [self._audiofile_for(r) for r in json]))
+    def _on_track_stream_urls_data(self, json, song: AudioFile) -> None:
+        uri = (
+            # 2025-11: can only use HLS-style streams soon
+            json.get("hls_aac_160_url")
+            # Gstreamer on HLS MP3s is pretty broken, so ignore
+            # or json.get("hls_mp3_128_url")
+            or json.get("hls_aac_96_url")
+        )
+        if uri:
+            path = urlparse(uri).path
+            if path:
+                self._get(
+                    path, self._on_track_playlist_stream_data, song, return_json=False
+                )
+        else:
+            uri = json["http_mp3_128_url"]
+            path = urlparse(uri).path
+            if path:
+                self._head(path, self._on_track_head_response, song)
+
+    @json_callback
+    def _on_track_data(self, json, is_favorite: bool | None = None) -> None:
+        songs = list(
+            filter(
+                None, [self._audiofile_for(r, is_favorite=is_favorite) for r in json]
+            )
+        )
         self.emit("songs-received", songs)
 
     def get_favorites(self):
-        self._get("/me/likes/tracks", self._on_track_data, limit=self.PAGE_SIZE)
+        self._get(
+            "/me/likes/tracks", self._on_track_data, context=True, limit=self.PAGE_SIZE
+        )
 
     def get_my_tracks(self):
         self._get("/me/tracks", self._on_track_data, limit=self.PAGE_SIZE)
@@ -269,7 +363,9 @@ class SoundcloudApiClient(RestApi):
     def _on_favorited(self, json, _data):
         print_d("Successfully updated favorite")
 
-    def _audiofile_for(self, response) -> AudioFile | None:
+    def _audiofile_for(
+        self, response: JsonDict, *, is_favorite: bool | None
+    ) -> AudioFile | None:
         r = Wrapper(response)
         d = r.data
         try:
@@ -283,10 +379,12 @@ class SoundcloudApiClient(RestApi):
                 uri=url,
                 track_id=r.id,
                 client=self,
-                favorite=d.get("user_favorite", False),
+                favorite=is_favorite
+                if is_favorite is not None
+                else d.get("user_favorite", False),
             )
         except Exception as e:
-            print_w(f"Track {r.id} no good ({e})")
+            print_w(f"Track {r.id} is no good ({e})")
             return None
 
         def get_utc_date(s):
@@ -343,7 +441,7 @@ class SoundcloudApiClient(RestApi):
 
     @util.cached_property
     def _authorize_url(self):
-        url = f"{self.API_ROOT}/connect"
+        url = f"{self.AUTH_ROOT}/authorize"
         options = {
             "scope": "",
             "client_id": self.__CLIENT_ID,

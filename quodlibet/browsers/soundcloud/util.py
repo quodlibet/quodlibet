@@ -1,4 +1,4 @@
-# Copyright 2016-23 Nick Boultbee
+# Copyright 2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,11 +7,16 @@
 
 from datetime import datetime
 from typing import Any
+from collections.abc import Callable
 
 from quodlibet import print_d, _
 from quodlibet.qltk import WebImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util import enum
+
+from gi.repository import Soup
+
+from quodlibet.util.http import JsonDict
 
 SOUNDCLOUD_NAME = "Soundcloud"
 PROCESS_QL_URLS = True
@@ -53,23 +58,27 @@ class Wrapper:
         return f"<Wrapped: {self.data}>"
 
 
-def json_callback(wrapped):
-    """Decorator for `download_json` callbacks, handling common errors"""
+def json_callback(
+    wrapped: Callable[[Any, dict[str, Any], Any], None],
+) -> Callable[[Soup.Message, JsonDict | None, Any], None]:
+    """Method Decorator for `download_json` callbacks, handling common errors"""
 
-    def _callback(self, message, json, data):
+    def _callback(
+        self, message: Soup.Message, json: dict[str, Any] | None, context
+    ) -> None:
         if json is None:
             print_d(
                 f"[HTTP {message.status_code}] Invalid / empty JSON. "
-                f"Body: {message.response_body.data!r} (request: {data})"
+                f"Body: {message.response_body.data!r} (request: {context})"
             )
-            return None
+            return
         if "errors" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code, json["errors"]))
         if "error" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code, json["error"]))
-        return wrapped(self, json, data)
+        wrapped(self, json, context)
 
-    return _callback
+    return _callback  # type: ignore
 
 
 def clamp(val, low, high):
