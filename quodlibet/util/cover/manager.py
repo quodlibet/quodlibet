@@ -102,7 +102,7 @@ class CoverManager(GObject.Object):
         sources = self.sources
 
         def success(source, result):
-            name = source.__class__.__name__
+            name = type(source).__name__
             print_d("Successfully got cover", context=name)
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
@@ -110,7 +110,7 @@ class CoverManager(GObject.Object):
                 callback(True, result)
 
         def failure(source: GObject, msg: Soup.Message, log: bool = True) -> None:
-            name = source.__class__.__name__
+            name = type(source).__name__
             if log:
                 print_d(f"Didn't get cover: {msg}", context=name)
             source.disconnect_by_func(success)
@@ -126,7 +126,7 @@ class CoverManager(GObject.Object):
 
             cover = provider.cover
             if cover:
-                name = provider.__class__.__name__
+                name = type(provider).__name__
                 key = song.key if song else None
                 print_d(f"Found local cover for {key}", context=name)
                 callback(True, cover)
@@ -267,10 +267,11 @@ class CoverManager(GObject.Object):
                 self.emit("covers-found", provider, covers)
             provider.disconnect_by_func(search_complete)
 
-        def failure(provider, result):
+        def failure(provider: CoverManager, message: str, log: bool = True):
             finished(provider, False)
             name = provider.__class__.__name__
-            print_d(f"Failed to get cover from ({result})", context=name)
+            if log:
+                print_d(f"Failed to get cover ({message})", context=name)
             provider.disconnect_by_func(failure)
 
         def song_groups(songs, sources):
