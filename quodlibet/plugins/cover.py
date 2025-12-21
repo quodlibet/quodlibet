@@ -10,7 +10,7 @@ import os.path
 from os import path, makedirs
 from hashlib import sha1
 
-from gi.repository import GObject, Soup
+from gi.repository import GObject
 
 from quodlibet import get_cache_dir
 from quodlibet.qltk import Icons
@@ -169,13 +169,14 @@ class CoverSourcePlugin(GObject.Object):
         """
         self.fail("This source is incapable of fetching covers", log=False)
 
-    def fail(self, message: Soup.Message, *, log: bool = True) -> None:
+    def fail(self, message: str, *, log: bool = True) -> None:
         """
         Shorthand method for emitting `fetch-failure` signals.
 
         Use:
             return self.fail("Transient failure message")
 
+        :param message: A string message to record about the failure
         :param log: Whether to log the failure message
         """
         self.emit("fetch-failure", message, log)

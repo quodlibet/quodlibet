@@ -26,6 +26,14 @@ from .helper import get_temp_copy
 
 DUMMY_COVER = io.StringIO()
 
+A_SONG = AudioFile(
+    {
+        "~filename": os.path.join("/tmp/asong.ogg"),
+        "album": "Abbey Road",
+        "artist": "The Beatles",
+    }
+)
+
 
 class DummyCoverSource1(CoverSourcePlugin):
     @staticmethod
@@ -71,9 +79,51 @@ class DummyCoverSource3(ApiCoverSourcePlugin):
         return self.emit("fetch-success", DUMMY_COVER)
 
 
+class FailingCoverSource(ApiCoverSourcePlugin):
+    PLUGIN_ID = "failing-fetcher"
+    PLUGIN_NAME = "Fetch Failer"
+
+    def search(self):
+        return self.fail("Never searches", log=False)
+
+    # For testing niceness
+    def __eq__(self, other):
+        return self.song == other.song
+
+    def __hash__(self):
+        return hash(self.song)
+
+
 dummy_sources = [
-    Plugin(s) for s in (DummyCoverSource1, DummyCoverSource2, DummyCoverSource3)
+    Plugin(s)
+    for s in (
+        DummyCoverSource1,
+        DummyCoverSource2,
+        DummyCoverSource3,
+        FailingCoverSource,
+    )
 ]
+
+
+class TCoverManagerFailures(TestCase):
+    def setUp(self):
+        self.manager = CoverManager(use_built_in=False)
+        self.handler = self.manager.plugin_handler
+        self.bad = dummy_sources[3]
+        self.manager.plugin_handler.plugin_enable(self.bad)
+
+    def test_failures(self):
+        def finished(manager, results):
+            assert manager == self.manager
+            cover_plugin = self.bad.cls(A_SONG)
+            assert results == {cover_plugin: False}
+
+        def done(manager, provider, result):
+            raise AssertionError("Shouldn't have found anything")
+
+        self.manager.connect("searches-complete", finished)
+        self.manager.connect("covers-found", done)
+        self.manager.search_cover(Cancellable(), [A_SONG])
 
 
 class TCoverManager(TestCase):
@@ -213,13 +263,7 @@ class TCoverManager(TestCase):
             source.cls.cover_call = False
             source.cls.fetch_call = False
 
-        song = AudioFile(
-            {
-                "~filename": os.path.join("/tmp/asong.ogg"),
-                "album": "Abbey Road",
-                "artist": "The Beatles",
-            }
-        )
+        song = A_SONG
         songs = [song]
         results = []
 
