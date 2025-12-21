@@ -539,17 +539,20 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.treeview.set_rules_hint(True)
 
         targets = [("text/uri-list", 0, 0)]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        treeview.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # treeview.drag_source_set(
+            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
 
         treeselection = self.treeview.get_selection()
         treeselection.set_mode(Gtk.SelectionMode.SINGLE)
         treeselection.connect("changed", self.__select_callback, image)
 
-        self.treeview.connect("drag-data-get", self.__drag_data_get, treeselection)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # self.treeview.connect("drag-data-get", self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn("Thumb")

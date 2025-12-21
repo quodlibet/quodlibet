@@ -428,12 +428,14 @@ class Podcasts(Browser):
             ("text/uri-list", 0, DND_URI_LIST),
             ("text/x-moz-url", 0, DND_MOZ_URL),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        view.connect("drag-data-received", self.__drag_data_received)
-        view.connect("drag-motion", self.__drag_motion)
-        view.connect("drag-leave", self.__drag_leave)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # view.connect("drag-data-received", self.__drag_data_received)
+        # view.connect("drag-motion", self.__drag_motion)
+        # view.connect("drag-leave", self.__drag_leave)
 
         connect_obj(self, "destroy", self.__save, view)
 
@@ -456,21 +458,23 @@ class Podcasts(Browser):
         view.get_parent().drag_unhighlight()
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        view.emit_stop_by_name("drag-data-received")
-        targets = [
-            ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.emit_stop_by_name("drag-data-received")
+        # targets = [
+            # ("text/uri-list", 0, DND_URI_LIST),
+            # ("text/x-moz-url", 0, DND_MOZ_URL),
+        # ]
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        if tid == DND_URI_LIST:
-            uri = sel.get_uris()[0]
-        elif tid == DND_MOZ_URL:
-            uri = sel.data.decode("utf16", "replace").split("\n")[0]
-        else:
-            ctx.finish(False, False, etime)
-            return
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # if tid == DND_URI_LIST:
+            # uri = sel.get_uris()[0]
+        # elif tid == DND_MOZ_URL:
+            # uri = sel.data.decode("utf16", "replace").split("\n")[0]
+        # else:
+            # ctx.finish(False, False, etime)
+            # return
 
         ctx.finish(True, False, etime)
 

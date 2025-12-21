@@ -439,7 +439,7 @@ def RadioMenuItem(*args, **kwargs):
         item.set_group(group)
 
     # Store the group reference for later use
-    if not hasattr(item, '_radio_group'):
+    if not hasattr(item, "_radio_group"):
         item._radio_group = group
 
     return item
@@ -470,21 +470,53 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
 
 
 class Action(Gio.SimpleAction):
-    def __init__(self, *args, **kargs):
-        # TODO GTK4: Check this behaviour
-        super().__init__(self, *args, **kargs)
+    def __init__(self, *args, **kwargs):
+        # GTK4: SimpleAction doesn't have label/icon_name properties
+        # Store them as instance attributes for compatibility
+        self.label = kwargs.pop("label", None)
+        self.icon_name = kwargs.pop("icon_name", None)
+        super().__init__(*args, **kwargs)
 
 
 class ToggleAction(Gio.SimpleAction):
-    def __init__(self, *args, **kargs):
-        # TODO GTK4: Toggle behaviour
-        super().__init__(self, *args, **kargs)
+    def __init__(self, *args, **kwargs):
+        # GTK4: SimpleAction doesn't have label property
+        self.label = kwargs.pop("label", None)
+        self.icon_name = kwargs.pop("icon_name", None)
+        # TODO GTK4: Toggle behaviour - may need state_type parameter
+        super().__init__(*args, **kwargs)
 
 
 class RadioAction(Gio.SimpleAction):
-    def __init__(self, *args, **kargs):
-        # TODO GTK4: Radio behaviour
-        super().__init__(self, *args, **kargs)
+    def __init__(self, *args, **kwargs):
+        # GTK4: SimpleAction doesn't have label/value properties
+        self.label = kwargs.pop("label", None)
+        self._value = kwargs.pop("value", 0)
+        self._group = []
+        # TODO GTK4: Radio behaviour - needs state and parameter_type
+        super().__init__(*args, **kwargs)
+
+    def join_group(self, group_source):
+        """GTK4: Stub for RadioAction group compatibility"""
+        if group_source is not None:
+            if not hasattr(group_source, "_group"):
+                group_source._group = []
+            group_source._group.append(self)
+            self._group = group_source._group
+        return self
+
+    def get_group(self):
+        """GTK4: Return radio group"""
+        return self._group if self._group else [self]
+
+    def get_current_value(self):
+        """GTK4: Return current value"""
+        return self._value
+
+    def set_active(self, active):
+        """GTK4: Set action as active"""
+        # TODO: Implement proper radio behavior
+        pass
 
 
 class WebImage(Gtk.Image):

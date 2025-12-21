@@ -87,13 +87,16 @@ class FileSystem(Browser, Gtk.Box):
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
-            ("text/uri-list", 0, self.TARGET_EXT),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
+            # ("text/uri-list", 0, self.TARGET_EXT),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        dt.connect("drag-data-get", self.__drag_data_get)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+        # dt.connect("drag-data-get", self.__drag_data_get)
 
         sel = dt.get_selection()
         sel.unselect_all()

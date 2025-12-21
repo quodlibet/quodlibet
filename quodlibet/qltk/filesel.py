@@ -242,9 +242,10 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         # Allow to drag and drop files from outside
         targets = [("text/uri-list", 0, 42)]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # self.connect("drag-data-received", self.__drag_data_received)
 
     def _create_menu(self):
         menu = Gtk.PopoverMenu()

@@ -24,6 +24,30 @@ from senf import fsn2bytes, bytes2fsn, uri2fsn
 from quodlibet.util import print_d, print_w, is_windows, is_osx
 
 
+def get_children(widget):
+    """GTK4 compatibility wrapper for getting all children of a widget.
+
+    In GTK4, get_children() was removed. This provides a compatible
+    implementation using get_first_child() and get_next_sibling().
+
+    Args:
+        widget: A Gtk.Widget
+    Returns:
+        list: List of child widgets
+    """
+    if hasattr(widget, "get_children"):
+        # GTK3 compatibility
+        return widget.get_children()
+
+    # GTK4: iterate through children manually
+    children = []
+    child = widget.get_first_child()
+    while child:
+        children.append(child)
+        child = child.get_next_sibling()
+    return children
+
+
 def show_uri(label, uri):
     """Shows a URI. The URI can be anything handled by GIO or a quodlibet
     specific one.
@@ -184,8 +208,8 @@ def find_widgets(widget, type_):
     if isinstance(widget, type_):
         found.append(widget)
 
-    if isinstance(widget, Gtk.Container):
-        for child in widget.get_children():
+    if isinstance(widget, Gtk.Container) or hasattr(widget, "get_first_child"):
+        for child in get_children(widget):
             found.extend(find_widgets(child, type_))
 
     return found

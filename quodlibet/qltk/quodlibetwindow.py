@@ -706,11 +706,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         lib = library.librarian
         connect_destroy(lib, "changed", self.__song_changed, player)
 
-        targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
+        # targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # self.connect("drag-data-received", self.__drag_data_received)
 
         if not headless:
             on_first_map(self, self.__configure_scan_dirs, library)
@@ -931,7 +931,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             )
             self.__jump_to_current(True, None, True)
             act.connect("activate", self.__jump_to_current)
-            ag.add_action_with_accel(act, "<Primary>J")
+            ag.add_action(act)
 
         def add_top_level_items(ag):
             ag.add_action(Action(name="File", label=_("_File")))
@@ -941,7 +941,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             ag.add_action(Action(name="Control", label=_("_Control")))
             ag.add_action(Action(name="Help", label=_("_Help")))
 
-        ag = Gio.SimpleActionGroup("QuodLibetWindowActions")
+        ag = Gio.SimpleActionGroup()
         add_top_level_items(ag)
         add_view_items(ag)
 
@@ -949,7 +949,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             name="AddFolders", label=_("_Add a Folder…"), icon_name=Icons.LIST_ADD
         )
         act.connect("activate", self.open_chooser)
-        ag.add_action_with_accel(act, "<Primary>O")
+        ag.add_action(act)
 
         act = Action(name="AddFiles", label=_("_Add a File…"), icon_name=Icons.LIST_ADD)
         act.connect("activate", self.open_chooser)
@@ -980,7 +980,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         act = Action(name="Quit", label=_("_Quit"), icon_name=Icons.APPLICATION_EXIT)
         act.connect("activate", lambda *x: self.destroy())
-        ag.add_action_with_accel(act, "<Primary>Q")
+        ag.add_action(act)
 
         act = Action(
             name="EditTags", label=_("_Edit…"), icon_name=Icons.DOCUMENT_PROPERTIES
@@ -990,41 +990,41 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         act = Action(name="EditBookmarks", label=_("Edit Bookmarks…"))
         connect_obj(act, "activate", self.__edit_bookmarks, library.librarian, player)
-        ag.add_action_with_accel(act, "<Primary>B")
+        ag.add_action(act)
 
         act = Action(
             name="Previous", label=_("Pre_vious"), icon_name=Icons.MEDIA_SKIP_BACKWARD
         )
         act.connect("activate", self.__previous_song)
-        ag.add_action_with_accel(act, "<Primary>comma")
+        ag.add_action(act)
 
         act = Action(
             name="PlayPause", label=_("_Play"), icon_name=Icons.MEDIA_PLAYBACK_START
         )
         act.connect("activate", self.__play_pause)
-        ag.add_action_with_accel(act, "<Primary>space")
+        ag.add_action(act)
 
         act = Action(name="Next", label=_("_Next"), icon_name=Icons.MEDIA_SKIP_FORWARD)
         act.connect("activate", self.__next_song)
-        ag.add_action_with_accel(act, "<Primary>period")
+        ag.add_action(act)
 
         act = Action(name="Stop", label=_("Stop"), icon_name=Icons.MEDIA_PLAYBACK_STOP)
         act.connect("activate", self.__stop)
         ag.add_action(act)
 
         act = ToggleAction(name="StopAfter", label=_("Stop After This Song"))
-        ag.add_action_with_accel(act, "<shift>space")
+        ag.add_action(act)
 
         # access point for the tray icon
         self.stop_after = act
 
         act = Action(name="Shortcuts", label=_("_Keyboard Shortcuts"))
         act.connect("activate", self.__keyboard_shortcuts)
-        ag.add_action_with_accel(act, "<Primary>question")
+        ag.add_action(act)
 
         act = Action(name="About", label=_("_About"), icon_name=Icons.HELP_ABOUT)
         act.connect("activate", self.__show_about)
-        ag.add_action_with_accel(act, None)
+        ag.add_action(act)
 
         act = Action(
             name="OnlineHelp", label=_("Online Help"), icon_name=Icons.HELP_BROWSER
@@ -1034,7 +1034,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             util.website(const.ONLINE_HELP)
 
         act.connect("activate", website_handler)
-        ag.add_action_with_accel(act, "F1")
+        ag.add_action(act)
 
         act = Action(name="SearchHelp", label=_("Search Help"))
 
@@ -1042,7 +1042,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             util.website(const.SEARCH_HELP)
 
         act.connect("activate", search_help_handler)
-        ag.add_action_with_accel(act, None)
+        ag.add_action(act)
 
         act = Action(
             name="CheckUpdates",
@@ -1056,7 +1056,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             d.destroy()
 
         act.connect("activate", check_updates_handler)
-        ag.add_action_with_accel(act, None)
+        ag.add_action(act)
 
         act = Action(
             name="RefreshLibrary",
@@ -1064,7 +1064,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             icon_name=Icons.VIEW_REFRESH,
         )
         act.connect("activate", self.__rebuild, False)
-        ag.add_action_with_accel(act, "<Primary>R")
+        ag.add_action(act)
 
         current = config.get("memory", "browser")
         try:
@@ -1084,7 +1084,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             first_action = first_action or act
             if name == current:
                 act.set_active(True)
-            ag.add_action_with_accel(act, "<Primary>%d" % ((index + 1) % 10,))
+            ag.add_action(act)
         assert first_action
         self._browser_action = first_action
 
@@ -1105,7 +1105,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 LibraryBrowser.open(browser_cls, library, player)
 
             act.connect("activate", browser_activate, Kind)
-            ag.add_action_with_accel(act, "<Primary><alt>%d" % ((index + 1) % 10,))
+            ag.add_action(act)
 
         ui = Gtk.UIManager()
         ui.insert_action_group(ag, -1)

@@ -282,16 +282,19 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         )
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            ("text/uri-list", 0, 2),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            # ("text/uri-list", 0, 2),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # view.drag_source_set(
+            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
 
-        view.connect("drag-data-get", self.__drag_data_get)
-        view.connect("child-activated", self.__child_activated)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.connect("drag-data-get", self.__drag_data_get)
+        # view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(

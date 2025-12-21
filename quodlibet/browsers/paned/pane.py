@@ -97,16 +97,19 @@ class Pane(AllTreeView):
         connect_obj(self, "destroy", self.disconnect, s)
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
-            ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
+            # ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("destroy", self.__destroy)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # self.drag_source_set(
+            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
+        # self.connect("drag-data-get", self.__drag_data_get)
+        # self.connect("destroy", self.__destroy)
 
         librarian = library.librarian or library
         self.connect("key-press-event", self.__key_pressed, librarian)
