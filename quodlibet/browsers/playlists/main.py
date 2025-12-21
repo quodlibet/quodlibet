@@ -528,7 +528,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist = model[itr][0]
         PLAYLIST_HANDLER.populate_menu(menu, library, self, [playlist])
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def _start_rename(self, path):
         view = self.__view

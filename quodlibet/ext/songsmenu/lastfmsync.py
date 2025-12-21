@@ -210,7 +210,9 @@ class LastFMSyncWindow(qltk.Dialog):
         self.set_border_width(5)
         self.set_default_size(300, 100)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vbox.set_spacing(12)
 
         self.progbar = Gtk.ProgressBar()

@@ -54,7 +54,9 @@ class MyBrainz(SongsMenuPlugin):
             ("labelid2", _('Write "labelid" tag')),
         ]
 
-        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vb.set_spacing(8)
 
         for key, label in items:

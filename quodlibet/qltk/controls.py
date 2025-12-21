@@ -52,7 +52,7 @@ class Volume(Gtk.VolumeButton):
         )
 
     def __popup(self, widget, menu):
-        time = Gtk.get_current_event_time()
+        time = GLib.CURRENT_TIME
         button = 3
         qltk.popup_menu_under_widget(menu, widget, button, time)
         return True

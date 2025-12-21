@@ -276,7 +276,7 @@ class DuplicateDialog(Gtk.Window):
         path, col = songlist.get_cursor()
         menu = songlist.menu(app.library)
         if menu is not None:
-            return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
+            return songlist.popup_menu(menu, 0, GLib.CURRENT_TIME)
         return None
 
     def __init__(self, model):

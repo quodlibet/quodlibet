@@ -737,7 +737,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
         menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __refresh_album(self, menuitem, view):
         items = self.__get_selected_items()

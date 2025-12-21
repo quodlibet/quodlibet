@@ -238,7 +238,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         view.remove_selection()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __view_key_press(self, view, event):
         if event.keyval == Gtk.accelerator_parse("Delete")[0]:
@@ -411,4 +411,4 @@ class TagListEditor(qltk.Window):
             self.model[path][0] = edited
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time()).show()
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME).show()

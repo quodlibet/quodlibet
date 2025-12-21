@@ -778,7 +778,7 @@ class EditTags(Gtk.Box):
 
         # XXX: Keep reference
         self.__menu = menu
-        return view.popup_menu(menu, 3, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 3, GLib.CURRENT_TIME)
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()

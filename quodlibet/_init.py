@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler, print_d
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
+from ._main import get_base_dir, is_release, get_cache_dir
 
 
 _cli_initialized = False

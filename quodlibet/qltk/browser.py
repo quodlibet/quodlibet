@@ -269,7 +269,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
         self.set_title(browser_cls.name + " - Quod Libet")
-        self.add(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, ))
+        self.add(
+            Gtk.Box(
+                orientation=Gtk.Orientation.VERTICAL,
+            )
+        )
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_totals)
@@ -363,7 +367,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         header = col.header_name
         menu = view.menu(header, self.browser, library)
         if menu is not None:
-            view.popup_menu(menu, 0, Gtk.get_current_event_time())
+            view.popup_menu(menu, 0, GLib.CURRENT_TIME)
         return True
 
     def __set_totals(self, info, songs):

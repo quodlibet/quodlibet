@@ -48,7 +48,9 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect("key-press-event", self.key_press_event_cb)
         add_css(self.textview, "* { padding: 6px; }")
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vbox.prepend(self.textview, True, True, 0)
         self._edit_button = Button("Edit Lyrics", Icons.EDIT)
         hbox = Gtk.Box()

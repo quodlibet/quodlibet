@@ -23,7 +23,7 @@ from quodlibet.qltk import Icons, add_css
 from quodlibet.util import connect_obj
 
 
-class LyricsPane(Gtk.VBox):
+class LyricsPane(Gtk.Box):
     def __init__(self, parent, _library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.song = None

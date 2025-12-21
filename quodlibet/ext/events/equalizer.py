@@ -505,7 +505,9 @@ class Equalizer(EventPlugin):
         combo.connect("changed", default_combo_changed)
 
         # This block is just for padding.
-        padboxv = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        padboxv = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         padboxv.prepend(combo, True, True, 6)
         padboxh = Gtk.Box()
         padboxh.prepend(padboxv, True, True, 6)
@@ -520,7 +522,9 @@ class Equalizer(EventPlugin):
         main_vbox.prepend(main_middle_hbox, False, False, 0)
 
         frame = Gtk.Frame(label=_("Custom presets"), label_xalign=0.5)
-        main_bottom_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        main_bottom_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
 
         # Custom presets
         combo = Gtk.ComboBoxText()

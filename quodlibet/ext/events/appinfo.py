@@ -36,7 +36,9 @@ class AppInformation(EventPlugin):
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def PluginPreferences(self, *args):
-        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
 
         row = 0
         grid = Gtk.Grid(column_spacing=12, row_spacing=6)

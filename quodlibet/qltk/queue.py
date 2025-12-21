@@ -138,7 +138,8 @@ class QueueExpander(Gtk.Expander):
             tooltip_text=_("Clear Queue"),
         )
         clear_item.connect("clicked", self.__clear_queue)
-        outer.prepend(clear_item, False, False, 3)
+        clear_item.set_margin_start(3)
+        outer.prepend(clear_item)
 
         toggle = SmallImageToggleButton(
             image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN, Gtk.IconSize.NORMAL),
@@ -148,7 +149,8 @@ class QueueExpander(Gtk.Expander):
         toggle.props.active = disabled
         self.__queue_disable(disabled)
         toggle.connect("toggled", lambda b: self.__queue_disable(b.props.active))
-        outer.prepend(toggle, False, False, 3)
+        toggle.set_margin_start(3)
+        outer.prepend(toggle)
 
         mode_menu = Gtk.PopoverMenu()
 
@@ -196,16 +198,16 @@ class QueueExpander(Gtk.Expander):
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
-
-        outer.prepend(button, False, False, 3)
+        button.set_margin_start(3)
+        outer.prepend(button)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.NORMAL),
         )
 
         close_button.connect("clicked", lambda *x: self.hide())
-
-        outer.prepend(close_button, False, False, 6)
+        close_button.set_margin_start(6)
+        outer.prepend(close_button)
 
         self.set_label_widget(outer)
         self.add(sw)
@@ -524,7 +526,7 @@ class PlayQueue(SongList):
         remove.connect("activate", self.__remove)
         menu.prepend(remove)
         menu.show_all()
-        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, *args):
         self.remove_selection()

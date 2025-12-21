@@ -505,7 +505,7 @@ class PreferencesWindow(UniqueWindow):
                 child.show_all()
 
         def create_behavior_frame(self):
-            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             continue_play = CS(
                 _("_Continue playback on startup"),
                 "player",
@@ -532,6 +532,7 @@ class PreferencesWindow(UniqueWindow):
 
     class Tagging(Gtk.Box):
         name = "tagging"
+
         def __init__(self):
             super().__init__(orientation=Gtk.Orientation.VERTICAL)
 

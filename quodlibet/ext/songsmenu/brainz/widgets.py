@@ -367,7 +367,9 @@ class SearchWindow(Dialog):
         save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
         save_button.set_sensitive(False)
 
-        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vb.set_spacing(8)
 
         hb = Gtk.Box()

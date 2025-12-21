@@ -1306,7 +1306,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         window.set_page("songlist")
 
     def __showmenu(self, column, event=None):
-        time = event.time if event else Gtk.get_current_event_time()
+        time = event.time if event else GLib.CURRENT_TIME
 
         if event is not None and not event.triggers_context_menu():
             return False

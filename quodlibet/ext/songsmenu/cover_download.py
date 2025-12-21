@@ -364,7 +364,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         label.set_mnemonic_widget(slider)
         hbox.prepend(label, False, False, 6)
         hbox.prepend(slider, True, True, 6)
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vbox.prepend(hbox, False, False, 6)
 
         def create_save_box():

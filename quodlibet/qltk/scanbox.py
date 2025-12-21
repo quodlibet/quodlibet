@@ -6,8 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
-from gi.repository import Pango
+from gi.repository import Gtk, GLib, Pango
 
 from quodlibet.qltk.msg import ConfirmationPrompt
 from senf import fsn2text
@@ -106,7 +105,7 @@ class ScanBox(Gtk.Box):
             child.show_all()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __select_changed(self, selection, remove_button, move_button):
         remove_button.set_sensitive(selection.count_selected_rows())

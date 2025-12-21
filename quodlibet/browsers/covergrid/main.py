@@ -399,9 +399,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         menu = SongsMenu(self.__library, songs, items=[[button]])
         menu.show_all()
-        popup_menu_at_widget(
-            menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
-        )
+        popup_menu_at_widget(menu, widget, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
     def __refresh_cover(self, menuitem, view):
         for child in self.view.get_selected_children():

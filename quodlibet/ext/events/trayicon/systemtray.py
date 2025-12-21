@@ -200,9 +200,7 @@ class SystemTray(BaseIndicator):
         if not self._icon:
             return
 
-        self.__popup_menu(
-            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
-        )
+        self.__popup_menu(self._icon, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):

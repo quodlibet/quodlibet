@@ -64,7 +64,6 @@ class TreeViewHints(Gtk.Window):
         label.show()
         self.set_child(label)
 
-
         # TODO GTK4: EventController?
         # self.add_events(
         #     Gdk.EventMask.BUTTON_MOTION_MASK
@@ -397,7 +396,7 @@ class TreeViewHints(Gtk.Window):
             fake_event = Gdk.Event.new(Gdk.EventType.LEAVE_NOTIFY)
             fake_event.any.window = parent.get_window()
             struct = fake_event.crossing
-            struct.time = Gtk.get_current_event_time()
+            struct.time = GLib.CURRENT_TIME
             ok, state = Gtk.get_current_event_state()
             if ok:
                 struct.state = state
@@ -654,12 +653,12 @@ class BaseView(Gtk.TreeView):
         # a row.
 
         self._sel_ignore_next = False
-        self._sel_ignore_time = -1
+        self._sel_should_ignore = False
 
         def on_selection_changed(selection):
-            if self._sel_ignore_time != selection.get_current_event_time():
+            if not self._sel_should_ignore:
                 self.emit("selection-changed", selection)
-            self._sel_ignore_time = -1
+            self._sel_should_ignore = False
 
         id_ = self.get_selection().connect("changed", on_selection_changed)
 
@@ -673,15 +672,14 @@ class BaseView(Gtk.TreeView):
 
         self.connect_after("row-activated", on_row_activated)
 
-        def on_button_release_event(self, event):
+        def on_button_release_event(gesture, n_press, x, y):
             if self._sel_ignore_next:
-                self._sel_ignore_time = Gtk.get_current_event_time()
+                self._sel_should_ignore = True
             self._sel_ignore_next = False
 
-        controller =Gtk.GestureClick()
+        controller = Gtk.GestureClick()
         controller.connect("released", on_button_release_event)
         self.add_controller(controller)
-
 
     def do_key_press_event(self, event):
         if is_accel(event, "space", "KP_Space"):

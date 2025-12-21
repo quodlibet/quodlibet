@@ -72,7 +72,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         hp.show()
         self.add(hp)
 
-        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
 
         bbox = Gtk.Box(spacing=6)
 
@@ -237,7 +239,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
         menu.connect("selection-done", selection_done_cb)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __delete(self, item, paths, fs):
         trash_files(self, paths)

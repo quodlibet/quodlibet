@@ -52,7 +52,7 @@ def MenuItems(marks, player, seekable):
     return items
 
 
-class EditBookmarksPane(Gtk.VBox):
+class EditBookmarksPane(Gtk.Box):
     song: AudioFile | None
 
     def __init__(
@@ -62,7 +62,7 @@ class EditBookmarksPane(Gtk.VBox):
         close: bool = False,
         song: AudioFile | None = None,
     ):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.title = _("Bookmarks")
 
         self.model = model = Gtk.ListStore(int, str)
@@ -183,7 +183,7 @@ class EditBookmarksPane(Gtk.VBox):
             remove.activate()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __edit_name(self, render, path, new, model):
         if new:

@@ -366,7 +366,12 @@ class _SmallImageButton:
     """A button for images with less padding"""
 
     def __init__(self, **kwargs):
+        # GTK4: Extract image from kwargs and set it as child
+        image = kwargs.pop("image", None)
         super().__init__(**kwargs)
+
+        if image is not None:
+            self.set_child(image)
 
         self.set_size_request(26, 26)
         add_css(

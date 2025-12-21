@@ -356,7 +356,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         selection.unselect_all()
         for path in paths:
             selection.select_path(path)
-        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __mkdir(self, button):
         model, paths = self.get_selection().get_selected_rows()

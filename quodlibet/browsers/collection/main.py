@@ -324,7 +324,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __play(self, view, path, col):
         model = view.get_model()

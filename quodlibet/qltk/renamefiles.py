@@ -214,10 +214,10 @@ class RenameFiles(Gtk.Box):
         rename_options.prepend(frame_filename_options, False, True, 0)
 
         # album art options
-        albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
         # move art
-        moveart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        moveart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.moveart = ConfigCheckButton(
             _("_Move album art"), "rename", "move_art", populate=True
         )
@@ -239,7 +239,7 @@ class RenameFiles(Gtk.Box):
         moveart_box.prepend(self.moveart_overwrite, False, True, 0)
         albumart_box.prepend(moveart_box, False, True, 0)
         # remove empty
-        removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.removeemptydirs = ConfigCheckButton(
             _("_Remove empty directories"), "rename", "remove_empty_dirs", populate=True
         )

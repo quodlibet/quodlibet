@@ -54,7 +54,10 @@ class GstPlayerPreferences(Gtk.Box):
             player._set_buffer_duration(duration_msec)
 
         duration = config.getfloat("player", "gst_buffer")
-        scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=Gtk.Adjustment(value=duration, lower=0.2, upper=10))
+        scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            adjustment=Gtk.Adjustment(value=duration, lower=0.2, upper=10),
+        )
         scale.set_value_pos(Gtk.PositionType.LEFT)
         scale.set_show_fill_level(True)
         scale.connect("format-value", format_buffer)

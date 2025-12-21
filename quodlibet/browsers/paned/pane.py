@@ -194,7 +194,7 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __selection_changed(self, *args):
         if self.__next:

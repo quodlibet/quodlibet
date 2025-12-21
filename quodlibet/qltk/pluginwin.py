@@ -416,7 +416,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         errors.show()
         errors = Align(errors, top=6, bottom=6)
         errors.set_no_show_all(True)
-        bbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        bbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         bbox.prepend(errors, True, True, 0)
 
         pref_box = PluginPreferencesContainer()
@@ -433,7 +433,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         filter_box.prepend(fb, False, True, 0)
         filter_box.prepend(fe, False, True, 0)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.prepend(Align(filter_box, border=6, right=-6), False, False, 0)
         vbox.prepend(sw, True, True, 0)
         vbox.prepend(Align(bbox, left=3, right=3, top=0), False, False, 3)
@@ -452,7 +452,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         selection.connect("changed", self.__selection_changed, pref_box)
         selection.emit("changed")
 
-        right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         right_box.prepend(pref_box, True, True, 0)
         if not self.has_close_button():
             right_box.prepend(bb_align, True, True, 0)

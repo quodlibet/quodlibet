@@ -258,7 +258,9 @@ class TaskWidget(Gtk.Box):
         self.prepend(vb, True, True, 3)
         self.pause = SmallImageToggleButton()
         self.pause.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL)
+            Gtk.Image.new_from_icon_name(
+                Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL
+            )
         )
         self.pause.connect("toggled", self.__pause_toggled)
         self.prepend(self.pause, False, True, 3)

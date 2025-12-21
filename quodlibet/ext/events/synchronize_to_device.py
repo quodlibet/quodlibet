@@ -127,11 +127,15 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             # query_file is empty
             return self._no_queries_frame()
 
-        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_main)
+        main_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_main
+        )
         self.main_vbox = main_vbox
 
         # Saved search selection frame
-        saved_search_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        saved_search_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
         self.saved_search_vbox = saved_search_vbox
         for query_name, _query in self.queries.items():
             query_config = self.CONFIG_QUERY_PREFIX + query_name
@@ -184,7 +188,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Destination path frame
-        destination_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        destination_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
         destination_vbox.prepend(destination_path_hbox, False, False, 0)
         destination_vbox.prepend(destination_warn_label, False, False, 0)
         destination_vbox.prepend(destination_info_label, False, False, 0)
@@ -298,7 +304,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Section for previewing exported files
-        preview_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        preview_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
         preview_vbox.prepend(preview_start_button, False, False, 0)
         preview_vbox.prepend(preview_stop_button, False, False, 0)
         preview_vbox.prepend(details_scroll, True, True, 0)
@@ -327,7 +335,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.sync_stop_button = sync_stop_button
 
         # Section for the sync buttons
-        sync_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large)
+        sync_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
         sync_vbox.prepend(sync_start_button, False, False, 0)
         sync_vbox.prepend(sync_stop_button, False, False, 0)
         main_vbox.prepend(sync_vbox, False, False, 0)

@@ -293,9 +293,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._old_placeholder = self._entry.get_placeholder_text()
         self._old_tooltip = self._entry.get_tooltip_text()
 
-        self._add_button = Gtk.Button.new_from_icon_name(
-            "list-add", Gtk.IconSize.LARGE
-        )
+        self._add_button = Gtk.Button.new_from_icon_name("list-add", Gtk.IconSize.LARGE)
         self._add_button.set_no_show_all(True)
         self.prepend(self._add_button, False, True, 0)
         self._add_button.connect("clicked", self.activated)
@@ -383,9 +381,7 @@ class QueryItem(Gtk.FlowBoxChild):
         self.query = Query(string)
 
         hbox = Gtk.Box()
-        hbox.prepend(
-            Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0
-        )
+        hbox.prepend(Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0)
         btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.LARGE)
         btn.connect("clicked", self.remove)
         hbox.prepend(btn, False, True, 0)

@@ -680,7 +680,9 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         songbox.prepend(self._searchbox, False, True, 0)
-        self._songpane_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        self._songpane_container = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         songbox.prepend(self._songpane_container, True, True, 0)
         songbox.prepend(self.qbar, False, True, 0)
         songbox.show_all()
@@ -693,7 +695,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         return bool(len(self.__stations or []) + len(self.__fav_stations or []))
 
     def pack(self, songpane):
-        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        container = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         container.add(self)
         self._songpane_container.add(songpane)
         return container

@@ -142,7 +142,9 @@ class FilterPluginBox(Gtk.Box):
         for filt in filters:
             filt.connect("preview", lambda *x: self.emit("preview"))
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         expander.add(vbox)
 
         connect_destroy(

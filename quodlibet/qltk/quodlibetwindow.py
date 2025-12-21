@@ -573,7 +573,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.__update_title(player)
         self.set_default_size(600, 480)
 
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.set_child(main_box)
         self.side_book = qltk.Notebook()
 
@@ -1405,7 +1405,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         header = col.header_name
         menu = self.songlist.menu(header, self.browser, self.__library)
         if menu is not None:
-            return self.songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
+            return self.songlist.popup_menu(menu, 0, GLib.CURRENT_TIME)
         return None
 
     def __current_song_prop(self, *args):

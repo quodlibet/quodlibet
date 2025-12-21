@@ -123,7 +123,7 @@ class _KeyValueEditor(qltk.Window):
             self.__remove(view)
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, view):
         view.remove_selection()

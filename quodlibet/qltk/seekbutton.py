@@ -299,7 +299,7 @@ class SeekButton(HSlider):
         if event:
             qltk.popup_menu_at_widget(menu, self, 3, event.time)
         else:
-            time = Gtk.get_current_event_time()
+            time = GLib.CURRENT_TIME
             qltk.popup_menu_under_widget(menu, self, 3, time)
         return True
 

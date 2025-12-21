@@ -134,7 +134,7 @@ class TagsFromPath(Gtk.Box):
         sw.add(self.view)
         self.prepend(sw, True, True, 0)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         addreplace = Gtk.ComboBoxText()
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))

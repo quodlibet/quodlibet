@@ -14,7 +14,6 @@ from collections.abc import Iterable
 
 from gi.repository import GLib
 from gi.repository import Gio
-from gi.repository import Gtk
 from senf import fsn2uri, fsnative
 
 from quodlibet import print_d
@@ -86,7 +85,7 @@ def _get_startup_id():
     from quodlibet import app
 
     app_name = type(app.window).__name__
-    return "%s_TIME%d" % (app_name, Gtk.get_current_event_time())
+    return "%s_TIME%d" % (app_name, GLib.CURRENT_TIME)
 
 
 def _get_dbus_proxy(name, path, iface):

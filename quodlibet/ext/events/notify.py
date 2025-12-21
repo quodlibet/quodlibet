@@ -16,7 +16,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 import re
 
-from gi.repository import Gtk, GObject, GLib, Gio
+from gi.repository import Gtk, GLib, Gio
 from senf import fsn2uri
 
 from quodlibet import _

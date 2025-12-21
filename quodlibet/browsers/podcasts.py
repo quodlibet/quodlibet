@@ -511,7 +511,7 @@ class Podcasts(Browser):
         menu.show_all()
         menu.connect("selection-done", lambda m: m.destroy())
 
-        if self._view.popup_menu(menu, 0, Gtk.get_current_event_time()):
+        if self._view.popup_menu(menu, 0, GLib.CURRENT_TIME):
             return menu
         return None
 

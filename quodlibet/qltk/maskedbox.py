@@ -109,7 +109,7 @@ class MaskedBox(Gtk.Box):
             child.show_all()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __unhide(self, view, library):
         selection = view.get_selection()

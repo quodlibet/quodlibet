@@ -38,13 +38,17 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
 
         super().__init__(label=_("Title-_case Value"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.TOOLS_CHECK_SPELLING, Gtk.IconSize.NORMAL)
+            Gtk.Image.new_from_icon_name(
+                Icons.TOOLS_CHECK_SPELLING, Gtk.IconSize.NORMAL
+            )
         )
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vb.set_spacing(8)
         config_toggles = [
             ("allow_all_caps", _("Allow _ALL-CAPS in tags"), None, True),

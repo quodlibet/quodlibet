@@ -329,7 +329,9 @@ class CoverArea(Gtk.Box, PluginConfigMixin):
         top_hbox.prepend(self.open_check, True, True, 0)
         top_hbox.prepend(self.window_fit, False, True, 0)
 
-        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        main_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         main_vbox.prepend(top_hbox, True, True, 2)
         main_vbox.prepend(main_hbox, True, True, 0)
 

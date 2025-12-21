@@ -14,7 +14,7 @@ from quodlibet.plugins.gui import UserInterfacePlugin
 
 class RatingBox(Gtk.Box):
     def __init__(self):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, self)
+        super().__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.thumb_ups = 1
         self.thumb_downs = 1
@@ -103,7 +103,9 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
         self.rating_box = RatingBox()
 
     def create_sidebar(self):
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, )
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vbox.prepend(self.rating_box, False, False, 0)
         vbox.show_all()
         return vbox

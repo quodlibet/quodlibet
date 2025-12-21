@@ -221,7 +221,9 @@ class WaitLoadBar(WaitLoadBase, Gtk.Box):
         )
         self._pause_button.remove(self._pause_button.get_child())
         self._pause_button.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL)
+            Gtk.Image.new_from_icon_name(
+                Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL
+            )
         )
 
         self.prepend(self._label, True, True, 0)

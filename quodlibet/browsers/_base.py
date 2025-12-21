@@ -259,8 +259,7 @@ class Browser(Gtk.Box, Filter):
     """
 
     def menu(self, songs, library, items) -> Gtk.PopoverMenu:
-        """After this menu is returned the SongList may modify it further.
-        """
+        """After this menu is returned the SongList may modify it further."""
 
         return SongsMenu(library, songs, delete=True, items=items)
 
