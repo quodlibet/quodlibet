@@ -143,14 +143,14 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                 query_name, PM.CONFIG_SECTION, self._config_key(query_config)
             )
             check_button.set_active(self.config_get_bool(query_config))
-            saved_search_vbox.prepend(check_button, False, False, 0)
+            saved_search_vbox.prepend(check_button)
         saved_search_scroll = self._expandable_scroll(min_h=0, max_h=300)
         saved_search_scroll.add(saved_search_vbox)
         frame = qltk.Frame(
             label=_("Synchronize the following saved searches:"),
             child=saved_search_scroll,
         )
-        main_vbox.prepend(frame, False, False, 0)
+        main_vbox.prepend(frame)
 
         # Destination path entry field
         destination_entry = Gtk.Entry(
@@ -166,8 +166,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
 
         # Destination path hbox
         destination_path_hbox = Gtk.Box(spacing=self.spacing_small)
-        destination_path_hbox.prepend(destination_entry, True, True, 0)
-        destination_path_hbox.prepend(destination_button, False, False, 0)
+        destination_path_hbox.prepend(destination_entry)
+        destination_path_hbox.prepend(destination_button)
 
         # Destination path information
         destination_warn_label = self._label_with_icon(
@@ -191,11 +191,11 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         destination_vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
         )
-        destination_vbox.prepend(destination_path_hbox, False, False, 0)
-        destination_vbox.prepend(destination_warn_label, False, False, 0)
-        destination_vbox.prepend(destination_info_label, False, False, 0)
+        destination_vbox.prepend(destination_path_hbox)
+        destination_vbox.prepend(destination_warn_label)
+        destination_vbox.prepend(destination_info_label)
         frame = qltk.Frame(label=_("Destination path:"), child=destination_vbox)
-        main_vbox.prepend(frame, False, False, 0)
+        main_vbox.prepend(frame)
 
         # Export pattern frame
         export_pattern_combo = ComboBoxEntrySave(
@@ -218,7 +218,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         export_pattern_entry.connect("changed", self._export_pattern_changed)
         self.export_pattern_entry = export_pattern_entry
         frame = qltk.Frame(label=_("Export pattern:"), child=export_pattern_combo)
-        main_vbox.prepend(frame, False, False, 0)
+        main_vbox.prepend(frame)
 
         # Start preview button
         preview_start_button = qltk.Button(
@@ -242,7 +242,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.model = Gtk.ListStore(*column_types)
         self.details_tree = details_tree = HintedTreeView(model=self.model)
         details_scroll = self._expandable_scroll()
-        details_scroll.set_shadow_type(Gtk.ShadowType.IN)
         details_scroll.add(details_tree)
         self.renders = {}
 
@@ -307,14 +306,14 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         preview_vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
         )
-        preview_vbox.prepend(preview_start_button, False, False, 0)
-        preview_vbox.prepend(preview_stop_button, False, False, 0)
-        preview_vbox.prepend(details_scroll, True, True, 0)
-        preview_vbox.prepend(self.status_operation, False, False, 0)
-        preview_vbox.prepend(self.status_progress, False, False, 0)
-        preview_vbox.prepend(self.status_duplicates, False, False, 0)
-        preview_vbox.prepend(self.status_deletions, False, False, 0)
-        main_vbox.prepend(preview_vbox, True, True, 0)
+        preview_vbox.prepend(preview_start_button)
+        preview_vbox.prepend(preview_stop_button)
+        preview_vbox.prepend(details_scroll)
+        preview_vbox.prepend(self.status_operation)
+        preview_vbox.prepend(self.status_progress)
+        preview_vbox.prepend(self.status_duplicates)
+        preview_vbox.prepend(self.status_deletions)
+        main_vbox.prepend(preview_vbox)
 
         # Start sync button
         sync_start_button = qltk.Button(
@@ -338,9 +337,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         sync_vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
         )
-        sync_vbox.prepend(sync_start_button, False, False, 0)
-        sync_vbox.prepend(sync_stop_button, False, False, 0)
-        main_vbox.prepend(sync_vbox, False, False, 0)
+        sync_vbox.prepend(sync_start_button)
+        sync_vbox.prepend(sync_stop_button)
+        main_vbox.prepend(sync_vbox)
 
         return main_vbox
 
@@ -384,8 +383,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if not visible:
             hbox.set_visible(False)
             hbox.set_no_show_all(True)
-        hbox.prepend(image, False, False, 0)
-        hbox.prepend(label, True, True, 0)
+        hbox.prepend(image)
+        hbox.prepend(label)
 
         return hbox
 
@@ -459,7 +458,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         response_path = dialog.get_filename()
 
         # Close the dialog and save the selected path
-        dialog.destroy()
+        dialog.close()
         if response == Gtk.ResponseType.OK and response_path != destination_entry_text:
             self.destination_entry.set_text(response_path)
 

@@ -183,11 +183,11 @@ class RenameFiles(Gtk.Box):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.prepend(self.combo, True, True, 0)
+        hbox.prepend(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.prepend(self.preview, False, True, 0)
-        self.prepend(hbox, False, True, 0)
+        hbox.prepend(self.preview)
+        self.prepend(hbox)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -195,10 +195,9 @@ class RenameFiles(Gtk.Box):
         self.view.show()
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
-        self.prepend(sw, True, True, 0)
+        self.prepend(sw)
 
         # rename options
         rename_options = Gtk.Box()
@@ -211,7 +210,7 @@ class RenameFiles(Gtk.Box):
 
         frame_filename_options = Frame(_("File names"), filter_box)
         frame_filename_options.show_all()
-        rename_options.prepend(frame_filename_options, False, True, 0)
+        rename_options.prepend(frame_filename_options)
 
         # album art options
         albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -228,7 +227,7 @@ class RenameFiles(Gtk.Box):
             )
         )
         self.moveart.show()
-        moveart_box.prepend(self.moveart, False, True, 0)
+        moveart_box.prepend(self.moveart)
         self.moveart_overwrite = ConfigCheckButton(
             _("_Overwrite album art at target"),
             "rename",
@@ -236,30 +235,30 @@ class RenameFiles(Gtk.Box):
             populate=True,
         )
         self.moveart_overwrite.show()
-        moveart_box.prepend(self.moveart_overwrite, False, True, 0)
-        albumart_box.prepend(moveart_box, False, True, 0)
+        moveart_box.prepend(self.moveart_overwrite)
+        albumart_box.prepend(moveart_box)
         # remove empty
         removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.removeemptydirs = ConfigCheckButton(
             _("_Remove empty directories"), "rename", "remove_empty_dirs", populate=True
         )
         self.removeemptydirs.show()
-        removeemptydirs_box.prepend(self.removeemptydirs, False, True, 0)
-        albumart_box.prepend(removeemptydirs_box, False, True, 0)
+        removeemptydirs_box.prepend(self.removeemptydirs)
+        albumart_box.prepend(removeemptydirs_box)
 
         frame_albumart_options = Frame(_("Album art"), albumart_box)
         frame_albumart_options.show_all()
-        rename_options.prepend(frame_albumart_options, False, True, 0)
+        rename_options.prepend(frame_albumart_options)
 
-        self.prepend(rename_options, False, True, 0)
+        self.prepend(rename_options)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.prepend(self.save, True, True, 0)
-        self.prepend(bbox, False, True, 0)
+        bbox.prepend(self.save)
+        self.prepend(bbox)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
@@ -399,7 +398,7 @@ class RenameFiles(Gtk.Box):
                 break
 
         self.view.thaw_child_notify()
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         library.changed(was_changed)
         self.save.set_sensitive(False)
 

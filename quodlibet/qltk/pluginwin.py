@@ -91,7 +91,7 @@ class PluginErrorWindow(UniqueWindow):
             failure.set_selectable(True)
             failure.set_line_wrap(True)
 
-            vbox.prepend(expander, False, True, 0)
+            vbox.prepend(expander)
             expander.add(failure)
 
         self.use_header_bar()
@@ -102,9 +102,9 @@ class PluginErrorWindow(UniqueWindow):
             close.connect("clicked", lambda *x: self.destroy())
             b = Gtk.HButtonBox()
             b.set_layout(Gtk.ButtonBoxStyle.END)
-            b.prepend(close, True, True, 0)
-            vbox2.prepend(scrolledwin, True, True, 0)
-            vbox2.prepend(b, False, True, 0)
+            b.prepend(close)
+            vbox2.prepend(scrolledwin)
+            vbox2.prepend(b)
             self.add(vbox2)
             close.grab_focus()
         else:
@@ -309,11 +309,10 @@ class PluginPreferencesContainer(Gtk.Box):
         desc.set_width_chars(30)
         desc.set_alignment(0, 0.5)
         desc.set_selectable(True)
-        self.prepend(desc, False, True, 0)
+        self.prepend(desc)
 
         self.prefs = prefs = Gtk.Frame()
-        prefs.set_shadow_type(Gtk.ShadowType.NONE)
-        self.prepend(prefs, False, True, 0)
+        self.prepend(prefs)
 
     def set_no_plugins(self):
         self.set_plugin(None)
@@ -384,26 +383,24 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         self._list_view = plv = PluginListView()
         plv.set_model(filter_model)
-        plv.set_rules_hint(True)
 
         plv.connect("plugin-toggled", self.__plugin_toggled)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         sw.add(plv)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         fb = Gtk.Box(spacing=6)
 
         enabled_combo = PluginEnabledFilterCombo()
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
         enabled_combo.set_tooltip_text(_("Filter by plugin state / tag"))
-        fb.prepend(enabled_combo, True, True, 0)
+        fb.prepend(enabled_combo)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.connect("changed", lambda s: filter_model.refilter())
         type_combo.set_tooltip_text(_("Filter by plugin type"))
-        fb.prepend(type_combo, True, True, 0)
+        fb.prepend(type_combo)
         self._type_combo = type_combo
 
         self._filter_entry = fe = UndoSearchEntry()
@@ -417,7 +414,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         errors = Align(errors, top=6, bottom=6)
         errors.set_no_show_all(True)
         bbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        bbox.prepend(errors, True, True, 0)
+        bbox.prepend(errors)
 
         pref_box = PluginPreferencesContainer()
 
@@ -427,15 +424,15 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             refresh.connect(
                 "clicked", self.__refresh, plv, pref_box, errors, enabled_combo
             )
-            bbox.prepend(refresh, True, True, 0)
+            bbox.prepend(refresh)
 
         filter_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        filter_box.prepend(fb, False, True, 0)
-        filter_box.prepend(fe, False, True, 0)
+        filter_box.prepend(fb)
+        filter_box.prepend(fe)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.prepend(Align(filter_box, border=6, right=-6), False, False, 0)
-        vbox.prepend(sw, True, True, 0)
+        vbox.prepend(sw)
         vbox.prepend(Align(bbox, left=3, right=3, top=0), False, False, 3)
         paned = Paned()
         paned.pack1(vbox, False, False)
@@ -445,7 +442,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.HButtonBox()
         bb.set_layout(Gtk.ButtonBoxStyle.END)
-        bb.prepend(close, True, True, 0)
+        bb.prepend(close)
         bb_align.add(bb)
 
         selection = plv.get_selection()
@@ -453,9 +450,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         selection.emit("changed")
 
         right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        right_box.prepend(pref_box, True, True, 0)
+        right_box.prepend(pref_box)
         if not self.has_close_button():
-            right_box.prepend(bb_align, True, True, 0)
+            right_box.prepend(bb_align)
 
         align = Align(right_box, left=6, right=15, top=12, bottom=3)
         paned.pack2(align, True, False)

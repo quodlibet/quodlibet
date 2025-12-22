@@ -84,9 +84,9 @@ class ProjectM(EventPlugin):
         entry.connect("changed", edited)
         entry.set_text(self.executable)
         hbox = Gtk.Box(spacing=6)
-        hbox.prepend(label, False, False, 0)
-        hbox.prepend(entry, True, True, 0)
-        vbox.prepend(hbox, True, True, 0)
+        hbox.prepend(label)
+        hbox.prepend(entry)
+        vbox.prepend(hbox)
 
         def refresh_clicked(widget):
             self.disabled()
@@ -94,7 +94,7 @@ class ProjectM(EventPlugin):
 
         refresh_button = Button(_("Reload"), Icons.VIEW_REFRESH)
         refresh_button.connect("clicked", refresh_clicked)
-        vbox.prepend(refresh_button, False, False, 0)
+        vbox.prepend(refresh_button)
         return vbox
 
     @property

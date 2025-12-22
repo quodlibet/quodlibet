@@ -96,7 +96,7 @@ class PreferencesButton(AlbumPreferencesButton):
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button, True, True, 0)
+        self.prepend(button)
 
 
 class CoverGridContainer(ScrolledWindow):
@@ -196,7 +196,6 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     @classmethod
     def _destroy_model(cls):
-        cls.__model.destroy()
         cls.__model = None
 
     @classmethod
@@ -289,7 +288,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # targets = [Gtk.TargetEntry.new(*t) for t in targets]
         # view.drag_source_set(
-            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
         # )
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
@@ -305,9 +304,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.prepend(prefs, False, True, 0)
+        search.prepend(prefs)
         self.prepend(Align(search, left=6, top=0), False, True, 0)
-        self.prepend(sw, True, True, 0)
+        self.prepend(sw)
 
         self.__update_filter()
         model_filter.connect(
@@ -359,7 +358,6 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__cover_cancel.cancel()
 
         self.view.bind_model(None, lambda _: None)
-        self.__model_filter.destroy()
         self.__model_filter = None
 
         if not CoverGrid.instances():

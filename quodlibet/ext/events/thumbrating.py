@@ -31,13 +31,13 @@ class RatingBox(Gtk.Box):
         self.score_label = Gtk.Label("----")
         self.upvote.set_property("height-request", 50)
         self.downvote.set_property("height-request", 50)
-        hbox.prepend(self.upvote, True, True, 5)
-        hbox.prepend(self.downvote, True, True, 5)
+        hbox.prepend(self.upvote)
+        hbox.prepend(self.downvote)
 
         self.hbox = hbox
-        self.prepend(self.title, False, False, 10)
-        self.prepend(self.score_label, True, True, 5)
-        self.prepend(self.hbox, False, False, 5)
+        self.prepend(self.title)
+        self.prepend(self.score_label)
+        self.prepend(self.hbox)
 
     def set_current_title(self, title):
         self.title.set_text(title)
@@ -106,12 +106,12 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(self.rating_box, False, False, 0)
+        vbox.prepend(self.rating_box)
         vbox.show_all()
         return vbox
 
     def disabled(self):
-        self.rating_box.destroy()
+        self.rating_box = None
 
     def plugin_on_song_ended(self, song, stopped):
         if song is not None:

@@ -31,18 +31,18 @@ class TapBpmPanel(Gtk.Box):
         box.prepend(Gtk.Label(_("BPM:")), False, True, 0)
         self.bpm_label = Gtk.Label(_("n/a"))
         self.bpm_label.set_xalign(0.5)
-        box.prepend(self.bpm_label, True, True, 0)
+        box.prepend(self.bpm_label)
 
         self.reset_btn = Gtk.Button(label=_("Reset"))
         self.reset_btn.connect("clicked", lambda *x: self.reset())
-        box.append(self.reset_btn, False, True, 0)
+        box.append(self.reset_btn)
 
-        self.prepend(box, False, True, 0)
+        self.prepend(box)
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
         self.tap_btn.connect("button-press-event", self.tap)
         self.tap_btn.connect("key-press-event", self.key_tap)
-        self.prepend(self.tap_btn, True, True, 0)
+        self.prepend(self.tap_btn)
 
         self.init_tap()
         self.update()
@@ -187,7 +187,7 @@ class TapBpm(SongsMenuPlugin):
         self.__resp_sig = window.connect("response", self.response)
 
         self._panel = TapBpmPanel(window, song)
-        window.vbox.prepend(self._panel, False, True, 0)
+        window.vbox.prepend(self._panel)
 
         window.vbox.show_all()
         window.present()
@@ -199,4 +199,4 @@ class TapBpm(SongsMenuPlugin):
 
         win.hide()
         win.disconnect(self.__resp_sig)
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically

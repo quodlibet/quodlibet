@@ -81,10 +81,10 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
         for key, label in toggles:
             ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
-            vb2.prepend(ccb, True, True, 0)
+            vb2.prepend(ccb)
 
         frame = qltk.Frame(label=_("Plugin Options"), child=vb2)
-        vb.prepend(frame, False, True, 0)
+        vb.prepend(frame)
 
         vb.show_all()
         return vb

@@ -42,7 +42,6 @@ class ScanBox(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_size_request(-1, max(sw.size_request().height, 80))
         sw.set_tooltip_text(
@@ -91,12 +90,12 @@ class ScanBox(Gtk.Box):
         connect_obj(remove, "clicked", self.__remove, view)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(add, False, True, 0)
-        vbox.prepend(remove, False, True, 0)
-        vbox.prepend(move, False, True, 0)
+        vbox.prepend(add)
+        vbox.prepend(remove)
+        vbox.prepend(move)
 
-        self.prepend(sw, True, True, 0)
-        self.prepend(vbox, False, True, 0)
+        self.prepend(sw)
+        self.prepend(vbox)
 
         for path in get_scan_dirs():
             model.append(row=[path])

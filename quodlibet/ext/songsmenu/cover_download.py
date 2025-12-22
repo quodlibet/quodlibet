@@ -66,7 +66,7 @@ class DownloadCoverArt(SongsMenuPlugin):
         ret = dialog.run()
         if ret == Gtk.ResponseType.APPLY:
             manager.cover_changed(songs)
-        dialog.destroy()
+        dialog.close()
 
 
 class Config:
@@ -211,7 +211,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         paned.pack1(sw, True, True)
         paned.pack2(self.create_options(), False, False)
-        self.vbox.prepend(paned, True, True, 0)
+        self.vbox.prepend(paned)
 
         connect_destroy(manager, "covers-found", self._covers_found)
         connect_destroy(manager, "searches-complete", self._finished)
@@ -251,7 +251,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         }
         frame = Gtk.Frame.new(text)
         img.set_padding(12, 12)
-        frame.set_shadow_type(Gtk.ShadowType.NONE)
         frame.set_border_width(12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)
@@ -275,7 +274,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             and event.type != Gdk.EventType.BUTTON_PRESS
         ):
             self.__save(None)
-            self.destroy()
+            self.close()
 
     def _filenames(self, pat_text, ext, full_path=False) -> list[str]:
         def fn_for(song):
@@ -326,7 +325,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             escape_desc=False,
         )
         dialog.run()
-        self.destroy()
+        self.close()
 
     @staticmethod
     def __image_from_child(child):
@@ -362,17 +361,17 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         slider.connect("value-changed", slider_changed)
         label = Gtk.Label(_("Preview size"))
         label.set_mnemonic_widget(slider)
-        hbox.prepend(label, False, False, 6)
-        hbox.prepend(slider, True, True, 6)
+        hbox.prepend(label)
+        hbox.prepend(slider)
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(hbox, False, False, 6)
+        vbox.prepend(hbox)
 
         def create_save_box():
             hbox = Gtk.Box()
             label = Gtk.Label(_("Save destination"))
-            hbox.prepend(label, False, False, 6)
+            hbox.prepend(label)
             model = Gtk.ListStore(str)
             for val in SAVE_PATTERNS:
                 model.append(row=[val])
@@ -400,7 +399,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
             save_filename.connect("changed", changed)
             select_value(save_filename, self.config.save_pattern)
-            hbox.prepend(save_filename, False, False, 6)
+            hbox.prepend(save_filename)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
                 "If not already a JPEG, convert the image to "
@@ -410,7 +409,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
             re_encode.connect("toggled", lambda _: hbox.queue_draw())
-            hbox.prepend(re_encode, False, False, 6)
+            hbox.prepend(re_encode)
             return hbox
 
         vbox.prepend(create_save_box(), False, False, 6)

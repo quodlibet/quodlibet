@@ -90,9 +90,9 @@ class AcoustidSubmit(SongsMenuPlugin):
         label = Gtk.Label(label=_("API _key:"))
         label.set_use_underline(True)
         label.set_mnemonic_widget(entry)
-        key_box.prepend(label, False, True, 0)
-        key_box.prepend(entry, True, True, 0)
-        key_box.prepend(button, False, True, 0)
+        key_box.prepend(label)
+        key_box.prepend(entry)
+        key_box.prepend(button)
 
         box.prepend(Frame(_("AcoustID Web Service"), child=key_box), True, True, 0)
 

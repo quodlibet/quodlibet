@@ -52,7 +52,6 @@ class MaskedBox(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_size_request(-1, max(sw.size_request().height, 80))
 
@@ -76,7 +75,7 @@ class MaskedBox(Gtk.Box):
 
         render = Gtk.CellRendererText()
         render.props.sensitive = False
-        column.prepend(render, False)
+        column.pack_start(render, False)
         column.set_cell_data_func(render, cdf_count)
 
         view.append_column(column)
@@ -93,11 +92,11 @@ class MaskedBox(Gtk.Box):
         connect_obj(remove, "clicked", self.__remove, view, library)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(unhide, False, True, 0)
-        vbox.prepend(remove, False, True, 0)
+        vbox.prepend(unhide)
+        vbox.prepend(remove)
 
-        self.prepend(sw, True, True, 0)
-        self.prepend(vbox, False, True, 0)
+        self.prepend(sw)
+        self.prepend(vbox)
 
         for path in library.masked_mount_points:
             model.append(row=[path])

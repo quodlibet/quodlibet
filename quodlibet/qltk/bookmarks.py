@@ -41,12 +41,12 @@ def MenuItems(marks, player, seekable):
             l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        hbox.prepend(l, False, True, 0)
+        hbox.prepend(l)
         text = Gtk.Label(mark)
         text.set_max_width_chars(80)
         text.set_ellipsize(Pango.EllipsizeMode.END)
         text.set_alignment(0.0, 0.5)
-        hbox.prepend(text, True, True, 0)
+        hbox.prepend(text)
         i.show_all()
         items.append(i)
     return items
@@ -83,7 +83,6 @@ class EditBookmarksPane(Gtk.Box):
         self.pack_start(hb, False, True, 0)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(RCMHintedTreeView(model=model))
         add_css(sw, "* { padding: 12px } ")
@@ -115,13 +114,13 @@ class EditBookmarksPane(Gtk.Box):
         hbox = Gtk.HButtonBox()
         self.remove = remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
-        hbox.prepend(remove, True, True, 0)
+        hbox.prepend(remove)
         if close:
             self.close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
-            hbox.prepend(self.close, True, True, 0)
+            hbox.prepend(self.close)
         else:
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
-        self.prepend(hbox, False, True, 0)
+        self.prepend(hbox)
 
         connect_obj(add, "clicked", self.__add, model, time, name)
 

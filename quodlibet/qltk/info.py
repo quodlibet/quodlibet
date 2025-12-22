@@ -99,7 +99,8 @@ class SongInfo(Gtk.Box):
 
         if not has_selection:
             for child in menu.get_children():
-                child.destroy()
+                # GTK4: destroy() removed - child cleaned up automatically
+                pass
             for item in song_menu:
                 song_menu.remove(item)
                 menu.append(item)

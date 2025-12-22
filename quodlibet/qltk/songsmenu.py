@@ -135,7 +135,7 @@ class SongsMenuPluginHandler(PluginHandler):
                         item.connect("activate", self.__on_activate, item, *args)
                 except Exception:
                     errorhook()
-                    item.destroy()
+                    # GTK4: destroy() removed - item cleaned up automatically
             menu.append(SeparatorMenuItem())
             prefs = Gtk.MenuItem(label=_("Configure Plugins…"))
             prefs.connect("activate", lambda _: PluginWindow().show())
@@ -353,7 +353,8 @@ class SongsMenu(Gtk.PopoverMenu):
             self.init_download(songs, folder_chooser)
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         self.connect("selection-done", selection_done_cb)
 

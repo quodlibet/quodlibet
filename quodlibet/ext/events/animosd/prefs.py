@@ -144,9 +144,9 @@ class AnimOsdPrefs(Gtk.Box):
                 monitor.set_numeric(True)
                 monitor.connect("value-changed", change_monitor)
                 l2 = ConfigLabel("_Monitor:", monitor)
-                hb.prepend(l2, False, True, 0)
-                hb.prepend(monitor, False, True, 0)
-                vb2.prepend(hb, True, True, 0)
+                hb.prepend(l2)
+                hb.prepend(monitor)
+                vb2.prepend(hb)
             else:
                 # should be this by default anyway
                 self.Conf.monitor = 0
@@ -180,9 +180,9 @@ class AnimOsdPrefs(Gtk.Box):
                     rb.connect("toggled", change_position, x, y)
 
             lbl = ConfigLabel(_("_Position:"), grid)
-            hb.prepend(lbl, False, True, 0)
-            hb.prepend(grid, False, True, 0)
-            vb2.prepend(hb, False, True, 6)
+            hb.prepend(lbl)
+            hb.prepend(grid)
+            vb2.prepend(hb)
 
             hb = Gtk.Box(spacing=6)
             coversize = Gtk.SpinButton(
@@ -193,14 +193,14 @@ class AnimOsdPrefs(Gtk.Box):
             coversize.set_numeric(True)
             coversize.connect("value-changed", change_coversize)
             l1 = ConfigLabel(_("_Cover size:"), coversize)
-            hb.prepend(l1, False, True, 0)
-            hb.prepend(coversize, False, True, 0)
-            vb2.prepend(hb, False, True, 0)
+            hb.prepend(l1)
+            hb.prepend(coversize)
+            vb2.prepend(hb)
             return vb2
 
         frame = qltk.Frame(label=_("Display"), child=build_display_widget())
         frame.set_border_width(6)
-        self.prepend(frame, False, True, 0)
+        self.prepend(frame)
 
         def build_text_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
@@ -229,7 +229,7 @@ class AnimOsdPrefs(Gtk.Box):
 
         frame = qltk.Frame(label=_("Text"), child=build_text_widget())
         frame.set_border_width(6)
-        self.prepend(frame, False, True, 0)
+        self.prepend(frame)
 
         def build_colors_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
@@ -255,7 +255,7 @@ class AnimOsdPrefs(Gtk.Box):
 
         f = qltk.Frame(label=_("Colors"), child=build_colors_widget())
         f.set_border_width(6)
-        self.prepend(f, False, False, 0)
+        self.prepend(f)
 
         def build_effects_widget():
             vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
@@ -270,8 +270,8 @@ class AnimOsdPrefs(Gtk.Box):
                 checkb = Gtk.CheckButton(label=label, use_underline=True)
                 checkb.set_active(current != -1)
                 checkb.connect("toggled", callback)
-                hb.prepend(checkb, True, True, 0)
-            vb2.prepend(hb, True, True, 0)
+                hb.prepend(checkb)
+            vb2.prepend(hb)
 
             hb = Gtk.Box(spacing=6)
             timeout = Gtk.SpinButton(
@@ -284,23 +284,23 @@ class AnimOsdPrefs(Gtk.Box):
             timeout.set_numeric(True)
             timeout.connect("value-changed", change_delay)
             l1 = ConfigLabel(_("_Delay:"), timeout)
-            hb.prepend(l1, False, True, 0)
-            hb.prepend(timeout, False, True, 0)
-            vb2.prepend(hb, False, True, 0)
+            hb.prepend(l1)
+            hb.prepend(timeout)
+            vb2.prepend(hb)
             return vb2
 
         frame = qltk.Frame(label=_("Effects"), child=build_effects_widget())
         frame.set_border_width(6)
-        self.prepend(frame, False, True, 0)
+        self.prepend(frame)
 
         def build_buttons_widget():
             hb = Gtk.Box(spacing=6)
             edit_button = qltk.Button(_("Ed_it Display Pattern…"), Icons.EDIT)
             edit_button.connect("clicked", edit_pattern)
-            hb.prepend(edit_button, False, True, 0)
+            hb.prepend(edit_button)
             preview_button = Gtk.Button(label=_("Preview"), use_underline=True)
             preview_button.connect("button-press-event", on_button_pressed)
-            hb.prepend(preview_button, False, True, 0)
+            hb.prepend(preview_button)
             return hb
 
         self.prepend(build_buttons_widget(), False, True, 0)

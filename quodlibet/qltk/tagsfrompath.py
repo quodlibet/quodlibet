@@ -117,11 +117,11 @@ class TagsFromPath(Gtk.Box):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.prepend(self.combo, True, True, 0)
+        hbox.prepend(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.prepend(self.preview, False, True, 0)
-        self.prepend(hbox, False, True, 0)
+        hbox.prepend(self.preview)
+        self.prepend(hbox)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -129,10 +129,9 @@ class TagsFromPath(Gtk.Box):
         self.view.show()
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(self.view)
-        self.prepend(sw, True, True, 0)
+        self.prepend(sw)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         addreplace = Gtk.ComboBoxText()
@@ -140,23 +139,23 @@ class TagsFromPath(Gtk.Box):
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
         addreplace.connect("changed", self.__add_changed)
-        vbox.prepend(addreplace, True, True, 0)
+        vbox.prepend(addreplace)
         addreplace.show()
-        self.prepend(vbox, False, True, 0)
+        self.prepend(vbox)
 
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
         filter_box.connect("preview", self.__filter_preview)
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
-        self.prepend(filter_box, False, True, 0)
+        self.prepend(filter_box)
 
         # Save button
         self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.HButtonBox()
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.prepend(self.save, True, True, 0)
-        self.prepend(bbox, False, True, 0)
+        bbox.prepend(self.save)
+        self.prepend(bbox)
 
         connect_obj(self.preview, "clicked", self.__preview, None)
         connect_obj(parent, "changed", self.__class__.__preview, self)
@@ -327,7 +326,7 @@ class TagsFromPath(Gtk.Box):
         else:
             all_done = True
 
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         library.changed(was_changed)
         self.save.set_sensitive(not all_done)
 

@@ -46,7 +46,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def pack(self, songpane):
         container = Gtk.Box()
         self.show()
-        container.prepend(self, True, True, 0)
+        container.prepend(self)
         self.main_box.pack2(songpane, True, False)
         return container
 
@@ -84,16 +84,16 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=0)
-        self.prepend(align, False, True, 0)
+        self.prepend(align)
 
         keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         select.connect("clicked", self.__select_all)
-        sbb.prepend(select, False, True, 0)
+        sbb.prepend(select)
 
         prefs = PreferencesButton(self)
-        sbb.prepend(prefs, False, True, 0)
+        sbb.prepend(prefs)
 
         connect_destroy(library, "changed", self.__changed)
         connect_destroy(library, "added", self.__added)
@@ -103,7 +103,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         # contains the panes and the song list
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
-        self.prepend(self.main_box, True, True, 0)
+        self.prepend(self.main_box)
 
         self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()
@@ -207,8 +207,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
             pane.scroll(song)
 
     def refresh_panes(self):
-        self.multi_paned.destroy()
-
         # Fill in the pane list. The last pane reports back to us.
         self._panes = [self]
         for header in reversed(get_headers()):
@@ -222,7 +220,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            sw.set_shadow_type(Gtk.ShadowType.IN)
             sw.add(pane)
             sws.append(sw)
 

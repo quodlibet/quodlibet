@@ -46,7 +46,7 @@ class ExportToFolderDialog(Dialog):
         destination_label = Gtk.Label(_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
-        box.prepend(destination_label, False, False, 0)
+        box.prepend(destination_label)
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
@@ -55,20 +55,19 @@ class ExportToFolderDialog(Dialog):
         self.directory_chooser.set_select_multiple(False)
         self.directory_chooser.set_border_width(1)
         frame.add(self.directory_chooser)
-        frame.set_shadow_type(Gtk.ShadowType.IN)
         frame.set_border_width(0)
-        box.prepend(frame, True, True, 0)
+        box.prepend(frame)
 
         pattern_label = Gtk.Label(_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
-        box.prepend(pattern_label, False, False, 0)
+        box.prepend(pattern_label)
 
         self.pattern_entry = UndoEntry()
         self.pattern_entry.set_text(pattern)
-        box.prepend(self.pattern_entry, False, False, 0)
+        box.prepend(self.pattern_entry)
 
-        self.vbox.prepend(box, True, True, 0)
+        self.vbox.prepend(box)
 
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
 
@@ -163,7 +162,7 @@ class ExportToFolder(PlaylistPlugin):
                 funcid="export-playlist-folder",
             )
 
-        dialog.destroy()
+        dialog.close()
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -176,12 +175,12 @@ class ExportToFolder(PlaylistPlugin):
             hbox = Gtk.Box(spacing=6)
             hbox.set_border_width(6)
             label = Gtk.Label(label=_("Default filename pattern:"))
-            hbox.prepend(label, False, True, 0)
+            hbox.prepend(label)
             entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect("changed", changed)
-            hbox.prepend(entry, True, True, 0)
+            hbox.prepend(entry)
             return hbox
 
         vbox.prepend(create_pattern(), True, True, 0)

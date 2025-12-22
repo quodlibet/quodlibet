@@ -128,7 +128,6 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
 
         super().__init__(self.model)
         self.set_headers_clickable(True)
-        self.set_rules_hint(True)
         self.set_reorderable(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -384,35 +383,34 @@ class SearchWindow(Dialog):
         lbl.set_mnemonic_widget(sq)
         stb = self.search_button = Gtk.Button(_("S_earch"), use_underline=True)
         stb.connect("clicked", self._do_query)
-        hb.prepend(lbl, False, True, 0)
-        hb.prepend(sq, True, True, 0)
-        hb.prepend(stb, False, True, 0)
-        vb.prepend(hb, False, True, 0)
+        hb.prepend(lbl)
+        hb.prepend(sq)
+        hb.prepend(stb)
+        vb.prepend(hb)
 
         self.result_combo = ResultComboBox(self._resultlist)
         self.result_combo.connect("changed", self._result_changed)
-        vb.prepend(self.result_combo, False, True, 0)
+        vb.prepend(self.result_combo)
 
         rhb = Gtk.Box()
         rl = Gtk.Label()
         rl.set_markup(_("Results <i>(drag to reorder)</i>"))
         rl.set_alignment(0, 0.5)
-        rhb.prepend(rl, False, True, 0)
+        rhb.prepend(rl)
         rl = self.result_label = Gtk.Label(label="")
-        rhb.append(rl, False, True, 0)
-        vb.prepend(rhb, False, True, 0)
+        rhb.append(rl)
+        vb.prepend(rhb)
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
         rtv.set_border_width(8)
         sw.add(rtv)
-        vb.prepend(sw, True, True, 0)
+        vb.prepend(sw)
 
         # TODO: remove deprecated get_action_area
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
         self.get_action_area().set_border_width(4)
-        self.get_content_area().prepend(vb, True, True, 0)
+        self.get_content_area().prepend(vb)
         self.connect("response", self._on_response)
         self.connect("destroy", self._on_destroy)
 
@@ -424,7 +422,7 @@ class SearchWindow(Dialog):
 
     def _on_response(self, widget, response):
         if response != Gtk.ResponseType.ACCEPT:
-            self.destroy()
+            self.close()
             return
 
         self._save()
@@ -445,7 +443,7 @@ class SearchWindow(Dialog):
             )
             apply_to_song(meta, song)
 
-        self.destroy()
+        self.close()
 
     def _do_query(self, *args):
         """Search for album using the query text."""

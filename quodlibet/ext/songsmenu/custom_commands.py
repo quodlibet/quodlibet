@@ -247,7 +247,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
-        hb.prepend(button, True, True, 0)
+        hb.prepend(button)
         hb.show_all()
         return hb
 

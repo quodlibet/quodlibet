@@ -193,7 +193,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
             desc_label = Gtk.Label(label=desc, wrap=True)
 
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-            box.prepend(desc_label, False, False, 0)
+            box.prepend(desc_label)
 
             strategy_boxes.append(box)
 
@@ -211,7 +211,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         ensure_play_count_checkbutton.connect("toggled", ensure_play_count_toggled)
 
         album_box = strategy_boxes[UpdateStrategy.ONCE_ALBUM_RATED]
-        album_box.prepend(ensure_play_count_checkbutton, False, False, 0)
+        album_box.prepend(ensure_play_count_checkbutton)
 
         def show_only_current_box():
             current = CONFIG.update_strategy
@@ -250,7 +250,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         show_only_current_box()
 
         frame = qltk.Frame(label=_("Preferences"), child=grid)
-        self.prepend(frame, False, False, 0)
+        self.prepend(frame)
 
 
 class ConfigLabel(Gtk.Label):

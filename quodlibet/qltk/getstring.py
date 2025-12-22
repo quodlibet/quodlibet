@@ -40,15 +40,15 @@ class GetStringDialog(Dialog):
         box.set_border_width(6)
         lab.set_line_wrap(True)
         lab.set_justify(Gtk.Justification.CENTER)
-        box.prepend(lab, True, True, 0)
+        box.prepend(lab)
 
         self._val = UndoEntry()
         if tooltip:
             self._val.set_tooltip_text(tooltip)
         self._val.set_max_width_chars(50)
-        box.prepend(self._val, True, True, 0)
+        box.prepend(self._val)
 
-        self.vbox.prepend(box, True, True, 0)
+        self.vbox.prepend(box)
         self.get_child().show_all()
 
     def _verify_clipboard(self, text):
@@ -81,5 +81,5 @@ class GetStringDialog(Dialog):
             value = self._val.get_text()
         else:
             value = None
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
         return value

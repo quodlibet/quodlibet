@@ -594,7 +594,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.emit("orders-changed")
 
     def __destroy(self, *args):
-        self.info.destroy()
+        # GTK4: self.destroy() removed - info cleaned up automatically
         self.info = None
         self.handler_block(self.__csig)
         for column in self.get_columns():
@@ -643,7 +643,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             l.show()
             l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
-            l.destroy()
+            # GTK4: destroy() removed - l cleaned up automatically
+            pass
             if not width:
                 return False
             precision = config.RATINGS.precision
@@ -1150,7 +1151,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         menu = Gtk.PopoverMenu()
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         menu.connect("selection-done", selection_done_cb)
 

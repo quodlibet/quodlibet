@@ -56,7 +56,6 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.view = view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
-        view.set_rules_hint(True)
         render = Gtk.CellRendererText()
         render.set_padding(3, 6)
         render.props.ellipsize = Pango.EllipsizeMode.END
@@ -64,15 +63,14 @@ class JSONBasedEditor(qltk.UniqueWindow):
         column.set_cell_data_func(render, self.__cdf)
         view.append_column(column)
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.get_child().prepend(sw, True, True, 0)
+        self.get_child().prepend(sw)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         # Input for new ones.
         frame = self.__build_input_frame()
-        vbox.prepend(frame, False, True, 0)
+        vbox.prepend(frame)
 
         # Add context menu
         menu = Gtk.PopoverMenu()
@@ -94,13 +92,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.remove_but.set_sensitive(False)
         self.new_but = Button(_("_New"), Icons.DOCUMENT_NEW)
         self.new_but.connect("clicked", self._new_item)
-        bbox.prepend(self.new_but, True, True, 0)
+        bbox.prepend(self.new_but)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
-        bbox.prepend(close, True, True, 0)
-        vbox.append(bbox, False, True, 0)
+        bbox.prepend(close)
+        vbox.append(bbox)
 
-        self.get_child().prepend(vbox, True, True, 0)
+        self.get_child().prepend(vbox)
         # Initialise
         self.selection = view.get_selection()
 
@@ -291,10 +289,9 @@ class TagListEditor(qltk.Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_size_request(-1, max(sw.size_request().height, 100))
-        hbox.prepend(sw, True, True, 0)
+        hbox.prepend(sw)
 
         self.__setup_column(view)
 
@@ -312,15 +309,15 @@ class TagListEditor(qltk.Window):
         vbbox.set_spacing(6)
         add = Button(_("_Add…"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
-        vbbox.prepend(add, False, True, 0)
+        vbbox.prepend(add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
-        vbbox.prepend(remove, False, True, 0)
+        vbbox.prepend(remove)
         edit = Button(_("_Edit"), Icons.LIST_EDIT)
         edit.connect("clicked", self.__edit)
-        vbbox.prepend(edit, False, True, 0)
-        hbox.prepend(vbbox, False, True, 0)
-        vbox.prepend(hbox, True, True, 0)
+        vbbox.prepend(edit)
+        hbox.prepend(vbbox)
+        vbox.prepend(hbox)
 
         # Close buttons
         bbox = Gtk.HButtonBox()
@@ -330,8 +327,8 @@ class TagListEditor(qltk.Window):
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         if not self.has_close_button():
-            bbox.prepend(close, True, True, 0)
-            vbox.prepend(bbox, False, True, 0)
+            bbox.prepend(close)
+            vbox.prepend(bbox)
 
         # Finish up
         self.add(vbox)

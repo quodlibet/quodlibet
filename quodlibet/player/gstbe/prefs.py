@@ -104,15 +104,15 @@ class GstPlayerPreferences(Gtk.Box):
         _jack_activated(jack_button, None)
 
         hb = self._create_pipeline_box(pipe_label, e, apply_button)
-        self.prepend(hb, False, False, 0)
+        self.prepend(hb)
 
         # Buffer
         hb = self._create_buffer_box(buffer_label, scale)
-        self.prepend(hb, False, False, 0)
+        self.prepend(hb)
 
-        self.prepend(gapless_button, False, False, 0)
-        self.prepend(jack_button, False, False, 0)
-        self.prepend(jack_connect, False, False, 0)
+        self.prepend(gapless_button)
+        self.prepend(jack_button)
+        self.prepend(jack_connect)
 
         if debug:
 
@@ -122,20 +122,20 @@ class GstPlayerPreferences(Gtk.Box):
             b = Button("Print Pipeline", Icons.DIALOG_INFORMATION)
             connect_obj(b, "clicked", print_bin, player)
             hb = Gtk.Box(spacing=6)
-            hb.append(b, False, False, 0)
-            self.prepend(hb, False, False, 0)
+            hb.append(b)
+            self.prepend(hb)
 
     def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.Scale):
         hb = Gtk.Box(spacing=6)
-        hb.prepend(label, False, False, 0)
-        hb.append(scale, True, True, 0)
+        hb.prepend(label)
+        hb.append(scale)
         return hb
 
     def _create_pipeline_box(
         self, pipe_label: Gtk.Label, e: Gtk.Widget, apply_button: Gtk.Button
     ):
         hb = Gtk.Box(spacing=12)
-        hb.prepend(pipe_label, False, False, 0)
-        hb.prepend(e, True, True, 0)
-        hb.append(apply_button, False, False, 0)
+        hb.prepend(pipe_label)
+        hb.prepend(e)
+        hb.append(apply_button)
         return hb

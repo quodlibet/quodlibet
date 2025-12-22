@@ -366,14 +366,13 @@ class RGDialog(Dialog):
 
         hbox = Gtk.Box(spacing=6)
         info = Gtk.Label()
-        hbox.prepend(info, True, True, 0)
-        self.vbox.prepend(hbox, False, False, 6)
+        hbox.prepend(info)
+        self.vbox.prepend(hbox)
 
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        swin.set_shadow_type(Gtk.ShadowType.IN)
 
-        self.vbox.prepend(swin, True, True, 0)
+        self.vbox.prepend(swin)
         view = HintedTreeView()
         swin.add(view)
 
@@ -521,11 +520,12 @@ class RGDialog(Dialog):
 
     def __response(self, win, response):
         if response == Gtk.ResponseType.CANCEL:
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
+            pass
         elif response == Gtk.ResponseType.OK:
             for album in self._done:
                 album.write()
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
 
     def __destroy(self, *args):
         # shut down any active processing and clean up resources, timeouts
@@ -651,7 +651,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         # Server settings Frame
         frame = Frame(_("Existing Tags"), table)
 
-        vb.prepend(frame, True, True, 0)
+        vb.prepend(frame)
         return vb
 
 

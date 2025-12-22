@@ -153,7 +153,7 @@ class GajimStatusMessage(EventPlugin):
         pattern.set_text(self.pattern)
         pattern.connect("changed", self.pattern_changed)
         pattern_box.prepend(Gtk.Label(label=_("Pattern:")), False, True, 0)
-        pattern_box.prepend(pattern, True, True, 0)
+        pattern_box.prepend(pattern)
 
         accounts_box = Gtk.Box(spacing=3)
         accounts_box.set_border_width(3)
@@ -168,7 +168,7 @@ class GajimStatusMessage(EventPlugin):
             )
         )
         accounts_box.prepend(Gtk.Label(label=_("Accounts:")), False, True, 0)
-        accounts_box.prepend(accounts, True, True, 0)
+        accounts_box.prepend(accounts)
 
         c = Gtk.CheckButton(label=_("Add '[paused]'"))
         c.set_active(self.paused)
@@ -195,11 +195,11 @@ class GajimStatusMessage(EventPlugin):
             else:
                 i += 1
 
-        vb.prepend(pattern_box, True, True, 0)
-        vb.prepend(accounts_box, True, True, 0)
-        vb.prepend(c, True, True, 0)
+        vb.prepend(pattern_box)
+        vb.prepend(accounts_box)
+        vb.prepend(c)
         frame = Frame(
             label=_("Statuses for which message will be changed"), child=table
         )
-        vb.prepend(frame, True, True, 6)
+        vb.prepend(frame)
         return vb

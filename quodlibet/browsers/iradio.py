@@ -538,12 +538,10 @@ class InternetRadio(Browser, util.InstanceTracker):
     def _destroy(cls):
         if cls.__stations.dirty:
             cls.__stations.save()
-        cls.__stations.destroy()
         cls.__stations = None
 
         if cls.__fav_stations.dirty:
             cls.__fav_stations.save()
-        cls.__fav_stations.destroy()
         cls.__fav_stations = None
 
         cls.__librarian = None
@@ -594,12 +592,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         # treeview
         scrolled_window = ScrolledWindow()
         scrolled_window.show()
-        scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.show()
         view.set_headers_visible(False)
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.add(view)
+        scrolled_window.set_child(view)
         model = Gtk.ListStore(int, str, str, str)
 
         model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all", _("All Stations")])
@@ -630,7 +627,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 3
-        column.prepend(renderpb, False)
+        column.pack_start(renderpb, False)
         column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
 
         render = Gtk.CellRendererText()
@@ -649,7 +646,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         )
 
         box = Gtk.Box(spacing=6)
-        box.prepend(search, True, True, 0)
+        box.prepend(search)
         self._searchbox = Align(box, left=0, right=6, top=0)
         self._searchbox.show_all()
 
@@ -664,7 +661,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        vb.prepend(scrolled_window, True, True, 0)
+        vb.prepend(scrolled_window)
         fb = Gtk.FlowBox()
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
@@ -679,15 +676,15 @@ class InternetRadio(Browser, util.InstanceTracker):
         pane.show_all()
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        songbox.prepend(self._searchbox, False, True, 0)
+        songbox.prepend(self._searchbox)
         self._songpane_container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        songbox.prepend(self._songpane_container, True, True, 0)
-        songbox.prepend(self.qbar, False, True, 0)
+        songbox.prepend(self._songpane_container)
+        songbox.prepend(self.qbar)
         songbox.show_all()
         pane.pack2(songbox, resize=True, shrink=False)
-        self.prepend(pane, True, True, 0)
+        self.prepend(pane)
         self.show()
 
     @property

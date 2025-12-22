@@ -30,7 +30,6 @@ class LyricsPane(Gtk.Box):
         self.title = _("Lyrics")
         self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         self.save = save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.delete = delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)

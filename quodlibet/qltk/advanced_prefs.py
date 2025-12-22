@@ -54,7 +54,7 @@ def boolean_config(section, option, label, tooltip):
 
     button = ConfigSwitch(None, section, option, tooltip=tooltip, populate=True)
     button_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, homogeneous=True)
-    button_box.prepend(button, False, False, 0)
+    button_box.prepend(button)
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(button.switch)
@@ -342,5 +342,5 @@ class AdvancedPreferencesPane(Gtk.Box):
         button = Gtk.Button(label=_("I know what I'm doing!"), use_underline=True)
         button.connect("clicked", on_click)
 
-        self.prepend(button, False, True, 0)
-        self.prepend(table, True, True, 0)
+        self.prepend(button)
+        self.prepend(table)

@@ -47,7 +47,7 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button, True, True, 0)
+        self.prepend(button)
 
 
 class TrackList(Browser):
@@ -58,8 +58,8 @@ class TrackList(Browser):
 
     def pack(self, songpane):
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        container.prepend(self, False, True, 0)
-        container.prepend(songpane, True, True, 0)
+        container.prepend(self)
+        container.prepend(songpane)
         return container
 
     def unpack(self, container, songpane):
@@ -90,10 +90,10 @@ class TrackList(Browser):
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.prepend(prefs, False, True, 0)
+        sbb.prepend(prefs)
 
         self.prepend(Align(sbb, left=6, right=6), False, True, 0)
-        self.prepend(sbb.flow_box, False, True, 0)
+        self.prepend(sbb.flow_box)
         self.connect("destroy", self.__destroy)
         self.show_all()
 

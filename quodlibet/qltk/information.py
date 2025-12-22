@@ -116,7 +116,7 @@ class OneSong(Gtk.Box):
         if song in songs:
             for c in vbox.get_children():
                 vbox.remove(c)
-                c.destroy()
+                # GTK4: destroy() removed - c cleaned up automatically
             self._title(song)
             self._album(song)
             self._people(song)
@@ -166,7 +166,7 @@ class OneSong(Gtk.Box):
         self.pack_start(Frame(tag("album"), hb), False, False, 0)
 
         cover = ReactiveCoverImage(song=song)
-        hb.prepend(cover, False, True, 0)
+        hb.prepend(cover)
 
     def _people(self, song):
         data = []

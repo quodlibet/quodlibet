@@ -86,7 +86,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         fmodel = ObjectModelSort(model=fbasemodel)
         fview = HintedTreeView(model=fmodel)
         fview.connect("button-press-event", self.__pre_selection_changed)
-        fview.set_rules_hint(True)
         selection = fview.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__save = None
@@ -114,7 +113,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
         sw = ScrolledWindow()
         sw.add(fview)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         if len(songs) > 1:

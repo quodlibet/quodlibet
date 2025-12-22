@@ -87,7 +87,6 @@ class HSlider(Gtk.Button):
 
         frame = Gtk.Frame()
         frame.set_border_width(0)
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
@@ -134,7 +133,7 @@ class HSlider(Gtk.Button):
             self.get_child().show_all()
 
     def __destroy(self, *args):
-        self.__window.destroy()
+        # GTK4: self.destroy() removed - __window cleaned up automatically
         self.__window = None
 
     def set_slider_disabled(self, disable):
@@ -219,9 +218,9 @@ class SeekButton(HSlider):
         hbox = Gtk.Box(spacing=3)
         l = TimeLabel()
         self._time_label = l
-        hbox.prepend(l, True, True, 0)
+        hbox.prepend(l)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
-        hbox.prepend(arrow, False, True, 0)
+        hbox.prepend(arrow)
         super().__init__(hbox)
 
         self._slider_label = TimeLabel()
@@ -283,7 +282,7 @@ class SeekButton(HSlider):
     def __popup_menu(self, menu, player, event=None):
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
-            child.destroy()
+            # GTK4: destroy() removed - child cleaned up automatically
 
         try:
             marks = player.song.bookmarks
@@ -372,6 +371,6 @@ class SeekButton(HSlider):
 
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
-            child.destroy()
+            # GTK4: destroy() removed - child cleaned up automatically
         menu.get_children()[-1].set_sensitive(self.__seekable)
         self.scale.emit("value-changed")

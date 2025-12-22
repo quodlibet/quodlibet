@@ -107,12 +107,12 @@ class GetSonosPlaylistDialog(Dialog):
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.prepend(label, True, True, 0)
+        box.prepend(label)
 
         self._combo = ComboBoxEntry(choices)
-        box.prepend(self._combo, False, False, 0)
+        box.prepend(self._combo)
 
-        self.vbox.prepend(box, True, True, 0)
+        self.vbox.prepend(box)
         self.get_child().show_all()
 
     def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
@@ -124,7 +124,7 @@ class GetSonosPlaylistDialog(Dialog):
         try:
             return self._combo.get_chosen() if resp == Gtk.ResponseType.OK else None
         finally:
-            self.destroy()
+            self.close()
 
 
 class SonosPlaylistPlugin(PlaylistPlugin):

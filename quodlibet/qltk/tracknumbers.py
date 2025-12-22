@@ -71,7 +71,7 @@ class TrackNumbers(Gtk.Box):
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.prepend(grid, False, True, 0)
+        self.prepend(grid)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
@@ -100,10 +100,9 @@ class TrackNumbers(Gtk.Box):
         view.append_column(column)
         view.set_reorderable(True)
         w = Gtk.ScrolledWindow()
-        w.set_shadow_type(Gtk.ShadowType.IN)
         w.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         w.add(view)
-        self.prepend(w, True, True, 0)
+        self.prepend(w)
 
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
@@ -113,9 +112,9 @@ class TrackNumbers(Gtk.Box):
         connect_obj(save, "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
-        bbox.prepend(revert, True, True, 0)
-        bbox.prepend(save, True, True, 0)
-        self.prepend(bbox, False, True, 0)
+        bbox.prepend(revert)
+        bbox.prepend(save)
+        self.prepend(bbox)
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect("clicked", self.__preview_tracks, *preview_args)
@@ -182,7 +181,7 @@ class TrackNumbers(Gtk.Box):
             all_done = True
 
         library.changed(was_changed)
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         self.save.set_sensitive(not all_done)
         self.revert.set_sensitive(not all_done)
 

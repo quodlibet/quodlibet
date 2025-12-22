@@ -39,7 +39,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         self._tracker.connect("tick", self._on_tick)
 
     def disabled(self):
-        self._tracker.destroy()
+        self._tracker = None
 
     def plugin_on_song_started(self, song):
         """Seeks to point A if it exists, and also fetches the bookmarks of the
@@ -116,9 +116,9 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             )
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl, False, True, 0)
-        hb.prepend(entry, True, True, 0)
-        vb.prepend(hb, True, True, 0)
+        hb.prepend(lbl)
+        hb.prepend(entry)
+        vb.prepend(hb)
 
         # Bookmark name to use for point B
         hb = Gtk.Box(spacing=6)
@@ -135,8 +135,8 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             )
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl, False, True, 0)
-        hb.prepend(entry, True, True, 0)
-        vb.prepend(hb, True, True, 0)
+        hb.prepend(lbl)
+        hb.prepend(entry)
+        vb.prepend(hb)
 
         return vb

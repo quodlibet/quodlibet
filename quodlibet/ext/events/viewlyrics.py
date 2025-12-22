@@ -51,12 +51,12 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(self.textview, True, True, 0)
+        vbox.prepend(self.textview)
         self._edit_button = Button("Edit Lyrics", Icons.EDIT)
         hbox = Gtk.Box()
-        hbox.append(self._edit_button, False, False, 3)
-        vbox.prepend(hbox, False, False, 3)
-        self.scrolled_window.add(vbox)
+        hbox.append(self._edit_button)
+        vbox.prepend(hbox)
+        self.scrolled_window.set_child(vbox)
         self.textview.show()
 
         self.scrolled_window.show()
@@ -68,13 +68,14 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def create_sidebar(self):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=0)
-        vbox.prepend(self.scrolled_window, True, True, 0)
+        vbox.prepend(self.scrolled_window)
         vbox.show_all()
         return vbox
 
     def disabled(self):
-        self.textview.destroy()
-        self.scrolled_window.destroy()
+        self.textview = None
+        self.scrolled_window.close()
+        self.scrolled_window = None
 
     def _hide_timestamps(self, lyrics: str):
         """Remove timestamps from the lyrics if they are formatted as an .lrc file."""

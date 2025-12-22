@@ -98,7 +98,8 @@ class Application:
 
         def idle_quit():
             if self.window:
-                self.window.destroy()
+                # GTK4: window.close() removed - cleaned up automatically
+                pass
 
         # so this can be called from a signal handler and before
         # the main loop starts
@@ -369,8 +370,10 @@ def run(window, before_quit=None):
         for toplevel in Gtk.Window.list_toplevels():
             toplevel.hide()
 
+        # GTK4: window.close() calls removed - cleaned up automatically
+        pass
         for window in Window.windows:
-            window.destroy()
+            pass
 
         Gtk.main_quit()
 

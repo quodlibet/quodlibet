@@ -83,7 +83,6 @@ class FileSystem(Browser, Gtk.Box):
         super().__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
         targets = [
@@ -104,7 +103,7 @@ class FileSystem(Browser, Gtk.Box):
         sel.connect("changed", self._on_selection_changed)
         dt.connect("row-activated", lambda *a: self.songs_activated())
         sw.add(dt)
-        self.prepend(sw, True, True, 0)
+        self.prepend(sw)
 
         self.show_all()
 

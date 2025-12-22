@@ -65,5 +65,5 @@ class PictureSaver(EventPlugin):
         e = Gtk.Entry()
         e.set_text(str(get_path()))
         e.connect("changed", changed)
-        hb.prepend(e, True, True, 0)
+        hb.prepend(e)
         return hb

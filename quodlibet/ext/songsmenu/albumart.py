@@ -295,48 +295,49 @@ class CoverArea(Gtk.Box, PluginConfigMixin):
             self.name_combo.set_active(0)
         self.config_set("filename", self.name_combo.get_active_text())
 
-        table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
-        table.props.expand = False
-        table.set_row_spacing(0, 5)
-        table.set_row_spacing(1, 5)
-        table.set_col_spacing(0, 5)
-        table.set_col_spacing(1, 5)
+        # GTK4: Use Grid instead of Table
+        grid = Gtk.Grid()
+        grid.set_hexpand(False)
+        grid.set_vexpand(False)
+        grid.set_row_spacing(5)
+        grid.set_column_spacing(5)
 
-        table.attach(label_open, 0, 1, 0, 1)
-        table.attach(label_name, 0, 1, 1, 2)
+        grid.attach(label_open, 0, 0, 1, 1)
+        grid.attach(label_name, 0, 1, 1, 1)
 
-        table.attach(self.cmd, 1, 2, 0, 1)
-        table.attach(self.name_combo, 1, 2, 1, 2)
+        grid.attach(self.cmd, 1, 0, 1, 1)
+        grid.attach(self.name_combo, 1, 1, 1, 1)
 
         self.scrolled = Gtk.ScrolledWindow()
-        self.scrolled.add_with_viewport(self.image)
+        # GTK4: add_with_viewport removed, just set_child
+        self.scrolled.set_child(self.image)
         self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        bbox = Gtk.HButtonBox()
-        bbox.set_spacing(6)
-        bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.prepend(self.button, True, True, 0)
-        bbox.prepend(close_button, True, True, 0)
+        # GTK4: HButtonBox removed, use Box with orientation
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        bbox.set_halign(Gtk.Align.END)
+        bbox.append(self.button)
+        bbox.append(close_button)
 
         bb_align = Align(valign=Gtk.Align.END, right=6)
         bb_align.add(bbox)
 
         main_hbox = Gtk.Box()
-        main_hbox.prepend(table, False, True, 6)
-        main_hbox.prepend(bb_align, True, True, 0)
+        main_hbox.prepend(grid)
+        main_hbox.prepend(bb_align)
 
         top_hbox = Gtk.Box()
-        top_hbox.prepend(self.open_check, True, True, 0)
-        top_hbox.prepend(self.window_fit, False, True, 0)
+        top_hbox.prepend(self.open_check)
+        top_hbox.prepend(self.window_fit)
 
         main_vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        main_vbox.prepend(top_hbox, True, True, 2)
-        main_vbox.prepend(main_hbox, True, True, 0)
+        main_vbox.prepend(top_hbox)
+        main_vbox.prepend(main_hbox)
 
-        self.prepend(self.scrolled, True, True, 0)
-        self.prepend(main_vbox, False, True, 5)
+        self.prepend(self.scrolled)
+        self.prepend(main_vbox)
 
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
@@ -380,7 +381,7 @@ class CoverArea(Gtk.Box, PluginConfigMixin):
 
             app.cover_manager.cover_changed([self.song._song])
 
-        self.main_win.destroy()
+        self.main_win.close()
 
     def __save_config(self, widget):
         self.config_set("edit_cmd", self.cmd.get_text())
@@ -536,7 +537,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.liststore = Gtk.ListStore(object, object)
         self.treeview = treeview = AllTreeView(model=self.liststore)
         self.treeview.set_headers_visible(False)
-        self.treeview.set_rules_hint(True)
+        # GTK4: set_rules_hint() removed (alternating row colors now automatic)
 
         targets = [("text/uri-list", 0, 0)]
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
@@ -544,7 +545,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # treeview.drag_source_set(
-            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
         # )
 
         treeselection = self.treeview.get_selection()
@@ -556,7 +557,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn("Thumb")
-        img_col.prepend(rend_pix, False)
+        # GTK4: TreeViewColumn.prepend removed, use pack_start
+        img_col.pack_start(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
             surface = model[iter_][0]
@@ -605,19 +607,22 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         sw_list = Gtk.ScrolledWindow()
         sw_list.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw_list.set_shadow_type(Gtk.ShadowType.IN)
-        sw_list.add(treeview)
+        # GTK4: set_shadow_type removed (now controlled via CSS)
+        sw_list.set_child(treeview)
 
-        search_labelraw = Gtk.Label("raw")
-        search_labelraw.set_alignment(xalign=1.0, yalign=0.5)
+        search_labelraw = Gtk.Label(label="raw")
+        search_labelraw.set_halign(Gtk.Align.END)
+        search_labelraw.set_valign(Gtk.Align.CENTER)
         self.search_fieldraw = Gtk.Entry()
         self.search_fieldraw.connect("activate", self.start_search)
         self.search_fieldraw.connect("changed", self.__searchfieldchanged)
-        search_labelclean = Gtk.Label("clean")
-        search_labelclean.set_alignment(xalign=1.0, yalign=0.5)
+        search_labelclean = Gtk.Label(label="clean")
+        search_labelclean.set_halign(Gtk.Align.END)
+        search_labelclean.set_valign(Gtk.Align.CENTER)
         self.search_fieldclean = Gtk.Label()
         self.search_fieldclean.set_can_focus(False)
-        self.search_fieldclean.set_alignment(xalign=0.0, yalign=0.5)
+        self.search_fieldclean.set_halign(Gtk.Align.START)
+        self.search_fieldclean.set_valign(Gtk.Align.CENTER)
 
         self.search_radioraw = Gtk.CheckButton(group=None, label=None)
         self.search_radioraw.connect("toggled", self.__searchtypetoggled, "raw")
@@ -631,8 +636,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         else:
             self.search_radioclean.set_active(True)
 
-        search_labelresultsmax = Gtk.Label("limit")
-        search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
+        search_labelresultsmax = Gtk.Label(label="limit")
+        search_labelresultsmax.set_halign(Gtk.Align.END)
+        search_labelresultsmax.set_valign(Gtk.Align.CENTER)
         search_labelresultsmax.set_tooltip_text(_("Per engine 'at best' results limit"))
         search_adjresultsmax = Gtk.Adjustment(
             value=int(self.config_get("resultsmax", 3)),
@@ -692,8 +698,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.progress = Gtk.ProgressBar()
 
         left_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=widget_space)
-        left_vbox.prepend(search_table, False, True, 0)
-        left_vbox.prepend(sw_list, True, True, 0)
+        left_vbox.prepend(search_table)
+        left_vbox.prepend(sw_list)
 
         hpaned = ConfigRHPaned(
             section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
@@ -706,7 +712,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.show_all()
 
-        left_vbox.prepend(self.progress, False, True, 0)
+        left_vbox.prepend(self.progress)
 
         self.connect("destroy", self.__save_config)
 
@@ -940,28 +946,23 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, window):
-        table = Gtk.Table(n_rows=len(ENGINES), n_columns=2)
-        table.props.expand = False
-        table.set_col_spacings(6)
-        table.set_row_spacings(6)
-        frame = qltk.Frame(_("Sources"), child=table)
+        grid = Gtk.Grid()
+        grid.set_hexpand(False)
+        grid.set_vexpand(False)
+        grid.set_column_spacing(6)
+        grid.set_row_spacing(6)
+        frame = qltk.Frame(_("Sources"), child=grid)
 
         for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
                 eng["config_id"].title(), CONFIG_ENG_PREFIX + eng["config_id"], True
             )
-            table.attach(check, 0, 1, i, i + 1)
+            grid.attach(check, 0, i, 1, 1)
 
             button = Gtk.Button(label=eng["url"])
             button.connect("clicked", lambda s: util.website(s.get_label()))
-            table.attach(
-                button,
-                1,
-                2,
-                i,
-                i + 1,
-                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
-            )
+            # GTK4: attach signature changed, no xoptions/yoptions
+            grid.attach(button, 1, i, 1, 1)
         return frame
 
     def plugin_album(self, songs):

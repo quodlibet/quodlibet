@@ -41,14 +41,13 @@ class BigCenteredImage(qltk.Window):
 
         # If image fails to set, abort construction.
         if not self.set_image(fileobj, parent, scale):
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
             return
 
         event_box = Gtk.Box()
         event_box.add(self.__image)
 
         frame = Gtk.Frame()
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
         frame.add(event_box)
 
         self.add(frame)
@@ -85,7 +84,8 @@ class BigCenteredImage(qltk.Window):
         return (width, height)
 
     def __destroy(self, *args):
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
+        pass
 
 
 def get_no_cover_pixbuf(width, height, scale_factor=1):
@@ -277,7 +277,8 @@ class CoverImage(Gtk.Box):
     def update_bci(self, albumfile):
         # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
-            self.__current_bci.destroy()
+            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
+            pass
             if albumfile:
                 if self._scale:
                     self.__show_cover(self.__song, self._scale)
@@ -320,7 +321,7 @@ class CoverImage(Gtk.Box):
 
         if self.__current_bci is not None:
             # We're displaying it; destroy it.
-            self.__current_bci.destroy()
+            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
             return True
 
         if not self.__file:

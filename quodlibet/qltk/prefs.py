@@ -98,9 +98,9 @@ class PreferencesWindow(UniqueWindow):
                     app.window.set_sortability()
 
                 always_sortable.connect("notify::active", refresh_browser)
-                vbox.prepend(jump_button, False, True, 0)
-                vbox.prepend(always_sortable, False, True, 0)
-                vbox.prepend(autosort_button, False, True, 0)
+                vbox.prepend(jump_button)
+                vbox.prepend(always_sortable)
+                vbox.prepend(autosort_button)
                 return qltk.Frame(_("Behavior"), child=vbox)
 
             def create_visible_columns_widgets():
@@ -110,11 +110,11 @@ class PreferencesWindow(UniqueWindow):
                 for _i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                     buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
                     grid.add(buttons[k])
-                vbox.prepend(grid, False, True, 0)
+                vbox.prepend(grid)
                 # Other columns
                 hbox = Gtk.Box(spacing=12)
                 l = Gtk.Label(label=_("_Others:"), use_underline=True)
-                hbox.prepend(l, False, True, 0)
+                hbox.prepend(l)
                 self.others = others = UndoEntry()
                 others.set_sensitive(False)
                 # Stock edit doesn't have ellipsis chars.
@@ -125,12 +125,12 @@ class PreferencesWindow(UniqueWindow):
                 )
                 l.set_mnemonic_widget(edit_button)
                 l.set_use_underline(True)
-                hbox.prepend(others, True, True, 0)
-                vbox.prepend(hbox, False, True, 0)
+                hbox.prepend(others)
+                vbox.prepend(hbox)
                 b = Gtk.HButtonBox()
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.prepend(edit_button, True, True, 0)
-                vbox.prepend(b, True, True, 0)
+                b.prepend(edit_button)
+                vbox.prepend(b)
                 return qltk.Frame(_("Visible Columns"), child=vbox), buttons
 
             def create_columns_prefs_frame():
@@ -148,9 +148,9 @@ class PreferencesWindow(UniqueWindow):
                 def pack_with_label(vb: Gtk.Box, widget: Gtk.Widget, text: str):
                     hb = Gtk.Box(spacing=12)
                     label = Gtk.Label(label=text, use_underline=True)
-                    hb.prepend(label, False, False, 0)
-                    hb.append(widget, False, False, 0)
-                    vb.prepend(hb, False, False, 0)
+                    hb.prepend(label)
+                    hb.append(widget)
+                    vb.prepend(hb)
 
                 vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
                 pack_with_label(vb, tiv, _("Title includes _version"))
@@ -172,7 +172,7 @@ class PreferencesWindow(UniqueWindow):
                 self.connect("destroy", self.__apply, buttons)
                 b = Gtk.HButtonBox()
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.prepend(apply, True, True, 0)
+                b.prepend(apply)
                 return b
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -303,10 +303,10 @@ class PreferencesWindow(UniqueWindow):
                 hbox = Gtk.Box(spacing=MARGIN)
                 label = Gtk.Label(label=_("Duration totals") + ":", use_underline=True)
                 label.set_mnemonic_widget(duration)
-                hbox.prepend(label, False, True, 0)
-                hbox.prepend(duration, False, True, 0)
+                hbox.prepend(label)
+                hbox.prepend(duration)
 
-                vbox.prepend(hbox, False, True, 0)
+                vbox.prepend(hbox)
                 return qltk.Frame(_("Display"), child=vbox)
 
             def create_search_frame():
@@ -351,8 +351,8 @@ class PreferencesWindow(UniqueWindow):
             )
 
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
-            vbox.prepend(c1, False, True, 0)
-            vbox.prepend(c2, False, True, 0)
+            vbox.prepend(c1)
+            vbox.prepend(c2)
             f = qltk.Frame(_("Ratings"), child=vbox)
             self.prepend(f, False, True, MARGIN)
 
@@ -369,7 +369,7 @@ class PreferencesWindow(UniqueWindow):
                     "(where available) over other sources"
                 ),
             )
-            vb.prepend(sw, False, True, 0)
+            vb.prepend(sw)
 
             allowed_image_filename_tooltip = _(
                 "Only allow these filenames. "
@@ -383,7 +383,7 @@ class PreferencesWindow(UniqueWindow):
                 populate=True,
                 tooltip=_("Restrict album art to the specified filenames."),
             )
-            vb.prepend(sw, False, True, 0)
+            vb.prepend(sw)
 
             entry = UndoEntry()
             entry.set_tooltip_text(allowed_image_filename_tooltip)
@@ -395,8 +395,8 @@ class PreferencesWindow(UniqueWindow):
             self.__activated_force_filename(sw, None, entry)
             hb = Gtk.Box()
             entry.set_size_request(250, -1)
-            hb.prepend(entry, False, True, 12)
-            vb.prepend(hb, False, False, 0)
+            hb.prepend(entry)
+            vb.prepend(hb)
 
             f = qltk.Frame(_("Album Art"), child=vb)
             self.prepend(f, False, True, MARGIN)
@@ -488,7 +488,7 @@ class PreferencesWindow(UniqueWindow):
 
             # packing
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            vb.prepend(enable_rg, False, False, 0)
+            vb.prepend(enable_rg)
 
             grid = Gtk.Grid(column_spacing=6, row_spacing=3)
             grid.attach(fb_label, 0, 0, 1, 1)
@@ -496,8 +496,8 @@ class PreferencesWindow(UniqueWindow):
             grid.attach(pre_label, 0, 1, 1, 1)
             grid.attach(pre_scale, 1, 1, 1, 1)
             hb = Gtk.Box()
-            hb.prepend(grid, True, True, 12)
-            vb.prepend(hb, False, True, 0)
+            hb.prepend(grid)
+            vb.prepend(hb)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
             self.prepend(f, False, True, MARGIN)
 
@@ -516,7 +516,7 @@ class PreferencesWindow(UniqueWindow):
                     "start playing on next startup"
                 ),
             )
-            vbox.prepend(continue_play, False, False, 0)
+            vbox.prepend(continue_play)
             return qltk.Frame(_("Behavior"), child=vbox)
 
         def __activated_gain(self, activator, state, widgets):
@@ -593,7 +593,7 @@ class PreferencesWindow(UniqueWindow):
             scale_lab.set_mnemonic_widget(scale_combo)
 
             cell = Gtk.CellRendererText()
-            scale_combo.prepend(cell, False)
+            scale_combo.pack_start(cell, False)
             num = RATINGS.number
             for i in [1, 2, 3, 4, 5, 6, 8, 10]:
                 it = model.append(row=[i])
@@ -626,7 +626,7 @@ class PreferencesWindow(UniqueWindow):
             grid.add(scale_combo)
             grid.attach(default_align, 0, 1, 1, 1)
             grid.attach(default_combo, 1, 1, 1, 1)
-            vb.prepend(grid, False, False, 12)
+            vb.prepend(grid)
 
             # Bayesian Factor
             bayesian_factor = config.getfloat("settings", "bayesian_rating_factor", 0.0)
@@ -664,7 +664,7 @@ class PreferencesWindow(UniqueWindow):
             def update_entry(widget, state, email_entry):
                 email_entry.set_sensitive(widget.get_active())
 
-            vb.prepend(sw, True, True, 0)
+            vb.prepend(sw)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
             entry.set_tooltip_text(
@@ -699,7 +699,7 @@ class PreferencesWindow(UniqueWindow):
                     "when editing multiple files"
                 ),
             )
-            vbox.prepend(sw, False, False, 0)
+            vbox.prepend(sw)
 
             def revert_split(entry, button, _, section, option):
                 config.reset(section, option)
@@ -802,9 +802,9 @@ class PreferencesWindow(UniqueWindow):
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             hbox = Gtk.Box()
-            hbox.append(reload_, False, True, 0)
-            hbox.append(refresh, False, True, 12)
-            vb.prepend(hbox, False, True, 0)
+            hbox.append(reload_)
+            hbox.append(refresh)
+            vb.prepend(hbox)
 
             self.prepend(self.create_behavior_frame(), False, False, TOP_MARGIN)
             self.prepend(self.create_scandirs_frame(), False, True, MARGIN)
@@ -813,7 +813,7 @@ class PreferencesWindow(UniqueWindow):
             if app.library is not None:
                 masked = MaskedBox(app.library)
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
-                self.prepend(f, False, True, 12)
+                self.prepend(f)
 
             for child in self.get_children():
                 child.show_all()
@@ -839,14 +839,14 @@ class PreferencesWindow(UniqueWindow):
                 + "\n"
                 + req_restart,
             )
-            vb.prepend(watch_lib_sw, False, True, 0)
-            vb.prepend(scan_at_start_sw, False, True, 0)
+            vb.prepend(watch_lib_sw)
+            vb.prepend(scan_at_start_sw)
             return qltk.Frame(_("Behavior"), child=vb)
 
         def create_scandirs_frame(self):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             scan_dirs = ScanBox()
-            vb.prepend(scan_dirs, True, True, 0)
+            vb.prepend(scan_dirs)
             return qltk.Frame(_("Scan Directories"), child=vb)
 
     class Advanced(Gtk.Box):
@@ -859,7 +859,7 @@ class PreferencesWindow(UniqueWindow):
             scrolledwin = Gtk.ScrolledWindow()
             scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledwin.add_with_viewport(AdvancedPreferencesPane())
-            self.prepend(scrolledwin, True, True, 3)
+            self.prepend(scrolledwin)
 
     def __init__(self, parent, open_page=None, all_pages=True):
         if self.is_not_unique():
@@ -902,7 +902,7 @@ class PreferencesWindow(UniqueWindow):
         connect_obj(close, "clicked", lambda x: x.destroy(), self)
         button_box = Gtk.HButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
-        button_box.prepend(close, True, True, 0)
+        button_box.prepend(close)
 
         self.use_header_bar()
         if self.has_close_button():
@@ -912,8 +912,8 @@ class PreferencesWindow(UniqueWindow):
         else:
             self.set_border_width(12)
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            vbox.prepend(notebook, True, True, 0)
-            vbox.prepend(button_box, False, True, 0)
+            vbox.prepend(notebook)
+            vbox.prepend(button_box)
             self.add(vbox)
 
         connect_obj(self, "destroy", PreferencesWindow.__destroy, self)
@@ -943,6 +943,6 @@ def create_grid(column_spacing: int = 12, row_spacing: int = 6):
 
 def hbox_for(label: Gtk.Label, entry: Gtk.Entry, expand_entry: bool = True) -> Gtk.Box:
     hb = Gtk.Box(spacing=12)
-    hb.prepend(label, False, False, 0)
+    hb.prepend(label)
     hb.append(entry, expand_entry, True, 0)
     return hb

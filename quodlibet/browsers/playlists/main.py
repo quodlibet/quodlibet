@@ -109,8 +109,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box.pack1(self, True, False)
         self._rh_box = rhbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=0)
-        rhbox.prepend(align, False, True, 0)
-        rhbox.prepend(songpane, True, True, 0)
+        rhbox.prepend(align)
+        rhbox.prepend(songpane)
         self._main_box.pack2(rhbox, True, False)
         rhbox.show()
         align.show_all()
@@ -203,10 +203,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __embed_in_scrolledwin(self, view):
         swin = ScrolledWindow()
-        swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.prepend(swin, True, True, 0)
+        self.prepend(swin)
 
     def __configure_buttons(self, library):
         new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.NORMAL)
@@ -229,9 +228,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2.insert(pref, 0)
 
         hb = Gtk.Box()
-        hb.prepend(fb, True, True, 3)
-        hb.append(fb2, False, False, 0)
-        self.prepend(hb, False, False, 0)
+        hb.prepend(fb)
+        hb.append(fb2)
+        self.prepend(hb)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -247,7 +246,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         col.set_cell_data_func(render, self.cell_data)
         view.append_column(col)
         view.set_model(self._lists)
-        view.set_rules_hint(True)
         view.set_headers_visible(False)
         return view
 
@@ -722,4 +720,4 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button, True, True, 0)
+        self.prepend(button)

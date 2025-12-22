@@ -26,15 +26,15 @@ class GetPlayerDialog(Gtk.Dialog):
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.prepend(label, True, True, 0)
+        box.prepend(label)
 
         player_combo = Gtk.ComboBoxText()
         for player in players:
             player_combo.append_text(player["name"])
         player_combo.set_active(current)
         self._val = player_combo
-        box.prepend(self._val, True, True, 0)
-        self.vbox.prepend(box, True, True, 0)
+        box.prepend(self._val)
+        self.vbox.prepend(box)
         self.get_child().show_all()
 
     def run(self, text=""):
@@ -45,5 +45,5 @@ class GetPlayerDialog(Gtk.Dialog):
             value = self._val.get_active()
         else:
             value = None
-        self.destroy()
+        self.close()
         return value

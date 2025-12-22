@@ -306,7 +306,7 @@ class DiscordStatusMessage(EventPlugin):
         status_line1.connect("changed", rp_line1_changed)
 
         status_line1_box.prepend(Gtk.Label(label=_("Status Line #1")), False, True, 0)
-        status_line1_box.prepend(status_line1, True, True, 0)
+        status_line1_box.prepend(status_line1)
 
         status_line2_box = Gtk.Box(spacing=3)
         status_line2_box.set_border_width(3)
@@ -316,9 +316,9 @@ class DiscordStatusMessage(EventPlugin):
         status_line2.connect("changed", rp_line2_changed)
 
         status_line2_box.prepend(Gtk.Label(label=_("Status Line #2")), False, True, 0)
-        status_line2_box.prepend(status_line2, True, True, 0)
+        status_line2_box.prepend(status_line2)
 
-        vb.prepend(status_line1_box, True, True, 0)
-        vb.prepend(status_line2_box, True, True, 0)
+        vb.prepend(status_line1_box)
+        vb.prepend(status_line2_box)
 
         return vb

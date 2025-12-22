@@ -89,12 +89,12 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         def about_cb(*args):
             about = AboutDialog(self, app)
             about.run()
-            about.destroy()
+            # GTK4: destroy() removed - about cleaned up automatically
 
         def update_cb(*args):
             d = UpdateDialog(self)
             d.run()
-            d.destroy()
+            # GTK4: destroy() removed - d cleaned up automatically
 
         menu = Gtk.PopoverMenu()
 
@@ -124,21 +124,21 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             down=False,
         )
         menu_button.set_menu(menu)
-        bbox.prepend(menu_button, False, True, 0)
+        bbox.prepend(menu_button)
 
         statusbox = StatusBarBox()
         self.statusbar = statusbox.statusbar
 
-        bbox.prepend(statusbox, False, True, 0)
+        bbox.prepend(statusbox)
 
         l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        bbox.prepend(l, True, True, 0)
+        bbox.prepend(l)
 
         self._fs = fs = MainFileSelector()
 
-        vb.prepend(fs, True, True, 0)
+        vb.prepend(fs)
         vb.prepend(Align(bbox, border=6), False, True, 0)
         vb.show_all()
 
@@ -178,7 +178,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         # GtkosxApplication assumes the menu bar is mapped, so add
         # it but don't show it.
         self._dummy_osx_menu_bar = Gtk.MenuBar()
-        vb.prepend(self._dummy_osx_menu_bar, False, False, 0)
+        vb.prepend(self._dummy_osx_menu_bar)
 
     def __library_changed(self, library, songs, fs):
         fs.rescan()
@@ -235,7 +235,8 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         menu.prepend(b)
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         menu.connect("selection-done", selection_done_cb)
         menu.show_all()
@@ -312,4 +313,4 @@ class StatusBarBox(Gtk.Box):
     def __init__(self):
         super().__init__(spacing=6)
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.prepend(self.statusbar, True, True, 0)
+        self.prepend(self.statusbar)

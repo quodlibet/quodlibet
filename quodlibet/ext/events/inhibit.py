@@ -135,5 +135,5 @@ class SessionInhibit(EventPlugin):
         combo.append_text(_("Inhibit Suspend"))
         combo.set_active(1 if mode == InhibitStrings.SUSPEND else 0)
         combo.connect("changed", changed)
-        hb.prepend(combo, True, True, 0)
+        hb.prepend(combo)
         return hb

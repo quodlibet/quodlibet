@@ -23,6 +23,7 @@ class MenuButton(Gtk.MenuButton):
             bbox.prepend(widget)
         if arrow:
             # GTK4: Gtk.Arrow is removed, MenuButton has built-in arrow support
+            pass
             # Just use the icon-name property instead
             pass
 

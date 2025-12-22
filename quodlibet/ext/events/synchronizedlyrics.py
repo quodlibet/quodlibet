@@ -66,7 +66,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(clr_section, 0, 2, 0, 1)
 
         l = Gtk.Label(label=_("Text:"))
-        l.set_alignment(xalign=1.0, yalign=0.5)
+        l.set_halign(Gtk.Align.END)
+        l.set_valign(Gtk.Align.CENTER)
         t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
         c = Gdk.RGBA()
@@ -76,7 +77,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         b.connect("color-set", self._set_text_color)
 
         l = Gtk.Label(label=_("Background:"))
-        l.set_alignment(xalign=1.0, yalign=0.5)
+        l.set_halign(Gtk.Align.END)
+        l.set_valign(Gtk.Align.CENTER)
         t.attach(l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
 
         c = Gdk.RGBA()
@@ -90,7 +92,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(font_section, 0, 2, 3, 4)
 
         l = Gtk.Label(label=_("Size (px):"))
-        l.set_alignment(xalign=1.0, yalign=0.5)
+        l.set_halign(Gtk.Align.END)
+        l.set_valign(Gtk.Align.CENTER)
         t.attach(l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL)
 
         a = Gtk.Adjustment.new(self._get_font_size(), 10, 72, 2, 3, 0)
@@ -100,7 +103,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(s, 1, 2, 4, 5)
         s.connect("value-changed", self._set_font_size)
 
-        vb.prepend(t, False, False, 0)
+        vb.prepend(t)
         return vb
 
     @classmethod
@@ -144,9 +147,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.scrolled_window.add_with_viewport(self.textview)
 
         vb = Gtk.Box()
-        vb.prepend(self.scrolled_window, True, True, 6)
+        vb.prepend(self.scrolled_window)
         vb.show_all()
-        app.window.get_child().prepend(vb, False, True, 0)
+        app.window.get_child().prepend(vb)
         app.window.get_child().reorder_child(vb, 2)
 
         self._style_lyrics_window()
@@ -159,9 +162,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     def disabled(self):
         self._clear_timers()
         GLib.source_remove(self._sync_timer)
-        self.textview.destroy()
         self.textview = None
-        self.scrolled_window.destroy()
         self.scrolled_window = None
 
     def _style_lyrics_window(self):

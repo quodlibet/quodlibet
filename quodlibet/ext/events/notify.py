@@ -103,7 +103,6 @@ class PreferencesWidget(Gtk.Box):
         body_textbuffer.connect("changed", on_textbuffer_changed, "bodypattern")
         body_scrollarea = Gtk.ScrolledWindow()
         body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        body_scrollarea.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         body_scrollarea.add(body_textview)
         table.attach(body_scrollarea, 1, 2, 1, 2)
 
@@ -155,14 +154,14 @@ class PreferencesWidget(Gtk.Box):
             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
         )
 
-        self.prepend(text_frame, True, True, 0)
+        self.prepend(text_frame)
 
         # notification display settings
         display_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         display_frame = qltk.Frame(_("Show notifications"), child=display_box)
 
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        display_box.prepend(radio_box, True, True, 0)
+        display_box.prepend(radio_box)
 
         only_user_radio = Gtk.CheckButton(
             label=_("Only on <i>_manual</i> song changes"), use_underline=True
@@ -171,7 +170,7 @@ class PreferencesWidget(Gtk.Box):
         only_user_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "user"
         )
-        radio_box.prepend(only_user_radio, True, True, 0)
+        radio_box.prepend(only_user_radio)
 
         only_auto_radio = Gtk.CheckButton(
             group=only_user_radio,
@@ -182,7 +181,7 @@ class PreferencesWidget(Gtk.Box):
         only_auto_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "auto"
         )
-        radio_box.prepend(only_auto_radio, True, True, 0)
+        radio_box.prepend(only_auto_radio)
 
         all_radio = Gtk.CheckButton(
             group=only_user_radio,
@@ -193,7 +192,7 @@ class PreferencesWidget(Gtk.Box):
         all_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "all"
         )
-        radio_box.prepend(all_radio, True, True, 0)
+        radio_box.prepend(all_radio)
 
         {"user": only_user_radio, "auto": only_auto_radio, "all": all_radio}.get(
             pconfig.gettext("show_notifications"), all_radio
@@ -206,14 +205,14 @@ class PreferencesWidget(Gtk.Box):
         focus_check.connect(
             "toggled", self.on_checkbutton_toggled, "show_only_when_unfocused"
         )
-        display_box.prepend(focus_check, True, True, 0)
+        display_box.prepend(focus_check)
 
         show_next = Gtk.CheckButton(label=_('Show "_Next" button'), use_underline=True)
         show_next.set_active(pconfig.getboolean("show_next_button"))
         show_next.connect("toggled", self.on_checkbutton_toggled, "show_next_button")
-        display_box.prepend(show_next, True, True, 0)
+        display_box.prepend(show_next)
 
-        self.prepend(display_frame, True, True, 0)
+        self.prepend(display_frame)
 
         self.show_all()
         self.connect("destroy", self.on_destroyed)

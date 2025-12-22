@@ -50,13 +50,13 @@ class Preferences(Gtk.Box):
         )
         group.connect("toggled", on_scroll_changed, False)
         group.set_active(not modifier_swap)
-        scrollwheel_box.prepend(group, False, True, 0)
+        scrollwheel_box.prepend(group)
         group = Gtk.CheckButton(
             group=group, label=_("Scroll wheel changes song"), use_underline=True
         )
         group.connect("toggled", on_scroll_changed, True)
         group.set_active(modifier_swap)
-        scrollwheel_box.prepend(group, False, True, 0)
+        scrollwheel_box.prepend(group)
 
         if supports_scrolling():
             self.prepend(
@@ -68,7 +68,7 @@ class Preferences(Gtk.Box):
         entry_box = Gtk.Box(spacing=6)
 
         entry = UndoEntry()
-        entry_box.prepend(entry, True, True, 0)
+        entry_box.prepend(entry)
 
         def on_reverted(*args):
             pconfig.reset("tooltip")
@@ -79,21 +79,21 @@ class Preferences(Gtk.Box):
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE)
         )
         revert.connect("clicked", on_reverted)
-        entry_box.prepend(revert, False, True, 0)
+        entry_box.prepend(revert)
 
-        box.prepend(entry_box, False, True, 0)
+        box.prepend(entry_box)
 
         preview = Gtk.Label()
         preview.set_line_wrap(True)
         preview_frame = Gtk.Frame(label=_("Preview"))
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=18)
-        vbox.prepend(preview, False, False, 0)
+        vbox.prepend(preview)
         preview_frame.add(vbox)
-        box.prepend(preview_frame, False, True, 0)
+        box.prepend(preview_frame)
 
         tt_frame = qltk.Frame(_("Tooltip Display"), child=box)
         tt_frame.get_label_widget().set_mnemonic_widget(entry)
-        self.prepend(tt_frame, True, True, 0)
+        self.prepend(tt_frame)
 
         entry.connect("changed", self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))

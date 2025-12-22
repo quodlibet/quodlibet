@@ -30,9 +30,9 @@ class RegExpSub(Gtk.Box, RenameFilesPlugin, TagsFromPathPlugin):
         self._from = Gtk.Entry()
         self._to = Gtk.Entry()
         self.prepend(Gtk.Label("s/"), True, True, 0)
-        self.prepend(self._from, True, True, 0)
+        self.prepend(self._from)
         self.prepend(Gtk.Label("/"), True, True, 0)
-        self.prepend(self._to, True, True, 0)
+        self.prepend(self._to)
         self.prepend(Gtk.Label("/"), True, True, 0)
 
         connect_obj(self._from, "changed", self.emit, "changed")

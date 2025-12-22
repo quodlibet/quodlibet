@@ -265,7 +265,7 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button, False, False, 0)
+        self.prepend(button)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -452,7 +452,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
     @classmethod
     def _destroy_model(cls):
-        cls.__model.destroy()
         cls.__model = None
 
     @classmethod
@@ -493,7 +492,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self._cover_cancel = Gio.Cancellable()
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
         model_sort = AlbumSortModel(model=self.__model)
@@ -559,7 +557,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         view.append_column(column)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        view.set_rules_hint(True)
         view.set_search_equal_func(self.__search_func, None)
         view.set_search_column(0)
         view.set_model(model_filter)
@@ -581,7 +578,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # view.drag_source_set(
-            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
         # )
         # view.connect("drag-data-get", self.__drag_data_get)
         # connect_obj(view, "popup-menu", self.__popup, view, library)
@@ -595,11 +592,11 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.prepend(prefs, False, True, 0)
+        search.prepend(prefs)
         hb = Gtk.Box(spacing=3)
-        hb.prepend(search, True, True, 6)
-        self.prepend(hb, False, True, 0)
-        self.prepend(sw, True, True, 0)
+        hb.prepend(search)
+        self.prepend(hb)
+        self.prepend(sw)
 
         self.connect("destroy", self.__destroy)
 

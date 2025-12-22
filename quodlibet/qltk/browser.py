@@ -281,7 +281,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.songlist.sortable = not browser_cls.can_reorder
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
@@ -294,11 +293,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.get_child().prepend(self.__container, True, True, 0)
+        self.get_child().prepend(self.__container)
 
         main = self.get_child()
         bottom = Gtk.Box()
-        main.append(bottom, False, True, 0)
+        main.append(bottom)
 
         self._filter_menu = filter_menu = FilterMenu(library, player)
         filter_menu.set_browser(self.browser)
@@ -310,7 +309,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.__statusbar.set_alignment(1.0, 0.5)
         self.__statusbar.set_padding(6, 3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
-        bottom.append(self.__statusbar, True, True, 0)
+        bottom.append(self.__statusbar)
         self.__statusbar.show()
         bottom.show()
 
@@ -331,7 +330,8 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.connect("destroy", self._on_destroy)
 
     def _on_destroy(self, *args):
-        self._filter_menu.destroy()
+        # GTK4: self.destroy() removed - _filter_menu cleaned up automatically
+        pass
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:

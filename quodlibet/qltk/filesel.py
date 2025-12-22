@@ -200,7 +200,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         render = Gtk.CellRendererPixbuf()
         render.set_property("icon-name", Icons.FOLDER)
         render.props.xpad = 3
-        column.prepend(render, False)
+        column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -527,7 +527,7 @@ class FileSelector(Paned):
 
         column.set_cell_data_func(render, cell_icon)
 
-        column.prepend(render, False)
+        column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -540,7 +540,6 @@ class FileSelector(Paned):
         column.set_cell_data_func(render, cell_data)
 
         filelist.append_column(column)
-        filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         filelist.set_search_equal_func(search_func, False)
         filelist.set_search_column(0)
@@ -561,13 +560,11 @@ class FileSelector(Paned):
         sw = ScrolledWindow()
         sw.add(dirlist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack1(sw, resize=True)
 
         sw = ScrolledWindow()
         sw.add(filelist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack2(sw, resize=True)
 
     def go_to(self, *args, **kwargs):

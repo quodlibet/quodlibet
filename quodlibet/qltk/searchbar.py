@@ -92,7 +92,7 @@ class SearchBarBox(Gtk.Box):
         entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
 
         combo.enable_clear_button()
-        self.prepend(combo, True, True, 0)
+        self.prepend(combo)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")
@@ -221,7 +221,7 @@ class LimitSearchBarBox(SearchBarBox):
         def __init__(self):
             super().__init__(spacing=3, no_show_all=True)
             label = Gtk.Label(label=_("_Limit:"))
-            self.prepend(label, True, True, 0)
+            self.prepend(label)
 
             self.__limit = limit = Gtk.SpinButton()
             self.__limit.connect("value-changed", self.__changed)
@@ -230,11 +230,11 @@ class LimitSearchBarBox(SearchBarBox):
             limit.set_increments(5, 100)
             label.set_mnemonic_widget(limit)
             label.set_use_underline(True)
-            self.prepend(limit, True, True, 0)
+            self.prepend(limit)
 
             self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
-            self.prepend(self.__weight, True, True, 0)
+            self.prepend(self.__weight)
 
             for child in self.get_children():
                 child.show()
@@ -254,7 +254,7 @@ class LimitSearchBarBox(SearchBarBox):
         super().__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
-        self.prepend(self.__limit, False, True, 0)
+        self.prepend(self.__limit)
         self.__limit.connect("changed", self.__limit_changed)
 
     def __limit_changed(self, *args):
@@ -295,7 +295,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
         self._add_button = Gtk.Button.new_from_icon_name("list-add", Gtk.IconSize.LARGE)
         self._add_button.set_no_show_all(True)
-        self.prepend(self._add_button, False, True, 0)
+        self.prepend(self._add_button)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
@@ -384,12 +384,12 @@ class QueryItem(Gtk.FlowBoxChild):
         hbox.prepend(Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0)
         btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.LARGE)
         btn.connect("clicked", self.remove)
-        hbox.prepend(btn, False, True, 0)
+        hbox.prepend(btn)
         frame = Gtk.Frame()
         frame.add(hbox)
         self.add(frame)
         self.show_all()
 
     def remove(self, _):
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
         self.changed_callback()

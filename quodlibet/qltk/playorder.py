@@ -143,7 +143,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         toggle.show_all()
         qltk.remove_padding(toggle)
         toggle.set_size_request(26, 26)
-        self.prepend(toggle, True, True, 0)
+        self.prepend(toggle)
 
         def forward_signal(*args):
             if not self.__inhibit:
@@ -158,7 +158,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         arrow.show_all()
         arrow.set_size_request(20, 26)
         qltk.remove_padding(arrow)
-        self.prepend(arrow, True, True, 0)
+        self.prepend(arrow)
         self._menu_button = arrow
         self.__current = current_order
         self.__orders = orders
@@ -293,8 +293,8 @@ class PlayOrderWidget(Gtk.Box):
         self._repeat_orders.connect("updated", self.__repeat_widget.set_orders)
 
         self.__compose_order()
-        self.prepend(self.__shuffle_widget, False, True, 0)
-        self.prepend(self.__repeat_widget, False, True, 0)
+        self.prepend(self.__shuffle_widget)
+        self.prepend(self.__repeat_widget)
         self.__inhibit = False
 
     @property

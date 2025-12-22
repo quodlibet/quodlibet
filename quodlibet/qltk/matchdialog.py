@@ -72,12 +72,12 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
             self.enable_window_tracking(id_for_window_tracking)
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        self.get_content_area().prepend(vb, True, True, 0)
+        self.get_content_area().prepend(vb)
         vb.set_spacing(24)
         self.set_border_width(5)
 
         desc_lbl = Gtk.Label(f"\n{description}\n", wrap=True)
-        vb.prepend(desc_lbl, False, False, 0)
+        vb.prepend(desc_lbl)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(ok_button_text, ok_button_icon, Gtk.ResponseType.OK)
@@ -85,17 +85,17 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         order_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 
         lbl = Gtk.Label(_("Right side order:"))
-        order_box.prepend(lbl, False, True, 0)
+        order_box.prepend(lbl)
 
         self.order_entry = Gtk.Entry()
-        order_box.prepend(self.order_entry, True, True, 0)
+        order_box.prepend(self.order_entry)
 
-        vb.prepend(order_box, False, True, 1)
+        vb.prepend(order_box)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        vb.prepend(sw, True, True, 1)
+        vb.prepend(sw)
 
         tree = MatchListsTreeView(a_items, b_items, columns)
         self._tree = tree
@@ -127,7 +127,8 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         self.show_all()
         resp = super().run()
         if destroy:
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
+            pass
         return self.order if resp == Gtk.ResponseType.OK else []
 
     @property
@@ -187,7 +188,6 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
 
         super().__init__(self.model)
         self.set_headers_clickable(False)
-        self.set_rules_hint(True)
         self.set_reorderable(False)
         self.get_selection().set_mode(Gtk.SelectionMode.NONE)
 

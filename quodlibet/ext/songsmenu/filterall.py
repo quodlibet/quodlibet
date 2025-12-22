@@ -39,7 +39,6 @@ class SelectionWindow(Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
 
         buttons = Gtk.HButtonBox()
@@ -47,11 +46,11 @@ class SelectionWindow(Window):
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        buttons.prepend(close, True, True, 0)
+        buttons.prepend(close)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.prepend(sw, True, True, 0)
-        box.prepend(buttons, False, True, 0)
+        box.prepend(sw)
+        box.prepend(buttons)
 
         self.add(box)
 

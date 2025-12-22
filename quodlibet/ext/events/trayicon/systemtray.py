@@ -156,7 +156,6 @@ class SystemTray(BaseIndicator):
         """
 
         if self.__menu:
-            self.__menu.destroy()
             self.__menu = None
         if self.__emb_sig:
             GLib.source_remove(self.__emb_sig)
@@ -335,7 +334,6 @@ class SystemTray(BaseIndicator):
         """Returns True if current action should only hide the menu"""
 
         if sys.platform in ("win32", "darwin") and self.__menu:
-            self.__menu.destroy()
             self.__menu = None
             return True
         return None

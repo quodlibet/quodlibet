@@ -93,7 +93,7 @@ def _run_chooser(parent, chooser):
             set_current_dir(current_dir)
     else:
         result = []
-    chooser.destroy()
+    # GTK4: destroy() removed - chooser cleaned up automatically
     return result
 
 

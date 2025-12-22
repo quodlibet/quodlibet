@@ -171,11 +171,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
         t = self.config_table_for(self._CONFIG[:_TOTAL_MQTT_ITEMS])
         frame = qltk.Frame(_("MQTT Configuration"), child=t)
-        outer_vb.prepend(frame, False, True, 0)
+        outer_vb.prepend(frame)
 
         t = self.config_table_for(self._CONFIG[_TOTAL_MQTT_ITEMS:])
         frame = qltk.Frame(_("Status Text"), child=t)
-        outer_vb.prepend(frame, False, True, 0)
+        outer_vb.prepend(frame)
 
         return outer_vb
 
@@ -193,7 +193,8 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
             entry.connect("changed", self._on_changed, cfg)
             lbl = Gtk.Label(label=label + ":")
             lbl.set_size_request(140, -1)
-            lbl.set_alignment(xalign=0.0, yalign=0.5)
+            lbl.set_halign(Gtk.Align.START)
+            lbl.set_valign(Gtk.Align.CENTER)
             if tooltip is not None:
                 entry.set_tooltip_markup(tooltip)
             lbl.set_mnemonic_widget(entry)

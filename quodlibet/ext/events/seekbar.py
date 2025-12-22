@@ -31,7 +31,7 @@ class SeekBar(Gtk.Box):
         self._scale = scale
 
         self.prepend(Align(self._elapsed_label, border=6), False, True, 0)
-        self.prepend(scale, True, True, 0)
+        self.prepend(scale)
         self.prepend(Align(self._remaining_label, border=6), False, True, 0)
         for child in self.get_children():
             child.show_all()
@@ -55,7 +55,7 @@ class SeekBar(Gtk.Box):
         self._tracker.tick()
 
     def _on_destroy(self, *args):
-        self._tracker.destroy()
+        self._tracker = None
 
     @contextlib.contextmanager
     def _inhibit(self):
@@ -129,5 +129,4 @@ class SeekBarPlugin(EventPlugin):
 
     def disabled(self):
         app.window.set_seekbar_widget(None)
-        self._bar.destroy()
         del self._bar

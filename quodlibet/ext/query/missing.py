@@ -32,13 +32,13 @@ class MissingQuery(QueryPlugin, PluginConfigMixin):
         box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        box.prepend(example, True, True, 0)
+        box.prepend(example)
 
         prefs_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
         button = cls.ConfigCheckButton(_("Include empty tags"), "include_empty", True)
-        prefs_box.prepend(button, False, False, 6)
+        prefs_box.prepend(button)
         frame = Frame(_("Preferences"), child=prefs_box)
-        box.prepend(frame, True, True, 12)
+        box.prepend(frame)
         return box

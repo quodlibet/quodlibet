@@ -76,12 +76,12 @@ class ThemeSwitcher(EventPlugin):
 
         label.set_mnemonic_widget(combo)
         label.set_use_underline(True)
-        hb.prepend(label, False, True, 0)
-        hb.prepend(combo, False, True, 0)
+        hb.prepend(label)
+        hb.prepend(combo)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(hb, False, True, 0)
-        vbox.prepend(dark_button, False, True, 0)
+        vbox.prepend(hb)
+        vbox.prepend(dark_button)
 
         return qltk.Frame(_("Preferences"), child=vbox)
 

@@ -130,7 +130,6 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         self.destroy_cb = destroy_cb
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
         add_css(
             self,
@@ -179,7 +178,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         event_state = event.state & modifier_mask
 
         if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
-            self.destroy()
+            self.close()
 
         elif event.keyval == Gdk.KEY_Return and (
             event_state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
@@ -360,7 +359,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
-                dialog.destroy()
+                dialog.close()
             elif len(comp_items) == 1:
                 # if current text is only suggestion, add a '.' if object
                 # has properties visible to autosuggestion
@@ -476,7 +475,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 exec(command, self.namespace)
         except Exception:
             if hasattr(sys, "last_type") and sys.last_type is SystemExit:
-                self.destroy()
+                self.close()
             else:
                 traceback.print_exc()
 
@@ -654,7 +653,7 @@ class ListChoiceDialog(Gtk.Dialog):
         scroll.add(listbox)
 
         content = self.get_content_area()
-        content.prepend(scroll, True, True, 0)
+        content.prepend(scroll)
 
         content.show_all()
         self.get_action_area().hide()

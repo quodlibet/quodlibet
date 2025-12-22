@@ -195,7 +195,7 @@ class IndicatorMenu(Gtk.PopoverMenu):
         submenu = self._playlists_item.get_submenu()
         pl_lib = self._app.library and self._app.library.playlists
         if submenu:
-            submenu.destroy()
+            submenu.close()
         playlist_menu = PlaylistMenu([song], pl_lib)
         self._playlists_item.set_submenu(playlist_menu)
         self._playlists_item.set_sensitive(bool(song) and song.can_add)

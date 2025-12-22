@@ -72,10 +72,10 @@ class PatternEditor(Gtk.Box):
 
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for button in buttons:
-            radio_box.prepend(button, False, True, 0)
+            radio_box.prepend(button)
             button.connect("toggled", self.__toggled, button_box, model)
 
-        self.prepend(radio_box, False, True, 0)
+        self.prepend(radio_box)
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
@@ -86,11 +86,11 @@ class PatternEditor(Gtk.Box):
         ctrl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         add = Button(_("_Add"), Icons.LIST_ADD)
-        ctrl_box.prepend(add, False, True, 0)
+        ctrl_box.prepend(add)
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
-        ctrl_box.prepend(remove, False, True, 0)
+        ctrl_box.prepend(remove)
         remove.connect("clicked", self.__remove, view)
 
         selection = view.get_selection()
@@ -99,16 +99,15 @@ class PatternEditor(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
 
         edit_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        edit_box.prepend(cb, False, True, 0)
-        edit_box.prepend(sw, True, True, 0)
+        edit_box.prepend(cb)
+        edit_box.prepend(sw)
 
-        button_box.prepend(edit_box, True, True, 0)
-        button_box.prepend(ctrl_box, False, True, 0)
-        self.prepend(button_box, True, True, 0)
+        button_box.prepend(edit_box)
+        button_box.prepend(ctrl_box)
+        self.prepend(button_box)
 
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
@@ -200,13 +199,13 @@ class Preferences(qltk.UniqueWindow):
         box = Gtk.HButtonBox()
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.END)
-        box.prepend(apply, True, True, 0)
+        box.prepend(apply)
         self.use_header_bar()
         if not self.has_close_button():
-            box.prepend(cancel, True, True, 0)
+            box.prepend(cancel)
 
-        vbox.prepend(editor, True, True, 0)
-        vbox.prepend(box, False, True, 0)
+        vbox.prepend(editor)
+        vbox.prepend(box)
 
         self.add(vbox)
 
@@ -219,4 +218,5 @@ class Preferences(qltk.UniqueWindow):
             self._browser.set_hierarchy()
 
         if close:
-            self.destroy()
+            # TODO: destroy, but GTK4
+            pass

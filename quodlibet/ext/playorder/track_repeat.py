@@ -52,14 +52,14 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         vb.set_border_width(10)
         hbox = Gtk.Box(spacing=6)
         lbl = Gtk.Label(label=_("Number of times to play each song:"))
-        hbox.prepend(lbl, False, True, 0)
+        hbox.prepend(lbl)
         val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
         spin = Gtk.SpinButton(
             adjustment=Gtk.Adjustment.new(float(val), 2, 20, 1, 10, 0)
         )
         spin.connect("value-changed", plays_changed)
-        hbox.prepend(spin, False, True, 0)
-        vb.prepend(hbox, True, True, 0)
+        hbox.prepend(spin)
+        vb.prepend(hbox)
         vb.show_all()
         return vb
 

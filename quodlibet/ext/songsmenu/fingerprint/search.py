@@ -249,7 +249,6 @@ class SearchWindow(Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         model = ObjectStore()
         self.view = view = ResultView()
@@ -280,17 +279,17 @@ class SearchWindow(Window):
         save.set_sensitive(False)
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda *x: self.destroy())
-        bbox.prepend(save, True, True, 0)
-        bbox.prepend(cancel, True, True, 0)
+        bbox.prepend(save)
+        bbox.prepend(cancel)
 
         inner_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        inner_box.prepend(sw, True, True, 0)
+        inner_box.prepend(sw)
 
         ccb = ConfigCheckButton(
             _("Write MusicBrainz tags"), "plugins", "fingerprint_write_mb_tags"
         )
         ccb.set_active(get_write_mb_tags())
-        inner_box.prepend(ccb, False, True, 0)
+        inner_box.prepend(ccb)
 
         ccb = ConfigCheckButton(
             _("Group by directory"), "plugins", "fingerprint_group_by_dir"
@@ -299,7 +298,7 @@ class SearchWindow(Window):
         ccb.connect("toggled", self.__group_toggled)
         self._group_ccb = ccb
 
-        outer_box.prepend(inner_box, True, True, 0)
+        outer_box.prepend(inner_box)
 
         bottom_box = Gtk.Box(spacing=12)
         mode_button = Gtk.ToggleButton(label=_("Album Mode"))
@@ -311,11 +310,11 @@ class SearchWindow(Window):
         )
         mode_button.set_active(True)
         mode_button.connect("toggled", self.__mode_toggle)
-        bottom_box.prepend(mode_button, False, True, 0)
-        bottom_box.prepend(self._group_ccb, False, True, 0)
-        bottom_box.prepend(bbox, True, True, 0)
+        bottom_box.prepend(mode_button)
+        bottom_box.prepend(self._group_ccb)
+        bottom_box.prepend(bbox)
 
-        outer_box.prepend(bottom_box, False, True, 0)
+        outer_box.prepend(bottom_box)
 
         outer_box.show_all()
         self.add(outer_box)
@@ -351,7 +350,7 @@ class SearchWindow(Window):
             row[0].apply_tags(write_mb, write_album)
             # the plugin wrapper will handle the rest
 
-        self.destroy()
+        self.close()
 
     @contextmanager
     def __update_row(self, song):

@@ -57,7 +57,7 @@ class _KeyValueEditor(qltk.Window):
         add.set_sensitive(False)
         t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
-        self.get_child().prepend(t, False, True, 0)
+        self.get_child().prepend(t)
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str, str)
@@ -66,7 +66,6 @@ class _KeyValueEditor(qltk.Window):
         view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
-        view.set_rules_hint(True)
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
         render.set_padding(3, 3)
@@ -75,10 +74,9 @@ class _KeyValueEditor(qltk.Window):
         view.append_column(column)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.get_child().prepend(sw, True, True, 3)
+        self.get_child().prepend(sw)
 
         menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
@@ -90,14 +88,14 @@ class _KeyValueEditor(qltk.Window):
         bbox = Gtk.HButtonBox()
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
-        bbox.prepend(rem_b, True, True, 0)
+        bbox.prepend(rem_b)
         self.use_header_bar()
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
-            bbox.prepend(close, True, True, 0)
+            bbox.prepend(close)
         else:
             bbox.set_layout(Gtk.ButtonBoxStyle.START)
-        self.get_child().prepend(bbox, False, True, 0)
+        self.get_child().prepend(bbox)
 
         selection = view.get_selection()
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
@@ -279,7 +277,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.clear()
 
         render = Gtk.CellRendererPixbuf()
-        self.prepend(render, False)
+        self.pack_start(render, False)
         self.add_attribute(render, "icon-name", 2)
 
         render = Gtk.CellRendererText()
@@ -294,7 +292,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         old_entry = self.get_child()
         new_entry = entry.ValidatingEntry(validator)
         clone_css_classes(old_entry, new_entry)
-        old_entry.destroy()
+        # GTK4: destroy() removed - old_entry cleaned up automatically
         use_mono = config.getboolean("settings", "monospace_query")
         font = "font-family: monospace; " if use_mono else ""
         size = escape(config.gettext("settings", "query_font_size"))

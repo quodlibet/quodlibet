@@ -242,7 +242,6 @@ def Frame(label, child=None):
     label_w.set_markup(util.bold(label))
     align = Align(left=12, top=6)
     frame.add(align)
-    frame.set_shadow_type(Gtk.ShadowType.NONE)
     frame.set_label_widget(label_w)
     if child:
         align.add(child)
@@ -337,15 +336,30 @@ def _Button(type_, label, icon_name, size):
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.Box(spacing=6)
-    image = Gtk.Image.new_from_icon_name(icon_name, size)
-    hbox.prepend(image, True, True, 0)
+    # GTK4: new_from_icon_name only takes icon_name, size is set via property
+    pass
+    if gtk_version >= (4, 0):
+        image = Gtk.Image.new_from_icon_name(icon_name)
+        # GTK4: IconSize enum values map to pixel sizes, but the property expects
+        # Gtk.IconSize enum which was kept for compatibility
+        if size is not None:
+            image.set_icon_size(size)
+    else:
+        image = Gtk.Image.new_from_icon_name(icon_name, size)
+    # GTK4: prepend() only takes widget, no packing args
+    hbox.prepend(image)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
-    hbox.prepend(label, True, True, 0)
+    hbox.prepend(label)
     align.add(hbox)
     align.show_all()
     button = type_()
-    button.add(align)
+    # GTK4: use set_child() instead of add() for single-child containers
+    pass
+    if gtk_version >= (4, 0):
+        button.set_child(align)
+    else:
+        button.add(align)
     return button
 
 
@@ -463,6 +477,7 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
 class Action(Gio.SimpleAction):
     def __init__(self, *args, **kwargs):
         # GTK4: SimpleAction doesn't have label/icon_name properties
+        pass
         # Store them as instance attributes for compatibility
         self.label = kwargs.pop("label", None)
         self.icon_name = kwargs.pop("icon_name", None)
@@ -479,13 +494,20 @@ class ToggleAction(Gio.SimpleAction):
 
 
 class RadioAction(Gio.SimpleAction):
+    """GTK4: RadioAction reimplemented to support 'changed' signal"""
+
+    __gsignals__ = {
+        'changed': (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_PYOBJECT,)),
+    }
+
     def __init__(self, *args, **kwargs):
-        # GTK4: SimpleAction doesn't have label/value properties
         self.label = kwargs.pop("label", None)
         self._value = kwargs.pop("value", 0)
         self._group = []
-        # TODO GTK4: Radio behaviour - needs state and parameter_type
-        super().__init__(*args, **kwargs)
+        self._active = False
+        # Initialize as a SimpleAction
+        name = kwargs.pop("name", None)
+        super().__init__(name=name)
 
     def join_group(self, group_source):
         """GTK4: Stub for RadioAction group compatibility"""
@@ -502,12 +524,24 @@ class RadioAction(Gio.SimpleAction):
 
     def get_current_value(self):
         """GTK4: Return current value"""
+        # Find the active action in the group
+        for action in self.get_group():
+            if action._active:
+                return action._value
         return self._value
 
     def set_active(self, active):
         """GTK4: Set action as active"""
-        # TODO: Implement proper radio behavior
-        pass
+        if active != self._active:
+            self._active = active
+            if active:
+                # Deactivate other actions in the group
+                for action in self.get_group():
+                    if action is not self and action._active:
+                        action._active = False
+                # Emit changed signal on all actions in the group
+                for action in self.get_group():
+                    action.emit("changed", self)
 
 
 class WebImage(Gtk.Image):

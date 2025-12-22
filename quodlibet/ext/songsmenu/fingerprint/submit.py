@@ -46,15 +46,15 @@ class FingerprintDialog(Window):
         self.__label = label = Gtk.Label()
         label.set_markup(util.bold(_("Generating fingerprints:")))
         label.set_alignment(0, 0.5)
-        box.prepend(label, False, True, 0)
+        box.prepend(label)
 
         self.__bar = bar = Gtk.ProgressBar()
         self.__set_fraction(0)
-        box.prepend(bar, False, True, 0)
+        box.prepend(bar)
         self.__label_song = label_song = Gtk.Label()
         label_song.set_alignment(0, 0.5)
         label_song.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        box.prepend(label_song, False, True, 0)
+        box.prepend(label_song)
 
         self.__stats = stats = Gtk.Label()
         stats.set_alignment(0, 0.5)
@@ -69,7 +69,7 @@ class FingerprintDialog(Window):
 
         stats.connect("unmap", expand_cb)
 
-        box.prepend(expand, False, False, 0)
+        box.prepend(expand)
 
         self.__fp_results = {}
         self.__fp_done = 0
@@ -89,11 +89,11 @@ class FingerprintDialog(Window):
         submit.connect("clicked", self.__submit_cb)
         cancel = Button(_("_Cancel"))
         connect_obj(cancel, "clicked", self.__cancel_cb, pool)
-        bbox.prepend(cancel, True, True, 0)
-        bbox.prepend(submit, True, True, 0)
+        bbox.prepend(cancel)
+        bbox.prepend(submit)
 
-        outer_box.prepend(box, True, True, 0)
-        outer_box.prepend(bbox, False, True, 0)
+        outer_box.prepend(box)
+        outer_box.prepend(bbox)
 
         pool.connect("fingerprint-done", self.__fp_done_cb)
         pool.connect("fingerprint-error", self.__fp_error_cb)
@@ -167,7 +167,7 @@ class FingerprintDialog(Window):
         )
 
     def __cancel_cb(self, pool, *args):
-        self.destroy()
+        self.close()
 
         def idle_cancel():
             pool.stop()

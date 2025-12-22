@@ -65,8 +65,8 @@ class MediaServer(EventPlugin):
         conf_lbl.set_alignment(0, 0)
         conf_lbl.set_markup(f"<span font='mono'>{conf_cont}</span>")
 
-        vbox.prepend(exp_lbl, True, False, 0)
-        vbox.prepend(conf_lbl, True, False, 0)
+        vbox.prepend(exp_lbl)
+        vbox.prepend(conf_lbl)
         return vbox
 
     def enabled(self):
@@ -86,10 +86,6 @@ class MediaServer(EventPlugin):
     def disabled(self):
         for obj in self.objects:
             obj.remove_from_connection()
-
-        for obj in self.objects:
-            obj.destroy()
-
         del self.objects
 
         import gc

@@ -61,10 +61,10 @@ class WikiSearch(SongsMenuPlugin):
             True,
             0,
         )
-        hb.prepend(e, False, True, 0)
+        hb.prepend(e)
         hb.prepend(Gtk.Label(label=".wikipedia.org"), False, True, 0)
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vb.prepend(hb, False, False, 0)
+        vb.prepend(hb)
 
         def _open_editor(widget):
             def _editor_closed(widget):
@@ -78,7 +78,7 @@ class WikiSearch(SongsMenuPlugin):
 
         button = Gtk.Button(_("Edit Tags"))
         button.connect("clicked", _open_editor)
-        vb.prepend(button, False, True, 0)
+        vb.prepend(button)
         vb.show_all()
 
         return vb

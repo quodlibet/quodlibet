@@ -94,7 +94,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def _destroy(cls):
         cls.__librarian = None
         cls.filters = {}
-        cls.library.destroy()
         cls.library = None
 
     def __inhibit(self):
@@ -134,10 +133,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self._songs_box = songs_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6
         )
-        songs_box.prepend(self._searchbox, False, True, 0)
+        songs_box.prepend(self._searchbox)
         songs_box.show()
         pane.pack2(songs_box, resize=True, shrink=False)
-        self.prepend(pane, True, True, 0)
+        self.prepend(pane)
         self.show()
 
     def menu(self, songs, library, items):
@@ -153,7 +152,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
-        hbox.prepend(button, True, True, 6)
+        hbox.prepend(button)
         hbox.show_all()
         return hbox
 
@@ -222,19 +221,18 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.login_button = login = Gtk.Button(always_show_image=True)
         self.update_connect_button()
         login.connect("clicked", clicked_login)
-        hbox.prepend(login, True, False, 0)
+        hbox.prepend(login)
         hbox.show_all()
         return hbox
 
     def _create_category_widget(self):
         scrolled_window = ScrolledWindow()
         scrolled_window.show()
-        scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = RCMHintedTreeView()
         view.show()
         view.set_headers_visible(False)
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.add(view)
+        scrolled_window.set_child(view)
         model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
         for _i, (name, data) in enumerate(filters):
@@ -253,7 +251,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         renderpb = Gtk.CellRendererPixbuf()
         renderpb.props.xpad = 6
         renderpb.props.ypad = 6
-        column.prepend(renderpb, False)
+        column.pack_start(renderpb, False)
         column.add_attribute(renderpb, "icon-name", self.ModelIndex.ICON_NAME)
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
