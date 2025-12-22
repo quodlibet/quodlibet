@@ -172,9 +172,9 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                 action=Gtk.FileChooserAction.SELECT_FOLDER,
             )
             dialog.add_buttons(
-                Gtk.STOCK_CANCEL,
+                _("_Cancel"),
                 Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OPEN,
+                _("_Open"),
                 Gtk.ResponseType.OK,
             )
 
