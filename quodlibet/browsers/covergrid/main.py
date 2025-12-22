@@ -531,6 +531,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             # For "All Collections", just remove the filter entirely - much faster!
             self.__model_filter.props.filter = None
         else:
+
             def collection_filter(album):
                 if album is None:
                     return False

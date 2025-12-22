@@ -305,6 +305,7 @@ class CollectionListItem(GObject.Object):
     def set_cover_path(self, path: str):
         """Set the path to the collection cover image"""
         from gi.repository import GdkPixbuf
+
         try:
             self._cover = GdkPixbuf.Pixbuf.new_from_file(path)
             self.notify("cover")
@@ -316,6 +317,7 @@ class CollectionListItem(GObject.Object):
         """Load cover at specified size (compatibility with AlbumWidget)"""
         if self._cover_path:
             from gi.repository import GdkPixbuf
+
             try:
                 self._cover = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._cover_path, size, size
