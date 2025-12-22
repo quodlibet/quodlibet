@@ -334,7 +334,7 @@ class CollectionListItem(GObject.Object):
     @GObject.Property
     def album(self):
         """Compatibility property (collections don't have albums)"""
-        return None
+        return
 
     @GObject.Property
     def cover(self):

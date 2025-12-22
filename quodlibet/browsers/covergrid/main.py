@@ -211,7 +211,11 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     def toggle_item_all(cls):
         show = config.getboolean("browsers", "covergrid_all", True)
         for covergrid in cls.instances():
-            if covergrid._collection_art_enabled and covergrid._view_mode == "collections":
+            collection_mode = (
+                covergrid._collection_art_enabled
+                and covergrid._view_mode == "collections"
+            )
+            if collection_mode:
                 # In collections view, refresh to show/hide "All Collections"
                 covergrid._load_collections_view()
             else:
@@ -242,7 +246,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self._grouping_key = headers[0][0] if headers else "grouping"
 
         # Check if collection art is enabled
-        self._collection_art_enabled = config.getboolean("browsers", "covergrid_collection_art", False)
+        self._collection_art_enabled = config.getboolean(
+            "browsers", "covergrid_collection_art", False
+        )
 
         # Add state tracking for hierarchical navigation
         self._view_mode = "albums"  # Default to albums view
@@ -264,7 +270,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             child_model=model_sort,
         )
 
-        # Add navigation toolbar (always add it, control visibility of individual elements)
+        # Add navigation toolbar (always add it, control element visibility)
         self._nav_box = nav_box = Gtk.HBox(spacing=6)
         nav_box.set_border_width(6)
 
@@ -389,15 +395,14 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         for song in list(library)[:100]:
             dirname = song.get("~dirname", "")
             if dirname:
-                dirname = dirname.replace('/', os.sep)
+                dirname = dirname.replace("/", os.sep)
                 parts = dirname.split(os.sep)
                 if len(parts) >= 2:
                     base = os.sep.join(parts[:-1])
                     dirs[base] = dirs.get(base, 0) + 1
 
         if dirs:
-            detected = max(dirs, key=dirs.get)
-            return detected
+            return max(dirs, key=dirs.get)
         return os.path.expanduser("~/Music")
 
     def _get_collections(self):
@@ -443,7 +448,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         if collection_dir:
             collection_covers_dir = collection_dir
         else:
-            collection_covers_dir = os.path.join(self._music_folder, "Collection_covers")
+            collection_covers_dir = os.path.join(
+                self._music_folder, "Collection_covers"
+            )
 
         # Add "All Collections" item if show_all is enabled
         if config.getboolean("browsers", "covergrid_all", True):
@@ -467,7 +474,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
                 item.notify("label")
             else:
                 # Regular collection
-                cover_path = os.path.join(collection_covers_dir, f"{collection_name}.jpg")
+                cover_path = os.path.join(
+                    collection_covers_dir, f"{collection_name}.jpg"
+                )
                 if os.path.exists(cover_path):
                     item.set_cover_path(cover_path)
 
@@ -527,12 +536,11 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
                         if song.list(self._grouping_key):
                             return False
                     return True
-                else:
-                    # Show albums where at least one song has this collection
-                    for song in album.songs:
-                        if collection_name in song.list(self._grouping_key):
-                            return True
-                    return False
+                # Show albums where at least one song has this collection
+                for song in album.songs:
+                    if collection_name in song.list(self._grouping_key):
+                        return True
+                return False
 
             self.__model_filter.props.filter = collection_filter
 
@@ -561,7 +569,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         """Refresh the view when settings change"""
         # Update collection art setting
         was_enabled = self._collection_art_enabled
-        self._collection_art_enabled = config.getboolean("browsers", "covergrid_collection_art", False)
+        self._collection_art_enabled = config.getboolean(
+            "browsers", "covergrid_collection_art", False
+        )
 
         # Update music folder in case collection dir changed
         self._music_folder = self._detect_music_folder(self.__library)
@@ -726,7 +736,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     def __child_activated(self, view, child):
         # Handle collection navigation
         if self._collection_art_enabled and self._view_mode == "collections":
-            if hasattr(child, '_collection_name'):
+            if hasattr(child, "_collection_name"):
                 self._load_albums_view(child._collection_name)
                 return
 

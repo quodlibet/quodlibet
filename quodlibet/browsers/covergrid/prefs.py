@@ -133,7 +133,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         def on_collection_toggle(widget):
             enabled = widget.get_active()
             collection_dir_box.set_sensitive(enabled)
-            if hasattr(browser, 'refresh_view'):
+            if hasattr(browser, "refresh_view"):
                 browser.refresh_view()
 
         collection_cb.connect("toggled", on_collection_toggle)
@@ -155,7 +155,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         def on_dir_changed(entry):
             new_dir = entry.get_text()
             config.set("browsers", "covergrid_collection_dir", new_dir)
-            if hasattr(browser, 'refresh_view'):
+            if hasattr(browser, "refresh_view"):
                 browser.refresh_view()
 
         self.collection_dir_entry.connect("changed", on_dir_changed)
