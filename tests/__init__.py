@@ -207,8 +207,11 @@ def init_test_environ():
     os.environ["GTK_THEME"] = "Adwaita"
 
     if pyvirtualdisplay is not None:
-        _VDISPLAY = pyvirtualdisplay.Display()
-        _VDISPLAY.start()
+        if shutil.which("Xvfb") is None:
+            _VDISPLAY = None
+        else:
+            _VDISPLAY = pyvirtualdisplay.Display()
+            _VDISPLAY.start()
 
     _BUS_INFO = None
     if os.name != "nt" and sys.platform != "darwin":
