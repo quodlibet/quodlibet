@@ -9,6 +9,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
+
 from gi.repository import Gtk
 
 from quodlibet import config
@@ -61,7 +63,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         super().__init__()
         self.set_border_width(12)
         self.set_title(_("Cover Grid Preferences"))
-        self.set_default_size(420, 380)
+        self.set_default_size(420, 480)
         self.set_transient_for(qltk.get_top_parent(browser))
         # Do this config-driven setup at instance-time
         self._PREVIEW_ITEM["~rating"] = format_rating(0.75)
@@ -116,6 +118,88 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         f = qltk.Frame(_("Options"), child=vbox)
         box.pack_start(f, False, True, 12)
+
+        # Collection Art section
+        collection_vbox = Gtk.VBox(spacing=6)
+
+        # Show Collection Art checkbox
+        collection_cb = ConfigCheckButton(
+            _("Show Collection Art"), "browsers", "covergrid_collection_art"
+        )
+        collection_cb.set_active(
+            config.getboolean("browsers", "covergrid_collection_art", False)
+        )
+
+        def on_collection_toggle(widget):
+            enabled = widget.get_active()
+            collection_dir_box.set_sensitive(enabled)
+            if hasattr(browser, 'refresh_view'):
+                browser.refresh_view()
+
+        collection_cb.connect("toggled", on_collection_toggle)
+        collection_vbox.pack_start(collection_cb, False, True, 0)
+
+        # Collection cover directory
+        collection_dir_label = Gtk.Label(label=_("Collection cover directory:"))
+        collection_dir_label.set_alignment(0, 0.5)
+        collection_vbox.pack_start(collection_dir_label, False, True, 0)
+
+        collection_dir_box = Gtk.HBox(spacing=6)
+        self.collection_dir_entry = Gtk.Entry()
+        current_dir = config.get("browsers", "covergrid_collection_dir", "")
+        self.collection_dir_entry.set_text(current_dir)
+        self.collection_dir_entry.set_tooltip_text(
+            _("Directory containing collection cover images (e.g., 1.jpg, 2.jpg)")
+        )
+
+        def on_dir_changed(entry):
+            new_dir = entry.get_text()
+            config.set("browsers", "covergrid_collection_dir", new_dir)
+            if hasattr(browser, 'refresh_view'):
+                browser.refresh_view()
+
+        self.collection_dir_entry.connect("changed", on_dir_changed)
+        collection_dir_box.pack_start(self.collection_dir_entry, True, True, 0)
+
+        # Browse button
+        browse_button = Button(_("_Browse"), Icons.FOLDER_OPEN)
+
+        def on_browse_clicked(widget):
+            dialog = Gtk.FileChooserDialog(
+                title=_("Select Collection Covers Directory"),
+                parent=self,
+                action=Gtk.FileChooserAction.SELECT_FOLDER,
+            )
+            dialog.add_buttons(
+                Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_OPEN,
+                Gtk.ResponseType.OK,
+            )
+
+            current = self.collection_dir_entry.get_text()
+            if current and os.path.exists(current):
+                dialog.set_current_folder(current)
+
+            response = dialog.run()
+            if response == Gtk.ResponseType.OK:
+                folder = dialog.get_filename()
+                self.collection_dir_entry.set_text(folder)
+
+            dialog.destroy()
+
+        browse_button.connect("clicked", on_browse_clicked)
+        collection_dir_box.pack_start(browse_button, False, True, 0)
+
+        collection_vbox.pack_start(collection_dir_box, False, True, 0)
+
+        # Set initial sensitivity based on checkbox state
+        collection_dir_box.set_sensitive(
+            config.getboolean("browsers", "covergrid_collection_art", False)
+        )
+
+        collection_frame = qltk.Frame(_("Collection Art"), child=collection_vbox)
+        box.pack_start(collection_frame, False, True, 6)
 
         display_frame = self.edit_display_pane(browser, _("Album Display"))
         box.pack_start(display_frame, True, True, 0)
