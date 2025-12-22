@@ -209,7 +209,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                     with open(os.path.join(dir_, filename), encoding="utf-8") as f:
                         print_d(f"Found lyrics file: {filename}")
                         contents = f.read()
-                except FileNotFoundError:
+                except (FileNotFoundError, OSError):
                     continue
                 return self._parse_lrc(contents)
             print_d(f"No lyrics found for {track_name!r}")
