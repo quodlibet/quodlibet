@@ -9,7 +9,7 @@ import os
 import errno
 from urllib.parse import urlsplit
 
-from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango, GLib
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
 
 from quodlibet import formats, print_d, util
@@ -453,7 +453,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         window = self.get_window()
         if window:
             window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-            Gtk.main_iteration_do(False)
+            GLib.MainContext.default().iteration(False)
         try:
             try:
                 if model is None:

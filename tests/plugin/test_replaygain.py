@@ -13,7 +13,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.formats import AudioFile
 
 from tests.plugin import PluginTestCase
-from tests import get_data_path, TestCase
+from tests import get_data_path, TestCase, run_gtk_loop
 
 
 class TReplayGain(PluginTestCase):
@@ -96,7 +96,7 @@ class TReplayGain(PluginTestCase):
             pipeline.start(album)
             start = time.time()
             while not self.analysed and abs(time.time() - start) < self.TIMEOUT:
-                Gtk.main_iteration_do(False)
+                run_gtk_loop()  # was: iteration(False)
             pipeline.quit()
             pipeline.disconnect(sig)
 
@@ -180,7 +180,7 @@ class TRGDialog(TestCase):
     def run_main_loop(self, timeout=0.25):
         start = time.time()
         while abs(time.time() - start) < timeout:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()  # was: iteration(False)
 
     def track_nums_from(self, album):
         return [s.songs[0].song("~#tracknumber") for s in album]

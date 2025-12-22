@@ -11,7 +11,7 @@ import shutil
 import unicodedata
 from pathlib import Path
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GLib
 from senf import fsn2text
 
 from quodlibet import _
@@ -703,8 +703,10 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         """
         Prevent the application from becoming unresponsive.
         """
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)
 
     def _start_preview(self, button):
         """

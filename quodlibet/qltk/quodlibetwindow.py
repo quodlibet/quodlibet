@@ -63,6 +63,7 @@ from quodlibet.util.library import background_filter, scan_library
 from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import CurrentColumn
+from tests import run_gtk_loop
 
 
 class PlayerOptions(GObject.Object):
@@ -1156,8 +1157,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
 
         # Wait for the cursor to update before continuing
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
 
         config.set("memory", "browser", current)
         if self.browser:

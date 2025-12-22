@@ -8,7 +8,7 @@
 import os
 import contextlib
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from senf import fsnative, path2fsn, fsn2bytes, bytes2fsn
 
 from quodlibet import _
@@ -80,8 +80,10 @@ def _run_chooser(parent, chooser):
 
     if _response is not None:
         response = _response
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)
     else:
         response = chooser.run()
 

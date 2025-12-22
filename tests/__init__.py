@@ -311,7 +311,10 @@ def run_gtk_loop():
     """Exhausts the GTK main loop of any events"""
 
     # Import late as various version / init checks fail otherwise
-    from gi.repository import Gtk
+    from gi.repository import GLib
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    # GTK4: events_pending() and main_iteration() removed
+    # Use GLib.MainContext to process pending events
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)

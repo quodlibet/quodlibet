@@ -9,7 +9,7 @@
 import math
 import time
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import _
 from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
@@ -108,8 +108,10 @@ class WaitLoadBase:
             values.setdefault("remaining", format_time_display(remaining))
         self._label.set_markup(self._text % values)
 
-        while not self.quit and (self.paused or Gtk.events_pending()):
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+        context = GLib.MainContext.default()
+        while not self.quit and (self.paused or context.pending()):
+            context.iteration(False)
         return self.quit
 
 
@@ -167,8 +169,10 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
         self.get_child().show_all()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)
 
     def __update_visible(self, parent, event):
         if event.state == Gdk.VisibilityState.FULLY_OBSCURED:
