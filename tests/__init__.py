@@ -215,8 +215,10 @@ def init_test_environ():
 
     _BUS_INFO = None
     if os.name != "nt" and sys.platform != "darwin":
-        _BUS_INFO = dbus_launch_user()
-        os.environ.update(_BUS_INFO)
+        # Only launch a new dbus-daemon if there isn't one already
+        if "DBUS_SESSION_BUS_ADDRESS" not in os.environ:
+            _BUS_INFO = dbus_launch_user()
+            os.environ.update(_BUS_INFO)
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
