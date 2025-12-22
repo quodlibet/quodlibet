@@ -269,6 +269,37 @@ def _init_gtk():
     if not hasattr(Gtk.Widget, "set_no_show_all"):
         Gtk.Widget.set_no_show_all = lambda self, value: None
 
+    # GTK4 compatibility: Add Gtk.AttachOptions for Table compatibility
+    # (Gtk.Table removed in GTK4, but plugins still use it)
+    if not hasattr(Gtk, "AttachOptions"):
+        from enum import IntFlag
+
+        class AttachOptions(IntFlag):
+            EXPAND = 1 << 0
+            SHRINK = 1 << 1
+            FILL = 1 << 2
+
+        Gtk.AttachOptions = AttachOptions
+
+    # GTK4 compatibility: Window type hints removed
+    if not hasattr(Gtk.Window, "set_type_hint"):
+        Gtk.Window.set_type_hint = lambda self, hint: None
+        Gtk.Window.get_type_hint = lambda self: None
+
+    # GTK4 compatibility: Gdk.WindowTypeHint removed
+    from gi.repository import Gdk
+
+    if not hasattr(Gdk, "WindowTypeHint"):
+        from enum import IntEnum
+
+        class WindowTypeHint(IntEnum):
+            NORMAL = 0
+            DIALOG = 1
+            MENU = 2
+            TOOLBAR = 3
+
+        Gdk.WindowTypeHint = WindowTypeHint
+
     # TODO: include our own icon theme directory
     # theme = Gtk.IconTheme.get_default()
     # theme_search_path = get_image_dir()

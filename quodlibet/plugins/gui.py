@@ -54,7 +54,7 @@ class UserInterfacePluginHandler(PluginHandler):
         self.__plugins.pop(plugin.cls)
 
 
-class MenuItemPlugin(Gtk.Widget):
+class MenuItemPlugin(Gtk.Button):
     """
     A base plugin that appears in a menu, typically.
 
@@ -75,7 +75,9 @@ class MenuItemPlugin(Gtk.Widget):
 
     def __init__(self):
         label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
-        super().__init__(label=label)
+        # GTK4: Use Button with label, not Widget
+        super().__init__(label=label, use_underline=True)
+        self.add_css_class("flat")  # Menu-like appearance
         self.__set_icon()
         self.__initialized = True
 
@@ -87,9 +89,17 @@ class MenuItemPlugin(Gtk.Widget):
         """Sets the GTK icon for this plugin item"""
         icon = getattr(self, "PLUGIN_ICON", Icons.SYSTEM_RUN)
 
-        image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.NORMAL)
-        self.set_always_show_image(True)
-        self.set_image(image)
+        # GTK4: Buttons use set_child() with a Box containing icon+label
+        image = Gtk.Image.new_from_icon_name(icon)
+        label_text = self.get_label()
+        if label_text:
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+            box.append(image)
+            label = Gtk.Label(label=label_text, use_underline=True)
+            box.append(label)
+            self.set_child(box)
+        else:
+            self.set_child(image)
 
     @property
     def initialized(self):

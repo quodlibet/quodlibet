@@ -251,8 +251,8 @@ def Frame(label, child=None):
     return frame
 
 
-class Align(Gtk.Widget):
-    """TODO: With gtk3.12+ we could replace this with a Gtk.Bin + margin properties"""
+class Align(Gtk.Box):
+    """GTK4: Replaced Gtk.Alignment with Box + margin/align properties"""
 
     def __init__(
         self,
@@ -265,51 +265,42 @@ class Align(Gtk.Widget):
         halign=Gtk.Align.FILL,
         valign=Gtk.Align.FILL,
     ):
-        def align_to_xy(a):
-            """(xyalign, xyscale)"""
+        super().__init__()
 
-            if a == Gtk.Align.FILL:
-                return 0.0, 1.0
-            if a == Gtk.Align.START:
-                return 0.0, 0.0
-            if a == Gtk.Align.END:
-                return 1.0, 0.0
-            if a == Gtk.Align.CENTER:
-                return 0.5, 0.0
-            return 0.5, 1.0
+        # Set alignment and margins
+        self.set_halign(halign)
+        self.set_valign(valign)
+        self.set_margin_top(border + top)
+        self.set_margin_bottom(border + bottom)
+        self.set_margin_start(border + left)
+        self.set_margin_end(border + right)
 
-        xalign, xscale = align_to_xy(halign)
-        yalign, yscale = align_to_xy(valign)
-        bottom_padding = border + bottom
-        top_padding = border + top
-        left_padding = border + left
-        right_padding = border + right
-
-        super().__init__(
-            xalign=xalign,
-            xscale=xscale,
-            yalign=yalign,
-            yscale=yscale,
-            bottom_padding=bottom_padding,
-            top_padding=top_padding,
-            left_padding=left_padding,
-            right_padding=right_padding,
-        )
+        # Store for compatibility methods
+        self._margins = {
+            "top": border + top,
+            "bottom": border + bottom,
+            "left": border + left,
+            "right": border + right,
+        }
 
         if child is not None:
-            self.add(child)
+            self.append(child)
 
     def get_margin_top(self):
-        return self.props.top_padding
+        return self._margins["top"]
 
     def get_margin_bottom(self):
-        return self.props.bottom_padding
+        return self._margins["bottom"]
 
     def get_margin_left(self):
-        return self.props.left_padding
+        return self._margins["left"]
 
     def get_margin_right(self):
-        return self.props.right_padding
+        return self._margins["right"]
+
+    def add(self, child):
+        """GTK4 compatibility: add() → append()"""
+        self.append(child)
 
 
 def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
