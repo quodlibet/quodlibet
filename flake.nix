@@ -85,7 +85,7 @@
                 glibcLocales
                 gobject-introspection
                 gtk4
-                  gtksourceview5
+                gtksourceview5
                 kakasi
                 keybinder3
                 libappindicator

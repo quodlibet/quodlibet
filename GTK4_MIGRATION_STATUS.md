@@ -1,4 +1,5 @@
-# GTK4 Migration Status
+GTK4 Migration Status
+=====================
 
 **Branch**: `gtk4`
 **Last Updated**: 2025-12-21
@@ -8,7 +9,8 @@
 
 ---
 
-## Quick Summary
+Quick Summary
+-------------
 
 The GTK4 migration is approximately **60% complete**. Core infrastructure changes are done, but several subsystems need work:
 - ✅ Event handling and time management
@@ -23,7 +25,8 @@ The GTK4 migration is approximately **60% complete**. Core infrastructure change
 
 ---
 
-## Completed Work ✅
+Completed Work ✅
+-----------------
 
 ### 1. Core Event Handling
 **File**: `quodlibet/_init.py`
@@ -486,7 +489,8 @@ menu_box.append(mode_item)
 
 ---
 
-## Testing Checklist
+Testing Checklist
+-----------------
 
 ### Automated Tests
 - [x] Python syntax validation (`python -m py_compile`)
@@ -535,7 +539,8 @@ Once blocking issues are fixed:
 
 ---
 
-## Migration Resources
+Migration Resources
+-------------------
 
 ### GTK4 Documentation
 - [Official GTK4 Migration Guide](https://docs.gtk.org/gtk4/migrating-3to4.html)
@@ -561,7 +566,8 @@ grep -r "\.add_action_with_accel\|Gtk\.UIManager\|Gtk\.Action\b" quodlibet/
 
 ---
 
-## Statistics
+Statistics
+----------
 
 ### Files Modified
 - **Direct changes**: 15 files
@@ -583,7 +589,8 @@ grep -r "\.add_action_with_accel\|Gtk\.UIManager\|Gtk\.Action\b" quodlibet/
 
 ---
 
-## Quick Reference: Common Conversions
+Quick Reference: Common Conversions
+-----------------------------------
 
 ### Widget Methods
 | GTK3 | GTK4 | Notes |
@@ -622,7 +629,8 @@ grep -r "\.add_action_with_accel\|Gtk\.UIManager\|Gtk\.Action\b" quodlibet/
 
 ---
 
-## Next Actions (Prioritized)
+Next Actions (Prioritised)
+--------------------------
 
 ### Immediate (To get application running)
 1. **Fix RadioAction signal** → Implement "activate" or stateful action
@@ -663,3 +671,48 @@ For questions about this migration:
 ---
 
 **Remember to delete this file before merging to main!** 🗑️
+
+---
+
+Pytest Results (2025-12-21)
+---------------------------
+
+### Test Run Summary
+- **Command**: `nix develop --command poetry run pytest`
+- **Status**: Tests are running but hitting GTK4 compatibility issues
+
+### Fixed During Test Run
+1. ✅ **Gtk.AttachOptions** - Added compatibility enum (used by Gtk.Table in plugins)
+2. ✅ **MenuItemPlugin base class** - Changed from Gtk.Widget to Gtk.Button
+3. ✅ **MenuItemPlugin icon handling** - Updated to use set_child() with Box
+4. ✅ **Window.set_type_hint()** - Added compatibility shim
+5. ✅ **Gdk.WindowTypeHint** - Added compatibility enum
+6. ✅ **Align widget** - Migrated from custom Gtk.Widget to Gtk.Box with margins
+
+### Remaining Test Failures
+- **configure-event signal**: GTK4 removed this signal (replaced with size-change monitoring)
+- Additional event system changes needed throughout
+
+### Files Modified in This Session
+- `quodlibet/_init.py` - Added multiple compatibility shims
+- `quodlibet/plugins/gui.py` - Fixed MenuItemPlugin for GTK4
+- `quodlibet/qltk/x.py` - Fixed Align widget implementation
+
+### Compatibility Shims Added
+```python
+# In quodlibet/_init.py:
+Gtk.Widget.show_all = lambda self: None
+Gtk.Widget.hide_all = lambda self: self.set_visible(False)
+Gtk.Widget.set_no_show_all = lambda self, value: None
+Gtk.AttachOptions = IntFlag with EXPAND/SHRINK/FILL
+Gtk.Window.set_type_hint = lambda self, hint: None
+Gtk.Window.get_type_hint = lambda self: None
+Gdk.WindowTypeHint = IntEnum with NORMAL/DIALOG/MENU/TOOLBAR
+```
+
+### Test Progress
+- **Plugin tests collected**: 231 tests
+- **First test attempted**: test_albumart.py::TAlbumArt::testAlbumArtWindow
+- **Status**: Progressing through GTK4 compatibility layers
+
+The test suite is a valuable tool for finding remaining GTK4 incompatibilities!
