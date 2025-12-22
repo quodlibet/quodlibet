@@ -242,8 +242,12 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         # Get grouping key from Album Collection preferences
-        headers = get_headers()
-        self._grouping_key = headers[0][0] if headers else "grouping"
+        try:
+            headers = get_headers()
+            self._grouping_key = headers[0][0] if headers else "album_grouping_key"
+        except Exception:
+            # Fallback if collection headers aren't configured
+            self._grouping_key = "album_grouping_key"
 
         # Check if collection art is enabled
         self._collection_art_enabled = config.getboolean(
@@ -284,7 +288,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         nav_box.pack_start(self._back_button, False, False, 0)
 
         self._breadcrumb = Gtk.Label()
-        self._breadcrumb.set_alignment(0, 0.5)
+        self._breadcrumb.set_halign(Gtk.Align.START)
+        self._breadcrumb.set_valign(Gtk.Align.CENTER)
         nav_box.pack_start(self._breadcrumb, True, True, 0)
 
         # Always add nav_box, but control what's visible in it

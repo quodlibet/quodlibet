@@ -141,7 +141,8 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         # Collection cover directory
         collection_dir_label = Gtk.Label(label=_("Collection cover directory:"))
-        collection_dir_label.set_alignment(0, 0.5)
+        collection_dir_label.set_halign(Gtk.Align.START)
+        collection_dir_label.set_valign(Gtk.Align.CENTER)
         collection_vbox.pack_start(collection_dir_label, False, True, 0)
 
         collection_dir_box = Gtk.HBox(spacing=6)
