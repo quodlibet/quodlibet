@@ -133,8 +133,6 @@ class QueueExpander(Gtk.Expander):
 
         outer.prepend(left)
 
-        # self.set_label_fill(True)
-
         clear_item = SmallImageButton(
             image=SymbolicIconImage(Icons.USER_TRASH, Gtk.IconSize.NORMAL),
             tooltip_text=_("Clear Queue"),
@@ -179,9 +177,7 @@ class QueueExpander(Gtk.Expander):
         )
 
         mode_item = MenuItem(_("Mode"), Icons.SYSTEM_RUN)
-        # GTK4: ModelButton doesn't support submenus directly
-        # For now, skip submenu functionality - needs proper Gio.Menu implementation
-        # mode_item.set_submenu(mode_menu)
+        # GTK4: TODO - Implement submenu using Gio.Menu
         menu_box.append(mode_item)
 
         rand_checkbox = ConfigCheckMenuItem(
@@ -220,17 +216,7 @@ class QueueExpander(Gtk.Expander):
         self.connect("notify::expanded", self.__expand, button)
         self.connect("notify::expanded", self.__expand, button)
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
-        # GTK4 removed Gtk.TargetEntry, Gtk.TargetFlags, and drag_dest_set
-        # Need to use Gtk.DropTarget with GdkContentFormats
-        # targets = [
-        #     ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-        #     ("text/uri-list", 0, DND_URI_LIST),
-        # ]
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # self.connect("drag-motion", self.__motion)
-        # self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget with GdkContentFormats
 
         self.queue.model.connect_after(
             "row-inserted", DeferredSignal(self.__check_expand), count_label
@@ -266,13 +252,6 @@ class QueueExpander(Gtk.Expander):
 
         self.set_expanded(config.getboolean("memory", "queue_expanded"))
         self.notify("expanded")
-
-        # GTK4: get_children() removed, use get_first_child() / get_next_sibling()
-        # But show_all() is now a no-op, so this is not needed
-        # child = self.get_first_child()
-        # while child:
-        #     child.show_all()
-        #     child = child.get_next_sibling()
 
     @property
     def model(self):

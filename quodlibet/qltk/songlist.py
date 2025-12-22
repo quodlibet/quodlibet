@@ -203,8 +203,7 @@ class SongListDnDMixin(GObject.GObject):
         drop_controller.connect("accept", self.__drag_motion)
         drag_controller.connect("drag-end", self.__drag_leave)
         drag_controller.connect("prepare", self.__drag_data_get)
-        # TODO GTK4: https://docs.gtk.org/gdk4/method.Drop.read_async.html
-        # drop_controller.connect("drag-data-received", self.__drag_data_received, library)
+        # TODO GTK4: Implement drop handling - see https://docs.gtk.org/gdk4/method.Drop.read_async.html
 
     def __drag_begin(self, *args):
         ok, state = Gtk.get_current_event_state()
@@ -215,34 +214,12 @@ class SongListDnDMixin(GObject.GObject):
 
     def enable_drop(self, by_row=True):
         # TODO GTK4: DnD support
-        # targets = [
-        #     ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-        #     ("text/uri-list", 0, DND_URI_LIST),
-        # ]
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # self.drag_source_set(
-        #     Gdk.ModifierType.BUTTON1_MASK,
-        #     targets,
-        #     Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
-        # )
-        # self.drag_dest_set(
-        #     Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
-        # )
         self.__drop_by_row = by_row
         self.__force_copy = False
 
     def disable_drop(self):
-        # TODO GTK4: ???
+        # TODO GTK4: DnD support
         return
-        # targets = [
-        #     ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-        #     ("text/uri-list", 0, DND_URI_LIST),
-        # ]
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # self.drag_source_set(
-        #     Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        # )
-        # self.drag_dest_unset()
 
     def __drag_motion(self, view, ctx, x, y, time):
         if self.__drop_by_row:

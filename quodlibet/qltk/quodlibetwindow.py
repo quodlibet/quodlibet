@@ -582,10 +582,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         key_controller = Gtk.EventControllerKey()
         self.songlist.add_controller(key_controller)
         key_controller.connect("key-pressed", self.__songlist_key_press)
-        # TODO GTK4: Migrate to new DnD
-        # self.songlist.connect_after(
-        #     "drag-data-received", self.__songlist_drag_data_recv
-        # )
+        # TODO GTK4: Migrate songlist drag-data-received to new DnD API
         self.song_scroller = ScrolledWindow()
         self.song_scroller.set_policy(
             Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
@@ -706,11 +703,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         lib = library.librarian
         connect_destroy(lib, "changed", self.__song_changed, player)
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
-        # targets = [("text/uri-list", Gtk.TargetFlags.OTHER_APP, DND_URI_LIST)]
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement window drag-and-drop using Gtk.DropTarget
 
         if not headless:
             on_first_map(self, self.__configure_scan_dirs, library)
