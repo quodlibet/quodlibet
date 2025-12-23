@@ -33,7 +33,7 @@ def MenuItems(marks, player, seekable):
             i.remove(i.get_child())
         connect_obj(i, "activate", player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
-        hbox = Gtk.HBox(spacing=12)
+        hbox = Gtk.Box(spacing=12)
         i.add(hbox)
         if time < 0:
             l = Gtk.Label(label=_("N/A"))
@@ -41,18 +41,18 @@ def MenuItems(marks, player, seekable):
             l = Gtk.Label(label=util.format_time(time))
         l.set_alignment(0.0, 0.5)
         sizes.add_widget(l)
-        hbox.pack_start(l, False, True, 0)
+        hbox.prepend(l)
         text = Gtk.Label(mark)
         text.set_max_width_chars(80)
         text.set_ellipsize(Pango.EllipsizeMode.END)
         text.set_alignment(0.0, 0.5)
-        hbox.pack_start(text, True, True, 0)
+        hbox.prepend(text)
         i.show_all()
         items.append(i)
     return items
 
 
-class EditBookmarksPane(Gtk.VBox):
+class EditBookmarksPane(Gtk.Box):
     song: AudioFile | None
 
     def __init__(
@@ -62,7 +62,7 @@ class EditBookmarksPane(Gtk.VBox):
         close: bool = False,
         song: AudioFile | None = None,
     ):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.title = _("Bookmarks")
 
         self.model = model = Gtk.ListStore(int, str)
@@ -83,7 +83,6 @@ class EditBookmarksPane(Gtk.VBox):
         self.pack_start(hb, False, True, 0)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(RCMHintedTreeView(model=model))
         add_css(sw, "* { padding: 12px } ")
@@ -115,13 +114,13 @@ class EditBookmarksPane(Gtk.VBox):
         hbox = Gtk.HButtonBox()
         self.remove = remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
-        hbox.pack_start(remove, True, True, 0)
+        hbox.prepend(remove)
         if close:
             self.close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
-            hbox.pack_start(self.close, True, True, 0)
+            hbox.prepend(self.close)
         else:
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
-        self.pack_start(hbox, False, True, 0)
+        self.prepend(hbox)
 
         connect_obj(add, "clicked", self.__add, model, time, name)
 
@@ -142,7 +141,7 @@ class EditBookmarksPane(Gtk.VBox):
         connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
         name.set_placeholder_text(_("Bookmark Name"))
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("activate", self.__remove, selection, library)
         keyval, mod = Gtk.accelerator_parse("Delete")
@@ -183,7 +182,7 @@ class EditBookmarksPane(Gtk.VBox):
             remove.activate()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __edit_name(self, render, path, new, model):
         if new:

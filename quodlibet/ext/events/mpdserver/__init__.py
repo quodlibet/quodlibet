@@ -115,7 +115,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         port_revert = Gtk.Button()
         port_revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
 
         def port_revert_cb(button, entry):
@@ -164,7 +164,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         label.connect("destroy", lambda *x: cancel.cancel())
         call_async(fetch_local_ip, cancel, label.set_label)
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         clients = Gtk.Label()
         clients.set_padding(6, 6)
@@ -176,8 +176,8 @@ gateshipone.malp">M.A.L.P.</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
-        box.pack_start(qltk.Frame(_("Connection"), child=table), False, True, 0)
-        box.pack_start(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
+        box.prepend(qltk.Frame(_("Connection"), child=table), False, True, 0)
+        box.prepend(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
         return box
 
     def _refresh(self):

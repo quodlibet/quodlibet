@@ -5,14 +5,14 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 try:
     import dbus
 except ImportError:
     dbus = None
 
-from tests import skipUnless
+from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet import config
@@ -48,7 +48,7 @@ class TMediaServer(PluginTestCase):
 
     def _wait(self):
         while not self._replies:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()  # was: iteration(False)
         return self._replies.pop(0)
 
     def _entry_props_iface(self):

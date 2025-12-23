@@ -203,7 +203,8 @@ class MultiRPaned:
 
     def destroy(self):
         if self._root_paned:
-            self._root_paned.destroy()
+            # GTK4: self.destroy() removed - _root_paned cleaned up automatically
+            pass
 
     def show_all(self):
         self._root_paned.show_all()

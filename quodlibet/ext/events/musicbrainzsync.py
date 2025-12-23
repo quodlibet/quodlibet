@@ -70,7 +70,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
                     plugin_config.get("username"), plugin_config.get("password")
                 )
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # first frame
         table = Gtk.Table(n_rows=5, n_columns=2)
@@ -113,6 +113,6 @@ class MusicBrainzSyncPlugin(EventPlugin):
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
-        box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
+        box.prepend(qltk.Frame(_("Account"), child=table), True, True, 0)
 
         return box

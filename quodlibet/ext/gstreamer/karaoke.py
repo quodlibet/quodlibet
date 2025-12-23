@@ -36,13 +36,13 @@ def set_cfg(option, value):
         config.set("plugins", cfg_option, value)
 
 
-class Preferences(Gtk.VBox):
+class Preferences(Gtk.Box):
     __gsignals__: GSignals = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         table = Gtk.Table(n_rows=3, n_columns=2)
         table.set_col_spacings(6)
@@ -103,7 +103,7 @@ class Preferences(Gtk.VBox):
         scales["band"].connect("format-value", format_hertz)
         scales["width"].connect("format-value", format_hertz)
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        self.prepend(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
 
 class Karaoke(GStreamerPlugin):

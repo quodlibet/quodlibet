@@ -28,7 +28,7 @@ class Bookmarks(SongsMenuPlugin):
 
     def __init__(self, songs, *args, **kwargs):
         super().__init__(songs, *args, **kwargs)
-        self.__menu = Gtk.Menu()
+        self.__menu = Gtk.PopoverMenu()
         self.__create_children(self.__menu, songs)
         self.set_submenu(self.__menu)
 
@@ -51,7 +51,7 @@ class Bookmarks(SongsMenuPlugin):
                 fake_player = self.FakePlayer(song)
 
                 song_item = Gtk.MenuItem(song.comma("title"))
-                song_menu = Gtk.Menu()
+                song_menu = Gtk.PopoverMenu()
                 song_item.set_submenu(song_menu)
                 menu.append(song_item)
 

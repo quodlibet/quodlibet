@@ -23,7 +23,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.util import GSignals
 
 
-class IndicatorMenu(Gtk.Menu):
+class IndicatorMenu(Gtk.PopoverMenu):
     __gsignals__: GSignals = {
         "action-item-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
@@ -91,7 +91,7 @@ class IndicatorMenu(Gtk.Menu):
         player_options.notify("stop-after")
 
         browse = qltk.MenuItem(_("Open _Browser"), Icons.EDIT_FIND)
-        browse_sub = Gtk.Menu()
+        browse_sub = Gtk.PopoverMenu()
 
         for browser_cls in browsers.browsers:
             i = Gtk.MenuItem(label=browser_cls.accelerated_name, use_underline=True)
@@ -195,7 +195,7 @@ class IndicatorMenu(Gtk.Menu):
         submenu = self._playlists_item.get_submenu()
         pl_lib = self._app.library and self._app.library.playlists
         if submenu:
-            submenu.destroy()
+            submenu.close()
         playlist_menu = PlaylistMenu([song], pl_lib)
         self._playlists_item.set_submenu(playlist_menu)
         self._playlists_item.set_sensitive(bool(song) and song.can_add)

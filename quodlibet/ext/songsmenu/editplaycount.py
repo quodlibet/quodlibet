@@ -119,5 +119,5 @@ class EditPlaycount(SongsMenuPlugin):
                 if song.get("~#skipcount", 0) == 0:
                     song.pop("~#skipcount", None)
 
-        dlg.destroy()
+        dlg.close()
         return

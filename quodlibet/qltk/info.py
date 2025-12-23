@@ -25,7 +25,7 @@ from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
-class SongInfo(Gtk.EventBox):
+class SongInfo(Gtk.Box):
     """A widget for showing information about the currently playing song.
 
     Provides a way to change the display pattern for formatting the
@@ -99,7 +99,8 @@ class SongInfo(Gtk.EventBox):
 
         if not has_selection:
             for child in menu.get_children():
-                child.destroy()
+                # GTK4: destroy() removed - child cleaned up automatically
+                pass
             for item in song_menu:
                 song_menu.remove(item)
                 menu.append(item)

@@ -18,7 +18,7 @@ class _TagsCombo:
     def _fill_model(self, can_change):
         self.clear()
         render = Gtk.CellRendererText()
-        self.pack_start(render, True)
+        self.prepend(render, True)
         self.add_attribute(render, "text", 1)
 
         if can_change is None:

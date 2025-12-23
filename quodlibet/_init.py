@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler, print_d
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
+from ._main import get_base_dir, is_release, get_cache_dir
 
 
 _cli_initialized = False
@@ -240,15 +240,15 @@ def _init_gtk():
 
     try:
         # not sure if this is available under Windows
-        gi.require_version("GdkX11", "3.0")
+        gi.require_version("GdkX11", "4.0")
         from gi.repository import GdkX11
 
         GdkX11  # noqa
     except (ValueError, ImportError):
         pass
 
-    gi.require_version("Gtk", "3.0")
-    gi.require_version("Gdk", "3.0")
+    gi.require_version("Gtk", "4.0")
+    gi.require_version("Gdk", "4.0")
     gi.require_version("Pango", "1.0")
     gi.require_version("Soup", "3.0")
     gi.require_version("PangoCairo", "1.0")
@@ -256,16 +256,55 @@ def _init_gtk():
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # PyGObject doesn't fail anymore when init fails, so do it ourselves
-    initialized, sys.argv[:] = Gtk.init_check(sys.argv)
+    # PyGObject doesn't fail any more when init fails, so do it ourselves
+    initialized = Gtk.init_check()
     if not initialized:
         raise SystemExit("Gtk.init failed")
 
-    # include our own icon theme directory
-    theme = Gtk.IconTheme.get_default()
-    theme_search_path = get_image_dir()
-    assert os.path.exists(theme_search_path)
-    theme.append_search_path(theme_search_path)
+    # GTK4 compatibility: Add show_all/hide_all/set_no_show_all as no-ops
+    if not hasattr(Gtk.Widget, "show_all"):
+        Gtk.Widget.show_all = lambda self: None
+    if not hasattr(Gtk.Widget, "hide_all"):
+        Gtk.Widget.hide_all = lambda self: self.set_visible(False)
+    if not hasattr(Gtk.Widget, "set_no_show_all"):
+        Gtk.Widget.set_no_show_all = lambda self, value: None
+
+    # GTK4 compatibility: Add Gtk.AttachOptions for Table compatibility
+    # (Gtk.Table removed in GTK4, but plugins still use it)
+    if not hasattr(Gtk, "AttachOptions"):
+        from enum import IntFlag
+
+        class AttachOptions(IntFlag):
+            EXPAND = 1 << 0
+            SHRINK = 1 << 1
+            FILL = 1 << 2
+
+        Gtk.AttachOptions = AttachOptions
+
+    # GTK4 compatibility: Window type hints removed
+    if not hasattr(Gtk.Window, "set_type_hint"):
+        Gtk.Window.set_type_hint = lambda self, hint: None
+        Gtk.Window.get_type_hint = lambda self: None
+
+    # GTK4 compatibility: Gdk.WindowTypeHint removed
+    from gi.repository import Gdk
+
+    if not hasattr(Gdk, "WindowTypeHint"):
+        from enum import IntEnum
+
+        class WindowTypeHint(IntEnum):
+            NORMAL = 0
+            DIALOG = 1
+            MENU = 2
+            TOOLBAR = 3
+
+        Gdk.WindowTypeHint = WindowTypeHint
+
+    # TODO: include our own icon theme directory
+    # theme = Gtk.IconTheme.get_default()
+    # theme_search_path = get_image_dir()
+    # assert os.path.exists(theme_search_path)
+    # theme.append_search_path(theme_search_path)
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
@@ -283,8 +322,8 @@ def _init_gtk():
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        settings.set_property("gtk-button-images", True)
-        settings.set_property("gtk-menu-images", True)
+        # settings.set_property("gtk-button-images", True)
+        # settings.set_property("gtk-menu-images", True)
     if hasattr(settings.props, "gtk_primary_button_warps_slider"):
         # https://bugzilla.gnome.org/show_bug.cgi?id=737843
         settings.set_property("gtk-primary-button-warps-slider", True)

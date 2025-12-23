@@ -465,7 +465,6 @@ class CloseButton(Gtk.Button):
             visible=False,
             can_focus=True,
             image=image,
-            relief=Gtk.ReliefStyle.NONE,
             valign=Gtk.Align.CENTER,
         )
 
@@ -539,12 +538,10 @@ class InternetRadio(Browser, util.InstanceTracker):
     def _destroy(cls):
         if cls.__stations.dirty:
             cls.__stations.save()
-        cls.__stations.destroy()
         cls.__stations = None
 
         if cls.__fav_stations.dirty:
             cls.__fav_stations.save()
-        cls.__fav_stations.destroy()
         cls.__fav_stations = None
 
         cls.__librarian = None
@@ -595,12 +592,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         # treeview
         scrolled_window = ScrolledWindow()
         scrolled_window.show()
-        scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.show()
         view.set_headers_visible(False)
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.add(view)
+        scrolled_window.set_child(view)
         model = Gtk.ListStore(int, str, str, str)
 
         model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all", _("All Stations")])
@@ -637,7 +633,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         view.append_column(column)
-        column.pack_start(render, True)
+        column.prepend(render, True)
         column.add_attribute(render, "text", self.NAME)
 
         view.set_model(model)
@@ -649,8 +645,8 @@ class InternetRadio(Browser, util.InstanceTracker):
             selection, "changed", util.DeferredSignal(lambda x: self.activate())
         )
 
-        box = Gtk.HBox(spacing=6)
-        box.pack_start(search, True, True, 0)
+        box = Gtk.Box(spacing=6)
+        box.prepend(search)
         self._searchbox = Align(box, left=0, right=6, top=0)
         self._searchbox.show_all()
 
@@ -664,8 +660,8 @@ class InternetRadio(Browser, util.InstanceTracker):
             self.qbar.show()
 
         pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
-        vb = Gtk.VBox(spacing=0)
-        vb.pack_start(scrolled_window, True, True, 0)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        vb.prepend(scrolled_window)
         fb = Gtk.FlowBox()
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
@@ -675,19 +671,20 @@ class InternetRadio(Browser, util.InstanceTracker):
         self._update_button.connect("clicked", self.__update)
         fb.insert(new_station, 1)
         fb.insert(self._update_button, 2)
-        vb.pack_end(Align(fb, left=3), False, False, 3)
+        vb.append(Align(fb, left=3), False, False, 3)
         pane.pack1(vb, resize=False, shrink=False)
         pane.show_all()
 
-        songbox = Gtk.VBox(spacing=6)
-        songbox.pack_start(self._searchbox, False, True, 0)
-        self._songpane_container = Gtk.VBox()
-        self._songpane_container.show()
-        songbox.pack_start(self._songpane_container, True, True, 0)
-        songbox.pack_start(self.qbar, False, True, 0)
-        songbox.show()
+        songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        songbox.prepend(self._searchbox)
+        self._songpane_container = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
+        songbox.prepend(self._songpane_container)
+        songbox.prepend(self.qbar)
+        songbox.show_all()
         pane.pack2(songbox, resize=True, shrink=False)
-        self.pack_start(pane, True, True, 0)
+        self.prepend(pane)
         self.show()
 
     @property
@@ -695,7 +692,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         return bool(len(self.__stations or []) + len(self.__fav_stations or []))
 
     def pack(self, songpane):
-        container = Gtk.VBox()
+        container = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         container.add(self)
         self._songpane_container.add(songpane)
         return container

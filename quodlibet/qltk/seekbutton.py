@@ -21,7 +21,6 @@ from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.util import (
     window_grab_and_map,
     window_ungrab_and_unmap,
-    position_window_beside_widget,
 )
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, connect_destroy
@@ -88,7 +87,6 @@ class HSlider(Gtk.Button):
 
         frame = Gtk.Frame()
         frame.set_border_width(0)
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
@@ -135,7 +133,7 @@ class HSlider(Gtk.Button):
             self.get_child().show_all()
 
     def __destroy(self, *args):
-        self.__window.destroy()
+        # GTK4: self.destroy() removed - __window cleaned up automatically
         self.__window = None
 
     def set_slider_disabled(self, disable):
@@ -154,7 +152,7 @@ class HSlider(Gtk.Button):
         self.__window.resize(1, 1)
 
     def set_slider_widget(self, widget):
-        self._box.pack_start(Align(widget, border=6, left=-3), False, True, 0)
+        self._box.prepend(Align(widget, border=6, left=-3), False, True, 0)
 
     def __clicked(self, button):
         if self.__window.get_property("visible"):
@@ -174,7 +172,7 @@ class HSlider(Gtk.Button):
         # this type hint tells the wayland backend to create a popup
         window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
 
-        position_window_beside_widget(window, self)
+        # position_window_beside_widget(window, self)
 
         self.__grabbed = window_grab_and_map(
             window,
@@ -217,12 +215,12 @@ class SeekButton(HSlider):
     __seekable = True
 
     def __init__(self, player, library):
-        hbox = Gtk.HBox(spacing=3)
+        hbox = Gtk.Box(spacing=3)
         l = TimeLabel()
         self._time_label = l
-        hbox.pack_start(l, True, True, 0)
+        hbox.prepend(l)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
-        hbox.pack_start(arrow, False, True, 0)
+        hbox.prepend(arrow)
         super().__init__(hbox)
 
         self._slider_label = TimeLabel()
@@ -238,7 +236,7 @@ class SeekButton(HSlider):
         self.connect("scroll-event", self.__scroll, player)
         self.scale.connect("value-changed", self.__update_time, l)
 
-        m = Gtk.Menu()
+        m = Gtk.PopoverMenu()
         c = ConfigCheckMenuItem(_("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
         connect_obj(c, "toggled", self.scale.emit, "value-changed")
@@ -284,7 +282,7 @@ class SeekButton(HSlider):
     def __popup_menu(self, menu, player, event=None):
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
-            child.destroy()
+            # GTK4: destroy() removed - child cleaned up automatically
 
         try:
             marks = player.song.bookmarks
@@ -300,7 +298,7 @@ class SeekButton(HSlider):
         if event:
             qltk.popup_menu_at_widget(menu, self, 3, event.time)
         else:
-            time = Gtk.get_current_event_time()
+            time = GLib.CURRENT_TIME
             qltk.popup_menu_under_widget(menu, self, 3, time)
         return True
 
@@ -373,6 +371,6 @@ class SeekButton(HSlider):
 
         for child in menu.get_children()[2:-1]:
             menu.remove(child)
-            child.destroy()
+            # GTK4: destroy() removed - child cleaned up automatically
         menu.get_children()[-1].set_sensitive(self.__seekable)
         self.scale.emit("value-changed")

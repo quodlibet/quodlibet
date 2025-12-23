@@ -436,7 +436,7 @@ class TPlaylistsBrowser(TestCase):
 
     @staticmethod
     def _fake_browser_pack(b):
-        app.window.get_child().pack_start(b, True, True, 0)
+        app.window.get_child().prepend(b, True, True, 0)
 
     class MockConfirmerAccepting:
         RESPONSE_INVOKE = Gtk.ResponseType.YES
