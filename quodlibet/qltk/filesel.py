@@ -168,7 +168,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-4.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
