@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-12-01 00:00+0000\n"
+"PO-Revision-Date: 2025-12-15 08:00+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -6662,15 +6662,16 @@ msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
 msgstr ""
+"Разрешить только эти имена файлов. Несколько файлов разделяются запятыми. "
+"Поддерживаются подстановочные знаки."
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "Предпочитаемые фиксированные имена файлов и_зображений"
+msgstr "Ограничить имена файлов изображений"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "Ограничить обложки альбомов указанными именами файлов."
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
@@ -8221,9 +8222,8 @@ msgstr ""
 "MIDI."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "Редактор тегов"
+msgstr "Интерфейс редактора тегов"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8238,14 +8238,12 @@ msgstr ""
 "тегов метаданных."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "Список альбомов"
+msgstr "Вид списком альбомов"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
-msgstr "Список треков"
+msgstr "Список дорожек"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "
