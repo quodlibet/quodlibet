@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-12-10 22:09+0000\n"
+"PO-Revision-Date: 2025-12-21 22:07+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -8076,7 +8076,7 @@ msgid ""
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
-"Ex Falso は、Quod Libet と同じタグ編集インターフェイスを備えたタグエディタで"
+"Ex Falso は、Quod Libet と同じタグ編集インターフェースを備えたタグエディタで"
 "す。対応している全てのファイル形式について、任意のタグを表示および編集できま"
 "す。"
 
@@ -8090,9 +8090,8 @@ msgstr ""
 "IT、Musepack、Wavpack、MPEG-4 AAC、Monkeys Audio、WMA、SPC、MIDI です。"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "タグの編集"
+msgstr "タグ編集インターフェース"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8107,12 +8106,10 @@ msgstr ""
 "す。"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "アルバムリスト"
+msgstr "アルバムリストビュー"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
 msgstr "トラックリスト"
 
