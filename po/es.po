@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-12-12 17:00+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"PO-Revision-Date: 2025-12-29 20:00+0000\n"
+"Last-Translator: Juan M Sevilla <jumase@disroot.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
 "Language: es\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -611,13 +611,13 @@ msgid "Columnar"
 msgstr "En columnas"
 
 #: quodlibet/browsers/paned/prefs.py:108
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Patrón de etiqueta con marcado opcional, por ejemplo <tt>compositor</tt> o\n"
-"%s"
+"Patrón de etiqueta con marcado opcional, por ejemplo, %(short)s o\n"
+"%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
 msgid "Paned Browser Preferences"
@@ -1189,15 +1189,15 @@ msgid "Error details:"
 msgstr "Detalles del error:"
 
 #: quodlibet/errorreport/ui.py:84
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Various details regarding the error and your system will be send to a third "
 "party online service (<a href='{sentry_url}'>www.sentry.io</a>). You can "
 "review the data before sending it below."
 msgstr ""
 "Se enviarán determinados detalles acerca del error y de su sistema a un "
-"servicio de terceros (<a href='https://www.sentry.io'>www.sentry.io</a>). A "
-"continuación podrá revisar los datos antes de que se envíen."
+"servicio de terceros (<a href='{sentry_url}'>www.sentry.io</a>). Podrá "
+"revisar los datos antes de que se envíen."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1680,9 +1680,8 @@ msgstr ""
 "momento."
 
 #: quodlibet/ext/events/discord_status.py:202
-#, fuzzy
 msgid "(Paused)"
-msgstr "En pausa"
+msgstr "(En pausa)"
 
 #: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
@@ -2038,16 +2037,16 @@ msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr "Integración de escritorio Linux (MPRIS D-BUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"{mpris_url}\">MPRIS 2</a> "
 "D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Permite controlar Quod Libet utilizando la especificación de interfaz D-Bus "
-"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Esto "
-"permite varias integraciones en el escritorio Linux (por ejemplo: teclas "
-"multimedia)."
+"⏯️ Permite controlar Quod Libet utilizando la especificación de interfaz D-"
+"Bus <a href=\"{mpris_url}\">MPRIS 2</a>.\n"
+"Esto permite varias integraciones en el escritorio Linux (por ejemplo: "
+"teclas multimedia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -3274,24 +3273,20 @@ msgstr ""
 "actual."
 
 #: quodlibet/ext/events/waveformseekbar.py:735
-#, fuzzy
 msgid "Foreground color"
-msgstr "Anular el color en primer plano:"
+msgstr "Color del primer plano"
 
 #: quodlibet/ext/events/waveformseekbar.py:738
-#, fuzzy
 msgid "Hover color"
-msgstr "Anular el color al pasar el ratón:"
+msgstr "Color al pasar el ratón"
 
 #: quodlibet/ext/events/waveformseekbar.py:741
-#, fuzzy
 msgid "Remaining color"
-msgstr "Anula los colores restantes:"
+msgstr "Color restante"
 
 #: quodlibet/ext/events/waveformseekbar.py:745
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "Mostrar posición actual"
+msgstr "Mostrar posición actual al pasar el ratón"
 
 #: quodlibet/ext/events/waveformseekbar.py:754
 msgid "Show time labels"
@@ -3299,11 +3294,11 @@ msgstr "Mostrar etiquetas de tiempo"
 
 #: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
-msgstr ""
+msgstr "Cantidad a avanzar al deslizar (milisegundos):"
 
 #: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "Altura de la forma de onda (pixeles):"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Picture Saver"
@@ -3357,9 +3352,8 @@ msgid "_Preset:"
 msgstr "_Preselección:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
-#, fuzzy
 msgid "Filter preset"
-msgstr "Filtrar por _artista"
+msgstr "Preselección del filtro"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "_Frequency cut:"
@@ -3367,16 +3361,15 @@ msgstr "Corte de _frecuencia:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Low-pass filter cut frequency"
-msgstr ""
+msgstr "Frecuencia de corte del filtro pasabajos"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:22
 msgid "Feed _level:"
-msgstr ""
+msgstr "_Nivel de alimentación:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:22
-#, fuzzy
 msgid "Feed level"
-msgstr "Nivel de feed"
+msgstr "Nivel de alimentación"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:28
 msgid "Default"
@@ -3392,7 +3385,7 @@ msgstr "Chu Moy"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:33
 msgid "Close to Chu Moy's crossfeeder (popular)"
-msgstr ""
+msgstr "Similar al alimentador cruzado Chu Moy (popular)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:36
 msgid "Jan Meier"
@@ -3400,7 +3393,7 @@ msgstr "Jan Meier"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:37
 msgid "Close to Jan Meier's CORDA amplifiers (little change)"
-msgstr ""
+msgstr "Similar a los amplificadores CORDA de Jan Meier's (poco cambio)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:41
 msgid "Custom"
@@ -3412,7 +3405,7 @@ msgstr "Configuración personalizada"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:172
 msgid "Crossfeed"
-msgstr ""
+msgstr "Alimentación cruzada"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:174
 msgid ""
