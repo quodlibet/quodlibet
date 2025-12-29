@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-08 00:04+0000\n"
+"PO-Revision-Date: 2025-12-27 10:00+0000\n"
 "Last-Translator: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/et/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1662,9 +1662,8 @@ msgstr ""
 "Muuda Discordis oma olekuteadet vastavalt sellele, mida sa hetkel kuulad."
 
 #: quodlibet/ext/events/discord_status.py:202
-#, fuzzy
 msgid "(Paused)"
-msgstr "Peatatud"
+msgstr "(Peatatud)"
 
 #: quodlibet/ext/events/discord_status.py:309
 msgid "Status Line #1"
@@ -2038,63 +2037,63 @@ msgstr "Sulgemisel peida põhiaken"
 #: quodlibet/ext/events/mqtt.py:58
 #, python-format
 msgid "Accepts QL Patterns e.g. %s"
-msgstr ""
+msgstr "Kasutab QL-mustreid nt: %s"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "MQTT Publisher"
-msgstr ""
+msgstr "MQTT Avaldaja"
 
 #: quodlibet/ext/events/mqtt.py:64
 msgid "Publishes status messages to an MQTT topic."
-msgstr ""
+msgstr "Avaldab olekuteateid MQTT teemas."
 
 #: quodlibet/ext/events/mqtt.py:143
 msgid "Broker hostname / IP"
-msgstr ""
+msgstr "Vahendaja hostinimi või IP-aadress"
 
 #: quodlibet/ext/events/mqtt.py:143
 msgid "Defaults to localhost"
-msgstr ""
+msgstr "Vaikimisi localhost"
 
 #: quodlibet/ext/events/mqtt.py:144
 msgid "Broker port"
-msgstr ""
+msgstr "Vahendaja port"
 
 #: quodlibet/ext/events/mqtt.py:144
 msgid "Defaults to 1883"
-msgstr ""
+msgstr "Vaikimisi 1883"
 
 #: quodlibet/ext/events/mqtt.py:145
 msgid "Broker username"
-msgstr ""
+msgstr "Vahendaja kasutajanimi"
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Broker password"
-msgstr ""
+msgstr "Vahendaja salasõna"
 
 #: quodlibet/ext/events/mqtt.py:147
 msgid "Topic"
-msgstr ""
+msgstr "Teema"
 
 #: quodlibet/ext/events/mqtt.py:149
 msgid "Playing Pattern"
-msgstr ""
+msgstr "Esituse muster"
 
 #: quodlibet/ext/events/mqtt.py:151
 msgid "Status text when a song is started."
-msgstr ""
+msgstr "Olekuteade, kui loo esitamine algab."
 
 #: quodlibet/ext/events/mqtt.py:154
 msgid "Paused Pattern"
-msgstr ""
+msgstr "Peatamise muster"
 
 #: quodlibet/ext/events/mqtt.py:156
 msgid "Text when a song is paused."
-msgstr ""
+msgstr "Olekuteade, kui loo esitamine on peatunud."
 
 #: quodlibet/ext/events/mqtt.py:159
 msgid "No-song Text"
-msgstr ""
+msgstr "Teade, kui lugu pole esitamisel"
 
 #: quodlibet/ext/events/mqtt.py:161
 msgid "Plain text for when there is no current song"
@@ -2111,12 +2110,12 @@ msgstr "Olekutekst"
 #: quodlibet/ext/events/mqtt.py:213
 #, python-format
 msgid "Connected to broker at %(host)s:%(port)d"
-msgstr ""
+msgstr "Ühendatud vahendajaga %(host)s:%(port)d"
 
 #: quodlibet/ext/events/mqtt.py:219
 #, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
-msgstr ""
+msgstr "Ühendamine ei õnnestunud: %(host)s:%(port)d (%(msg)s)"
 
 #: quodlibet/ext/events/mqtt.py:222
 msgid "Connection error"
@@ -2222,6 +2221,8 @@ msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Kasutab teabitusi lugude järjehoidjate ja koomentaaride kuvamiseks "
+"reaalajas. Toimib hästi Soundcloudi brauseriga."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2546,7 +2547,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:52
 msgid "Pending copy"
-msgstr ""
+msgstr "Kopeerimine on ootel"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending delete"
@@ -2558,39 +2559,39 @@ msgstr "kustuta"
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
-msgstr ""
+msgstr "Jäta vahele"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "DUPLICATE"
-msgstr ""
+msgstr "TOPELTPALA"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "Synchronizing"
-msgstr ""
+msgstr "Sünkroonin"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
 msgid "Deleting"
-msgstr ""
+msgstr "Kustutan"
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
-msgstr ""
+msgstr "Tehtud"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "FAILURE"
-msgstr ""
+msgstr "MIDAGI LÄKS VALESTI"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "Skipped existing file"
-msgstr ""
+msgstr "Jätsin olemasoleva faili vahele"
 
 #: quodlibet/ext/events/synchronize_to_device.py:80
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "Pala failinime määramine ei õnnestu."
 
 #: quodlibet/ext/events/synchronize_to_device.py:86
 msgid "Synchronize to Device"
-msgstr ""
+msgstr "Sünkrooni seadmesse"
 
 #: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
@@ -2740,15 +2741,15 @@ msgstr[1] ""
 #, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "jära vahele {count} topeltfail"
+msgstr[1] "jära vahele {count} topeltfaili"
 
 #: quodlibet/ext/events/synchronize_to_device.py:838
 #, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "eemalda {count} fail"
+msgstr[1] "eemalda {count} faili"
 
 #: quodlibet/ext/events/synchronize_to_device.py:890
 msgid "No destination path provided"
@@ -2949,7 +2950,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:137
 msgid "Playing:"
-msgstr ""
+msgstr "Esitamisel:"
 
 #: quodlibet/ext/events/telepathy_status.py:139
 #, python-format
@@ -2958,7 +2959,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:152
 msgid "Paused:"
-msgstr ""
+msgstr "Peatatud:"
 
 #: quodlibet/ext/events/telepathy_status.py:154
 #, python-format
@@ -2971,12 +2972,12 @@ msgstr "Vormindamata tekst oleku jaoks, kui hetkel esitatavat lugu pole"
 
 #: quodlibet/ext/events/telepathy_status.py:168
 msgid "No song:"
-msgstr ""
+msgstr "Lugu pole:"
 
 #. Frame
 #: quodlibet/ext/events/telepathy_status.py:175
 msgid "Status Patterns"
-msgstr ""
+msgstr "Olekumustrid"
 
 #: quodlibet/ext/events/themeswitcher.py:25
 msgid "Theme Switcher"
@@ -2984,7 +2985,7 @@ msgstr "Kujunduste vahetaja"
 
 #: quodlibet/ext/events/themeswitcher.py:26
 msgid "Changes the active GTK+ theme."
-msgstr "Muudab hetkel vahetatavat GTK+ kujundust."
+msgstr "Muudab hetkel kasutatavat GTK+ kujundust."
 
 #: quodlibet/ext/events/themeswitcher.py:48
 msgid "_Theme:"
@@ -3118,7 +3119,7 @@ msgstr "Kohtspikrite näitamine"
 
 #: quodlibet/ext/events/viewlyrics.py:29
 msgid "View Lyrics"
-msgstr ""
+msgstr "Näita laulusõnu"
 
 #: quodlibet/ext/events/viewlyrics.py:30
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
@@ -3927,7 +3928,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
 msgid "Go to Bookmark"
-msgstr "Siirdi järjehoidja juurde"
+msgstr "Siirdu järjehoidja juurde"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
@@ -5489,11 +5490,11 @@ msgstr "Ma tean, mida ma teen!"
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:28
 msgid "Beginning"
-msgstr ""
+msgstr "Algus"
 
 #: quodlibet/qltk/bookmarks.py:39 quodlibet/qltk/bookmarks.py:95
 msgid "N/A"
-msgstr ""
+msgstr "-"
 
 #: quodlibet/qltk/bookmarks.py:66 quodlibet/qltk/bookmarks.py:253
 msgid "Bookmarks"
@@ -5513,7 +5514,7 @@ msgstr "MM:SS"
 
 #: quodlibet/qltk/bookmarks.py:179
 msgid "Select a single track to edit its bookmarks"
-msgstr ""
+msgstr "Loo järjehoidjate muutmiseks vali üks lugu"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -6463,9 +6464,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "Eel_istatud staatilised failinimed"
+msgstr "Piira piltide failinimesid"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
@@ -7985,9 +7985,8 @@ msgstr ""
 "MIDI."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "Siltide muutmine"
+msgstr "Siltide muutmise kasutajaliides"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8002,12 +8001,10 @@ msgstr ""
 "otsingulahendus ja metainfo siltide muutmise võimalus."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "Albumite loend"
+msgstr "Albumi loendivaade"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
 msgstr "Palade loend"
 
