@@ -51,7 +51,7 @@ class FilterMenu:
         self._player = player
         self._standalone = not ui
 
-        ag = Gio.SimpleActionGroup("QuodLibetFilterActions")
+        ag = Gio.SimpleActionGroup()
         for name, icon_name, label, cb in [
             ("Filters", "", _("_Filters"), None),
             (
@@ -98,7 +98,8 @@ class FilterMenu:
                 icon_name=Icons.DIALOG_QUESTION,
             )
             act.connect("activate", self.__random, tag_)
-            ag.add_action_with_accel(act, "<Primary>" + accel)
+            ag.add_action(act)
+            # TODO: Set accelerator via application.set_accels_for_action()
 
         if self._standalone:
             ui = Gtk.UIManager()

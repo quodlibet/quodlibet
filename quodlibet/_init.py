@@ -272,8 +272,27 @@ def _init_gtk():
         # GTK4: Widgets no longer have destroy(), they're auto-destroyed
         Gtk.Widget.destroy = lambda self: None
     if not hasattr(Gtk.Widget, "get_toplevel"):
-        # GTK4: get_toplevel() replaced with get_root()
         Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
+
+    # GTK4: Button.add() → Button.set_child()
+    if not hasattr(Gtk.Button, "add"):
+        Gtk.Button.add = lambda self, child: self.set_child(child)
+
+    if not hasattr(Gtk.Window, "add_accel_group"):
+        Gtk.Window.add_accel_group = lambda self, group: None
+
+    # GTK4: accelerator_parse now returns (success, keyval, modifiers)
+    _original_accelerator_parse = Gtk.accelerator_parse
+
+    def _accelerator_parse_compat(accelerator):
+        result = _original_accelerator_parse(accelerator)
+        if len(result) == 3:
+            # GTK4: returns (success, keyval, modifiers)
+            success, keyval, modifiers = result
+            return (keyval, modifiers) if success else (0, 0)
+        return result  # GTK3: returns (keyval, modifiers)
+
+    Gtk.accelerator_parse = _accelerator_parse_compat
 
     # GTK4 compatibility: Add Gtk.AttachOptions for Table compatibility
     # (Gtk.Table removed in GTK4, but plugins still use it)
@@ -315,6 +334,112 @@ def _init_gtk():
             POPUP = 1
 
         Gtk.WindowType = WindowType
+
+    # GTK4: UIManager removed - stub for now, needs proper Gio.Menu migration
+    if not hasattr(Gtk, "UIManager"):
+        from gi.repository import GObject
+
+        class UIManager(GObject.Object):
+            def __init__(self):
+                GObject.Object.__init__(self)
+                self._action_groups = []
+                self._ui_string = ""
+                self._widgets = {}
+
+            def insert_action_group(self, group, pos):
+                self._action_groups.append(group)
+
+            def add_ui_from_string(self, ui_string):
+                self._ui_string = ui_string
+
+            def get_widget(self, path):
+                if path not in self._widgets:
+                    widget = Gtk.Box()
+                    widget.get_children = lambda: []
+                    self._widgets[path] = widget
+                return self._widgets[path]
+
+            def get_accel_group(self):
+                # Return dummy accel group
+                if not hasattr(self, '_accel_group'):
+                    class DummyAccelGroup(GObject.Object):
+                        def connect(self, *args, **kwargs):
+                            pass
+                    self._accel_group = DummyAccelGroup()
+                return self._accel_group
+
+        Gtk.UIManager = UIManager
+
+    # GTK4: ImageMenuItem removed - dummy for isinstance checks
+    class ImageMenuItem:
+        pass
+
+    Gtk.ImageMenuItem = ImageMenuItem
+
+    # GTK4: AccelMap removed
+    class AccelMap:
+        @staticmethod
+        def load(filename):
+            pass
+
+        @staticmethod
+        def save(filename):
+            pass
+
+    Gtk.AccelMap = AccelMap
+
+    # GTK4: IconSize enum changed
+    if not hasattr(Gtk.IconSize, "LARGE_TOOLBAR"):
+        Gtk.IconSize.LARGE_TOOLBAR = Gtk.IconSize.LARGE
+        Gtk.IconSize.SMALL_TOOLBAR = Gtk.IconSize.NORMAL
+        Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
+        Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
+
+    # GTK4: Table removed - wrap Grid to provide Table API
+    class Table(Gtk.Grid):
+        def __init__(self, rows=1, columns=1, homogeneous=False, n_rows=None, n_columns=None):
+            super().__init__()
+            self._rows = n_rows if n_rows is not None else rows
+            self._columns = n_columns if n_columns is not None else columns
+            self.set_row_homogeneous(homogeneous)
+            self.set_column_homogeneous(homogeneous)
+
+        @property
+        def props(self):
+            class Props:
+                def __init__(self, parent):
+                    self._parent = parent
+
+                @property
+                def n_rows(self):
+                    return self._parent._rows
+
+                @property
+                def n_columns(self):
+                    return self._parent._columns
+
+            if not hasattr(self, "_props"):
+                self._props = Props(self)
+            return self._props
+
+        def attach(self, child, left, right, top, bottom, xoptions=0, yoptions=0, xpadding=0, ypadding=0):
+            child.set_margin_start(xpadding)
+            child.set_margin_end(xpadding)
+            child.set_margin_top(ypadding)
+            child.set_margin_bottom(ypadding)
+
+            width = right - left
+            height = bottom - top
+
+            super().attach(child, left, top, width, height)
+
+        def set_row_spacings(self, spacing):
+            self.set_row_spacing(spacing)
+
+        def set_col_spacings(self, spacing):
+            self.set_column_spacing(spacing)
+
+    Gtk.Table = Table
 
     # TODO: include our own icon theme directory
     # theme = Gtk.IconTheme.get_default()

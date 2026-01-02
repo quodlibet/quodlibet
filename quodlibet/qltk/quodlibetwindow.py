@@ -279,14 +279,12 @@ class MainSongList(SongList):
             player.paused = False
 
 
-class TopBar(Gtk.Widget):
+class TopBar(Gtk.Box):
     def __init__(self, parent, player, library):
-        super().__init__()
-        # TODO GTK4: add 'toolbar' style class
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+        self.add_css_class("toolbar")
 
         # play controls
-        control_item = Gtk.Widget()
-        self.insert(control_item, 0)
         t = PlayControls(player, library.librarian)
         self.volume = t.volume
 
@@ -296,16 +294,17 @@ class TopBar(Gtk.Widget):
             player.volume = config.getfloat("memory", "volume")
 
         connect_destroy(player, "notify::volume", self._on_volume_changed)
-        control_item.add(t)
+        self.append(t)
 
-        self.insert(Gtk.Box(), 1)
+        spacer = Gtk.Box()
+        self.append(spacer)
 
         info_item = Gtk.Box()
-        self.insert(info_item, 2)
-        info_item.set_expand(True)
+        info_item.set_hexpand(True)
+        self.append(info_item)
 
         box = Gtk.Box(spacing=6)
-        info_item.add(box)
+        info_item.append(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
         self._pattern_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
