@@ -211,8 +211,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                         contents = f.read()
                 except FileNotFoundError:
                     continue
-                except OSError:
-                    print_w(f"Invalid character: {filename}")
+                except OSError as e:
+                    print_w(f"Failed to write file {filename!r} (e!r)")
                     continue
                 return self._parse_lrc(contents)
             print_d(f"No lyrics found for {track_name!r}")
