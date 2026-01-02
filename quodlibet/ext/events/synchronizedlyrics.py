@@ -20,7 +20,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_w
 
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
@@ -210,6 +210,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                         print_d(f"Found lyrics file: {filename}")
                         contents = f.read()
                 except FileNotFoundError:
+                    continue
+                except OSError as e:
+                    print_w(f"Failed to write file {filename!r} ({e!r})")
                     continue
                 return self._parse_lrc(contents)
             print_d(f"No lyrics found for {track_name!r}")
