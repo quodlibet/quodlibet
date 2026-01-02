@@ -1,4 +1,4 @@
-# Copyright 2022 Nick Boultbee
+# Copyright 2022-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,8 +53,10 @@ class DownloadProgress(GObject.Object):
     def frac(self):
         return (len(self.successful) + len(self.failed)) / len(self.songs)
 
-    def _downloaded(self, msg: Soup.Message, result: Any, data: tuple) -> None:
-        path, song = data
+    def _downloaded(
+        self, msg: Soup.Message, result: Any, context: tuple[Path, AudioFile]
+    ) -> None:
+        path, song = context
         try:
             headers = msg.get_property("response-headers")
 
@@ -107,13 +109,18 @@ class DownloadProgress(GObject.Object):
 
     def download_songs(self, path: Path):
         for s in self.songs:
-            msg = Soup.Message.new("GET", s("~uri"))
+            uri = s("~uri")
+            if urlparse(uri).scheme not in ("http", "https"):
+                print_w(f"Skipping non-HTTP URI {uri} for {s('~filename')}")
+                self.failure(s)
+                continue
+            msg = Soup.Message.new("GET", uri)
             http.download(
                 msg,
                 cancellable=None,
                 callback=self._downloaded,
                 failure_callback=self._failed,
-                data=(path, s),
+                context=(path, s),
             )
             yield
         while self.frac < 1 and self.task:

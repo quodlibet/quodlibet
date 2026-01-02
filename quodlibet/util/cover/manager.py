@@ -10,7 +10,7 @@ from itertools import chain
 from typing import IO
 from collections.abc import Iterable
 
-from gi.repository import GObject, GdkPixbuf
+from gi.repository import GObject, GdkPixbuf, Soup
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
@@ -38,11 +38,11 @@ class CoverPluginHandler(PluginHandler):
 
     def plugin_enable(self, plugin):
         self.providers.add(plugin)
-        print_d(f"Registered {plugin.cls.__name__} cover source")
+        print_d("Registered cover source", context=plugin.cls.__name__)
 
     def plugin_disable(self, plugin):
         self.providers.remove(plugin)
-        print_d(f"Unregistered {plugin.cls.__name__} cover source")
+        print_d("Unregistered cover source", context=plugin.cls.__name__)
 
     @property
     def sources(self):
@@ -102,16 +102,17 @@ class CoverManager(GObject.Object):
         sources = self.sources
 
         def success(source, result):
-            name = source.__class__.__name__
-            print_d(f"Successfully got cover from {name}")
+            name = type(source).__name__
+            print_d("Successfully got cover", context=name)
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
                 callback(True, result)
 
-        def failure(source, msg):
-            name = source.__class__.__name__
-            print_d(f"Didn't get cover from {name}: {msg}")
+        def failure(source: GObject, msg: Soup.Message, log: bool = True) -> None:
+            name = type(source).__name__
+            if log:
+                print_d(f"Didn't get cover: {msg}", context=name)
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
@@ -125,9 +126,9 @@ class CoverManager(GObject.Object):
 
             cover = provider.cover
             if cover:
-                name = provider.__class__.__name__
+                name = type(provider).__name__
                 key = song.key if song else None
-                print_d(f"Found local cover via {name} for {key}")
+                print_d(f"Found local cover for {key}", context=name)
                 callback(True, cover)
             else:
                 provider.connect("fetch-success", success)
@@ -266,10 +267,11 @@ class CoverManager(GObject.Object):
                 self.emit("covers-found", provider, covers)
             provider.disconnect_by_func(search_complete)
 
-        def failure(provider, result):
+        def failure(provider: CoverManager, message: str, log: bool = True):
             finished(provider, False)
             name = provider.__class__.__name__
-            print_d(f"Failed to get cover from {name!r} ({result})")
+            if log:
+                print_d(f"Failed to get cover ({message})", context=name)
             provider.disconnect_by_func(failure)
 
         def song_groups(songs, sources):

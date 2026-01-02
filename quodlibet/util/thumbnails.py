@@ -145,7 +145,7 @@ def get_thumbnail(path: fsnative, boundary, ignore_temp=True) -> GdkPixbuf:
         pb = new_from_file_at_size(str(thumb_path), width, height)
     except GLib.GError:
         # in case it fails to load, we recreate it
-        print_w(f"Couldn't find thumbnail at {str(thumb_path)!r}, so recreating.")
+        print_d(f"Couldn't find thumbnail at {str(thumb_path)!r}, so recreating.")
     else:
         meta_mtime = pb.get_option("tEXt::Thumb::MTime")
         if meta_mtime is not None:

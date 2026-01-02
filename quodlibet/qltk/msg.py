@@ -32,11 +32,8 @@ class Message(Gtk.MessageDialog, Dialog):
         escape_desc: bool = True,
     ):
         parent = get_top_parent(parent)
-        markup = (
-            f"<span weight='bold' size='larger'>{escape(title)}</span>\n\n"
-            + escape(description)
-            if escape_desc
-            else description
+        markup = f"<span weight='bold' size='larger'>{escape(title)}</span>\n\n" + (
+            escape(description) if escape_desc else description
         )
         super().__init__(
             transient_for=parent,

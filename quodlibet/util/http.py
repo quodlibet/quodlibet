@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#        2016-22 Nick Boultbee
+#        2016-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import json
+from json import JSONDecodeError
 from typing import Any
 from collections.abc import Callable
 
@@ -19,6 +20,8 @@ from quodlibet.util import print_d, print_w
 PARAM_READWRITECONSTRUCT = (
     ParamFlags.CONSTRUCT_ONLY | ParamFlags.READABLE | ParamFlags.WRITABLE
 )
+
+JsonDict = dict[str, Any]
 
 
 class HTTPRequest(GObject.Object):
@@ -44,7 +47,7 @@ class HTTPRequest(GObject.Object):
     istream = GObject.Property(type=Gio.InputStream, default=None)
     ostream = GObject.Property(type=Gio.OutputStream, default=None)
 
-    def __init__(self, message, cancellable):
+    def __init__(self, message: Soup.Message | None, cancellable: Gio.Cancellable):
         if message is None:
             raise ValueError("Message may not be None")
 
@@ -62,12 +65,12 @@ class HTTPRequest(GObject.Object):
 
     def send(self):
         """
-        Send the request and receive HTTP headers. Some of the body might
-        get downloaded too.
+        Send the request and receive HTTP headers.
+        Some of the body might get downloaded too.
         """
         session.send_async(self.message, 1, self.cancellable, self._sent, None)
 
-    def _sent(self, session, task, data):
+    def _sent(self, session: Soup.Session, task, data):
         m = self.message
         try:
             status = int(m.get_property("status-code"))
@@ -159,16 +162,16 @@ FailureCallback = Callable[[HTTPRequest, Exception, Any], None]
 def download(
     message: Soup.Message,
     cancellable: Gio.Cancellable,
-    callback: Callable,
-    data: Any,
+    callback: Callable[[Soup.Message, bytes | JsonDict | None, Any], None],
+    context: Any,
     try_decode: bool = False,
     failure_callback: FailureCallback | None = None,
 ):
-    def received(request, ostream):
+    def received(request: HTTPRequest, ostream):
         ostream.close(None)
         bs = ostream.steal_as_bytes().get_data()
         if not try_decode:
-            callback(message, bs, data)
+            callback(message, bs, context)
             return
         # Otherwise try to decode data
         code = int(message.get_property("status-code"))
@@ -178,31 +181,31 @@ def download(
         ctype = message.get_property("response-headers").get_content_type()
         encoding = ctype[1].get("charset", "utf-8")
         try:
-            callback(message, bs.decode(encoding), data)
+            callback(message, bs.decode(encoding), context)
         except UnicodeDecodeError:
-            callback(message, bs, data)
+            callback(message, bs, context)
 
     request = HTTPRequest(message, cancellable)
     request.provide_target(Gio.MemoryOutputStream.new_resizable())
     request.connect("received", received)
     request.connect("sent", lambda r, m: r.receive())
     if failure_callback:
-        request.connect("send-failure", failure_callback, data)
+        request.connect("send-failure", failure_callback, context)
     request.send()
 
 
 def download_json(
     message: Soup.Message,
     cancellable: Gio.Cancellable,
-    callback: Callable,
-    data: Any,
+    callback: Callable[[Soup.Message, JsonDict | None, Any], None],
+    context: Any,
     failure_callback: FailureCallback | None = None,
 ):
-    def cb(message, result, d):
+    def cb(message: Soup.Message, result: Any, _d):
         try:
-            callback(message, json.loads(result), data)
-        except ValueError:
-            callback(message, None, data)
+            callback(message, json.loads(result), context)
+        except (ValueError, JSONDecodeError):
+            callback(message, None, context)
 
     download(message, cancellable, cb, None, True, failure_callback=failure_callback)
 

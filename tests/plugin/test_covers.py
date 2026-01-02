@@ -78,7 +78,7 @@ def test_live_cover_download(plugin_class_name):
     def search_complete(source, data, results):
         results.covers = data
 
-    def good(source, data, results):
+    def on_success(source, data, results):
         results.success = True
         header = data.read(4)
         data.close()
@@ -86,10 +86,12 @@ def test_live_cover_download(plugin_class_name):
             header.startswith(f) for f in FORMAT_HEADERS
         ), f"Unknown format: {header}"
 
-    def bad(source, error, results):
+    def on_failure(source, error, log):
         # For debugging
         results.covers = error
         results.success = False
+        assert source == plugin_class_name
+        assert isinstance(log, bool)
 
     plugin_cls = plugins[plugin_class_name].cls
     song = A_SONG
@@ -98,8 +100,8 @@ def test_live_cover_download(plugin_class_name):
     plugin: ApiCoverSourcePlugin = plugin_cls(song)
 
     sig = plugin.connect("search-complete", search_complete, results)
-    sig2 = plugin.connect("fetch-success", good, results)
-    sig3 = plugin.connect("fetch-failure", bad, results)
+    sig2 = plugin.connect("fetch-success", on_success, results)
+    sig3 = plugin.connect("fetch-failure", on_failure, results)
     try:
         start = time()
         if "musicbrainz" in plugin_class_name:
@@ -119,6 +121,46 @@ def test_live_cover_download(plugin_class_name):
         if "album" in first:
             # Only lastfm populates this currently
             assert first["album"] == AN_ALBUM, f"Downloaded wrong cover: {covers}"
+    finally:
+        plugin.disconnect(sig)
+        plugin.disconnect(sig2)
+        plugin.disconnect(sig3)
+
+
+@pytest.mark.network
+@pytest.mark.parametrize(
+    "plugin_class_name", ["lastfm-cover", "discogs-cover", "musicbrainz-cover"]
+)
+def test_live_cover_failure(plugin_class_name):
+    # Just in case overhanging events
+    run_gtk_loop()
+
+    def search_complete(source, data):
+        pass
+
+    def on_success(source, data):
+        raise AssertionError("Shouldn't have succeeded")
+
+    def on_failure(source, error, log):
+        assert source.PLUGIN_ID == plugin_class_name
+        assert isinstance(error, str)
+        assert isinstance(log, bool)
+
+    plugin_cls = plugins[plugin_class_name].cls
+    song = AudioFile({"artist": "0956898"})
+    plugin: ApiCoverSourcePlugin = plugin_cls(song)
+
+    sig = plugin.connect("search-complete", search_complete)
+    sig2 = plugin.connect("fetch-success", on_success)
+    sig3 = plugin.connect("fetch-failure", on_failure)
+    try:
+        start = time()
+        if "musicbrainz" in plugin_class_name:
+            # Isn't called by fetch_cover()
+            plugin.search()
+        plugin.fetch_cover()
+        while time() - start < 1:
+            Gtk.main_iteration_do(False)
     finally:
         plugin.disconnect(sig)
         plugin.disconnect(sig2)
