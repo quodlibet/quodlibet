@@ -19,7 +19,7 @@ from quodlibet.util.dprint import print_e
 
 class Volume(Gtk.VolumeButton):
     def __init__(self, player):
-        super().__init__(size=Gtk.IconSize.NORMAL, use_symbolic=True)
+        super().__init__(use_symbolic=True)
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=781605
         scales = qltk.find_widgets(self.get_popup(), Gtk.Scale)
@@ -39,7 +39,8 @@ class Volume(Gtk.VolumeButton):
         player.notify("volume")
         player.notify("mute")
 
-        self.connect("event", self._on_button_event, player)
+        # TODO: Reimplement with event controllers for GTK4
+        # self.connect("event", self._on_button_event, player)
 
         replaygain_menu = VolumeMenu(player)
         self.connect("popup-menu", self.__popup, replaygain_menu)

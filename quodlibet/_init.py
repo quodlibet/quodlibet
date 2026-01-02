@@ -376,6 +376,21 @@ def _init_gtk():
 
     Gtk.ImageMenuItem = ImageMenuItem
 
+    # GTK4: CheckMenuItem removed
+    Gtk.CheckMenuItem = Gtk.CheckButton
+
+    # GTK4: MenuItem removed - use Button with flat style
+    class MenuItem(Gtk.Button):
+        def __init__(self, label=None, use_underline=False):
+            super().__init__(label=label, use_underline=use_underline)
+            self.add_css_class("flat")
+
+        def set_submenu(self, menu):
+            # Store submenu reference but don't show it (needs proper implementation)
+            self._submenu = menu
+
+    Gtk.MenuItem = MenuItem
+
     # GTK4: AccelMap removed
     class AccelMap:
         @staticmethod
@@ -394,6 +409,21 @@ def _init_gtk():
         Gtk.IconSize.SMALL_TOOLBAR = Gtk.IconSize.NORMAL
         Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
         Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
+
+    # GTK4: Container removed - all widgets are now containers
+    Gtk.Container = Gtk.Widget
+
+    # GTK4: PopoverMenu.append() compatibility
+    _orig_popover_menu_init = Gtk.PopoverMenu.__init__
+
+    def _popover_menu_init_compat(self, *args, **kwargs):
+        _orig_popover_menu_init(self, *args, **kwargs)
+        if not hasattr(self, '_menu_box'):
+            self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            self.set_child(self._menu_box)
+
+    Gtk.PopoverMenu.__init__ = _popover_menu_init_compat
+    Gtk.PopoverMenu.append = lambda self, widget: self._menu_box.append(widget)
 
     # GTK4: Table removed - wrap Grid to provide Table API
     class Table(Gtk.Grid):
