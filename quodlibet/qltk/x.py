@@ -241,7 +241,7 @@ def Frame(label, child=None):
     label_w = Gtk.Label()
     label_w.set_markup(util.bold(label))
     align = Align(left=12, top=6)
-    frame.add(align)
+    frame.set_child(align)  # GTK4: use set_child() instead of add()
     frame.set_label_widget(label_w)
     if child:
         align.add(child)
@@ -300,6 +300,10 @@ class Align(Gtk.Box):
     def add(self, child):
         """GTK4 compatibility: add() → append()"""
         self.append(child)
+
+    def get_child(self):
+        """GTK4 compatibility: return first child"""
+        return self.get_first_child()
 
 
 def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
@@ -496,10 +500,6 @@ class ToggleAction(Gio.SimpleAction):
 class RadioAction(Gio.SimpleAction):
     """GTK4: RadioAction reimplemented to support 'changed' signal"""
 
-    __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_PYOBJECT,)),
-    }
-
     def __init__(self, *args, **kwargs):
         self.label = kwargs.pop("label", None)
         self._value = kwargs.pop("value", 0)
@@ -513,13 +513,17 @@ class RadioAction(Gio.SimpleAction):
         """GTK4: Stub for RadioAction group compatibility"""
         if group_source is not None:
             if not hasattr(group_source, "_group"):
-                group_source._group = []
-            group_source._group.append(self)
+                group_source._group = [group_source]
+            if self not in group_source._group:
+                group_source._group.append(self)
             self._group = group_source._group
         return self
 
     def get_group(self):
         """GTK4: Return radio group"""
+        # Ensure self is in the group if we have a group
+        if self._group and self not in self._group:
+            self._group.append(self)
         return self._group if self._group else [self]
 
     def get_current_value(self):
@@ -542,6 +546,17 @@ class RadioAction(Gio.SimpleAction):
                 # Emit changed signal on all actions in the group
                 for action in self.get_group():
                     action.emit("changed", self)
+
+
+# Register the 'changed' signal for RadioAction
+# GTK4: Must use signal_new() when subclassing GObject-based classes from C
+GObject.signal_new(
+    "changed",
+    RadioAction,
+    GObject.SignalFlags.RUN_FIRST,
+    None,  # return type
+    (object,),  # parameter types
+)
 
 
 class WebImage(Gtk.Image):

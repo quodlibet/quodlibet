@@ -225,7 +225,7 @@ def main(argv=None):
 
     quodlibet.run(window, before_quit=before_quit)
 
-    app.# GTK4: destroy() removed - player_options cleaned up automatically
+    # GTK4: destroy() removed - player_options cleaned up automatically
     quodlibet.finish_first_session("quodlibet")
     mmkeys_handler.quit()
     remote.stop()
@@ -233,7 +233,7 @@ def main(argv=None):
 
     # GTK4: destroy() removed - tracker cleaned up automatically
     quodlibet.library.save()
-    quodlibet.# GTK4: destroy() removed - library cleaned up automatically
+    # GTK4: destroy() removed - library cleaned up automatically
     config.save()
 
     session_client.close()

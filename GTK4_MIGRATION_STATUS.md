@@ -2,8 +2,8 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2025-12-21
-**Status**: 🟡 In Progress - Application starts but has runtime issues
+**Last Updated**: 2026-01-02
+**Status**: 🟡 In Progress - Critical blocking issue resolved
 
 > ⚠️ **Note**: This file tracks the GTK4 migration progress and should be **deleted** once the migration is complete and merged to main.
 
@@ -12,16 +12,22 @@ GTK4 Migration Status
 Quick Summary
 -------------
 
-The GTK4 migration is approximately **60% complete**. Core infrastructure changes are done, but several subsystems need work:
+The GTK4 migration is approximately **65% complete**. Core infrastructure changes are done, but several subsystems need work:
 - ✅ Event handling and time management
 - ✅ Menu system basics (widgets)
 - ✅ Container widget API updates
-- ⚠️ Menu system (actions/signals incomplete)
+- ✅ RadioAction signal registration (FIXED 2026-01-02)
+- ⚠️ Menu system (UIManager migration remaining)
 - ❌ Drag-and-Drop (disabled, needs rewrite)
 - ❌ UIManager migration
 - ⚠️ Box packing (partially done)
 
-**Current blocking issue**: RadioAction "changed" signal not implemented
+**Recent progress (2026-01-02)**:
+- ✅ Fixed critical RadioAction "changed" signal registration
+- ✅ Added GTK4 compatibility shims (destroy, get_toplevel, WindowType)
+- ✅ Fixed Frame widget to use set_child() instead of add()
+- ✅ Fixed test helper for GTK4 window creation
+- ✅ Added Align.get_child() method
 
 ---
 
@@ -265,41 +271,60 @@ ag.add_action(action)
 
 ---
 
-## Known Issues & TODO Items ⚠️
+### 8. RadioAction Signal (2026-01-02) ✅
 
-### Critical (Blocking Application)
+**Fixed**: Critical blocking issue resolved!
 
-#### 1. RadioAction Signal Implementation
-**File**: `quodlibet/qltk/x.py:490`
-**Error**: `RadioAction: unknown signal name: changed`
+**File**: `quodlibet/qltk/x.py`
 
-**Problem**: `Gio.SimpleAction` doesn't emit a "changed" signal. GTK3's `Gtk.RadioAction` did.
+**Solution implemented**: Used `GObject.signal_new()` to register the "changed" signal after class definition.
 
-**Solutions**:
-- **Option A** (Quick): Implement signal manually using GObject.signal_new()
-- **Option B** (Better): Use stateful SimpleAction with state change handling
-- **Option C** (Best): Migrate to full Gio.Menu system
-
-**Code location**:
 ```python
-# quodlibet/qltk/quodlibetwindow.py:1095
-act.connect("changed", self.__change_view)  # ← This fails
-```
-
-**Implementation guide**:
-```python
-# Option B: Stateful action
 class RadioAction(Gio.SimpleAction):
-    def __init__(self, *args, **kwargs):
-        value = kwargs.pop("value", 0)
-        kwargs["state"] = GLib.Variant.new_int32(value)
-        kwargs["parameter_type"] = GLib.VariantType.new("i")
-        super().__init__(*args, **kwargs)
+    """GTK4: RadioAction reimplemented to support 'changed' signal"""
 
-    # Connect to "activate" or "change-state" instead of "changed"
+    def __init__(self, *args, **kwargs):
+        self.label = kwargs.pop("label", None)
+        self._value = kwargs.pop("value", 0)
+        self._group = []
+        self._active = False
+        name = kwargs.pop("name", None)
+        super().__init__(name=name)
+
+    # ... group management methods ...
+
+# Register signal after class definition
+GObject.signal_new(
+    "changed",
+    RadioAction,
+    GObject.SignalFlags.RUN_FIRST,
+    None,
+    (object,),
+)
 ```
+
+**Key fix**: The `_group` list now includes the first action (previously only included joined actions).
 
 ---
+
+### 9. Additional GTK4 Compatibility Shims (2026-01-02) ✅
+
+Added to `quodlibet/_init.py`:
+- `Gtk.Widget.destroy()` - No-op (GTK4 auto-destroys widgets)
+- `Gtk.Widget.get_toplevel()` - Maps to `get_root()`
+- `Gtk.WindowType` - Enum with TOPLEVEL and POPUP values
+
+Fixed in `quodlibet/qltk/x.py`:
+- `Frame()` function now uses `set_child()` instead of `add()`
+- `Align.get_child()` method added
+
+Fixed in `tests/helper.py`:
+- Window creation no longer uses `type=` parameter
+- Uses `set_child()` instead of `add()`
+
+---
+
+## Known Issues & TODO Items ⚠️
 
 ### High Priority
 

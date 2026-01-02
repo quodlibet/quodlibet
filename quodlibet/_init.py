@@ -268,6 +268,12 @@ def _init_gtk():
         Gtk.Widget.hide_all = lambda self: self.set_visible(False)
     if not hasattr(Gtk.Widget, "set_no_show_all"):
         Gtk.Widget.set_no_show_all = lambda self, value: None
+    if not hasattr(Gtk.Widget, "destroy"):
+        # GTK4: Widgets no longer have destroy(), they're auto-destroyed
+        Gtk.Widget.destroy = lambda self: None
+    if not hasattr(Gtk.Widget, "get_toplevel"):
+        # GTK4: get_toplevel() replaced with get_root()
+        Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
 
     # GTK4 compatibility: Add Gtk.AttachOptions for Table compatibility
     # (Gtk.Table removed in GTK4, but plugins still use it)
@@ -299,6 +305,16 @@ def _init_gtk():
             TOOLBAR = 3
 
         Gdk.WindowTypeHint = WindowTypeHint
+
+    # GTK4 compatibility: Gtk.WindowType removed (used for Window constructor)
+    if not hasattr(Gtk, "WindowType"):
+        from enum import IntEnum
+
+        class WindowType(IntEnum):
+            TOPLEVEL = 0
+            POPUP = 1
+
+        Gtk.WindowType = WindowType
 
     # TODO: include our own icon theme directory
     # theme = Gtk.IconTheme.get_default()
