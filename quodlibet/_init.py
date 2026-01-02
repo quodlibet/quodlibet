@@ -361,10 +361,12 @@ def _init_gtk():
 
             def get_accel_group(self):
                 # Return dummy accel group
-                if not hasattr(self, '_accel_group'):
+                if not hasattr(self, "_accel_group"):
+
                     class DummyAccelGroup(GObject.Object):
                         def connect(self, *args, **kwargs):
                             pass
+
                     self._accel_group = DummyAccelGroup()
                 return self._accel_group
 
@@ -418,16 +420,31 @@ def _init_gtk():
 
     def _popover_menu_init_compat(self, *args, **kwargs):
         _orig_popover_menu_init(self, *args, **kwargs)
-        if not hasattr(self, '_menu_box'):
+        if not hasattr(self, "_menu_box"):
             self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            # Don't set_child during init - wait until widget is in hierarchy
+            try:
+                if self.get_root() is not None:
+                    self.set_child(self._menu_box)
+            except:
+                pass  # Set it later when appending
+
+    def _popover_menu_append_compat(self, widget):
+        if not hasattr(self, "_menu_box"):
+            self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        # Ensure box is set as child on first append
+        if self.get_child() is None:
             self.set_child(self._menu_box)
+        self._menu_box.append(widget)
 
     Gtk.PopoverMenu.__init__ = _popover_menu_init_compat
-    Gtk.PopoverMenu.append = lambda self, widget: self._menu_box.append(widget)
+    Gtk.PopoverMenu.append = _popover_menu_append_compat
 
     # GTK4: Table removed - wrap Grid to provide Table API
     class Table(Gtk.Grid):
-        def __init__(self, rows=1, columns=1, homogeneous=False, n_rows=None, n_columns=None):
+        def __init__(
+            self, rows=1, columns=1, homogeneous=False, n_rows=None, n_columns=None
+        ):
             super().__init__()
             self._rows = n_rows if n_rows is not None else rows
             self._columns = n_columns if n_columns is not None else columns
@@ -452,7 +469,18 @@ def _init_gtk():
                 self._props = Props(self)
             return self._props
 
-        def attach(self, child, left, right, top, bottom, xoptions=0, yoptions=0, xpadding=0, ypadding=0):
+        def attach(
+            self,
+            child,
+            left,
+            right,
+            top,
+            bottom,
+            xoptions=0,
+            yoptions=0,
+            xpadding=0,
+            ypadding=0,
+        ):
             child.set_margin_start(xpadding)
             child.set_margin_end(xpadding)
             child.set_margin_top(ypadding)
