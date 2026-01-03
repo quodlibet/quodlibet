@@ -26,7 +26,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "SynchronizedLyrics"
     PLUGIN_NAME = _("Synchronized Lyrics")
     PLUGIN_DESC = _(
-        "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file"
+        "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
     )
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
@@ -42,6 +42,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     # Note the trimming of whitespace, seems "most correct" behaviour
     LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)]\s*(.+)\s*")
+
+    song: AudioFile | None
 
     def __init__(self) -> None:
         super().__init__()
@@ -194,6 +196,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
             print_d(f"Found embedded lyrics for {song.key}")
         else:
             path = song.lyrics_path
+            if path is None:
+                return []
             try:
                 lyrics = path.read_text(encoding="utf-8")
                 print_d(f"Found lyrics file: {path}")
@@ -271,8 +275,12 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         if not self.song:
             return 0
         path = self.song.lyrics_path
+        if path is None:
+            return 0
         if not path.exists():
-            path = Path(self.song.key)
+            path = Path(str(self.song.key))
+        if not path.exists():
+            return 0
         return path.stat().st_mtime
 
     def plugin_on_song_ended(self, song, stopped):
