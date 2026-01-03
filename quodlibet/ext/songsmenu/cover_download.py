@@ -209,8 +209,20 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         sw = Gtk.ScrolledWindow()
         sw.add(self.flow_box)
 
-        paned.pack1(sw, True, True)
-        paned.pack2(self.create_options(), False, False)
+        # GTK4: pack1() → set_start_child()
+
+        paned.set_start_child(sw)
+
+        paned.set_resize_start_child(True)
+
+        paned.set_shrink_start_child(True)
+        # GTK4: pack2() → set_end_child()
+
+        paned.set_end_child(self.create_options())
+
+        paned.set_resize_end_child(False)
+
+        paned.set_shrink_end_child(False)
         self.vbox.prepend(paned)
 
         connect_destroy(manager, "covers-found", self._covers_found)

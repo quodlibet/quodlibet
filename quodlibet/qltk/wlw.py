@@ -170,6 +170,7 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
         self.get_child().show_all()
         # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+
     context = GLib.MainContext.default()
     while context.pending():
         context.iteration(False)

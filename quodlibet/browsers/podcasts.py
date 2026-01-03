@@ -324,8 +324,20 @@ class Podcasts(Browser):
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
         self.show()
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -459,20 +471,20 @@ class Podcasts(Browser):
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # view.emit_stop_by_name("drag-data-received")
         # targets = [
-            # ("text/uri-list", 0, DND_URI_LIST),
-            # ("text/x-moz-url", 0, DND_MOZ_URL),
+        # ("text/uri-list", 0, DND_URI_LIST),
+        # ("text/x-moz-url", 0, DND_MOZ_URL),
         # ]
         # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         # if tid == DND_URI_LIST:
-            # uri = sel.get_uris()[0]
+        # uri = sel.get_uris()[0]
         # elif tid == DND_MOZ_URL:
-            # uri = sel.data.decode("utf16", "replace").split("\n")[0]
+        # uri = sel.data.decode("utf16", "replace").split("\n")[0]
         # else:
-            # ctx.finish(False, False, etime)
-            # return
+        # ctx.finish(False, False, etime)
+        # return
 
         ctx.finish(True, False, etime)
 

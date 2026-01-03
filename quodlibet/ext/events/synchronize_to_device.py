@@ -704,6 +704,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         Prevent the application from becoming unresponsive.
         """
         # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+
     context = GLib.MainContext.default()
     while context.pending():
         context.iteration(False)

@@ -106,12 +106,18 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         del self._ids
 
     def pack(self, songpane):
-        self._main_box.pack1(self, True, False)
+        # GTK4: pack1() → set_start_child()
+        self._main_box.set_start_child(self)
+        self._main_box.set_resize_start_child(True)
+        self._main_box.set_shrink_start_child(False)
         self._rh_box = rhbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=0)
         rhbox.prepend(align)
         rhbox.prepend(songpane)
-        self._main_box.pack2(rhbox, True, False)
+        # GTK4: pack2() → set_end_child()
+        self._main_box.set_end_child(rhbox)
+        self._main_box.set_resize_end_child(True)
+        self._main_box.set_shrink_end_child(False)
         rhbox.show()
         align.show_all()
         return self._main_box

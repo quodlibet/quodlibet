@@ -570,13 +570,13 @@ class FileSelector(Paned):
         self.pack2(sw, resize=True)
 
     def go_to(self, *args, **kwargs):
-        dirlist = self.get_child1().get_child()
+        dirlist = self.get_start_child().get_child()
         dirlist.go_to(*args, **kwargs)
 
     def get_selected_paths(self):
         """A list of fs paths"""
 
-        filelist = self.get_child2().get_child()
+        filelist = self.get_end_child().get_child()
         selection = filelist.get_selection()
         model, paths = selection.get_selected_rows()
         return [model[p][0] for p in paths]
@@ -584,8 +584,8 @@ class FileSelector(Paned):
     def rescan(self):
         """Refill the file list for the current directory selection"""
 
-        dirlist = self.get_child1().get_child()
-        filelist = self.get_child2().get_child()
+        dirlist = self.get_start_child().get_child()
+        filelist = self.get_end_child().get_child()
 
         dir_selection = dirlist.get_selection()
         self.__dir_selection_changed(dir_selection, filelist)

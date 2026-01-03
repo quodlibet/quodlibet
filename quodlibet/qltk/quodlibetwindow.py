@@ -539,7 +539,7 @@ class SongListPaned(RVPaned):
 
     @property
     def _expander(self):
-        return self.get_child2()
+        return self.get_end_child()
 
     def _on_button_press(self, pane, event):
         # If we start to drag the pane handle while the

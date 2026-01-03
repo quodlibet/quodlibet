@@ -280,17 +280,35 @@ def _init_gtk():
 
     # GTK4: Wrap GObject.connect to ignore removed event signals
     from gi.repository import GObject
+
     _orig_gobject_connect = GObject.Object.connect
     _removed_signals = {
-        'button-press-event', 'button-release-event', 'motion-notify-event',
-        'key-press-event', 'key-release-event', 'scroll-event',
-        'enter-notify-event', 'leave-notify-event', 'focus-in-event',
-        'focus-out-event', 'configure-event', 'delete-event',
-        'destroy-event', 'expose-event', 'map-event', 'unmap-event',
-        'property-notify-event', 'selection-clear-event', 'visibility-notify-event',
-        'window-state-event', 'damage-event', 'grab-broken-event',
-        'event', 'event-after'
+        "button-press-event",
+        "button-release-event",
+        "motion-notify-event",
+        "key-press-event",
+        "key-release-event",
+        "scroll-event",
+        "enter-notify-event",
+        "leave-notify-event",
+        "focus-in-event",
+        "focus-out-event",
+        "configure-event",
+        "delete-event",
+        "destroy-event",
+        "expose-event",
+        "map-event",
+        "unmap-event",
+        "property-notify-event",
+        "selection-clear-event",
+        "visibility-notify-event",
+        "window-state-event",
+        "damage-event",
+        "grab-broken-event",
+        "event",
+        "event-after",
     }
+
     def _connect_compat(self, signal_name, *args, **kwargs):
         # Silently ignore GTK3 event signals that don't exist in GTK4
         if signal_name in _removed_signals:
@@ -304,10 +322,12 @@ def _init_gtk():
                 print_d(f"Ignoring unknown signal: {signal_name}")
                 return 0
             raise
+
     GObject.Object.connect = _connect_compat
 
     # Also wrap connect_after
     _orig_gobject_connect_after = GObject.Object.connect_after
+
     def _connect_after_compat(self, signal_name, *args, **kwargs):
         # Silently ignore GTK3 event signals that don't exist in GTK4
         if signal_name in _removed_signals:
@@ -321,6 +341,7 @@ def _init_gtk():
                 print_d(f"Ignoring unknown signal (after): {signal_name}")
                 return 0
             raise
+
     GObject.Object.connect_after = _connect_after_compat
 
     # GTK4: Button.add() → Button.set_child()
@@ -333,7 +354,9 @@ def _init_gtk():
 
     # GTK4: Window.resize() removed - use set_default_size() as approximation
     if not hasattr(Gtk.Window, "resize"):
-        Gtk.Window.resize = lambda self, width, height: self.set_default_size(width, height)
+        Gtk.Window.resize = lambda self, width, height: self.set_default_size(
+            width, height
+        )
 
     # GTK4: Box.add() → Box.append() (or prepend depending on context, append is default)
     if not hasattr(Gtk.Box, "add"):
@@ -346,12 +369,15 @@ def _init_gtk():
     # GTK4: Wrap Box.prepend/append to ignore GTK3 pack_start/pack_end arguments
     _orig_box_prepend = Gtk.Box.prepend
     _orig_box_append = Gtk.Box.append
+
     def _box_prepend_compat(self, child, expand=None, fill=None, padding=None):
         # GTK4: prepend only takes child, ignore expand/fill/padding
         return _orig_box_prepend(self, child)
+
     def _box_append_compat(self, child, expand=None, fill=None, padding=None):
         # GTK4: append only takes child, ignore expand/fill/padding
         return _orig_box_append(self, child)
+
     Gtk.Box.prepend = _box_prepend_compat
     Gtk.Box.append = _box_append_compat
 
@@ -389,10 +415,12 @@ def _init_gtk():
 
     # GTK4: Window type property removed - wrap __init__ to filter it out
     _orig_window_init = Gtk.Window.__init__
+
     def _window_init_compat(self, *args, **kwargs):
         # Remove 'type' kwarg if present (GTK3 only, not supported in GTK4)
-        kwargs.pop('type', None)
+        kwargs.pop("type", None)
         return _orig_window_init(self, *args, **kwargs)
+
     Gtk.Window.__init__ = _window_init_compat
 
     # GTK4 compatibility: Window type hints removed
@@ -410,6 +438,7 @@ def _init_gtk():
     # GTK4: EventMask removed - event system redesigned
     if not hasattr(Gdk, "EventMask"):
         from enum import IntFlag
+
         class EventMask(IntFlag):
             EXPOSURE_MASK = 1 << 1
             POINTER_MOTION_MASK = 1 << 2
@@ -437,6 +466,7 @@ def _init_gtk():
             TOUCHPAD_GESTURE_MASK = 1 << 24
             TABLET_PAD_MASK = 1 << 25
             ALL_EVENTS_MASK = 0x3FFFFFE
+
         Gdk.EventMask = EventMask
 
     if not hasattr(Gdk, "WindowTypeHint"):
@@ -460,6 +490,7 @@ def _init_gtk():
             In GTK4, window states are handled via Gdk.ToplevelState.
             This provides a compatible enum for GTK3 code.
             """
+
             WITHDRAWN = 1 << 0
             ICONIFIED = 1 << 1
             MAXIMIZED = 1 << 2
@@ -527,6 +558,7 @@ def _init_gtk():
         keyboard shortcuts via GtkApplication. This dummy allows
         code to continue creating AccelGroups without crashing.
         """
+
         def __init__(self):
             super().__init__()
 
@@ -554,6 +586,7 @@ def _init_gtk():
         properties (halign, valign, margins) directly on widgets.
         This provides a simple Box container as a replacement.
         """
+
         def __init__(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0):
             super().__init__()
             # Store these for compatibility but don't use them
@@ -587,6 +620,7 @@ def _init_gtk():
 
     # GTK4: Arrow removed - create factory class that returns Image
     if not hasattr(Gtk, "Arrow"):
+
         class ArrowFactory:
             @staticmethod
             def new(arrow_type, shadow_type):
@@ -608,22 +642,26 @@ def _init_gtk():
     # GTK4: ArrowType enum - add if missing
     if not hasattr(Gtk, "ArrowType"):
         from enum import IntEnum
+
         class ArrowType(IntEnum):
             UP = 0
             DOWN = 1
             LEFT = 2
             RIGHT = 3
+
         Gtk.ArrowType = ArrowType
 
     # GTK4: ShadowType enum - add if missing (used for frames)
     if not hasattr(Gtk, "ShadowType"):
         from enum import IntEnum
+
         class ShadowType(IntEnum):
             NONE = 0
             IN = 1
             OUT = 2
             ETCHED_IN = 3
             ETCHED_OUT = 4
+
         Gtk.ShadowType = ShadowType
 
     # GTK4: MenuItem removed - use Button with flat style
@@ -666,12 +704,14 @@ def _init_gtk():
 
     # GTK4: set_border_width removed - use margins instead
     if not hasattr(Gtk.Frame, "set_border_width"):
+
         def _set_border_width(self, width):
             # In GTK4, use margins instead of border_width
             self.set_margin_start(width)
             self.set_margin_end(width)
             self.set_margin_top(width)
             self.set_margin_bottom(width)
+
         Gtk.Frame.set_border_width = _set_border_width
         Gtk.Window.set_border_width = _set_border_width
         Gtk.Paned.set_border_width = _set_border_width
@@ -706,6 +746,7 @@ def _init_gtk():
 
     # GTK4: Wrap popup() to prevent crashes when not properly parented
     _orig_popover_popup = Gtk.PopoverMenu.popup
+
     def _popover_menu_popup_compat(self):
         # Silently fail if not properly set up to avoid crashes
         if self.get_parent() is None:
@@ -718,6 +759,7 @@ def _init_gtk():
         if hasattr(self, "_menu_box") and self.get_child() is None:
             self.set_child(self._menu_box)
         return _orig_popover_popup(self)
+
     Gtk.PopoverMenu.popup = _popover_menu_popup_compat
 
     # GTK4: Table removed - wrap Grid to provide Table API

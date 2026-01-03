@@ -673,7 +673,13 @@ class InternetRadio(Browser, util.InstanceTracker):
         fb.insert(new_station, 1)
         fb.insert(self._update_button, 2)
         vb.append(Align(fb, left=3), False, False, 3)
-        pane.pack1(vb, resize=False, shrink=False)
+        # GTK4: pack1() → set_start_child()
+
+        pane.set_start_child(vb)
+
+        pane.set_resize_start_child(resize=False)
+
+        pane.set_shrink_start_child(shrink=False)
         pane.show_all()
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -684,7 +690,13 @@ class InternetRadio(Browser, util.InstanceTracker):
         songbox.prepend(self._songpane_container)
         songbox.prepend(self.qbar)
         songbox.show_all()
-        pane.pack2(songbox, resize=True, shrink=False)
+        # GTK4: pack2() → set_end_child()
+
+        pane.set_end_child(songbox)
+
+        pane.set_resize_end_child(resize=True)
+
+        pane.set_shrink_end_child(shrink=False)
         self.prepend(pane)
         self.show()
 

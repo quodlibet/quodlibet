@@ -90,8 +90,20 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "collectionbrowser_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -266,7 +278,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # view.drag_source_set(
-            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
         # )
         # view.connect("drag-data-get", self.__drag_data_get)
 

@@ -611,7 +611,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
 
     def __init__(self, *args, **kwargs):
         # GTK4: image property removed - extract and set as child instead
-        image = kwargs.pop('image', None)
+        image = kwargs.pop("image", None)
         super().__init__(*args, **kwargs)
         if image is not None:
             self.set_child(image)

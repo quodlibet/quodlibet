@@ -48,7 +48,9 @@ def pytest_report_teststatus(report: TestReport, config: Config):
     if report.failed and report.when == "call":
         logs = _logs.get_content()
         if logs:
-            msg = f"\nERROR: failed {report.nodeid}:{LOG_JOINER}" + LOG_JOINER.join(logs)
+            msg = f"\nERROR: failed {report.nodeid}:{LOG_JOINER}" + LOG_JOINER.join(
+                logs
+            )
             print(msg)
     # Each test should clear the logs. This won't work well if parallelised
     if report.when == "call":

@@ -129,13 +129,25 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         vbox.show()
         pane = qltk.ConfigRHPaned("browsers", "soundcloud_pos", 0.4)
         pane.show()
-        pane.pack1(vbox, resize=False, shrink=False)
+        # GTK4: pack1() → set_start_child()
+
+        pane.set_start_child(vbox)
+
+        pane.set_resize_start_child(resize=False)
+
+        pane.set_shrink_start_child(shrink=False)
         self._songs_box = songs_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6
         )
         songs_box.prepend(self._searchbox)
         songs_box.show()
-        pane.pack2(songs_box, resize=True, shrink=False)
+        # GTK4: pack2() → set_end_child()
+
+        pane.set_end_child(songs_box)
+
+        pane.set_resize_end_child(resize=True)
+
+        pane.set_shrink_end_child(shrink=False)
         self.prepend(pane)
         self.show()
 

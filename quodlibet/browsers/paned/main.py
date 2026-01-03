@@ -47,7 +47,10 @@ class PanedBrowser(Browser, util.InstanceTracker):
         container = Gtk.Box()
         self.show()
         container.prepend(self)
-        self.main_box.pack2(songpane, True, False)
+        # GTK4: pack2() → set_end_child()
+        self.main_box.set_end_child(songpane)
+        self.main_box.set_resize_end_child(True)
+        self.main_box.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -220,12 +223,16 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            sw.add(pane)
+            # GTK4: ScrolledWindow.add() → set_child()
+            sw.set_child(pane)
             sws.append(sw)
 
         self.multi_paned.set_widgets(sws)
         self.multi_paned.show_all()
-        self.main_box.pack1(self.multi_paned.get_paned(), True, False)
+        # GTK4: pack1() → set_start_child()
+        self.main_box.set_start_child(self.multi_paned.get_paned())
+        self.main_box.set_resize_start_child(True)
+        self.main_box.set_shrink_start_child(False)
 
         self.__star = {}
         for p in self._panes:

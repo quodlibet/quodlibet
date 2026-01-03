@@ -299,14 +299,20 @@ class PersistentWindowMixin:
             self.connect("notify::fullscreened", self.__window_state_notify)
             parent = self.get_transient_for()
             if parent:
-                connect_destroy(parent, "notify::default-width", self.__parent_configure_notify)
-                connect_destroy(parent, "notify::default-height", self.__parent_configure_notify)
+                connect_destroy(
+                    parent, "notify::default-width", self.__parent_configure_notify
+                )
+                connect_destroy(
+                    parent, "notify::default-height", self.__parent_configure_notify
+                )
         else:
             self.connect("configure-event", self.__configure_event)
             self.connect("window-state-event", self.__window_state_changed)
             parent = self.get_transient_for()
             if parent:
-                connect_destroy(parent, "configure-event", self.__parent_configure_event)
+                connect_destroy(
+                    parent, "configure-event", self.__parent_configure_event
+                )
 
         self.connect("notify::visible", self.__visible_changed)
         self.__restore_window_state()

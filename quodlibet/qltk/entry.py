@@ -64,10 +64,12 @@ class EditableUndo:
             key_controller.connect("key-pressed", self.__key_press_gtk4)
             self.__key_controller = key_controller
         else:
-            self.__handlers.extend([
-                self.connect("populate-popup", self.__popup),
-                self.connect("key-press-event", self.__key_press),
-            ])
+            self.__handlers.extend(
+                [
+                    self.connect("populate-popup", self.__popup),
+                    self.connect("key-press-event", self.__key_press),
+                ]
+            )
 
     def __key_press(self, entry, event):
         if is_accel(event, "<Primary>z"):
@@ -80,6 +82,7 @@ class EditableUndo:
 
     def __key_press_gtk4(self, controller, keyval, keycode, state):
         """GTK4: Handle key-pressed signal from EventControllerKey"""
+
         # Create a fake event-like object for is_accel compatibility
         class FakeEvent:
             def __init__(self, keyval, state):
@@ -301,10 +304,12 @@ class ValidatingEntryMixin(Gtk.Widget):
         if color and self.get_property("sensitive"):
             css = f"* {{ color: rgba({int(color.red*255)}, {int(color.green*255)}, {int(color.blue*255)}, {color.alpha}); }}"
             from quodlibet.qltk import add_css
+
             add_css(self, css)
         else:
             # Reset to default by removing custom CSS
             from quodlibet.qltk import add_css
+
             add_css(self, "")
 
 

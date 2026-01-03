@@ -108,7 +108,7 @@ class Pane(AllTreeView):
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # self.drag_source_set(
-            # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
         # )
         # self.connect("drag-data-get", self.__drag_data_get)
         # self.connect("destroy", self.__destroy)

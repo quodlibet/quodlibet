@@ -434,8 +434,20 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "albumlist_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):

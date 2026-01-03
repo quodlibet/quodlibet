@@ -254,7 +254,7 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
     if isinstance(menu, Gtk.PopoverMenu):
         # PopoverMenu positions itself relative to parent
         # Set positioning hint based on 'under' parameter
-        if hasattr(menu, 'set_position'):
+        if hasattr(menu, "set_position"):
             pos = Gtk.PositionType.BOTTOM if under else Gtk.PositionType.TOP
             menu.set_position(pos)
         menu_popup(menu, None, None, None, None, button, time)
