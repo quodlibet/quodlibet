@@ -198,13 +198,10 @@ class PlayPauseButton(Gtk.Button):
         self.set_active(not self.get_active())
 
     def _set_active(self, is_active):
-        if self.get_child():
-            self.remove(self.get_child())
-
         if is_active:
-            self.add(self._pause_image)
+            self.set_child(self._pause_image)
         else:
-            self.add(self._play_image)
+            self.set_child(self._play_image)
         self.get_child().show()
 
         self.emit("toggled")

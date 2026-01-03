@@ -1329,7 +1329,7 @@ class TreeViewColumnButton(TreeViewColumn):
         if button:
             controller = Gtk.GestureClick()
             controller.connect("pressed", self.button_press_event)
-            self.add_controller(controller)
+            button.add_controller(controller)
             button.connect("popup-menu", self.popup_menu)
 
     def button_press_event(self, widget, event):

@@ -97,12 +97,12 @@ class RPaned(Paned):
         return 0.5
 
     def do_size_allocate(self, *args):
-        ret = Gtk.HPaned.do_size_allocate(self, *args)
+        ret = super().do_size_allocate(self, *args)
         if not self.__alloced and self.__relative is not None:
             self.__alloced = True
             self.set_relative(self.__relative)
             # call again so the children get alloced
-            ret = Gtk.HPaned.do_size_allocate(self, *args)
+            ret = super().do_size_allocate(self, *args)
         self.__alloced = True
         return ret
 

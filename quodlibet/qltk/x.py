@@ -39,112 +39,8 @@ Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned  # n
 class ScrolledWindow(Gtk.ScrolledWindow):
     """Draws a border around all edges that don't touch the parent window"""
 
-    def do_size_allocate(self, alloc):
-        if self.get_shadow_type() == Gtk.ShadowType.NONE:
-            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
-
-        toplevel = self.get_toplevel()
-        # try to get the child so we ignore the CSD
-        toplevel = toplevel.get_child() or toplevel
-
-        try:
-            dx, dy = self.translate_coordinates(toplevel, 0, 0)
-        except TypeError:
-            GLib.idle_add(self.queue_resize)
-            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
-
-        ctx = self.get_style_context()
-        border = ctx.get_border(ctx.get_state())
-
-        # https://bugzilla.gnome.org/show_bug.cgi?id=694844
-        border.left = border.top = border.right = border.bottom = 1
-
-        # XXX: ugly, ugly hack
-        # Pretend the main window toolbar is the top of the window.
-        # This removes the top border in case the ScrolledWindow
-        # is drawn right below the toolbar.
-        try:
-            top_bar = toplevel.top_bar
-            if not isinstance(top_bar, Gtk.Widget):
-                raise TypeError
-        except (AttributeError, TypeError):
-            pass
-        else:
-            top_ctx = top_bar.get_style_context()
-            b = top_ctx.get_border(top_ctx.get_state())
-            if b.bottom:
-                dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
-                dy_bar -= top_bar.get_allocation().height
-                dy = min(dy, dy_bar)
-
-        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
-        # so ignore anything < 0 (I guess something passes the adjusted alloc
-        # to us a second time)
-        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
-        dx = max(0, dx)
-        dy = max(0, dy)
-
-        # Don't remove the border if the border is drawn inside
-        # and the scrollbar on that edge is visible
-        bottom = left = right = top = False
-
-        if gtk_version < (3, 19):
-            value = GObject.Value()
-            value.init(GObject.TYPE_BOOLEAN)
-            # default to True:
-            #    https://bugzilla.gnome.org/show_bug.cgi?id=701058
-            value.set_boolean(True)
-            ctx.get_style_property("scrollbars-within-bevel", value)
-            scroll_within = value.get_boolean()
-            value.unset()
-        else:
-            # was deprecated in gtk 3.20
-            # https://git.gnome.org/browse/gtk+/commit/?id=
-            #   7c0f0e882ae60911e39aaf7b42fb2d94108f3474
-            scroll_within = True
-
-        if not scroll_within:
-            h, v = self.get_hscrollbar(), self.get_vscrollbar()
-            hscroll = vscroll = False
-            if h.get_visible():
-                req = h.size_request()
-                hscroll = bool(req.width + req.height)
-
-            if v.get_visible():
-                req = v.size_request()
-                vscroll = bool(req.width + req.height)
-
-            placement = self.get_placement()
-            if placement == Gtk.CornerType.TOP_LEFT:
-                bottom = hscroll
-                right = vscroll
-            elif placement == Gtk.CornerType.BOTTOM_LEFT:
-                right = vscroll
-                top = hscroll
-            elif placement == Gtk.CornerType.TOP_RIGHT:
-                bottom = hscroll
-                left = vscroll
-            elif placement == Gtk.CornerType.BOTTOM_RIGHT:
-                left = vscroll
-                top = hscroll
-
-        top_alloc = toplevel.get_allocation()
-        width, height = top_alloc.width, top_alloc.height
-        if alloc.height + dy == height and not bottom:
-            alloc.height += border.bottom
-
-        if alloc.width + dx == width and not right:
-            alloc.width += border.right
-
-        if dy == 0 and not top:
-            alloc.y -= border.top
-            alloc.height += border.top
-
-        if dx == 0 and not left:
-            alloc.x -= border.left
-            alloc.width += border.left
-
-        return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
+    def do_size_allocate(self, width, height, baseline):
+        return Gtk.ScrolledWindow.do_size_allocate(self, width, height, baseline)
 
 
 MT = Gdk.ModifierType
@@ -185,43 +81,10 @@ class Notebook(Gtk.Notebook):
             print_d(f"Unhandled tab key combo: {event.state}")
         return Gdk.EVENT_PROPAGATE
 
-    def do_size_allocate(self, alloc):
-        ctx = self.get_style_context()
-        border = ctx.get_border(ctx.get_state())
-
-        toplevel = self.get_toplevel()
-        # try to get the child so we ignore the CSD
-        toplevel = toplevel.get_child() or toplevel
-
-        try:
-            dx, dy = self.translate_coordinates(toplevel, 0, 0)
-        except TypeError:
-            GLib.idle_add(self.queue_resize)
-            return Gtk.Notebook.do_size_allocate(self, alloc)
-
-        dx = max(0, dx)
-        dy = max(0, dy)
-
-        # all 0 since gtk+ 3.12..
-        border.left = border.top = border.right = border.bottom = 1
-
-        top_alloc = toplevel.get_allocation()
-        width, height = top_alloc.width, top_alloc.height
-        if alloc.height + dy == height:
-            alloc.height += border.bottom
-
-        if alloc.width + dx == width:
-            alloc.width += border.right
-
-        if dy == 0:
-            alloc.y -= border.top
-            alloc.height += border.top
-
-        if dx == 0:
-            alloc.x -= border.left
-            alloc.width += border.left
-
-        return Gtk.Notebook.do_size_allocate(self, alloc)
+    def do_size_allocate(self, width, height, baseline):
+        # GTK4: Custom border allocation logic removed
+        # GTK4 handles widget borders through CSS
+        return Gtk.Notebook.do_size_allocate(self, width, height, baseline)
 
     def append_page(self, page, label=None):
         if label is None:

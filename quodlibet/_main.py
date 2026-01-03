@@ -112,11 +112,9 @@ class Application:
             window.show()
 
     def present(self):
-        # deiconify is needed if the window is on another workspace
         from quodlibet.qltk import Window
 
         for window in Window.windows:
-            window.deiconify()
             window.present()
 
     def hide(self):
@@ -402,13 +400,15 @@ def run(window, before_quit=None):
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
     if "QUODLIBET_START_PERF" in os.environ:
-        window.connect("draw", Gtk.main_quit)
-        Gtk.main()
+        loop = GLib.MainLoop()
+        window.connect("draw", lambda *args: loop.quit())
+        loop.run()
         sys.exit()
     else:
-        Gtk.main()
+        loop = GLib.MainLoop()
+        loop.run()
 
-    print_d("Gtk.main() done.")
+    print_d("Main loop done.")
 
 
 def enable_periodic_save(save_library):

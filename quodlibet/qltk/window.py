@@ -366,9 +366,8 @@ class PersistentWindowMixin:
         except ValueError:
             return
 
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
+        # GTK4: get_screen() removed, skip screen size clamping
+        # GTK4 handles window sizing constraints automatically
         if x >= 1 and y >= 1:
             self.resize(x, y)
 

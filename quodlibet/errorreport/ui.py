@@ -36,13 +36,16 @@ class TextExpander(Gtk.Expander):
             tv.set_bottom_margin(6)
 
         label = self.get_label_widget()
-        label.props.margin = 4
+        label.set_margin_start(4)
+        label.set_margin_end(4)
+        label.set_margin_top(4)
+        label.set_margin_bottom(4)
 
         win = Gtk.ScrolledWindow()
-        win.add(tv)
+        win.set_child(tv)
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         win.set_size_request(-1, 175)
-        self.add(win)
+        self.set_child(win)
         win.show_all()
 
 
