@@ -229,7 +229,8 @@ class CoverImage(Gtk.Box):
 
     def __init__(self, resize=False, size=70, song=None):
         super().__init__()
-        self.set_visible_window(False)
+        # GTK4: set_visible_window removed - all widgets are windowless by default
+        # self.set_visible_window(False)
         self.__song = None
         self.__file = None
         self.__current_bci = None
@@ -239,13 +240,15 @@ class CoverImage(Gtk.Box):
         self.add(ResizeImage(resize, size))
         self.connect("button-press-event", self.__album_clicked)
         self.set_song(song)
-        self.get_child().show_all()
+        # GTK4: Box.get_child() → Box.get_first_child()
+        self.get_first_child().show_all()
 
     def set_image(self, _file):
         if _file is not None and not _file.name:
             print_w("Got file which is not in the filesystem!")
         self.__file = _file
-        self.get_child().set_file(_file)
+        # GTK4: Box.get_child() → Box.get_first_child()
+        self.get_first_child().set_file(_file)
 
     def set_song(self, song):
         self.__song = song

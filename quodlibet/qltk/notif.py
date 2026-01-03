@@ -247,7 +247,9 @@ class TaskWidget(Gtk.Box):
         super().__init__(spacing=3)
         self.task = task
         self.label = Gtk.Label()
-        self.label.set_alignment(1.0, 0.5)
+        # GTK4: set_alignment removed - use xalign/yalign properties
+        self.label.set_xalign(1.0)
+        self.label.set_yalign(0.5)
         self.label.set_ellipsize(Pango.EllipsizeMode.END)
         self.prepend(self.label)
         self.progress = Gtk.ProgressBar()
@@ -257,17 +259,15 @@ class TaskWidget(Gtk.Box):
         vb.prepend(self.progress)
         self.prepend(vb)
         self.pause = SmallImageToggleButton()
-        self.pause.add(
-            Gtk.Image.new_from_icon_name(
-                Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL
-            )
-        )
+        # GTK4: Image.new_from_icon_name() only takes icon_name, not size
+        image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE)
+        self.pause.add(image)
         self.pause.connect("toggled", self.__pause_toggled)
         self.prepend(self.pause)
         self.stop = SmallImageButton()
-        self.stop.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.NORMAL)
-        )
+        # GTK4: Image.new_from_icon_name() only takes icon_name, not size
+        image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP)
+        self.stop.add(image)
         self.stop.connect("clicked", self.__stop_clicked)
         self.prepend(self.stop)
 

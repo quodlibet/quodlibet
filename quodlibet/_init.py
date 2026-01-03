@@ -306,6 +306,23 @@ def _init_gtk():
             raise
     GObject.Object.connect = _connect_compat
 
+    # Also wrap connect_after
+    _orig_gobject_connect_after = GObject.Object.connect_after
+    def _connect_after_compat(self, signal_name, *args, **kwargs):
+        # Silently ignore GTK3 event signals that don't exist in GTK4
+        if signal_name in _removed_signals:
+            print_d(f"Ignoring GTK3 signal connection (after): {signal_name}")
+            return 0  # Return dummy handler ID
+        try:
+            return _orig_gobject_connect_after(self, signal_name, *args, **kwargs)
+        except TypeError as e:
+            # Catch "unknown signal name" errors for removed signals
+            if "unknown signal name" in str(e):
+                print_d(f"Ignoring unknown signal (after): {signal_name}")
+                return 0
+            raise
+    GObject.Object.connect_after = _connect_after_compat
+
     # GTK4: Button.add() → Button.set_child()
     if not hasattr(Gtk.Button, "add"):
         Gtk.Button.add = lambda self, child: self.set_child(child)
@@ -314,9 +331,25 @@ def _init_gtk():
     if not hasattr(Gtk.Window, "add"):
         Gtk.Window.add = lambda self, child: self.set_child(child)
 
+    # GTK4: Window.resize() removed - use set_default_size() as approximation
+    if not hasattr(Gtk.Window, "resize"):
+        Gtk.Window.resize = lambda self, width, height: self.set_default_size(width, height)
+
     # GTK4: Box.add() → Box.append() (or prepend depending on context, append is default)
     if not hasattr(Gtk.Box, "add"):
         Gtk.Box.add = lambda self, child: self.append(child)
+
+    # GTK4: Wrap Box.prepend/append to ignore GTK3 pack_start/pack_end arguments
+    _orig_box_prepend = Gtk.Box.prepend
+    _orig_box_append = Gtk.Box.append
+    def _box_prepend_compat(self, child, expand=None, fill=None, padding=None):
+        # GTK4: prepend only takes child, ignore expand/fill/padding
+        return _orig_box_prepend(self, child)
+    def _box_append_compat(self, child, expand=None, fill=None, padding=None):
+        # GTK4: append only takes child, ignore expand/fill/padding
+        return _orig_box_append(self, child)
+    Gtk.Box.prepend = _box_prepend_compat
+    Gtk.Box.append = _box_append_compat
 
     # GTK4: Frame.add() → Frame.set_child()
     if not hasattr(Gtk.Frame, "add"):
@@ -364,7 +397,11 @@ def _init_gtk():
         Gtk.Window.get_type_hint = lambda self: None
 
     # GTK4 compatibility: Gdk.WindowTypeHint removed
-    from gi.repository import Gdk
+    from gi.repository import Gdk, GLib
+
+    # GTK4: GLib.CURRENT_TIME removed - use constant 0
+    if not hasattr(GLib, "CURRENT_TIME"):
+        GLib.CURRENT_TIME = 0
 
     # GTK4: EventMask removed - event system redesigned
     if not hasattr(Gdk, "EventMask"):
@@ -536,6 +573,10 @@ def _init_gtk():
         Gtk.IconSize.SMALL_TOOLBAR = Gtk.IconSize.NORMAL
         Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
         Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
+
+    # GTK4: CSS class constants removed - add them back
+    if not hasattr(Gtk, "STYLE_CLASS_LINKED"):
+        Gtk.STYLE_CLASS_LINKED = "linked"
 
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget

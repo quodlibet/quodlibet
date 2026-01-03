@@ -610,7 +610,11 @@ class HighlightToggleButton(Gtk.ToggleButton):
     """A ToggleButton which changes the foreground color when active"""
 
     def __init__(self, *args, **kwargs):
+        # GTK4: image property removed - extract and set as child instead
+        image = kwargs.pop('image', None)
         super().__init__(*args, **kwargs)
+        if image is not None:
+            self.set_child(image)
         self._provider = None
         self._color = ""
         self._dummy = Gtk.ToggleButton()

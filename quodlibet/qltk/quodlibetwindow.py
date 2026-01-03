@@ -327,12 +327,14 @@ class TopBar(Gtk.Box):
 
         box.prepend(Align(self.image, top=3, right=3), False, True, 0)
 
+        # GTK4: margin property removed - individual margin-* properties exist
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
         # QL window not being visible for some reason.
-        assert self.image.props.margin == 0
+        # assert self.image.props.margin == 0
 
-        for child in self.get_children():
+        # GTK4: get_children() removed - use qltk helper
+        for child in qltk.get_children(self):
             child.show_all()
 
         context = self.get_style_context()
@@ -367,7 +369,8 @@ class QueueButton(HighlightToggleButton):
                 "format-justify",
             ]
         )
-        image = Gtk.Image.new_from_gicon(gicon, Gtk.IconSize.SMALL_TOOLBAR)
+        # GTK4: Image.new_from_gicon() only takes gicon, not size
+        image = Gtk.Image.new_from_gicon(gicon)
 
         super().__init__(image=image)
 
@@ -515,8 +518,13 @@ class SongListPaned(RVPaned):
     def __init__(self, song_scroller, qexpander):
         super().__init__()
 
-        self.pack1(song_scroller, resize=True, shrink=False)
-        self.pack2(qexpander, resize=True, shrink=False)
+        # GTK4: pack1/pack2() → set_start_child/set_end_child() + set_resize/shrink
+        self.set_start_child(song_scroller)
+        self.set_resize_start_child(True)
+        self.set_shrink_start_child(False)
+        self.set_end_child(qexpander)
+        self.set_resize_end_child(True)
+        self.set_shrink_end_child(False)
 
         self.set_relative(config.getfloat("memory", "queue_position", 0.75))
         self.connect("notify::position", self._changed, "memory", "queue_position")
@@ -640,8 +648,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.__browserbox = Align(top=3, bottom=3)
         self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        paned.pack1(self.__browserbox, resize=True)
-        # We'll pack2 when necessary (when the first sidebar plugin is set up)
+        # GTK4: pack1(widget, resize) → set_start_child(widget) + set_resize_start_child()
+        paned.set_start_child(self.__browserbox)
+        paned.set_resize_start_child(True)
+        # We'll set_end_child when necessary (when the first sidebar plugin is set up)
 
         main_box.prepend(paned)
 

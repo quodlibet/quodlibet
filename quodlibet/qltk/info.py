@@ -54,14 +54,18 @@ class SongInfo(Gtk.Box):
     def __init__(self, library, player, pattern_filename):
         super().__init__()
         self._pattern_filename = pattern_filename
-        self.set_visible_window(False)
+        # GTK4: set_visible_window removed - all widgets are windowless by default
+        # self.set_visible_window(False)
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        label.set_track_visited_links(False)
+        # GTK4: set_track_visited_links removed
+        # label.set_track_visited_links(False)
         label.set_selectable(True)
         align.add(label)
-        label.set_alignment(0.0, 0.0)
+        # GTK4: set_alignment removed - use xalign/yalign properties
+        label.set_xalign(0.0)
+        label.set_yalign(0.0)
         self._label = label
         connect_destroy(library, "changed", self._on_library_changed, player)
         connect_destroy(player, "song-started", self._on_song_started)
