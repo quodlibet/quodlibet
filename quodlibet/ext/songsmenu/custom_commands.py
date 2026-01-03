@@ -281,6 +281,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         self.com_index = None
         self.unique_only = False
         submenu = Gtk.PopoverMenu()
+        has_items = False
         for name, c in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
             connect_obj(item, "activate", self.__set_pat, name)
@@ -288,9 +289,10 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                 continue
             item.set_sensitive(c.playlists_only == pl_mode)
             submenu.append(item)
+            has_items = True
 
         self.add_edit_item(submenu)
-        if submenu.get_children():
+        if has_items:
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)

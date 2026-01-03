@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel, get_children
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -111,7 +111,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def __destroy(self, *args):

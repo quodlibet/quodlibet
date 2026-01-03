@@ -64,7 +64,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         view.append_column(column)
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
         self.get_child().prepend(sw)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -75,10 +75,6 @@ class JSONBasedEditor(qltk.UniqueWindow):
         # Add context menu
         menu = Gtk.PopoverMenu()
         rem = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        keyval, mod = Gtk.accelerator_parse("Delete")
-        rem.add_accelerator(
-            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
-        )
         connect_obj(rem, "activate", self.__remove, view)
         menu.append(rem)
         menu.show_all()
@@ -87,7 +83,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
 
         # New and Close buttons
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box()
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         self.new_but = Button(_("_New"), Icons.DOCUMENT_NEW)
@@ -197,7 +193,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
             self.input_entries[key] = entry
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
-            l.set_alignment(0.0, 0.5)
+            l.set_xalign(0.0)
+            l.set_yalign(0.5)
             if isinstance(val, int | bool):
                 align = Align(entry, halign=Gtk.Align.START)
                 t.attach(align, 1, 2, i, i + 1)

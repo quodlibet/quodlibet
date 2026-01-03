@@ -301,6 +301,7 @@ class StatusBar(Gtk.Box):
         self.__dirty = False
         self.set_spacing(12)
         self.task_controller = task_controller
+        self.task_controller.parent = None
         self.task_controller.parent = self
 
         self.default_label = Gtk.Label(selectable=True)

@@ -493,8 +493,21 @@ class ToggleAction(Gio.SimpleAction):
         # GTK4: SimpleAction doesn't have label property
         self.label = kwargs.pop("label", None)
         self.icon_name = kwargs.pop("icon_name", None)
-        # TODO GTK4: Toggle behaviour - may need state_type parameter
-        super().__init__(*args, **kwargs)
+        name = kwargs.pop("name", None)
+        super().__init__(
+            name=name,
+            parameter_type=None,
+            state=GLib.Variant.new_boolean(False)
+        )
+
+    def get_active(self):
+        """Get the toggle state"""
+        state = self.get_state()
+        return state.get_boolean() if state else False
+
+    def set_active(self, active):
+        """Set the toggle state"""
+        self.set_state(GLib.Variant.new_boolean(active))
 
 
 class RadioAction(Gio.SimpleAction):

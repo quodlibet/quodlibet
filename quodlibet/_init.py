@@ -819,6 +819,10 @@ def _init_gtk():
         def set_col_spacings(self, spacing):
             self.set_column_spacing(spacing)
 
+        def set_col_spacing(self, column, spacing):
+            # Grid doesn't support per-column spacing, use uniform spacing
+            self.set_column_spacing(spacing)
+
     Gtk.Table = Table
 
     # TODO: include our own icon theme directory

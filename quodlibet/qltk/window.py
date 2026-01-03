@@ -94,8 +94,6 @@ class Dialog(Gtk.Dialog):
         """Like add_button() but allows to pass an icon name"""
 
         button = Button(label, icon_name)
-        # file chooser uses grab_default() on this
-        button.set_can_default(True)
         button.show()
         self.add_action_widget(button, response_id)
         return button
@@ -173,6 +171,11 @@ class Window(Gtk.Window):
             width, height = fix_default_size(width, height)
         super().set_default_size(width, height)
 
+    def show_now(self):
+        """Show and present the window immediately."""
+        self.show()
+        self.present()
+
     def use_header_bar(self):
         """Try to use a headerbar, returns the widget
         or None if headerbars are disabled (under xfce for example)
@@ -219,17 +222,8 @@ class Window(Gtk.Window):
         See https://bugzilla.gnome.org/show_bug.cgi?id=688830
         """
 
-        try:
-            from gi.repository import GdkX11
-        except ImportError:
-            super().present()
-        else:
-            window = self.get_window()
-            if window and isinstance(window, GdkX11.X11Window):
-                timestamp = GdkX11.x11_get_server_time(window)
-                self.present_with_time(timestamp)
-            else:
-                super().present()
+        # In GTK4, just use the standard present() - it works correctly
+        super().present()
 
     def set_transient_for(self, parent):
         """Set a parent for the window.

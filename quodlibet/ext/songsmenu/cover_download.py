@@ -207,7 +207,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned = Paned(orientation=Gtk.Orientation.VERTICAL)
         paned.ensure_wide_handle()
         sw = Gtk.ScrolledWindow()
-        sw.add(self.flow_box)
+        # GTK4: ScrolledWindow.add() → set_child()
+        sw.set_child(self.flow_box)
 
         # GTK4: pack1() → set_start_child()
 
@@ -223,7 +224,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned.set_resize_end_child(False)
 
         paned.set_shrink_end_child(False)
-        self.vbox.prepend(paned)
+        self.get_content_area().prepend(paned)
 
         connect_destroy(manager, "covers-found", self._covers_found)
         connect_destroy(manager, "searches-complete", self._finished)
@@ -371,7 +372,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         slider.connect("format-value", format_dims)
         slider.connect("value-changed", slider_changed)
-        label = Gtk.Label(_("Preview size"))
+        # GTK4: Label() requires label= keyword argument
+        label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
         hbox.prepend(label)
         hbox.prepend(slider)
@@ -382,7 +384,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         def create_save_box():
             hbox = Gtk.Box()
-            label = Gtk.Label(_("Save destination"))
+            # GTK4: Label() requires label= keyword argument
+            label = Gtk.Label(label=_("Save destination"))
             hbox.prepend(label)
             model = Gtk.ListStore(str)
             for val in SAVE_PATTERNS:
