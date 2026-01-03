@@ -274,9 +274,53 @@ def _init_gtk():
     if not hasattr(Gtk.Widget, "get_toplevel"):
         Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
 
+    # GTK4: add_events removed - event system redesigned with controllers
+    if not hasattr(Gtk.Widget, "add_events"):
+        Gtk.Widget.add_events = lambda self, events: None
+
+    # GTK4: Wrap GObject.connect to ignore removed event signals
+    from gi.repository import GObject
+    _orig_gobject_connect = GObject.Object.connect
+    _removed_signals = {
+        'button-press-event', 'button-release-event', 'motion-notify-event',
+        'key-press-event', 'key-release-event', 'scroll-event',
+        'enter-notify-event', 'leave-notify-event', 'focus-in-event',
+        'focus-out-event', 'configure-event', 'delete-event',
+        'destroy-event', 'expose-event', 'map-event', 'unmap-event',
+        'property-notify-event', 'selection-clear-event', 'visibility-notify-event',
+        'window-state-event', 'damage-event', 'grab-broken-event',
+        'event', 'event-after'
+    }
+    def _connect_compat(self, signal_name, *args, **kwargs):
+        # Silently ignore GTK3 event signals that don't exist in GTK4
+        if signal_name in _removed_signals:
+            print_d(f"Ignoring GTK3 signal connection: {signal_name}")
+            return 0  # Return dummy handler ID
+        try:
+            return _orig_gobject_connect(self, signal_name, *args, **kwargs)
+        except TypeError as e:
+            # Catch "unknown signal name" errors for removed signals
+            if "unknown signal name" in str(e):
+                print_d(f"Ignoring unknown signal: {signal_name}")
+                return 0
+            raise
+    GObject.Object.connect = _connect_compat
+
     # GTK4: Button.add() → Button.set_child()
     if not hasattr(Gtk.Button, "add"):
         Gtk.Button.add = lambda self, child: self.set_child(child)
+
+    # GTK4: Window.add() → Window.set_child()
+    if not hasattr(Gtk.Window, "add"):
+        Gtk.Window.add = lambda self, child: self.set_child(child)
+
+    # GTK4: Box.add() → Box.append() (or prepend depending on context, append is default)
+    if not hasattr(Gtk.Box, "add"):
+        Gtk.Box.add = lambda self, child: self.append(child)
+
+    # GTK4: Frame.add() → Frame.set_child()
+    if not hasattr(Gtk.Frame, "add"):
+        Gtk.Frame.add = lambda self, child: self.set_child(child)
 
     if not hasattr(Gtk.Window, "add_accel_group"):
         Gtk.Window.add_accel_group = lambda self, group: None
@@ -306,6 +350,14 @@ def _init_gtk():
 
         Gtk.AttachOptions = AttachOptions
 
+    # GTK4: Window type property removed - wrap __init__ to filter it out
+    _orig_window_init = Gtk.Window.__init__
+    def _window_init_compat(self, *args, **kwargs):
+        # Remove 'type' kwarg if present (GTK3 only, not supported in GTK4)
+        kwargs.pop('type', None)
+        return _orig_window_init(self, *args, **kwargs)
+    Gtk.Window.__init__ = _window_init_compat
+
     # GTK4 compatibility: Window type hints removed
     if not hasattr(Gtk.Window, "set_type_hint"):
         Gtk.Window.set_type_hint = lambda self, hint: None
@@ -313,6 +365,38 @@ def _init_gtk():
 
     # GTK4 compatibility: Gdk.WindowTypeHint removed
     from gi.repository import Gdk
+
+    # GTK4: EventMask removed - event system redesigned
+    if not hasattr(Gdk, "EventMask"):
+        from enum import IntFlag
+        class EventMask(IntFlag):
+            EXPOSURE_MASK = 1 << 1
+            POINTER_MOTION_MASK = 1 << 2
+            POINTER_MOTION_HINT_MASK = 1 << 3
+            BUTTON_MOTION_MASK = 1 << 4
+            BUTTON1_MOTION_MASK = 1 << 5
+            BUTTON2_MOTION_MASK = 1 << 6
+            BUTTON3_MOTION_MASK = 1 << 7
+            BUTTON_PRESS_MASK = 1 << 8
+            BUTTON_RELEASE_MASK = 1 << 9
+            KEY_PRESS_MASK = 1 << 10
+            KEY_RELEASE_MASK = 1 << 11
+            ENTER_NOTIFY_MASK = 1 << 12
+            LEAVE_NOTIFY_MASK = 1 << 13
+            FOCUS_CHANGE_MASK = 1 << 14
+            STRUCTURE_MASK = 1 << 15
+            PROPERTY_CHANGE_MASK = 1 << 16
+            VISIBILITY_NOTIFY_MASK = 1 << 17
+            PROXIMITY_IN_MASK = 1 << 18
+            PROXIMITY_OUT_MASK = 1 << 19
+            SUBSTRUCTURE_MASK = 1 << 20
+            SCROLL_MASK = 1 << 21
+            TOUCH_MASK = 1 << 22
+            SMOOTH_SCROLL_MASK = 1 << 23
+            TOUCHPAD_GESTURE_MASK = 1 << 24
+            TABLET_PAD_MASK = 1 << 25
+            ALL_EVENTS_MASK = 0x3FFFFFE
+        Gdk.EventMask = EventMask
 
     if not hasattr(Gdk, "WindowTypeHint"):
         from enum import IntEnum
@@ -381,6 +465,47 @@ def _init_gtk():
     # GTK4: CheckMenuItem removed
     Gtk.CheckMenuItem = Gtk.CheckButton
 
+    # GTK4: Arrow removed - create factory class that returns Image
+    if not hasattr(Gtk, "Arrow"):
+        class ArrowFactory:
+            @staticmethod
+            def new(arrow_type, shadow_type):
+                # Map arrow types to icon names
+                icon_map = {
+                    Gtk.ArrowType.UP: "pan-up-symbolic",
+                    Gtk.ArrowType.DOWN: "pan-down-symbolic",
+                    Gtk.ArrowType.LEFT: "pan-start-symbolic",
+                    Gtk.ArrowType.RIGHT: "pan-end-symbolic",
+                }
+                icon_name = icon_map.get(arrow_type, "pan-down-symbolic")
+                return Gtk.Image.new_from_icon_name(icon_name)
+
+            def __call__(self, arrow_type, shadow_type):
+                return self.new(arrow_type, shadow_type)
+
+        Gtk.Arrow = ArrowFactory()
+
+    # GTK4: ArrowType enum - add if missing
+    if not hasattr(Gtk, "ArrowType"):
+        from enum import IntEnum
+        class ArrowType(IntEnum):
+            UP = 0
+            DOWN = 1
+            LEFT = 2
+            RIGHT = 3
+        Gtk.ArrowType = ArrowType
+
+    # GTK4: ShadowType enum - add if missing (used for frames)
+    if not hasattr(Gtk, "ShadowType"):
+        from enum import IntEnum
+        class ShadowType(IntEnum):
+            NONE = 0
+            IN = 1
+            OUT = 2
+            ETCHED_IN = 3
+            ETCHED_OUT = 4
+        Gtk.ShadowType = ShadowType
+
     # GTK4: MenuItem removed - use Button with flat style
     class MenuItem(Gtk.Button):
         def __init__(self, label=None, use_underline=False):
@@ -415,6 +540,17 @@ def _init_gtk():
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 
+    # GTK4: set_border_width removed - use margins instead
+    if not hasattr(Gtk.Frame, "set_border_width"):
+        def _set_border_width(self, width):
+            # In GTK4, use margins instead of border_width
+            self.set_margin_start(width)
+            self.set_margin_end(width)
+            self.set_margin_top(width)
+            self.set_margin_bottom(width)
+        Gtk.Frame.set_border_width = _set_border_width
+        Gtk.Window.set_border_width = _set_border_width
+
     # GTK4: PopoverMenu.append() compatibility
     _orig_popover_menu_init = Gtk.PopoverMenu.__init__
 
@@ -432,13 +568,32 @@ def _init_gtk():
     def _popover_menu_append_compat(self, widget):
         if not hasattr(self, "_menu_box"):
             self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        # Ensure box is set as child on first append
-        if self.get_child() is None:
-            self.set_child(self._menu_box)
+        # Always append to the box, but delay setting it as child until we're in a window
         self._menu_box.append(widget)
+        # Ensure box is set as child, but only if we're in a window
+        if self.get_child() is None:
+            # Only set_child if we're already in a widget hierarchy to avoid realize() issues
+            if self.get_parent() is not None and self.get_root() is not None:
+                self.set_child(self._menu_box)
 
     Gtk.PopoverMenu.__init__ = _popover_menu_init_compat
     Gtk.PopoverMenu.append = _popover_menu_append_compat
+
+    # GTK4: Wrap popup() to prevent crashes when not properly parented
+    _orig_popover_popup = Gtk.PopoverMenu.popup
+    def _popover_menu_popup_compat(self):
+        # Silently fail if not properly set up to avoid crashes
+        if self.get_parent() is None:
+            print_d("PopoverMenu.popup() called without parent, ignoring")
+            return
+        if self.get_root() is None:
+            print_d("PopoverMenu.popup() called before parented to window, ignoring")
+            return
+        # Ensure child is set if we have a menu box
+        if hasattr(self, "_menu_box") and self.get_child() is None:
+            self.set_child(self._menu_box)
+        return _orig_popover_popup(self)
+    Gtk.PopoverMenu.popup = _popover_menu_popup_compat
 
     # GTK4: Table removed - wrap Grid to provide Table API
     class Table(Gtk.Grid):

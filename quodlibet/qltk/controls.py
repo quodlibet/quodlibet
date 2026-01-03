@@ -39,18 +39,20 @@ class Volume(Gtk.VolumeButton):
         player.notify("volume")
         player.notify("mute")
 
-        # TODO: Reimplement with event controllers for GTK4
+        # TODO GTK4: Reimplement with event controllers for GTK4
         # self.connect("event", self._on_button_event, player)
 
         replaygain_menu = VolumeMenu(player)
-        self.connect("popup-menu", self.__popup, replaygain_menu)
-        connect_obj(
-            self,
-            "button-press-event",
-            self.__volume_button_press,
-            replaygain_menu,
-            player,
-        )
+        # TODO GTK4: popup-menu and button-press-event signals don't exist
+        # Need to use Gtk.GestureClick controller instead
+        # self.connect("popup-menu", self.__popup, replaygain_menu)
+        # connect_obj(
+        #     self,
+        #     "button-press-event",
+        #     self.__volume_button_press,
+        #     replaygain_menu,
+        #     player,
+        # )
 
     def __popup(self, widget, menu):
         time = GLib.CURRENT_TIME
@@ -142,7 +144,8 @@ class VolumeMenu(Gtk.PopoverMenu):
         self.__set_mode(player, replaygain_mode)
 
         rg = Gtk.PopoverMenu()
-        rg.show()
+        # GTK4: Don't call show() on unparented widgets - causes crashes
+        # rg.show()
         item.set_submenu(rg)
         item = None
         for mode, title, _profile in self.__modes:

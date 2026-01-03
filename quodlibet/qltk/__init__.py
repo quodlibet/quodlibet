@@ -218,8 +218,27 @@ def find_widgets(widget, type_):
 def menu_popup(menu, shell, item, func, *args):
     """Wrapper to fix API break:
     https://git.gnome.org/browse/gtk+/commit/?id=8463d0ee62b4b22fa
+
+    GTK4: PopoverMenu uses different API, just call popup() with no args
     """
 
+    # GTK4: PopoverMenu.popup() takes no arguments
+    if isinstance(menu, Gtk.PopoverMenu):
+        # Ensure menu has a parent and parent is in a window
+        parent = menu.get_parent()
+        if parent is None:
+            print("Warning: PopoverMenu has no parent, cannot popup")
+            return
+        root = parent.get_root()
+        if root is None:
+            print("Warning: PopoverMenu parent not in window, cannot popup")
+            return
+        # Ensure menu box is set as child before showing (for append compat)
+        if hasattr(menu, "_menu_box") and menu.get_child() is None:
+            menu.set_child(menu._menu_box)
+        return menu.popup()
+
+    # GTK3 fallback (if Gtk.Menu exists)
     if func is not None:
 
         def wrap_pos_func(menu, *args):
@@ -231,6 +250,17 @@ def menu_popup(menu, shell, item, func, *args):
 
 
 def _popup_menu_at_widget(menu, widget, button, time, under):
+    # GTK4: PopoverMenu handles positioning automatically
+    if isinstance(menu, Gtk.PopoverMenu):
+        # PopoverMenu positions itself relative to parent
+        # Set positioning hint based on 'under' parameter
+        if hasattr(menu, 'set_position'):
+            pos = Gtk.PositionType.BOTTOM if under else Gtk.PositionType.TOP
+            menu.set_position(pos)
+        menu_popup(menu, None, None, None, None, button, time)
+        return
+
+    # GTK3 fallback with manual positioning
     def pos_func(menu, data, widget=widget):
         screen = widget.get_screen()
         ref = get_top_parent(widget)
@@ -242,7 +272,8 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
         # fit menu to screen, aligned per text direction
         screen_width = screen.get_width()
         screen_height = screen.get_height()
-        menu.realize()
+        # GTK4: Don't call realize() - it causes crashes
+        # menu.realize()
         ma = menu.get_allocation()
 
         menu_y_under = y + dy + wa.height
@@ -275,6 +306,16 @@ def _ensure_menu_attached(menu, widget):
     if isinstance(widget, Gtk.Button):
         widget = widget.get_parent() or widget
 
+    # GTK4: PopoverMenu uses set_parent() instead of attach_to_widget()
+    if isinstance(menu, Gtk.PopoverMenu):
+        current_parent = menu.get_parent()
+        if current_parent is not widget:
+            if current_parent is not None:
+                menu.unparent()
+            menu.set_parent(widget)
+        return
+
+    # GTK3 fallback
     attached_widget = menu.get_attach_widget()
     if attached_widget is widget:
         return

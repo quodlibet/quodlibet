@@ -1092,14 +1092,23 @@ class RCMTreeView(BaseView):
         else:
             pos_func = None
 
-        # force attach the menu to the view
-        attached_widget = menu.get_attach_widget()
-        if attached_widget != self:
-            if attached_widget is not None:
-                menu.detach()
-            menu.attach_to_widget(self, None)
-
-        menu_popup(menu, None, None, pos_func, None, button, time)
+        # GTK4: PopoverMenu uses set_parent() instead of attach_to_widget()
+        if isinstance(menu, Gtk.PopoverMenu):
+            current_parent = menu.get_parent()
+            if current_parent != self:
+                if current_parent is not None:
+                    menu.unparent()
+                menu.set_parent(self)
+            # GTK4: PopoverMenus position automatically, ignore pos_func
+            menu_popup(menu, None, None, None, None, button, time)
+        else:
+            # GTK3 fallback
+            attached_widget = menu.get_attach_widget()
+            if attached_widget != self:
+                if attached_widget is not None:
+                    menu.detach()
+                menu.attach_to_widget(self, None)
+            menu_popup(menu, None, None, pos_func, None, button, time)
         return True
 
     def __popup_position(self, menu, *args):
@@ -1116,7 +1125,8 @@ class RCMTreeView(BaseView):
         x, y = self.get_window().get_origin()[1:]
         x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
 
-        menu.realize()
+        # GTK4: Don't call realize() - causes crashes, PopoverMenus don't use this anyway
+        # menu.realize()
         ma = menu.get_allocation()
         menu_y = rect.height + y
         if self.get_direction() == Gtk.TextDirection.LTR:
