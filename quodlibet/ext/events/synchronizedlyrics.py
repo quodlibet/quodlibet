@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 import functools
-import os
 import re
 from pathlib import Path
 
@@ -20,7 +19,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.dprint import print_d
 
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
