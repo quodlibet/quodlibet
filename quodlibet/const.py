@@ -62,7 +62,7 @@ class MinVersions:
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
         "mutagen version.",
     )
-    GTK = Version("GTK+", 3, 18)
+    GTK = Version("GTK+", 4, 10)
     PYGOBJECT = Version("PyGObject", 3, 18)
     GSTREAMER = Version("GStreamer", 1, 8)
 

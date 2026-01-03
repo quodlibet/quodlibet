@@ -23,14 +23,13 @@ from quodlibet.qltk import Icons, add_css
 from quodlibet.util import connect_obj
 
 
-class LyricsPane(Gtk.VBox):
+class LyricsPane(Gtk.Box):
     def __init__(self, parent, _library):
-        super().__init__(spacing=12, margin=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.song = None
         self.title = _("Lyrics")
         self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         self.save = save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.delete = delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)

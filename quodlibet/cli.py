@@ -25,10 +25,15 @@ def exit_(status=None, notify_startup=False):
     if notify_startup:
         import gi
 
-        gi.require_version("Gdk", "3.0")
+        gi.require_version("Gdk", "4.0")
         from gi.repository import Gdk
 
-        Gdk.notify_startup_complete()
+        if hasattr(Gdk, 'notify_startup_complete'):
+            Gdk.notify_startup_complete()
+        else:
+            display = Gdk.Display.get_default()
+            if display and hasattr(display, 'notify_startup_complete'):
+                display.notify_startup_complete()
     raise SystemExit(status)
 
 

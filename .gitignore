@@ -63,3 +63,5 @@ venv/
 # Direnv
 .direnv
 .env
+
+CLAUDE.md

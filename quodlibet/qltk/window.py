@@ -94,8 +94,6 @@ class Dialog(Gtk.Dialog):
         """Like add_button() but allows to pass an icon name"""
 
         button = Button(label, icon_name)
-        # file chooser uses grab_default() on this
-        button.set_can_default(True)
         button.show()
         self.add_action_widget(button, response_id)
         return button
@@ -124,9 +122,10 @@ class Window(Gtk.Window):
                 self.set_modal(True)
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        # TODO GTK4: check what we want to do here given removal of positioning in GTK4
+        # self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         connect_obj(self, "destroy", type(self).windows.remove, self)
-        self.connect("key-press-event", self._on_key_press)
+        # self.connect("key-press-event", self._on_key_press)
 
     def _on_key_press(self, widget, event):
         is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG
@@ -172,9 +171,14 @@ class Window(Gtk.Window):
             width, height = fix_default_size(width, height)
         super().set_default_size(width, height)
 
+    def show_now(self):
+        """Show and present the window immediately."""
+        self.show()
+        self.present()
+
     def use_header_bar(self):
-        """Try to use a headerbar, returns the widget or None in case
-        GTK+ is too old or headerbars are disabled (under xfce for example)
+        """Try to use a headerbar, returns the widget
+        or None if headerbars are disabled (under xfce for example)
         """
 
         assert not self._header_bar
@@ -218,17 +222,8 @@ class Window(Gtk.Window):
         See https://bugzilla.gnome.org/show_bug.cgi?id=688830
         """
 
-        try:
-            from gi.repository import GdkX11
-        except ImportError:
-            super().present()
-        else:
-            window = self.get_window()
-            if window and isinstance(window, GdkX11.X11Window):
-                timestamp = GdkX11.x11_get_server_time(window)
-                self.present_with_time(timestamp)
-            else:
-                super().present()
+        # In GTK4, just use the standard present() - it works correctly
+        super().present()
 
     def set_transient_for(self, parent):
         """Set a parent for the window.
@@ -286,12 +281,34 @@ class PersistentWindowMixin:
         self.__save_size_pos_deferred = DeferredSignal(
             self.__do_save_size_pos, timeout=50, owner=self
         )
-        self.connect("configure-event", self.__configure_event)
-        self.connect("window-state-event", self.__window_state_changed)
+
+        # GTK4: configure-event and window-state-event removed
+        # Use property notifications instead
+        if gtk_version >= (4, 0):
+            # Track window size changes
+            self.connect("notify::default-width", self.__configure_notify)
+            self.connect("notify::default-height", self.__configure_notify)
+            # Track window state changes
+            self.connect("notify::maximized", self.__window_state_notify)
+            self.connect("notify::fullscreened", self.__window_state_notify)
+            parent = self.get_transient_for()
+            if parent:
+                connect_destroy(
+                    parent, "notify::default-width", self.__parent_configure_notify
+                )
+                connect_destroy(
+                    parent, "notify::default-height", self.__parent_configure_notify
+                )
+        else:
+            self.connect("configure-event", self.__configure_event)
+            self.connect("window-state-event", self.__window_state_changed)
+            parent = self.get_transient_for()
+            if parent:
+                connect_destroy(
+                    parent, "configure-event", self.__parent_configure_event
+                )
+
         self.connect("notify::visible", self.__visible_changed)
-        parent = self.get_transient_for()
-        if parent:
-            connect_destroy(parent, "configure-event", self.__parent_configure_event)
         self.__restore_window_state()
 
     def __visible_changed(self, *args):
@@ -349,9 +366,8 @@ class PersistentWindowMixin:
         except ValueError:
             return
 
-        screen = self.get_screen()
-        x = min(x, screen.get_width())
-        y = min(y, screen.get_height())
+        # GTK4: get_screen() removed, skip screen size clamping
+        # GTK4 handles window sizing constraints automatically
         if x >= 1 and y >= 1:
             self.resize(x, y)
 
@@ -369,6 +385,30 @@ class PersistentWindowMixin:
 
         self.__save_size_pos_deferred()
         return False
+
+    def __configure_notify(self, *args):
+        """GTK4: Handle notify::default-width/height instead of configure-event"""
+        self.__save_size_pos_deferred()
+
+    def __parent_configure_notify(self, *args):
+        """GTK4: Handle parent notify signals instead of configure-event"""
+        self.__do_save_pos()
+
+    def __window_state_notify(self, window, pspec):
+        """GTK4: Handle notify::maximized/fullscreened instead of window-state-event"""
+        # Update state tracking
+        state = 0
+        if window.is_maximized():
+            state |= Gdk.WindowState.MAXIMIZED
+        if window.is_fullscreen():
+            state |= Gdk.WindowState.FULLSCREEN
+        self.__state = state
+
+        # Save maximized state
+        if state & Gdk.WindowState.WITHDRAWN:
+            return
+        maximized = int(bool(state & Gdk.WindowState.MAXIMIZED))
+        config.set("memory", self.__conf("maximized"), maximized)
 
     def _should_ignore_state(self):
         if self.__state & Gdk.WindowState.MAXIMIZED:

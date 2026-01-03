@@ -72,9 +72,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         hp.show()
         self.add(hp)
 
-        vb = Gtk.VBox()
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
 
-        bbox = Gtk.HBox(spacing=6)
+        bbox = Gtk.Box(spacing=6)
 
         def prefs_cb(*args):
             window = PreferencesWindow(self)
@@ -87,14 +89,14 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         def about_cb(*args):
             about = AboutDialog(self, app)
             about.run()
-            about.destroy()
+            # GTK4: destroy() removed - about cleaned up automatically
 
         def update_cb(*args):
             d = UpdateDialog(self)
             d.run()
-            d.destroy()
+            # GTK4: destroy() removed - d cleaned up automatically
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         about_item = MenuItem(_("_About"), Icons.HELP_ABOUT)
         about_item.connect("activate", about_cb)
@@ -117,27 +119,27 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         menu.show_all()
 
         menu_button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.BUTTON),
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.LARGE),
             arrow=True,
             down=False,
         )
         menu_button.set_menu(menu)
-        bbox.pack_start(menu_button, False, True, 0)
+        bbox.prepend(menu_button)
 
         statusbox = StatusBarBox()
         self.statusbar = statusbox.statusbar
 
-        bbox.pack_start(statusbox, False, True, 0)
+        bbox.prepend(statusbox)
 
         l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        bbox.pack_start(l, True, True, 0)
+        bbox.prepend(l)
 
         self._fs = fs = MainFileSelector()
 
-        vb.pack_start(fs, True, True, 0)
-        vb.pack_start(Align(bbox, border=6), False, True, 0)
+        vb.prepend(fs)
+        vb.prepend(Align(bbox, border=6), False, True, 0)
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)
@@ -176,7 +178,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         # GtkosxApplication assumes the menu bar is mapped, so add
         # it but don't show it.
         self._dummy_osx_menu_bar = Gtk.MenuBar()
-        vb.pack_start(self._dummy_osx_menu_bar, False, False, 0)
+        vb.prepend(self._dummy_osx_menu_bar)
 
     def __library_changed(self, library, songs, fs):
         fs.rescan()
@@ -222,22 +224,23 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         if songs:
             menu = self.pm.menu(self.__library, songs)
             if menu is None:
-                menu = Gtk.Menu()
+                menu = Gtk.PopoverMenu()
             else:
                 menu.prepend(SeparatorMenuItem())
         else:
-            menu = Gtk.Menu()
+            menu = Gtk.PopoverMenu()
 
         b = TrashMenuItem()
         b.connect("activate", self.__delete, filenames, fs)
         menu.prepend(b)
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         menu.connect("selection-done", selection_done_cb)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __delete(self, item, paths, fs):
         trash_files(self, paths)
@@ -306,8 +309,8 @@ class PreferencesWindow(QLPreferencesWindow):
         config.save()
 
 
-class StatusBarBox(Gtk.HBox):
+class StatusBarBox(Gtk.Box):
     def __init__(self):
         super().__init__(spacing=6)
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.pack_start(self.statusbar, True, True, 0)
+        self.prepend(self.statusbar)

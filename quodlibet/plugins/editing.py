@@ -95,9 +95,8 @@ class TagsFromPathPlugin:
         return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
-class EditTagsPlugin(Gtk.ImageMenuItem):
-    """Plugins of this type are subclasses of gtk.ImageMenuItem.
-    They will be added to the context menu of the EditTags tree view.
+class EditTagsPlugin(Gtk.Widget):
+    """Plugins will be added to the context menu of the EditTags tree view.
 
     The 'tags' attribute is a list of tags this plugin should appear on,
     or false if it should appear for all tags. This must be a class

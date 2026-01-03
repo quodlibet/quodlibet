@@ -116,7 +116,7 @@ class OneSong(Gtk.Box):
         if song in songs:
             for c in vbox.get_children():
                 vbox.remove(c)
-                c.destroy()
+                # GTK4: destroy() removed - c cleaned up automatically
             self._title(song)
             self._album(song)
             self._people(song)
@@ -160,13 +160,13 @@ class OneSong(Gtk.Box):
             text.append(_("Produced by %s") % (util.escape(song.comma("producer"))))
 
         w = Label(markup="\n".join(text), ellipsize=True)
-        hb = Gtk.HBox(spacing=12)
+        hb = Gtk.Box(spacing=12)
 
         hb.pack_start(w, True, True, 0)
         self.pack_start(Frame(tag("album"), hb), False, False, 0)
 
         cover = ReactiveCoverImage(song=song)
-        hb.pack_start(cover, False, True, 0)
+        hb.prepend(cover)
 
     def _people(self, song):
         data = []

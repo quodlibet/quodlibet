@@ -36,7 +36,7 @@ from quodlibet.util import connect_obj
 T = TypeVar("T")
 
 
-class FileSystem(Browser, Gtk.HBox):
+class FileSystem(Browser, Gtk.Box):
     __library = None
 
     name = _("File System")
@@ -49,8 +49,20 @@ class FileSystem(Browser, Gtk.HBox):
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "filesystem_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -83,17 +95,19 @@ class FileSystem(Browser, Gtk.HBox):
         super().__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
-            ("text/uri-list", 0, self.TARGET_EXT),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
+            # ("text/uri-list", 0, self.TARGET_EXT),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        dt.connect("drag-data-get", self.__drag_data_get)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+        # dt.connect("drag-data-get", self.__drag_data_get)
 
         sel = dt.get_selection()
         sel.unselect_all()
@@ -101,7 +115,7 @@ class FileSystem(Browser, Gtk.HBox):
         sel.connect("changed", self._on_selection_changed)
         dt.connect("row-activated", lambda *a: self.songs_activated())
         sw.add(dt)
-        self.pack_start(sw, True, True, 0)
+        self.prepend(sw)
 
         self.show_all()
 

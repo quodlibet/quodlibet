@@ -43,7 +43,6 @@ class AnimOsd(EventPlugin):
                 self.__current_window.fade_out()
             else:
                 self.__current_window.hide()
-                self.__current_window.destroy()
 
         if song is None:
             self.__current_window = None
@@ -61,7 +60,6 @@ class AnimOsd(EventPlugin):
 
     def plugin_on_error(self, song, error):
         if self.__current_window is not None:
-            self.__current_window.destroy()
             self.__current_window = None
 
     @staticmethod
@@ -73,7 +71,6 @@ class AnimOsd(EventPlugin):
         window.hide()
         if self.__current_window is window:
             self.__current_window = None
-        window.destroy()
 
     def __fade_finished(self, window, fade_in):
         if fade_in:
