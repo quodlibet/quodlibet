@@ -339,6 +339,10 @@ def _init_gtk():
     if not hasattr(Gtk.Box, "add"):
         Gtk.Box.add = lambda self, child: self.append(child)
 
+    # GTK4: ComboBox.add() → ComboBox.set_child() for entry widget
+    if not hasattr(Gtk.ComboBox, "add"):
+        Gtk.ComboBox.add = lambda self, child: self.set_child(child)
+
     # GTK4: Wrap Box.prepend/append to ignore GTK3 pack_start/pack_end arguments
     _orig_box_prepend = Gtk.Box.prepend
     _orig_box_append = Gtk.Box.append
@@ -446,6 +450,28 @@ def _init_gtk():
 
         Gdk.WindowTypeHint = WindowTypeHint
 
+    # GTK4 compatibility: Gdk.WindowState removed
+    if not hasattr(Gdk, "WindowState"):
+        from enum import IntFlag
+
+        class WindowState(IntFlag):
+            """GTK4 compatibility shim for Gdk.WindowState.
+
+            In GTK4, window states are handled via Gdk.ToplevelState.
+            This provides a compatible enum for GTK3 code.
+            """
+            WITHDRAWN = 1 << 0
+            ICONIFIED = 1 << 1
+            MAXIMIZED = 1 << 2
+            STICKY = 1 << 3
+            FULLSCREEN = 1 << 4
+            ABOVE = 1 << 5
+            BELOW = 1 << 6
+            FOCUSED = 1 << 7
+            TILED = 1 << 8
+
+        Gdk.WindowState = WindowState
+
     # GTK4 compatibility: Gtk.WindowType removed (used for Window constructor)
     if not hasattr(Gtk, "WindowType"):
         from enum import IntEnum
@@ -493,11 +519,68 @@ def _init_gtk():
 
         Gtk.UIManager = UIManager
 
+    # GTK4: AccelGroup removed - create dummy for compatibility
+    class AccelGroup(GObject.Object):
+        """Dummy AccelGroup for GTK4 compatibility.
+
+        In GTK4, AccelGroup was removed in favor of application-wide
+        keyboard shortcuts via GtkApplication. This dummy allows
+        code to continue creating AccelGroups without crashing.
+        """
+        def __init__(self):
+            super().__init__()
+
+        def connect(self, *args, **kwargs):
+            """Dummy connect - does nothing in GTK4"""
+            pass
+
+        def disconnect(self, *args, **kwargs):
+            """Dummy disconnect - does nothing in GTK4"""
+            pass
+
+    Gtk.AccelGroup = AccelGroup
+
     # GTK4: ImageMenuItem removed - dummy for isinstance checks
     class ImageMenuItem:
         pass
 
     Gtk.ImageMenuItem = ImageMenuItem
+
+    # GTK4: Alignment widget removed - use Box with alignment properties
+    class Alignment(Gtk.Box):
+        """Dummy Alignment for GTK4 compatibility.
+
+        In GTK4, Gtk.Alignment was removed. Use widget alignment
+        properties (halign, valign, margins) directly on widgets.
+        This provides a simple Box container as a replacement.
+        """
+        def __init__(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0):
+            super().__init__()
+            # Store these for compatibility but don't use them
+            self._xalign = xalign
+            self._yalign = yalign
+            self._xscale = xscale
+            self._yscale = yscale
+
+        def set(self, xalign, yalign, xscale, yscale):
+            """GTK4: set() method for compatibility"""
+            self._xalign = xalign
+            self._yalign = yalign
+            self._xscale = xscale
+            self._yscale = yscale
+
+        def set_padding(self, top, bottom, left, right):
+            """GTK4: Use margins instead of padding"""
+            self.set_margin_top(top)
+            self.set_margin_bottom(bottom)
+            self.set_margin_start(left)
+            self.set_margin_end(right)
+
+        def add(self, widget):
+            """Add a child widget"""
+            self.append(widget)
+
+    Gtk.Alignment = Alignment
 
     # GTK4: CheckMenuItem removed
     Gtk.CheckMenuItem = Gtk.CheckButton
@@ -591,6 +674,7 @@ def _init_gtk():
             self.set_margin_bottom(width)
         Gtk.Frame.set_border_width = _set_border_width
         Gtk.Window.set_border_width = _set_border_width
+        Gtk.Paned.set_border_width = _set_border_width
 
     # GTK4: PopoverMenu.append() compatibility
     _orig_popover_menu_init = Gtk.PopoverMenu.__init__

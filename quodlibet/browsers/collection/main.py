@@ -222,7 +222,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if view.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)
         column.set_cell_data_func(imgrender, cell_data_pb)
         view.append_column(column)

@@ -12,7 +12,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, get_children
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import bookmarks
 from quodlibet.qltk.x import Align
@@ -369,8 +369,9 @@ class SeekButton(HSlider):
         slider_width = min(max(slider_width, 170), 400)
         self.set_slider_length(slider_width)
 
-        for child in menu.get_children()[2:-1]:
+        # GTK4: Use get_children() helper instead of direct method call
+        for child in get_children(menu)[2:-1]:
             menu.remove(child)
             # GTK4: destroy() removed - child cleaned up automatically
-        menu.get_children()[-1].set_sensitive(self.__seekable)
+        get_children(menu)[-1].set_sensitive(self.__seekable)
         self.scale.emit("value-changed")

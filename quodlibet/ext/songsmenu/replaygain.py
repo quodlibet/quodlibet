@@ -386,7 +386,8 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn()
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         icon_render = Gtk.CellRendererPixbuf()
-        column.prepend(icon_render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(icon_render, True)
         column.set_cell_data_func(icon_render, icon_cdf)
         view.append_column(column)
 
@@ -401,7 +402,8 @@ class RGDialog(Dialog):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         track_render = Gtk.CellRendererText()
         track_render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.prepend(track_render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(track_render, True)
         column.set_cell_data_func(track_render, track_cdf)
         view.append_column(column)
 
@@ -413,7 +415,8 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Progress"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         progress_render = Gtk.CellRendererProgress()
-        column.prepend(progress_render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(progress_render, True)
         column.set_cell_data_func(progress_render, progress_cdf)
         view.append_column(column)
 
@@ -428,7 +431,8 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Gain"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         gain_renderer = Gtk.CellRendererText()
-        column.prepend(gain_renderer, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(gain_renderer, True)
         column.set_cell_data_func(gain_renderer, gain_cdf)
         view.append_column(column)
 
@@ -443,7 +447,8 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Peak"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         peak_renderer = Gtk.CellRendererText()
-        column.prepend(peak_renderer, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(peak_renderer, True)
         column.set_cell_data_func(peak_renderer, peak_cdf)
         view.append_column(column)
 

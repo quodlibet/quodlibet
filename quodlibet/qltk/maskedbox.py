@@ -70,7 +70,8 @@ class MaskedBox(Gtk.Box):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.set_cell_data_func(render, cdf)
 
         render = Gtk.CellRendererText()

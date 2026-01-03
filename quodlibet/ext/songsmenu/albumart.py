@@ -640,12 +640,13 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         search_labelresultsmax.set_halign(Gtk.Align.END)
         search_labelresultsmax.set_valign(Gtk.Align.CENTER)
         search_labelresultsmax.set_tooltip_text(_("Per engine 'at best' results limit"))
+        # GTK4: step_incr/page_incr renamed to step_increment/page_increment
         search_adjresultsmax = Gtk.Adjustment(
             value=int(self.config_get("resultsmax", 3)),
             lower=1,
             upper=REQUEST_LIMIT_MAX,
-            step_incr=1,
-            page_incr=0,
+            step_increment=1,
+            page_increment=0,
             page_size=0,
         )
         self.search_spinresultsmax = Gtk.SpinButton(
@@ -705,8 +706,11 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
             section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
         )
         hpaned.set_border_width(widget_space)
-        hpaned.pack1(left_vbox, shrink=False)
-        hpaned.pack2(image, shrink=False)
+        # GTK4: pack1/pack2() → set_start_child/set_end_child()
+        hpaned.set_start_child(left_vbox)
+        hpaned.set_shrink_start_child(False)
+        hpaned.set_end_child(image)
+        hpaned.set_shrink_end_child(False)
 
         self.add(hpaned)
 
@@ -779,7 +783,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         """set the text and move the cursor to the end"""
 
         self.search_fieldraw.set_text(text)
-        self.search_fieldraw.emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS, 0, False)
+        # GTK4: Use set_position(-1) to move cursor to end instead of emitting move-cursor signal
+        self.search_fieldraw.set_position(-1)
 
     def __select_callback(self, selection, image):
         model, iter = selection.get_selected()

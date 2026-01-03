@@ -58,7 +58,8 @@ class Pane(AllTreeView):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
 
         def text_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -70,7 +71,8 @@ class Pane(AllTreeView):
         render_count = Gtk.CellRendererText()
         render_count.set_property("xalign", 1.0)
         render_count.set_property("max-width-chars", 5)
-        column.append(render_count, True)
+        # GTK4: TreeViewColumn.append() removed - use pack_end() instead
+        column.pack_end(render_count, True)
         # Tiny columns break too much rendering
         column.set_min_width(150)
 

@@ -136,10 +136,12 @@ class PythonConsole(Gtk.ScrolledWindow):
             "scrolledwindow { padding: 6px; "
             "background-color: white; background-color: @content_view_bg;}",
         )
-        self.view.modify_font(Pango.font_description_from_string("Monospace"))
+        # GTK4: modify_font() removed - use CSS instead
+        add_css(self.view, "textview { font-family: monospace; }")
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
-        self.add(self.view)
+        # GTK4: ScrolledWindow.add() → set_child()
+        self.set_child(self.view)
         self.view.show()
 
         buffer = self.view.get_buffer()

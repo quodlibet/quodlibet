@@ -378,7 +378,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             save_filename = Gtk.ComboBox(model=model)
             label.set_mnemonic_widget(save_filename)
             cell = Gtk.CellRendererText()
-            save_filename.prepend(cell, True)
+            # GTK4: ComboBox.prepend() removed - use pack_start() instead
+            save_filename.pack_start(cell, True)
 
             def draw_save_type(column, cell, model, it, data):
                 pat_text = model[it][0]

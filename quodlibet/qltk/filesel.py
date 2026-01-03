@@ -204,7 +204,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         render = Gtk.CellRendererText()
         if self.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
@@ -531,7 +532,8 @@ class FileSelector(Paned):
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)

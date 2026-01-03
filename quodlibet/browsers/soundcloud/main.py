@@ -267,7 +267,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         column.set_cell_data_func(renderpb, cdf)
 
         view.append_column(column)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.add_attribute(render, "text", self.ModelIndex.NAME)
         view.set_model(model)
 

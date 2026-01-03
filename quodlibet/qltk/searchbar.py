@@ -21,7 +21,7 @@ from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel, get_children
 from quodlibet.util import limit_songs, DeferredSignal
 
 
@@ -98,7 +98,8 @@ class SearchBarBox(Gtk.Box):
             key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0, lambda *x: entry.mnemonic_activate(True))
 
-        for child in self.get_children():
+        # GTK4: Use get_children() helper instead of direct method call
+        for child in get_children(self):
             child.show_all()
 
     def set_enabled(self, enabled=True):
@@ -219,7 +220,8 @@ class LimitSearchBarBox(SearchBarBox):
         }
 
         def __init__(self):
-            super().__init__(spacing=3, no_show_all=True)
+            # GTK4: no_show_all property removed
+            super().__init__(spacing=3)
             label = Gtk.Label(label=_("_Limit:"))
             self.prepend(label)
 
@@ -236,7 +238,8 @@ class LimitSearchBarBox(SearchBarBox):
             self.__weight.connect("toggled", self.__changed)
             self.prepend(self.__weight)
 
-            for child in self.get_children():
+            # GTK4: Use get_children() helper instead of direct method call
+            for child in get_children(self):
                 child.show()
 
         def __changed(self, *args):
@@ -293,14 +296,15 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._old_placeholder = self._entry.get_placeholder_text()
         self._old_tooltip = self._entry.get_tooltip_text()
 
-        self._add_button = Gtk.Button.new_from_icon_name("list-add", Gtk.IconSize.LARGE)
+        # GTK4: Button.new_from_icon_name() only takes icon_name, not size
+        self._add_button = Gtk.Button.new_from_icon_name("list-add")
         self._add_button.set_no_show_all(True)
         self.prepend(self._add_button)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
+        # GTK4: no_show_all property removed
         self.flow_box = Gtk.FlowBox(
-            no_show_all=True,
             max_children_per_line=99,
             selection_mode=Gtk.SelectionMode.NONE,
         )

@@ -75,7 +75,8 @@ class TrackNumbers(Gtk.Box):
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -88,7 +89,8 @@ class TrackNumbers(Gtk.Box):
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
         column = TreeViewColumn(title=_("Track"))
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_track(column, cell, model, iter_, data):

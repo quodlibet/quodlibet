@@ -229,13 +229,11 @@ class StandaloneEditor(_KeyValueEditor):
 def clone_css_classes(src, dest):
     """Makes dest have the same css classes as src"""
 
-    src_ctx = src.get_style_context()
-    dest_ctx = dest.get_style_context()
-
-    for class_ in dest_ctx.list_classes():
-        dest_ctx.remove_class(class_)
-    for class_ in src_ctx.list_classes():
-        dest_ctx.add_class(class_)
+    # GTK4: StyleContext.list_classes() removed - use widget methods directly
+    for class_ in dest.get_css_classes():
+        dest.remove_css_class(class_)
+    for class_ in src.get_css_classes():
+        dest.add_css_class(class_)
 
 
 class ComboBoxEntrySave(Gtk.ComboBox):
@@ -281,7 +279,8 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.add_attribute(render, "icon-name", 2)
 
         render = Gtk.CellRendererText()
-        self.prepend(render, True)
+        # GTK4: ComboBox.prepend() removed - use pack_start() instead
+        self.pack_start(render, True)
         self.add_attribute(render, "text", 1)
 
         self.set_row_separator_func(self.__separator_func, None)

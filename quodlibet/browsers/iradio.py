@@ -633,7 +633,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         view.append_column(column)
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.add_attribute(render, "text", self.NAME)
 
         view.set_model(model)

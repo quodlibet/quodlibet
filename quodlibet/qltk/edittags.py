@@ -473,7 +473,8 @@ class EditTags(Gtk.Box):
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn()
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
         column.set_fixed_width(24)
         column.set_expand(False)
 
@@ -493,7 +494,8 @@ class EditTags(Gtk.Box):
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("Tag"))
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
 
         def cell_data_tag(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
@@ -514,7 +516,8 @@ class EditTags(Gtk.Box):
         render.connect("edited", self.__edit_tag, model)
         render.connect("editing-started", self.__value_editing_started, model, library)
         column = TreeViewColumn(title=_("Value"))
-        column.prepend(render, True)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
+        column.pack_start(render, True)
 
         def cell_data_value(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
