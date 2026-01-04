@@ -77,10 +77,12 @@ class EditBookmarksPane(Gtk.Box):
         time.set_size_request(65, -1)
         self.markname = name = Gtk.Entry()
         self.add = add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.MENU)
-        hb.pack_start(time, False, True, 0)
-        hb.pack_start(name, True, True, 0)
-        hb.pack_start(add, False, True, 0)
-        self.pack_start(hb, False, True, 0)
+        # GTK4: Use append() with hexpand instead of pack_start()
+        hb.append(time)
+        name.set_hexpand(True)
+        hb.append(name)
+        hb.append(add)
+        self.append(hb)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -107,7 +109,9 @@ class EditBookmarksPane(Gtk.Box):
         render.set_property("editable", True)
         render.connect("edited", self.__edit_name, model)
         sw.get_child().append_column(col)
-        self.pack_start(sw, True, True, 0)
+        # GTK4: Use append() with vexpand for scrolled window
+        sw.set_vexpand(True)
+        self.append(sw)
         add_css(self, "* { margin: 12px } ")
         self.accels = Gtk.AccelGroup()
 

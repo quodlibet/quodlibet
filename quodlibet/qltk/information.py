@@ -132,7 +132,7 @@ class OneSong(Gtk.Box):
         text = util.italic(song.comma("title"))
         if "version" in song:
             text += "\n" + util.escape(song.comma("version"))
-        self.pack_start(TitleLabel(text, is_markup=True), False, False, 0)
+        self.append(TitleLabel(text, is_markup=True))
         self.title = song.comma("title")
 
     def _album(self, song):
@@ -162,8 +162,10 @@ class OneSong(Gtk.Box):
         w = Label(markup="\n".join(text), ellipsize=True)
         hb = Gtk.Box(spacing=12)
 
-        hb.pack_start(w, True, True, 0)
-        self.pack_start(Frame(tag("album"), hb), False, False, 0)
+        # GTK4: Use append() with hexpand instead of pack_start()
+        w.set_hexpand(True)
+        hb.append(w)
+        self.append(Frame(tag("album"), hb))
 
         cover = ReactiveCoverImage(song=song)
         hb.prepend(cover)
@@ -206,7 +208,7 @@ class OneSong(Gtk.Box):
             data.append((name, text, True))
 
         table = table_of(data)
-        self.pack_start(Frame(tag("~people"), table), False, False, 0)
+        self.append(Frame(tag("~people"), table))
 
     def _library(self, song):
         def counter(i):
@@ -240,7 +242,7 @@ class OneSong(Gtk.Box):
 
         t = table_of(data)
 
-        self.pack_start(Frame(_("Library"), t), False, False, 0)
+        self.append(Frame(_("Library"), t))
 
     def _file(self, song):
         def ftime(t):
@@ -268,7 +270,7 @@ class OneSong(Gtk.Box):
             (_("modified"), mtime, True),
         ]
         t = table_of(table)
-        self.pack_start(Frame(_("File"), t), False, False, 0)
+        self.append(Frame(_("File"), t))
 
     def _additional(self, song):
         if "website" not in song and "comment" not in song:
@@ -293,7 +295,7 @@ class OneSong(Gtk.Box):
         ]
         table = table_of(data)
 
-        self.pack_start(Frame(_("Additional"), table), False, False, 0)
+        self.append(Frame(_("Additional"), table))
 
 
 class OneAlbum(Gtk.Box):
@@ -313,7 +315,7 @@ class OneAlbum(Gtk.Box):
         markup = util.italic(text)
         if "date" in song:
             markup += " <small>({})</small>".format(util.escape(song("~year")))
-        self.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
+        self.append(TitleLabel(markup, is_markup=True))
 
     def _album(self, songs):
         text = []
@@ -356,9 +358,11 @@ class OneAlbum(Gtk.Box):
 
         w = Label(markup="\n".join(text), ellipsize=True)
         hb = Gtk.HBox(spacing=12)
-        hb.pack_start(w, True, True, 0)
-        hb.pack_start(ReactiveCoverImage(song=song), False, True, 0)
-        self.pack_start(Frame(_("Tracks"), hb), False, False, 0)
+        # GTK4: Use append() with hexpand instead of pack_start()
+        w.set_hexpand(True)
+        hb.append(w)
+        hb.append(ReactiveCoverImage(song=song))
+        self.append(Frame(_("Tracks"), hb))
 
     def _people(self, songs):
         tags_ = PEOPLE
@@ -378,7 +382,7 @@ class OneAlbum(Gtk.Box):
                 data.append((name, "\n".join(values), True))
 
         table = table_of(data)
-        self.pack_start(Frame(tag("~people"), table), False, False, 0)
+        self.append(Frame(tag("~people"), table))
 
     def _description(self, songs):
         text = []
@@ -414,7 +418,7 @@ class OneAlbum(Gtk.Box):
             title = util.italic(song.comma("~title~version"))
             text.append(f"{ts}{track: >2}. {title}")
         l = Label(markup="\n".join(text), ellipsize=True)
-        self.pack_start(Frame(_("Track List"), l), False, False, 0)
+        self.append(Frame(_("Track List"), l))
 
 
 class OneArtist(Gtk.Box):
@@ -427,7 +431,7 @@ class OneArtist(Gtk.Box):
     def _title(self, songs):
         self.title = songs[0]("artist")
         l = TitleLabel(self.title)
-        self.pack_start(l, False, False, 0)
+        self.append(l)
 
     def _album(self, songs):
         albums, no_album_count = _sort_albums(songs)
@@ -463,12 +467,12 @@ class OneArtist(Gtk.Box):
             else:
                 widget = Gtk.Image.new_from_pixbuf(missing_pb)
 
-            box.pack_start(widget, False, False, 0)
+            box.append(widget)
             widget.set_halign(Gtk.Align.CENTER)
             widget.set_size_request(size, size)
             label = Gtk.Label(ellipsize=Pango.EllipsizeMode.END)
             label.set_markup(album_title)
-            box.pack_start(label, False, False, 0)
+            box.append(label)
 
             fb.add(box)
         if no_album_count:
@@ -486,9 +490,12 @@ class OneArtist(Gtk.Box):
             )
             label.set_halign(Gtk.Align.CENTER)
             label.set_valign(Gtk.Align.CENTER)
-            box.pack_start(label, True, True, 0)
+            # GTK4: Use append() with expand instead of pack_start()
+            label.set_hexpand(True)
+            label.set_vexpand(True)
+            box.append(label)
             fb.add(box)
-        self.pack_start(Frame(_("Selected Discography"), fb), False, False, 0)
+        self.append(Frame(_("Selected Discography"), fb))
 
 
 def _sort_albums(songs):
@@ -518,7 +525,7 @@ class ManySongs(Gtk.Box):
 
     def _title(self, songs):
         self.title = ngettext("%d song", "%d songs", len(songs)) % len(songs)
-        self.pack_start(TitleLabel(self.title), False, False, 0)
+        self.append(TitleLabel(self.title))
 
     def _people(self, songs):
         artists = set()
@@ -538,7 +545,7 @@ class ManySongs(Gtk.Box):
             )
         label = Label(markup=util.escape("\n".join(artists)), ellipsize=True)
         frame = Frame("%s (%d)" % (util.capitalize(_("artists")), num_artists), label)
-        self.pack_start(frame, False, False, 0)
+        self.append(frame)
 
     def _album(self, songs):
         albums = set()
@@ -561,7 +568,7 @@ class ManySongs(Gtk.Box):
         label = Label()
         label.set_markup(markup)
         albums = util.capitalize(_("albums"))
-        self.pack_start(Frame(f"{albums} ({num_albums})", label), False, False, 0)
+        self.append(Frame(f"{albums} ({num_albums})", label))
 
     def _file(self, songs):
         length = 0
@@ -577,7 +584,7 @@ class ManySongs(Gtk.Box):
             (_("Total size:"), util.format_size(size), True),
         ]
         table = table_of(data)
-        self.pack_start(Frame(_("Files"), table), False, False, 0)
+        self.append(Frame(_("Files"), table))
 
 
 class Information(Window, PersistentWindowMixin):

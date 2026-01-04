@@ -348,7 +348,8 @@ class WaveformScale(Gtk.Box):
         self.set_size_request(40, CONFIG.height_px)
         self.position = 0
         self._last_drawn_position = 0
-        self.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
+        # GTK4: Use CSS instead of override_background_color
+        add_css(self, "* { background-color: transparent; }")
 
         self.mouse_position = -1
         self._last_mouse_position = -1
