@@ -558,8 +558,13 @@ def _init_gtk():
 
             def get_widget(self, path):
                 if path not in self._widgets:
+                    # Create a Button-like widget with menu item methods
                     widget = Gtk.Box()
                     widget.get_children = lambda: []
+                    # Add menu item compatibility methods
+                    widget._image = Gtk.Image()
+                    widget.get_image = lambda: widget._image
+                    widget.set_label = lambda text: None  # No-op for now
                     self._widgets[path] = widget
                 return self._widgets[path]
 
