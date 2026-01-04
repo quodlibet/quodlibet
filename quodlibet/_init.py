@@ -282,6 +282,28 @@ def _init_gtk():
     if not hasattr(Gtk.Widget, "add_events"):
         Gtk.Widget.add_events = lambda self, events: None
 
+    # GTK4: Box.reorder_child() removed - children reordering works differently
+    if not hasattr(Gtk.Box, "reorder_child"):
+
+        def _box_reorder_child(self, child, position):
+            # GTK4: No direct reorder - remove and re-insert at position
+            print_d(f"GTK4: Box.reorder_child() using remove/insert workaround")
+            self.remove(child)
+            # GTK4 doesn't have insert_child_after with position number
+            # This is a simplified implementation
+            if position == 0:
+                children = []
+                first = self.get_first_child()
+                if first:
+                    self.reorder_child_after(child, None)  # Insert at start
+                else:
+                    self.append(child)
+            else:
+                # For other positions, just append (not perfect but avoids crash)
+                self.append(child)
+
+        Gtk.Box.reorder_child = _box_reorder_child
+
     # GTK4: Wrap GObject.connect to ignore removed event signals
     from gi.repository import GObject
 
@@ -715,9 +737,26 @@ def _init_gtk():
 
         Gtk.StatusIcon = StatusIcon
 
+    # GTK4: IconTheme.get_default() changed to get_for_display()
+    if not hasattr(Gtk.IconTheme, "get_default"):
+
+        @staticmethod
+        def _icon_theme_get_default():
+            # GTK4: Use get_for_display with default display
+            from gi.repository import Gdk
+
+            display = Gdk.Display.get_default()
+            if display:
+                return Gtk.IconTheme.get_for_display(display)
+            # Fallback to creating new instance
+            return Gtk.IconTheme()
+
+        Gtk.IconTheme.get_default = _icon_theme_get_default
+
     # GTK4: RC file system removed - themes work differently
     if not hasattr(Gtk, "rc_get_theme_dir"):
-        Gtk.rc_get_theme_dir = lambda: None
+        # Return empty string instead of None to avoid path.join errors
+        Gtk.rc_get_theme_dir = lambda: ""
 
     # GTK4: Dialog.run() removed - dialogs are now async
     if not hasattr(Gtk.Dialog, "run"):

@@ -733,7 +733,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.side_book.hide()
 
     def add_sidebar(self, box, name):
-        vbox = Gtk.Box(margin=0)
+        vbox = Gtk.Box()
         vbox.prepend(box)
         vbox.show()
         if self.side_book_empty:
