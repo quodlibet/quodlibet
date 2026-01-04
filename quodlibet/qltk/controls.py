@@ -220,27 +220,33 @@ class PlayControls(Gtk.Box):
     def __init__(self, player, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=3)
 
-        upper = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
-        upper.set_row_spacings(3)
-        upper.set_col_spacings(3)
+        upper = Gtk.Grid()
+        upper.set_row_spacing(3)
+        upper.set_column_spacing(3)
+        upper.set_column_homogeneous(True)
 
         prev = Gtk.Button()
         prev.add(SymbolicIconImage("media-skip-backward", Gtk.IconSize.LARGE_TOOLBAR))
-        upper.attach(prev, 0, 1, 0, 1)
+        prev.set_hexpand(True)
+        upper.attach(prev, 0, 0, 1, 1)
 
         play = PlayPauseButton()
-        upper.attach(play, 1, 2, 0, 1)
+        play.set_hexpand(True)
+        upper.attach(play, 1, 0, 1, 1)
 
         next_ = Gtk.Button()
         next_.add(SymbolicIconImage("media-skip-forward", Gtk.IconSize.LARGE_TOOLBAR))
-        upper.attach(next_, 2, 3, 0, 1)
+        next_.set_hexpand(True)
+        upper.attach(next_, 2, 0, 1, 1)
 
-        lower = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
-        lower.set_row_spacings(3)
-        lower.set_col_spacings(3)
+        lower = Gtk.Grid()
+        lower.set_row_spacing(3)
+        lower.set_column_spacing(3)
+        lower.set_column_homogeneous(True)
 
         self.volume = Volume(player)
-        lower.attach(self.volume, 0, 1, 0, 1)
+        self.volume.set_hexpand(True)
+        lower.attach(self.volume, 0, 0, 1, 1)
 
         # XXX: Adwaita defines a different padding for GtkVolumeButton
         # We force it to 0 here, which works because the other (normal) buttons
@@ -255,7 +261,8 @@ class PlayControls(Gtk.Box):
         )
 
         seekbutton = SeekButton(player, library)
-        lower.attach(seekbutton, 1, 3, 0, 1)
+        seekbutton.set_hexpand(True)
+        lower.attach(seekbutton, 1, 0, 2, 1)
 
         self.prepend(upper)
         self.prepend(lower)

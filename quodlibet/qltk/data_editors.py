@@ -175,10 +175,9 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):
-        t = Gtk.Table(n_rows=2, n_columns=3)
-        t.set_row_spacings(6)
-        t.set_col_spacing(0, 3)
-        t.set_col_spacing(1, 12)
+        t = Gtk.Grid()
+        t.set_row_spacing(6)
+        t.set_column_spacing(12)
 
         empty = self.proto_cls("empty")
         for i, (key, val) in enumerate(empty.data):
@@ -197,10 +196,11 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_yalign(0.5)
             if isinstance(val, int | bool):
                 align = Align(entry, halign=Gtk.Align.START)
-                t.attach(align, 1, 2, i, i + 1)
+                t.attach(align, 1, i, 1, 1)
             else:
-                t.attach(entry, 1, 2, i, i + 1)
-            t.attach(l, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
+                entry.set_hexpand(True)
+                t.attach(entry, 1, i, 1, 1)
+            t.attach(l, 0, i, 1, 1)
         frame = qltk.Frame(label=self.name, child=t)
         self.input_entries["name"].grab_focus()
         return frame

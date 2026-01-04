@@ -312,32 +312,29 @@ class AdvancedPreferencesPane(Gtk.Box):
         ]
 
         # Tabulate all settings for neatness
-        table = Gtk.Table(n_rows=len(rows), n_columns=4)
-        table.set_col_spacings(12)
-        table.set_row_spacings(8)
-        table.set_no_show_all(True)
+        table = Gtk.Grid()
+        table.set_column_spacing(12)
+        table.set_row_spacing(8)
+        table.set_visible(False)
 
         for row, (label, widget, button) in enumerate(rows):
-            label.set_alignment(0.0, 0.5)
-            table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
+            table.attach(label, 0, row, 1, 1)
             if isinstance(widget, Gtk.Box):
                 # This stops checkbox from expanding too big, or shrinking text entries
                 blank = Gtk.Label()
-                table.attach(
-                    blank, 1, 2, row, row + 1, xoptions=Gtk.AttachOptions.EXPAND
-                )
-                table.attach(
-                    widget, 2, 3, row, row + 1, xoptions=Gtk.AttachOptions.SHRINK
-                )
+                blank.set_hexpand(True)
+                table.attach(blank, 1, row, 1, 1)
+                table.attach(widget, 2, row, 1, 1)
             else:
-                xoptions = Gtk.AttachOptions.FILL
-                table.attach(widget, 1, 3, row, row + 1, xoptions=xoptions)
-            table.attach(button, 3, 4, row, row + 1, xoptions=Gtk.AttachOptions.SHRINK)
+                widget.set_hexpand(True)
+                table.attach(widget, 1, row, 2, 1)
+            table.attach(button, 3, row, 1, 1)
 
         def on_click(button):
-            button.hide()
-            table.set_no_show_all(False)
-            table.show_all()
+            button.set_visible(False)
+            table.set_visible(True)
 
         button = Gtk.Button(label=_("I know what I'm doing!"), use_underline=True)
         button.connect("clicked", on_click)
