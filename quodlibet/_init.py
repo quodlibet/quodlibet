@@ -273,6 +273,10 @@ def _init_gtk():
         Gtk.Widget.destroy = lambda self: None
     if not hasattr(Gtk.Widget, "get_toplevel"):
         Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
+    if not hasattr(Gtk.Widget, "get_window"):
+        # GTK4: Widgets no longer have GdkWindows, they use surfaces
+        # Return None as a compatibility shim
+        Gtk.Widget.get_window = lambda self: None
 
     # GTK4: add_events removed - event system redesigned with controllers
     if not hasattr(Gtk.Widget, "add_events"):
