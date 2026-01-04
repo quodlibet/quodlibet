@@ -78,7 +78,8 @@ class BigCenteredImage(qltk.Window):
         return True
 
     def __calculate_screen_width(self, parent, scale=0.5):
-        width, height = parent.get_size()
+        # GTK4: get_size() removed, use get_width()/get_height()
+        width, height = parent.get_width(), parent.get_height()
         width = int(width * scale)
         height = int(height * scale)
         return (width, height)

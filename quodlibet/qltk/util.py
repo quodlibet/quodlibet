@@ -106,7 +106,8 @@ def position_window_beside_widget(window, widget, end=True, pad=3):
     w, h = widget_alloc.width, widget_alloc.height
 
     window.size_request()
-    ww, wh = window.get_size()
+    # GTK4: get_size() removed, use get_width()/get_height()
+    ww, wh = window.get_width(), window.get_height()
 
     if right:
         sx, sy = ((x + w + pad), (y + (h - wh) // 2))

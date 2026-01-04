@@ -423,7 +423,8 @@ class PersistentWindowMixin:
         if self._should_ignore_state():
             return
 
-        width, height = self.get_size()
+        # GTK4: get_size() removed, use get_width()/get_height()
+        width, height = self.get_width(), self.get_height()
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
 
