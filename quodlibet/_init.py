@@ -336,7 +336,26 @@ def _init_gtk():
     }
 
     def _connect_compat(self, signal_name, *args, **kwargs):
-        # Silently ignore GTK3 event signals that don't exist in GTK4
+        # GTK4: key-press-event exists but with different signature
+        # GTK3: callback(widget, event)
+        # GTK4: callback(widget, keyval, keycode, state, user_data)
+        if signal_name == "key-press-event" and args:
+            original_callback = args[0]
+            user_data = args[1:] if len(args) > 1 else ()
+
+            def wrapped_callback(widget, keyval, keycode, state):
+                # Create a fake event object for GTK3 compatibility
+                class FakeEvent:
+                    def __init__(self, keyval, keycode, state):
+                        self.keyval = keyval
+                        self.state = state
+                        self.hardware_keycode = keycode
+
+                return original_callback(widget, FakeEvent(keyval, keycode, state), *user_data)
+
+            return _orig_gobject_connect(self, signal_name, wrapped_callback, **kwargs)
+
+        # Silently ignore other GTK3 event signals that don't exist in GTK4
         if signal_name in _removed_signals:
             print_d(f"Ignoring GTK3 signal connection: {signal_name}")
             return 0  # Return dummy handler ID
