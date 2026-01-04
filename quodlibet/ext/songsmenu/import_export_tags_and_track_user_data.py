@@ -23,7 +23,7 @@ from quodlibet.formats._audio import MIGRATE, AudioFile
 from quodlibet.plugins import BoolConfProp, FloatConfProp, PluginConfig
 from quodlibet.plugins.songshelpers import each_song, is_finite, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, SeparatorMenuItem
+from quodlibet.qltk import Icons, SeparatorMenuItem, get_children
 from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.showfiles import show_files
@@ -349,7 +349,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         submenu = Gtk.PopoverMenu()
         self._init_collectors_and_menu(submenu)
 
-        if submenu.get_children():
+        if get_children(submenu):
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)

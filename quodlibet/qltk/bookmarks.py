@@ -17,7 +17,7 @@ from quodlibet.formats import AudioFile
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk import Icons, add_css
+from quodlibet.qltk import Icons, add_css, get_children
 
 
 def MenuItems(marks, player, seekable):
@@ -266,5 +266,5 @@ class EditBookmarks(qltk.Window):
 
     def __check_lock(self, library, songs, song):
         if song in songs:
-            for c in self.get_child().get_children()[:-1]:
+            for c in get_children(self.get_child())[:-1]:
                 c.set_sensitive(False)

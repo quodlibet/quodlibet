@@ -12,7 +12,7 @@ from gi.repository import GObject, Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import Align
@@ -33,7 +33,7 @@ class SeekBar(Gtk.Box):
         self.prepend(Align(self._elapsed_label, border=6), False, True, 0)
         self.prepend(scale)
         self.prepend(Align(self._remaining_label, border=6), False, True, 0)
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
         self._id = self._scale.connect("value-changed", self._on_user_changed, player)

@@ -40,7 +40,7 @@ from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy, format_int_locale
@@ -160,12 +160,12 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.__save = None
         connect_obj(self, "changed", self.set_pending, None)
-        for c in fs.get_children():
+        for c in get_children(fs):
             c.get_child().connect(
                 "button-press-event", self.__pre_selection_changed, fs, nb
             )
             c.get_child().connect("focus", self.__pre_selection_changed, fs, nb)
-        fs.get_children()[1].get_child().connect("popup-menu", self.__popup_menu, fs)
+        get_children(fs)[1].get_child().connect("popup-menu", self.__popup_menu, fs)
         self.emit("changed", [])
 
         self.get_child().show()

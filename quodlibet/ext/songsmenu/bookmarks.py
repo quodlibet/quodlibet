@@ -14,7 +14,7 @@ from quodlibet import qltk
 from quodlibet.plugins.songshelpers import any_song, has_bookmark
 from quodlibet.qltk.bookmarks import EditBookmarks
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
@@ -77,7 +77,7 @@ class Bookmarks(SongsMenuPlugin):
         menu.show_all()
 
     def __remove_children(self, menu):
-        for child in menu.get_children():
+        for child in get_children(menu):
             menu.remove(child)
 
     def plugin_songs(self, songs):

@@ -29,7 +29,7 @@ from quodlibet.plugins import (
     MissingGstreamerElementPluginError,
 )
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Align, add_css
+from quodlibet.qltk import Align, add_css, get_children
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
@@ -84,7 +84,7 @@ class WaveformSeekBar(Gtk.Box):
         self.prepend(self._waveform_scale)
         self.prepend(Align(self._remaining_label, border=6), False, True, 0)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
         self.set_time_label_visibility(CONFIG.show_time_labels)
 

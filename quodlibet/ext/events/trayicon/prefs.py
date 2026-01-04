@@ -13,7 +13,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.util import is_windows
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from .util import pconfig
@@ -98,7 +98,7 @@ class Preferences(Gtk.Box):
         entry.connect("changed", self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def __changed_entry(self, entry, label, frame):

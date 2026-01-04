@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.qltk import get_children
 from quodlibet.util import connect_obj
 from quodlibet.util.misc import total_ordering
 
@@ -142,7 +143,7 @@ class EditTagsPlugin(Gtk.Widget):
 
     def connect(self, signal, callback, *args, **kwargs):
         if self.get_submenu():
-            for item in self.get_submenu().get_children():
+            for item in get_children(self.get_submenu()):
                 connect_obj(item, signal, callback, self, *args, **kwargs)
         else:
             super().connect(signal, callback, *args, **kwargs)

@@ -21,7 +21,7 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.paned import Paned
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import connect_destroy, format_size, escape
@@ -364,7 +364,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         def slider_changed(_slider):
             new_size = slider.get_value()
             try:
-                for child in self.flow_box.get_children():
+                for child in get_children(self.flow_box):
                     img = self.__image_from_child(child)
                     img.resize(new_size)
             except AttributeError as e:

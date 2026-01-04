@@ -18,7 +18,7 @@ from quodlibet import qltk
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -102,7 +102,7 @@ class SongInfo(Gtk.Box):
         has_selection = label.get_selection_bounds()[0]
 
         if not has_selection:
-            for child in menu.get_children():
+            for child in get_children(menu):
                 # GTK4: destroy() removed - child cleaned up automatically
                 pass
             for item in song_menu:

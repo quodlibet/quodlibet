@@ -21,7 +21,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.information import Information
@@ -89,7 +89,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box = self.__create_box()
         self.show_all()
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
         self._ids = [

@@ -26,7 +26,7 @@ from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import ScrolledWindow
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
@@ -131,7 +131,7 @@ class FileSystem(Browser, Gtk.Box):
         config.setbytes("browsers", "filesystem", data)
 
     def get_child(self):
-        return self.get_children()[0].get_child()
+        return get_children(self)[0].get_child()
 
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, rows = view.get_selection().get_selected_rows()

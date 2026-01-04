@@ -31,7 +31,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
 from quodlibet.util.path import uri_is_valid
@@ -451,7 +451,7 @@ class Podcasts(Browser):
 
         self.prepend(Align(new, left=3, bottom=3), False, True, 0)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def menu(self, songs, library, items):

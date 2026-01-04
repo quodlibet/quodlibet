@@ -16,7 +16,7 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, print_w, print_d
@@ -125,7 +125,7 @@ class WebsiteSearch(SongsMenuPlugin):
         connect_obj(configure, "activate", self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)
-        if submenu.get_children():
+        if get_children(submenu):
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)

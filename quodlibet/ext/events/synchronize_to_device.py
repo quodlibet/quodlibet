@@ -25,7 +25,7 @@ from quodlibet.pattern import FileFromPattern
 from quodlibet.plugins import PM
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.views import HintedTreeView
@@ -840,7 +840,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                     counter,
                 ).format(count=counter)
             )
-            for child in self.status_duplicates.get_children():
+            for child in get_children(self.status_duplicates):
                 child.set_visible(True)
             self.status_duplicates.set_visible(True)
 
@@ -851,7 +851,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                     count=counter
                 )
             )
-            for child in self.status_deletions.get_children():
+            for child in get_children(self.status_deletions):
                 child.set_visible(True)
             self.status_deletions.set_visible(True)
 

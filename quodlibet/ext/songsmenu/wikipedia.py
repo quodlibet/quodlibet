@@ -17,7 +17,7 @@ from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk.entry import Entry
 from quodlibet.qltk.data_editors import TagListEditor
-from quodlibet.qltk import Icons, get_top_parent, ErrorMessage
+from quodlibet.qltk import Icons, get_top_parent, ErrorMessage, get_children
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
@@ -97,7 +97,7 @@ class WikiSearch(SongsMenuPlugin):
                 item.connect("activate", self._set_selected_tag, tag)
                 submenu.append(item)
 
-        if submenu.get_children():
+        if get_children(submenu):
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)
