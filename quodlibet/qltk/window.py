@@ -321,7 +321,7 @@ class PersistentWindowMixin:
     def __restore_window_state(self):
         if not is_wayland():
             self.__restore_state()
-            self.__restore_position()
+            # GTK4: __restore_position() is a no-op, removed call
         self.__restore_size()
 
     def __conf(self, name):
@@ -362,9 +362,7 @@ class PersistentWindowMixin:
             self.resize(x, y)
 
     def __parent_configure_event(self, window, event):
-        # since our position is relative to the parent if we have one,
-        # we also need to save our position if the parent position changes
-        self.__do_save_pos()
+        # GTK4: Position saving removed, this handler does nothing
         return False
 
     def __configure_event(self, window, event):
@@ -381,8 +379,8 @@ class PersistentWindowMixin:
         self.__save_size_pos_deferred()
 
     def __parent_configure_notify(self, *args):
-        """GTK4: Handle parent notify signals instead of configure-event"""
-        self.__do_save_pos()
+        """GTK4: Parent position changes - no-op since positioning not saved"""
+        pass
 
     def __window_state_notify(self, window, pspec):
         """GTK4: Handle notify::maximized/fullscreened instead of window-state-event"""
@@ -417,8 +415,7 @@ class PersistentWindowMixin:
         width, height = self.get_width(), self.get_height()
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
-
-        self.__do_save_pos()
+        # GTK4: __do_save_pos() is a no-op, removed call
 
     def __do_save_pos(self):
         # GTK4: Window positioning removed - window managers control this
