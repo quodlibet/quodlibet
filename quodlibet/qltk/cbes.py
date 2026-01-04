@@ -85,7 +85,7 @@ class _KeyValueEditor(qltk.Window):
         menu.append(remove)
         menu.show_all()
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
         bbox.prepend(rem_b)

@@ -301,7 +301,7 @@ class TagListEditor(qltk.Window):
         connect_obj(remove_item, "activate", self.__remove, view)
 
         # Add and Remove buttons
-        vbbox = Gtk.VButtonBox()
+        vbbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbbox.set_layout(Gtk.ButtonBoxStyle.START)
         vbbox.set_spacing(6)
         add = Button(_("_Add…"), Icons.LIST_ADD)
@@ -317,7 +317,7 @@ class TagListEditor(qltk.Window):
         vbox.prepend(hbox)
 
         # Close buttons
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)

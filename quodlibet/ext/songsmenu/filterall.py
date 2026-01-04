@@ -41,7 +41,7 @@ class SelectionWindow(Window):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        buttons = Gtk.HButtonBox()
+        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         buttons.set_spacing(6)
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)

@@ -106,7 +106,7 @@ class TrackNumbers(Gtk.Box):
         w.add(view)
         self.prepend(w)
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)

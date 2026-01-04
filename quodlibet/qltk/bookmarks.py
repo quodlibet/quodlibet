@@ -71,7 +71,7 @@ class EditBookmarksPane(Gtk.Box):
         else:
             self.song = None
 
-        self.hb = hb = Gtk.HBox(spacing=12)
+        self.hb = hb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         self.time = time = Gtk.Entry()
         time.set_width_chars(5)
         time.set_size_request(65, -1)
@@ -115,7 +115,7 @@ class EditBookmarksPane(Gtk.Box):
         add_css(self, "* { margin: 12px } ")
         self.accels = Gtk.AccelGroup()
 
-        hbox = Gtk.HButtonBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.remove = remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
         hbox.prepend(remove)

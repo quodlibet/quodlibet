@@ -81,7 +81,7 @@ class FingerprintDialog(Window):
 
         pool = FingerPrintPool()
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
         self.__submit = submit = Button(_("_Submit"))

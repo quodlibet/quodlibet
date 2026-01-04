@@ -357,7 +357,7 @@ class OneAlbum(Gtk.Box):
             text.append(_("Produced by %s") % (util.escape(song.comma("producer"))))
 
         w = Label(markup="\n".join(text), ellipsize=True)
-        hb = Gtk.HBox(spacing=12)
+        hb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         # GTK4: Use append() with hexpand instead of pack_start()
         w.set_hexpand(True)
         hb.append(w)

@@ -196,7 +196,7 @@ class Preferences(qltk.UniqueWindow):
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
-        box = Gtk.HButtonBox()
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.END)
         box.prepend(apply)

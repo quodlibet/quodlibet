@@ -271,7 +271,7 @@ class SearchWindow(Window):
 
         outer_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
         self.__save = save = Button(_("_Save"), Icons.DOCUMENT_SAVE)

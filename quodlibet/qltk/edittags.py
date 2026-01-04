@@ -564,7 +564,7 @@ class EditTags(Gtk.Box):
 
         # Add and Remove [tags] buttons
         buttonbox = Gtk.Box(spacing=18)
-        bbox1 = Gtk.HButtonBox()
+        bbox1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox1.set_spacing(9)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
         add = qltk.Button(_("_Add…"), Icons.LIST_ADD)
@@ -583,7 +583,7 @@ class EditTags(Gtk.Box):
 
         # Revert and save buttons
         # Both can have customised translated text (and thus accels)
-        bbox2 = Gtk.HButtonBox()
+        bbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox2.set_spacing(9)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
         # Translators: Revert button in the tag editor

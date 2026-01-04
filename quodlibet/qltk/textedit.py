@@ -165,7 +165,7 @@ class TextEdit(qltk.UniqueWindow):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        b = Gtk.HButtonBox()
+        b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.prepend(close)
 

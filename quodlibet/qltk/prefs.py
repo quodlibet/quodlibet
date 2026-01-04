@@ -127,7 +127,7 @@ class PreferencesWindow(UniqueWindow):
                 l.set_use_underline(True)
                 hbox.prepend(others)
                 vbox.prepend(hbox)
-                b = Gtk.HButtonBox()
+                b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
                 b.prepend(edit_button)
                 vbox.prepend(b)
@@ -170,7 +170,7 @@ class PreferencesWindow(UniqueWindow):
                 apply.connect("clicked", self.__apply, buttons)
                 # Apply on destroy, else config gets mangled
                 self.connect("destroy", self.__apply, buttons)
-                b = Gtk.HButtonBox()
+                b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
                 b.prepend(apply)
                 return b
@@ -900,7 +900,7 @@ class PreferencesWindow(UniqueWindow):
 
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", lambda x: x.destroy(), self)
-        button_box = Gtk.HButtonBox()
+        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
         button_box.prepend(close)
 

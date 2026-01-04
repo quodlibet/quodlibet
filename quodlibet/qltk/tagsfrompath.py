@@ -152,7 +152,7 @@ class TagsFromPath(Gtk.Box):
         # Save button
         self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.prepend(self.save)
         self.prepend(bbox)
