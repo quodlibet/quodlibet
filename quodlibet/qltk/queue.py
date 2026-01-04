@@ -84,13 +84,12 @@ class PlaybackStatusIcon(Gtk.Box):
 class ExpandBoxHack(Gtk.Box):
     def do_get_preferred_width(self):
         # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
-        # set_label_fill() no longer works since 3.20. Fake a natural size
+        # set_label_fill() no longer works since GTK 3.20. Fake a natural size
         # which is larger than the expander can be to force the parent to
         # allocate to us the whole space.
         min_, nat = Gtk.Box.do_get_preferred_width(self)
-        if gtk_version > (3, 19):
-            # if we get too large gtk calcs will overflow..
-            nat = max(nat, 2**16)
+        # GTK4: if we get too large gtk calcs will overflow..
+        nat = max(nat, 2**16)
         return (min_, nat)
 
 

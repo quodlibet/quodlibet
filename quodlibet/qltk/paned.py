@@ -11,7 +11,7 @@
 from gi.repository import Gtk
 
 from quodlibet import config
-from . import add_css, gtk_version
+from . import add_css
 
 
 class Paned(Gtk.Paned):
@@ -20,34 +20,19 @@ class Paned(Gtk.Paned):
         self.ensure_wide_handle()
 
     def ensure_wide_handle(self):
-        if gtk_version >= (3, 19):
-            self.props.wide_handle = True
-            add_css(
-                self,
-                """
-                paned separator {
-                    border-width: 0;
-                    min-height: 5px;
-                    min-width: 5px;
-                    background-image: none;
-                }
-            """,
-            )
-            return
-
-        if hasattr(self.props, "wide_handle"):
-            # gtk 3.16
-            self.props.wide_handle = True
-            add_css(
-                self,
-                """
-                GtkPaned {
-                    border-width: 0;
-                    background: none;
-                }
-            """,
-            )
-            return
+        # GTK4: wide_handle and modern CSS selectors always available
+        self.props.wide_handle = True
+        add_css(
+            self,
+            """
+            paned separator {
+                border-width: 0;
+                min-height: 5px;
+                min-width: 5px;
+                background-image: none;
+            }
+        """,
+        )
 
 
 class RPaned(Paned):

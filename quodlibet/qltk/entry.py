@@ -12,7 +12,7 @@ import math
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet import _, config
-from quodlibet.qltk import is_accel, add_fake_accel, gtk_version
+from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.color import mix
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
@@ -55,30 +55,11 @@ class EditableUndo:
             self.connect("delete-text", self.__delete_before),
         ]
 
-        # GTK4: populate-popup removed, key-press-event uses EventController
-        pass
-        if gtk_version >= (4, 0):
-            # GTK4: Use EventControllerKey for keyboard events
-            key_controller = Gtk.EventControllerKey()
-            self.add_controller(key_controller)
-            key_controller.connect("key-pressed", self.__key_press_gtk4)
-            self.__key_controller = key_controller
-        else:
-            self.__handlers.extend(
-                [
-                    self.connect("populate-popup", self.__popup),
-                    self.connect("key-press-event", self.__key_press),
-                ]
-            )
-
-    def __key_press(self, entry, event):
-        if is_accel(event, "<Primary>z"):
-            self.undo()
-            return True
-        if is_accel(event, "<Primary><shift>z"):
-            self.redo()
-            return True
-        return False
+        # GTK4: Use EventControllerKey for keyboard events
+        key_controller = Gtk.EventControllerKey()
+        self.add_controller(key_controller)
+        key_controller.connect("key-pressed", self.__key_press_gtk4)
+        self.__key_controller = key_controller
 
     def __key_press_gtk4(self, controller, keyval, keycode, state):
         """GTK4: Handle key-pressed signal from EventControllerKey"""
@@ -107,25 +88,6 @@ class EditableUndo:
         del self.__last_space
         del self.__in_pos
         del self.__del_pos
-
-    def __popup(self, entry, menu):
-        undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
-        add_fake_accel(undo, "<Primary>z")
-        redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
-        add_fake_accel(redo, "<Primary><shift>z")
-        sep = SeparatorMenuItem()
-
-        for widget in [sep, redo, undo]:
-            widget.show()
-
-        undo.connect("activate", lambda *x: self.undo())
-        redo.connect("activate", lambda *x: self.redo())
-
-        undo.set_sensitive(self.can_undo())
-        redo.set_sensitive(self.can_redo())
-
-        for item in [sep, redo, undo]:
-            menu.prepend(item)
 
     def __all(self):
         text = self.get_chars(0, -1)

@@ -20,7 +20,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet import util
 from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
-from quodlibet.qltk import add_css, is_accel, gtk_version
+from quodlibet.qltk import add_css, is_accel
 
 from .paned import (
     Paned,
@@ -204,15 +204,11 @@ def _Button(type_, label, icon_name, size):
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.Box(spacing=6)
     # GTK4: new_from_icon_name only takes icon_name, size is set via property
-    pass
-    if gtk_version >= (4, 0):
-        image = Gtk.Image.new_from_icon_name(icon_name)
-        # GTK4: IconSize enum values map to pixel sizes, but the property expects
-        # Gtk.IconSize enum which was kept for compatibility
-        if size is not None:
-            image.set_icon_size(size)
-    else:
-        image = Gtk.Image.new_from_icon_name(icon_name, size)
+    image = Gtk.Image.new_from_icon_name(icon_name)
+    # GTK4: IconSize enum values map to pixel sizes, but the property expects
+    # Gtk.IconSize enum which was kept for compatibility
+    if size is not None:
+        image.set_icon_size(size)
     # GTK4: prepend() only takes widget, no packing args
     hbox.prepend(image)
     label = Gtk.Label(label=label)
@@ -222,11 +218,7 @@ def _Button(type_, label, icon_name, size):
     align.show_all()
     button = type_()
     # GTK4: use set_child() instead of add() for single-child containers
-    pass
-    if gtk_version >= (4, 0):
-        button.set_child(align)
-    else:
-        button.add(align)
+    button.set_child(align)
     return button
 
 
