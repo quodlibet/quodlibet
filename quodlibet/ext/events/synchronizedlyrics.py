@@ -188,7 +188,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     @functools.lru_cache()  # noqa
     def _build_data(
-        self, song: AudioFile | None, mtime: float
+        self, song: AudioFile | None, mtime: float = 0
     ) -> list[tuple[int, str]]:
         if not song:
             return []
