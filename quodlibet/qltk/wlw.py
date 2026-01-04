@@ -182,6 +182,10 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             self.show()
 
     def __recenter(self, parent, event):
+        # GTK4: get_position() and move() removed - skip centering
+        if not hasattr(self, "move") or not hasattr(parent, "get_position"):
+            return
+
         x, y = parent.get_position()
         # GTK4: get_size() removed, use get_width()/get_height()
         dx, dy = parent.get_width(), parent.get_height()
