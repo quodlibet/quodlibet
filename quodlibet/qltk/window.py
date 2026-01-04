@@ -170,7 +170,8 @@ class Window(Gtk.Window):
             return False
 
         header_bar = Gtk.HeaderBar()
-        header_bar.set_show_close_button(True)
+        # GTK4: set_show_close_button() → set_show_title_buttons()
+        header_bar.set_show_title_buttons(True)
         header_bar.show()
         old_title = self.get_title()
         self.set_titlebar(header_bar)
@@ -195,7 +196,8 @@ class Window(Gtk.Window):
             return True
 
         if self._header_bar is not None:
-            return self._header_bar.get_show_close_button()
+            # GTK4: get_show_close_button() → get_show_title_buttons()
+            return self._header_bar.get_show_title_buttons()
 
         return True
 
