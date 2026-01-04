@@ -41,10 +41,9 @@ def on_first_map(window, callback, *args, **kwargs):
 
 
 def should_use_header_bar():
+    # GTK4: gtk-dialogs-use-header always available
     settings = Gtk.Settings.get_default()
     if not settings:
-        return False
-    if not hasattr(settings.props, "gtk_dialogs_use_header"):
         return False
     return settings.get_property("gtk-dialogs-use-header")
 

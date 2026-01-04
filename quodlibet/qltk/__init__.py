@@ -105,21 +105,11 @@ def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     background color.
     """
 
-    if hasattr(Gtk.StateFlags, "LINK"):
-        # gtk+ >=3.12
-        context.save()
-        context.set_state(Gtk.StateFlags.LINK)
-        color = context.get_color(context.get_state())
-        context.restore()
-    else:
-        value = GObject.Value()
-        value.init(Gdk.Color)
-        value.set_boxed(None)
-        context.get_style_property("link-color", value)
-        color = Gdk.RGBA()
-        old_color = value.get_boxed()
-        if old_color is not None:
-            color.parse(old_color.to_string())
+    # GTK4: StateFlags.LINK always available
+    context.save()
+    context.set_state(Gtk.StateFlags.LINK)
+    color = context.get_color(context.get_state())
+    context.restore()
     return color
 
 
