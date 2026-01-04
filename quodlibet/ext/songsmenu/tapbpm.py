@@ -28,7 +28,7 @@ class TapBpmPanel(Gtk.Box):
         box = Gtk.Box()
         box.set_spacing(6)
         # TRANSLATORS: BPM mean "beats per minute"
-        box.prepend(Gtk.Label(_("BPM:")), False, True, 0)
+        box.prepend(Gtk.Label(_("BPM:")))
         self.bpm_label = Gtk.Label(_("n/a"))
         self.bpm_label.set_xalign(0.5)
         box.prepend(self.bpm_label)

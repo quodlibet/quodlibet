@@ -306,7 +306,7 @@ class StatusBar(Gtk.Box):
 
         self.default_label = Gtk.Label(selectable=True)
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.prepend(Align(self.default_label, halign=Gtk.Align.END), True, True, 0)
+        self.prepend(Align(self.default_label, halign=Gtk.Align.END))
         self.task_widget = TaskWidget(task_controller)
         self.prepend(self.task_widget)
 

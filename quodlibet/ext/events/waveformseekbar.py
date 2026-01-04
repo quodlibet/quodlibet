@@ -80,9 +80,9 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label = TimeLabel()
         self._waveform_scale = WaveformScale(player)
 
-        self.prepend(Align(self._elapsed_label, border=6), False, True, 0)
+        self.prepend(Align(self._elapsed_label, border=6))
         self.prepend(self._waveform_scale)
-        self.prepend(Align(self._remaining_label, border=6), False, True, 0)
+        self.prepend(Align(self._remaining_label, border=6))
 
         for child in get_children(self):
             child.show_all()

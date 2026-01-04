@@ -123,9 +123,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.login_state = State.LOGGED_IN if self.online else State.LOGGED_OUT
         self._create_searchbar(self.library)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(self._create_header(), False, False, 0)
-        vbox.prepend(self._create_category_widget(), True, True, 0)
-        vbox.prepend(self.create_login_button(), False, False, 0)
+        vbox.prepend(self._create_header())
+        vbox.prepend(self._create_category_widget())
+        vbox.prepend(self.create_login_button())
         vbox.show()
         pane = qltk.ConfigRHPaned("browsers", "soundcloud_pos", 0.4)
         pane.show()

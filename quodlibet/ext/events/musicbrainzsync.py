@@ -113,6 +113,6 @@ class MusicBrainzSyncPlugin(EventPlugin):
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
-        box.prepend(qltk.Frame(_("Account"), child=table), True, True, 0)
+        box.prepend(qltk.Frame(_("Account"), child=table))
 
         return box

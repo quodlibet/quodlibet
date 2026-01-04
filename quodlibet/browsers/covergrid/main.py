@@ -104,7 +104,6 @@ class CoverGridContainer(ScrolledWindow):
         super().__init__(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
-            shadow_type=Gtk.ShadowType.IN,
         )
         self._fb = fb
         fb.set_hadjustment(self.props.hadjustment)
@@ -317,7 +316,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         prefs = PreferencesButton(self, model_sort)
         search.prepend(prefs)
-        self.prepend(Align(search, left=6, top=0), False, True, 0)
+        self.prepend(Align(search, left=6, top=0))
         self.prepend(sw)
 
         self.__update_filter()

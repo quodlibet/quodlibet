@@ -183,5 +183,5 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             "plugins", "view_lyrics_hide_timestamps", True
         )
         ccb.set_active(hide_timestamps)
-        box.prepend(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.prepend(qltk.Frame(_("Preferences"), child=ccb))
         return box

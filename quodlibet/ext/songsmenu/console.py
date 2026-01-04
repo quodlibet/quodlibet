@@ -636,8 +636,8 @@ class ListChoiceDialog(Gtk.Dialog):
 
             lbl = Gtk.Label(label=name, xalign=0)
             lbl2 = Gtk.Label(label=details, xalign=0)
-            hbox.prepend(lbl, expand=False, fill=False, padding=0)
-            hbox.prepend(lbl2, expand=True, fill=True, padding=0)
+            hbox.prepend(lbl)
+            hbox.prepend(lbl2)
 
             # dim the details-label
             style = lbl2.get_style_context()

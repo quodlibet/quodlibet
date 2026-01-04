@@ -672,7 +672,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         self._update_button.connect("clicked", self.__update)
         fb.insert(new_station, 1)
         fb.insert(self._update_button, 2)
-        vb.append(Align(fb, left=3), False, False, 3)
+        align_fb = Align(fb, left=3)
+        align_fb.set_margin_bottom(3)
+        vb.append(align_fb)
         # GTK4: pack1() → set_start_child()
 
         pane.set_start_child(vb)

@@ -325,7 +325,7 @@ class TopBar(Gtk.Box):
                 app.cover_manager, "cover-changed", self.__song_art_changed, library
             )
 
-        box.prepend(Align(self.image, top=3, right=3), False, True, 0)
+        box.prepend(Align(self.image, top=3, right=3))
 
         # GTK4: margin property removed - individual margin-* properties exist
         # On older Gtk+ (3.4, at least)

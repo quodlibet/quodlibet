@@ -260,7 +260,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         hbox.prepend(search)
         hbox.prepend(prefs)
 
-        self.prepend(Align(hbox, left=6, top=0), False, True, 0)
+        self.prepend(Align(hbox, left=6, top=0))
         self.prepend(sw)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)

@@ -152,7 +152,7 @@ class HSlider(Gtk.Button):
         self.__window.resize(1, 1)
 
     def set_slider_widget(self, widget):
-        self._box.prepend(Align(widget, border=6, left=-3), False, True, 0)
+        self._box.prepend(Align(widget, border=6, left=-3))
 
     def __clicked(self, button):
         if self.__window.get_property("visible"):

@@ -94,6 +94,6 @@ class AcoustidSubmit(SongsMenuPlugin):
         key_box.prepend(entry)
         key_box.prepend(button)
 
-        box.prepend(Frame(_("AcoustID Web Service"), child=key_box), True, True, 0)
+        box.prepend(Frame(_("AcoustID Web Service"), child=key_box))
 
         return box

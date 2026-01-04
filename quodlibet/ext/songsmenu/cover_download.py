@@ -428,7 +428,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             hbox.prepend(re_encode)
             return hbox
 
-        vbox.prepend(create_save_box(), False, False, 6)
+        save_box = create_save_box()
+        save_box.set_margin_top(6)
+        vbox.prepend(save_box)
         frame.add(vbox)
 
         self.button = self.add_icon_button(

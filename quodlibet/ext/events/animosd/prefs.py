@@ -303,4 +303,4 @@ class AnimOsdPrefs(Gtk.Box):
             hb.prepend(preview_button)
             return hb
 
-        self.prepend(build_buttons_widget(), False, True, 0)
+        self.prepend(build_buttons_widget())

@@ -176,8 +176,8 @@ gateshipone.malp">M.A.L.P.</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
-        box.prepend(qltk.Frame(_("Connection"), child=table), False, True, 0)
-        box.prepend(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
+        box.prepend(qltk.Frame(_("Connection"), child=table))
+        box.prepend(qltk.Frame(_("Tested Clients"), child=clients))
         return box
 
     def _refresh(self):

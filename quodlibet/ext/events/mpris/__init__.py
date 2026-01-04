@@ -53,7 +53,7 @@ class MPRIS(EventPlugin):
             "mpris_window_hide",
             populate=True,
         )
-        box.prepend(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.prepend(qltk.Frame(_("Preferences"), child=ccb))
         return box
 
     def __do_hide(self):

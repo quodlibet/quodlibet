@@ -139,7 +139,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self._fs = fs = MainFileSelector()
 
         vb.prepend(fs)
-        vb.prepend(Align(bbox, border=6), False, True, 0)
+        vb.prepend(Align(bbox, border=6))
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)

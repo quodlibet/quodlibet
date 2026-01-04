@@ -62,7 +62,7 @@ class WikiSearch(SongsMenuPlugin):
             0,
         )
         hb.prepend(e)
-        hb.prepend(Gtk.Label(label=".wikipedia.org"), False, True, 0)
+        hb.prepend(Gtk.Label(label=".wikipedia.org"))
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         vb.prepend(hb)
 

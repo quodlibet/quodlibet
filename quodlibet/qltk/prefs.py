@@ -181,10 +181,10 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Song List")
             visible_columns_frame, buttons = create_visible_columns_widgets()
-            self.prepend(create_behavior_frame(), False, True, TOP_MARGIN)
-            self.prepend(visible_columns_frame, False, True, MARGIN)
-            self.prepend(create_columns_prefs_frame(), False, True, MARGIN)
-            self.prepend(create_update_columns_button(), False, False, 0)
+            self.prepend(create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
+            self.prepend(visible_columns_frame)  # TODO GTK4: add set_margin_top(MARGIN)
+            self.prepend(create_columns_prefs_frame())  # TODO GTK4: add set_margin_top(MARGIN)
+            self.prepend(create_update_columns_button())
 
             # Run it now
             self.__update(buttons, self._toggle_data, get_columns())
@@ -318,15 +318,15 @@ class PreferencesWindow(UniqueWindow):
                 e.connect("changed", self._entry, "background", "browsers")
                 e.set_tooltip_text(_("Apply this query in addition to all others"))
                 l.set_mnemonic_widget(e)
-                vb.prepend(hbox_for(l, e), False, True, 0)
+                vb.prepend(hbox_for(l, e))
                 # Translators: The heading of the preference group, no action
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
             self.set_border_width(MARGIN)
             self.title = _("Browsers")
-            self.prepend(create_search_frame(), False, True, TOP_MARGIN)
-            self.prepend(create_display_frame(), False, True, MARGIN)
+            self.prepend(create_search_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
+            self.prepend(create_display_frame())  # TODO GTK4: add set_margin_top(MARGIN)
 
             # Ratings
             c1 = CS(
@@ -354,7 +354,7 @@ class PreferencesWindow(UniqueWindow):
             vbox.prepend(c1)
             vbox.prepend(c2)
             f = qltk.Frame(_("Ratings"), child=vbox)
-            self.prepend(f, False, True, MARGIN)
+            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
 
@@ -399,7 +399,7 @@ class PreferencesWindow(UniqueWindow):
             vb.prepend(hb)
 
             f = qltk.Frame(_("Album Art"), child=vb)
-            self.prepend(f, False, True, MARGIN)
+            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
 
             for child in self.get_children():
                 child.show_all()
@@ -436,13 +436,13 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Playback")
 
-            self.prepend(self.create_behavior_frame(), False, True, TOP_MARGIN)
+            self.prepend(self.create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
 
             # player backend
             if app.player and hasattr(app.player, "PlayerPreferences"):
                 player_prefs = app.player.PlayerPreferences()
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
-                self.prepend(f, False, True, MARGIN)
+                self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
 
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
             adj = Gtk.Adjustment.new(fallback_gain, -12.0, 6.0, 0.5, 1, 0.0)
@@ -499,7 +499,7 @@ class PreferencesWindow(UniqueWindow):
             hb.prepend(grid)
             vb.prepend(hb)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
-            self.prepend(f, False, True, MARGIN)
+            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
 
             for child in self.get_children():
                 child.show_all()
@@ -653,7 +653,7 @@ class PreferencesWindow(UniqueWindow):
             bayes_label.set_mnemonic_widget(bayes_spin)
 
             # Save Ratings
-            vb.prepend(hbox_for(bayes_label, bayes_spin, False), True, True, 0)
+            vb.prepend(hbox_for(bayes_label, bayes_spin, False))
             sw = CS(
                 _("Save ratings and play _counts in tags"),
                 "editing",
@@ -682,7 +682,7 @@ class PreferencesWindow(UniqueWindow):
 
             lab.set_mnemonic_widget(entry)
             lab.set_use_underline(True)
-            vb.prepend(hbox_for(lab, entry), True, True, 0)
+            vb.prepend(hbox_for(lab, entry))
 
             return vb
 
@@ -722,7 +722,7 @@ class PreferencesWindow(UniqueWindow):
             split_label.set_use_underline(True)
             split_label.set_mnemonic_widget(split_entry)
 
-            vbox.prepend(hbox_for(split_label, split_entry), False, False, 0)
+            vbox.prepend(hbox_for(split_label, split_entry))
 
             sub_entry = ClearEntry()
             sub_entry.enable_clear_button()
@@ -743,7 +743,7 @@ class PreferencesWindow(UniqueWindow):
             sub_label.set_use_underline(True)
             sub_label.set_mnemonic_widget(split_entry)
 
-            vbox.prepend(hbox_for(sub_label, sub_entry), False, False, 0)
+            vbox.prepend(hbox_for(sub_label, sub_entry))
             return vbox
 
         def __init__(self):
@@ -753,10 +753,10 @@ class PreferencesWindow(UniqueWindow):
             self._songs = []
 
             f = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
-            self.prepend(f, False, True, TOP_MARGIN)
+            self.prepend(f)  # TODO GTK4: add set_margin_top(TOP_MARGIN)
 
             f = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
-            self.prepend(f, False, True, MARGIN)
+            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
 
             for child in self.get_children():
                 child.show_all()
@@ -806,8 +806,8 @@ class PreferencesWindow(UniqueWindow):
             hbox.append(refresh)
             vb.prepend(hbox)
 
-            self.prepend(self.create_behavior_frame(), False, False, TOP_MARGIN)
-            self.prepend(self.create_scandirs_frame(), False, True, MARGIN)
+            self.prepend(self.create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
+            self.prepend(self.create_scandirs_frame())  # TODO GTK4: add set_margin_top(MARGIN)
 
             # during testing
             if app.library is not None:
@@ -944,5 +944,7 @@ def create_grid(column_spacing: int = 12, row_spacing: int = 6):
 def hbox_for(label: Gtk.Label, entry: Gtk.Entry, expand_entry: bool = True) -> Gtk.Box:
     hb = Gtk.Box(spacing=12)
     hb.prepend(label)
-    hb.append(entry, expand_entry, True, 0)
+    if expand_entry:
+        entry.set_hexpand(True)
+    hb.append(entry)
     return hb

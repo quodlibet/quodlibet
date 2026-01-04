@@ -431,9 +431,11 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         filter_box.prepend(fe)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(Align(filter_box, border=6, right=-6), False, False, 0)
+        vbox.prepend(Align(filter_box, border=6, right=-6))
         vbox.prepend(sw)
-        vbox.prepend(Align(bbox, left=3, right=3, top=0), False, False, 3)
+        align_bbox = Align(bbox, left=3, right=3, top=0)
+        align_bbox.set_margin_top(3)
+        vbox.prepend(align_bbox)
         paned = Paned()
         paned.pack1(vbox, False, False)
 

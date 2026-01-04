@@ -36,7 +36,7 @@ class Preferences(Gtk.Box):
         ccb = pconfig.ConfigCheckButton(
             _("Hide main window on close"), "window_hide", populate=True
         )
-        self.prepend(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
+        self.prepend(qltk.Frame(_("Behavior"), child=ccb))
 
         def on_scroll_changed(button, new_state):
             if button.get_active():

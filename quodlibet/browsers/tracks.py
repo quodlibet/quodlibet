@@ -92,7 +92,7 @@ class TrackList(Browser):
         prefs = PreferencesButton(sbb)
         sbb.prepend(prefs)
 
-        self.prepend(Align(sbb, left=6, right=6), False, True, 0)
+        self.prepend(Align(sbb, left=6, right=6))
         self.prepend(sbb.flow_box)
         self.connect("destroy", self.__destroy)
         self.show_all()

@@ -303,7 +303,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self._filter_menu = filter_menu = FilterMenu(library, player)
         filter_menu.set_browser(self.browser)
         self.add_accel_group(filter_menu.get_accel_group())
-        bottom.prepend(filter_menu.get_widget(), False, True, 0)
+        bottom.prepend(filter_menu.get_widget())
         filter_menu.get_widget().show()
 
         self.__statusbar = Gtk.Label()
