@@ -12,7 +12,7 @@ import os
 from gi.repository import Gtk, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland, gtk_version, is_accel
+from quodlibet.qltk import get_top_parent, is_wayland, is_accel
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal, print_d, print_w
 from quodlibet.util import connect_obj, connect_destroy
@@ -49,18 +49,6 @@ def should_use_header_bar():
     return settings.get_property("gtk-dialogs-use-header")
 
 
-def fix_default_size(width, height):
-    # https://bugzilla.gnome.org/show_bug.cgi?id=740922
-    if gtk_version < (3, 19):
-        # fixed with 3.20:
-        #   https://bugzilla.gnome.org/show_bug.cgi?id=756618
-        if width != -1:
-            width += min((width - 174), 56)
-        if height != -1:
-            height += 84
-    return (width, height)
-
-
 class Dialog(Gtk.Dialog):
     """A Gtk.Dialog subclass which supports the use_header_bar property
     for all Gtk versions and will ignore it if header bars shouldn't be
@@ -73,16 +61,12 @@ class Dialog(Gtk.Dialog):
         super().__init__(*args, **kwargs)
 
     def get_titlebar(self):
-        try:
-            # gtk+ >=3.16
-            return super().get_titlebar()
-        except AttributeError:
-            return None
+        # GTK4: get_titlebar() always exists
+        return super().get_titlebar()
 
     def set_default_size(self, width, height):
-        if self.get_titlebar():
-            width, height = fix_default_size(width, height)
-        else:
+        # GTK4: No size adjustments needed for headerbar
+        if not self.get_titlebar():
             # In case we don't use a headerbar we have to add an additional
             # row of buttons in the content box. To get roughly the same
             # content height make the window a bit taller.
@@ -167,8 +151,7 @@ class Window(Gtk.Window):
             self.fullscreen()
 
     def set_default_size(self, width, height):
-        if self._header_bar:
-            width, height = fix_default_size(width, height)
+        # GTK4: No size adjustments needed for headerbar
         super().set_default_size(width, height)
 
     def show_now(self):
@@ -259,16 +242,13 @@ class Window(Gtk.Window):
 
 
 class PersistentWindowMixin:
-    """A mixin for saving/restoring window size/position/maximized state"""
+    """A mixin for saving/restoring window size/maximized state"""
 
     def enable_window_tracking(self, config_prefix, size_suffix=""):
-        """Enable tracking/saving of changes and restore size/pos/maximized.
-
-        Make sure to call set_transient_for() before since position is
-        restored relative to the parent in this case.
+        """Enable tracking/saving of changes and restore size/maximized state.
 
         config_prefix -- prefix for the config key
-                         (prefix_size, prefix_position, prefix_maximized)
+                         (prefix_size, prefix_maximized)
         size_suffix -- optional suffix for saving the size. For cases where the
                        window has multiple states with different content sizes.
                        (example: edit tags with one song or multiple)
@@ -282,31 +262,21 @@ class PersistentWindowMixin:
             self.__do_save_size_pos, timeout=50, owner=self
         )
 
-        # GTK4: configure-event and window-state-event removed
-        # Use property notifications instead
-        if gtk_version >= (4, 0):
-            # Track window size changes
-            self.connect("notify::default-width", self.__configure_notify)
-            self.connect("notify::default-height", self.__configure_notify)
-            # Track window state changes
-            self.connect("notify::maximized", self.__window_state_notify)
-            self.connect("notify::fullscreened", self.__window_state_notify)
-            parent = self.get_transient_for()
-            if parent:
-                connect_destroy(
-                    parent, "notify::default-width", self.__parent_configure_notify
-                )
-                connect_destroy(
-                    parent, "notify::default-height", self.__parent_configure_notify
-                )
-        else:
-            self.connect("configure-event", self.__configure_event)
-            self.connect("window-state-event", self.__window_state_changed)
-            parent = self.get_transient_for()
-            if parent:
-                connect_destroy(
-                    parent, "configure-event", self.__parent_configure_event
-                )
+        # GTK4: Use property notifications for window size/state changes
+        # Track window size changes
+        self.connect("notify::default-width", self.__configure_notify)
+        self.connect("notify::default-height", self.__configure_notify)
+        # Track window state changes
+        self.connect("notify::maximized", self.__window_state_notify)
+        self.connect("notify::fullscreened", self.__window_state_notify)
+        parent = self.get_transient_for()
+        if parent:
+            connect_destroy(
+                parent, "notify::default-width", self.__parent_configure_notify
+            )
+            connect_destroy(
+                parent, "notify::default-height", self.__parent_configure_notify
+            )
 
         self.connect("notify::visible", self.__visible_changed)
         self.__restore_window_state()
@@ -321,7 +291,6 @@ class PersistentWindowMixin:
     def __restore_window_state(self):
         if not is_wayland():
             self.__restore_state()
-            # GTK4: __restore_position() is a no-op, removed call
         self.__restore_size()
 
     def __conf(self, name):
@@ -336,14 +305,6 @@ class PersistentWindowMixin:
         else:
             self.unmaximize()
 
-    def __restore_position(self):
-        print_d("Restore position")
-        pos = config.get("memory", self.__conf("position"), "")
-        if not pos:
-            return
-
-        # GTK4: Window positioning removed - window managers control this
-        pass
 
     def __restore_size(self):
         print_d("Restore size")
@@ -360,19 +321,6 @@ class PersistentWindowMixin:
         # GTK4 handles window sizing constraints automatically
         if x >= 1 and y >= 1:
             self.resize(x, y)
-
-    def __parent_configure_event(self, window, event):
-        # GTK4: Position saving removed, this handler does nothing
-        return False
-
-    def __configure_event(self, window, event):
-        # xfwm4 resized the window before it maximizes it, which leads
-        # to QL remembering the wrong size. Work around that by waiting
-        # until configure-event settles down, at which point the maximized
-        # state should be set
-
-        self.__save_size_pos_deferred()
-        return False
 
     def __configure_notify(self, *args):
         """GTK4: Handle notify::default-width/height instead of configure-event"""
@@ -415,18 +363,6 @@ class PersistentWindowMixin:
         width, height = self.get_width(), self.get_height()
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
-        # GTK4: __do_save_pos() is a no-op, removed call
-
-    def __do_save_pos(self):
-        # GTK4: Window positioning removed - window managers control this
-        pass
-
-    def __window_state_changed(self, window, event):
-        self.__state = event.new_window_state
-        if self.__state & Gdk.WindowState.WITHDRAWN:
-            return
-        maximized = int(self.__state & Gdk.WindowState.MAXIMIZED)
-        config.set("memory", self.__conf("maximized"), maximized)
 
 
 class _Unique:
