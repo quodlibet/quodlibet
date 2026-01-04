@@ -832,6 +832,19 @@ def _init_gtk():
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 
+    # GTK4: Window.get_position() removed - window positioning discouraged
+    if not hasattr(Gtk.Window, "get_position"):
+
+        def _window_get_position(self):
+            """Stub for GTK4 - window positioning not supported.
+
+            GTK4 removed get_position() as window managers control positions.
+            Returns (0, 0) to allow legacy code to run.
+            """
+            return (0, 0)
+
+        Gtk.Window.get_position = _window_get_position
+
     # GTK4: StatusIcon removed - system tray APIs changed
     if not hasattr(Gtk, "StatusIcon"):
         from gi.repository import GObject
