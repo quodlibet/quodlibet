@@ -99,7 +99,7 @@ class PatternEditor(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
 
         edit_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         edit_box.prepend(cb)

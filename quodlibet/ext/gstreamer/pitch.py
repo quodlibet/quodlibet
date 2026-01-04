@@ -61,7 +61,8 @@ class Preferences(Gtk.Box):
         for idx, key in enumerate(["tempo", "rate", "pitch"]):
             label = Gtk.Label(label=_SETTINGS[key][0])
             labels[key] = label
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
             table.attach(

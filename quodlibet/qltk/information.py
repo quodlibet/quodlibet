@@ -31,7 +31,8 @@ def Label(label=None, markup=None, ellipsize=False):
     else:
         l = Gtk.Label(label=label)
     l.set_selectable(True)
-    l.set_alignment(0, 0)
+    l.set_xalign(0)
+    l.set_yalign(0)
     if ellipsize:
         l.set_ellipsize(Pango.EllipsizeMode.END)
     return l

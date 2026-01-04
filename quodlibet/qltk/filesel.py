@@ -560,12 +560,12 @@ class FileSelector(Paned):
         dirlist.connect("row-activated", select_all_files, filelist.get_selection())
 
         sw = ScrolledWindow()
-        sw.add(dirlist)
+        sw.set_child(dirlist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.pack1(sw, resize=True)
 
         sw = ScrolledWindow()
-        sw.add(filelist)
+        sw.set_child(filelist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.pack2(sw, resize=True)
 

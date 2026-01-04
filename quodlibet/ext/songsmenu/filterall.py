@@ -39,7 +39,7 @@ class SelectionWindow(Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
 
         buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         buttons.set_spacing(6)

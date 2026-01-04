@@ -652,7 +652,7 @@ class ListChoiceDialog(Gtk.Dialog):
         listbox.connect("row-activated", self.on_row_click)
 
         scroll = Gtk.ScrolledWindow()
-        scroll.add(listbox)
+        scroll.set_child(listbox)
 
         content = self.get_content_area()
         content.prepend(scroll)

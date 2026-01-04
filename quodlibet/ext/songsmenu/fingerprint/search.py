@@ -260,7 +260,7 @@ class SearchWindow(Window):
             iter_ = self.model.append([SearchEntry(song)])
             self._iter_map[song] = iter_
 
-        sw.add(view)
+        sw.set_child(view)
 
         self.pool = pool = FingerPrintPool()
         pool.connect("fingerprint-done", self.__fp_done_cb)

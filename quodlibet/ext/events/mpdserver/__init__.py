@@ -77,7 +77,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.set_row_spacings(6)
 
         label = Gtk.Label(label=_("_Port:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -126,7 +127,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(port_revert, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         label = Gtk.Label(label=_("Local _IP:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -137,7 +139,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         )
 
         label = Gtk.Label(label=_("P_assword:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -155,7 +158,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         label = Gtk.Label()
         label.set_padding(6, 6)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_selectable(True)
         label.set_label("...")
         table.attach(label, 1, 3, 0, 1)
@@ -174,7 +178,8 @@ namelessdev.mpdroid">MPDroid</a> (Android)
 \u2022 <a href="https://play.google.com/store/apps/details?id=org.\
 gateshipone.malp">M.A.L.P.</a> (Android)
 """)
-        clients.set_alignment(0, 0)
+        clients.set_xalign(0)
+        clients.set_yalign(0)
 
         box.prepend(qltk.Frame(_("Connection"), child=table))
         box.prepend(qltk.Frame(_("Tested Clients"), child=clients))

@@ -598,6 +598,63 @@ def _init_gtk():
 
     Gtk.AccelGroup = AccelGroup
 
+    # GTK4: AccelFlags removed - add dummy enum
+    if not hasattr(Gtk, "AccelFlags"):
+        from enum import IntFlag
+
+        class AccelFlags(IntFlag):
+            """Dummy AccelFlags for GTK4 compatibility."""
+
+            VISIBLE = 1 << 0
+            LOCKED = 1 << 1
+            MASK = 0x07
+
+        Gtk.AccelFlags = AccelFlags
+
+    # GTK4: Widget.add_accelerator() removed - add no-op shim
+    if not hasattr(Gtk.Widget, "add_accelerator"):
+
+        def _widget_add_accelerator(self, signal, accel_group, key, mod, flags):
+            """Dummy add_accelerator for GTK4 compatibility.
+
+            In GTK4, accelerators are handled via GtkApplication.set_accels_for_action().
+            This no-op allows old code to run without crashing.
+            """
+            pass
+
+        Gtk.Widget.add_accelerator = _widget_add_accelerator
+
+    # GTK4: MenuItem removed - create Button-based replacement
+    if not hasattr(Gtk, "MenuItem"):
+
+        class MenuItem(Gtk.Button):
+            """GTK4 MenuItem replacement using Button.
+
+            Provides basic container methods (add/remove/get_child) for compatibility.
+            """
+
+            def __init__(self, label=None, use_underline=False):
+                if label:
+                    super().__init__(label=label, use_underline=use_underline)
+                else:
+                    super().__init__()
+                self.add_css_class("flat")
+
+            def add(self, widget):
+                """Add child widget"""
+                self.set_child(widget)
+
+            def remove(self, widget):
+                """Remove child widget"""
+                if self.get_child() == widget:
+                    self.set_child(None)
+
+            def set_submenu(self, menu):
+                """Store submenu reference (not fully implemented in GTK4 shim)"""
+                self._submenu = menu
+
+        Gtk.MenuItem = MenuItem
+
     # GTK4: ImageMenuItem removed - dummy for isinstance checks
     class ImageMenuItem:
         pass
@@ -690,17 +747,6 @@ def _init_gtk():
 
         Gtk.ShadowType = ShadowType
 
-    # GTK4: MenuItem removed - use Button with flat style
-    class MenuItem(Gtk.Button):
-        def __init__(self, label=None, use_underline=False):
-            super().__init__(label=label, use_underline=use_underline)
-            self.add_css_class("flat")
-
-        def set_submenu(self, menu):
-            # Store submenu reference but don't show it (needs proper implementation)
-            self._submenu = menu
-
-    Gtk.MenuItem = MenuItem
 
     # GTK4: AccelMap removed
     class AccelMap:

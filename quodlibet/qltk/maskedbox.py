@@ -52,7 +52,7 @@ class MaskedBox(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
         sw.set_size_request(-1, max(sw.size_request().height, 80))
 
         def cdf(column, cell, model, iter, data):

@@ -259,4 +259,5 @@ class ConfigLabel(Gtk.Label):
     def __init__(self, text, widget):
         super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
-        self.set_alignment(0.0, 0.5)
+        self.set_xalign(0.0)
+        self.set_yalign(0.5)

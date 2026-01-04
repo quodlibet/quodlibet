@@ -457,7 +457,8 @@ class PreferencesWindow(UniqueWindow):
 
             fb_label = Gtk.Label(label=_("_Fall-back gain:"))
             fb_label.set_use_underline(True)
-            fb_label.set_alignment(0, 0.5)
+            fb_label.set_xalign(0)
+            fb_label.set_yalign(0.5)
             fb_label.set_mnemonic_widget(fb_scale)
 
             pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
@@ -473,7 +474,8 @@ class PreferencesWindow(UniqueWindow):
 
             pre_label = Gtk.Label(label=_("_Pre-amp gain:"))
             pre_label.set_use_underline(True)
-            pre_label.set_alignment(0, 0.5)
+            pre_label.set_xalign(0)
+            pre_label.set_yalign(0.5)
             pre_label.set_mnemonic_widget(pre_scale)
 
             widgets = [pre_label, pre_scale, fb_label, fb_scale]
@@ -545,7 +547,8 @@ class PreferencesWindow(UniqueWindow):
             default_combo = Gtk.ComboBox(model=model)
             default_lab = Gtk.Label(label=_("_Default rating:"))
             default_lab.set_use_underline(True)
-            default_lab.set_alignment(0, 0.5)
+            default_lab.set_xalign(0)
+            default_lab.set_yalign(0.5)
 
             def draw_rating(column, cell, model, it, data):
                 num = model[it][0]

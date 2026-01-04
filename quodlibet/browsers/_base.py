@@ -368,7 +368,8 @@ class EditDisplayPatternMixin:
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label()
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_padding(6, 6)
         eb = Gtk.Box()
         eb.get_style_context().add_class("entry")

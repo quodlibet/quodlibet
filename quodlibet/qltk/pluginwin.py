@@ -86,7 +86,8 @@ class PluginErrorWindow(UniqueWindow):
             # second line is always the __rescan line; don't show it
             message = failures[key][0:1] + failures[key][3:]
             failure = Gtk.Label(label="".join(message).strip())
-            failure.set_alignment(0, 0)
+            failure.set_xalign(0)
+            failure.set_yalign(0)
             failure.set_padding(12, 6)
             failure.set_selectable(True)
             failure.set_line_wrap(True)
@@ -307,7 +308,8 @@ class PluginPreferencesContainer(Gtk.Box):
         desc.set_line_wrap(True)
         # Ensure a reasonable minimum height request for long descriptions
         desc.set_width_chars(30)
-        desc.set_alignment(0, 0.5)
+        desc.set_xalign(0)
+        desc.set_yalign(0.5)
         desc.set_selectable(True)
         self.prepend(desc)
 
@@ -387,7 +389,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         plv.connect("plugin-toggled", self.__plugin_toggled)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
-        sw.add(plv)
+        sw.set_child(plv)
 
         fb = Gtk.Box(spacing=6)
 

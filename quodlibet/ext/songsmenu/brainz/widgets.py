@@ -395,7 +395,8 @@ class SearchWindow(Dialog):
         rhb = Gtk.Box()
         rl = Gtk.Label()
         rl.set_markup(_("Results <i>(drag to reorder)</i>"))
-        rl.set_alignment(0, 0.5)
+        rl.set_xalign(0)
+        rl.set_yalign(0.5)
         rhb.prepend(rl)
         rl = self.result_label = Gtk.Label(label="")
         rhb.append(rl)
@@ -404,7 +405,7 @@ class SearchWindow(Dialog):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
         rtv.set_border_width(8)
-        sw.add(rtv)
+        sw.set_child(rtv)
         vb.prepend(sw)
 
         # TODO: remove deprecated get_action_area

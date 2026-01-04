@@ -39,13 +39,15 @@ def MenuItems(marks, player, seekable):
             l = Gtk.Label(label=_("N/A"))
         else:
             l = Gtk.Label(label=util.format_time(time))
-        l.set_alignment(0.0, 0.5)
+        l.set_xalign(0.0)
+        l.set_yalign(0.5)
         sizes.add_widget(l)
         hbox.prepend(l)
-        text = Gtk.Label(mark)
+        text = Gtk.Label(label=mark)
         text.set_max_width_chars(80)
         text.set_ellipsize(Pango.EllipsizeMode.END)
-        text.set_alignment(0.0, 0.5)
+        text.set_xalign(0.0)
+        text.set_yalign(0.5)
         hbox.prepend(text)
         i.show_all()
         items.append(i)
@@ -86,7 +88,7 @@ class EditBookmarksPane(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(RCMHintedTreeView(model=model))
+        sw.set_child(RCMHintedTreeView(model=model))
         add_css(sw, "* { padding: 12px } ")
 
         render = Gtk.CellRendererText()
@@ -139,7 +141,8 @@ class EditBookmarksPane(Gtk.Box):
 
         connect_obj(time, "changed", self.__check_entry, add, time, name)
         connect_obj(name, "changed", self.__check_entry, add, time, name)
-        connect_obj(name, "activate", Gtk.Button.clicked, add)
+        # GTK4: Gtk.Button.clicked() as method removed, use emit() instead
+        name.connect("activate", lambda entry: add.emit("clicked"))
 
         time.set_placeholder_text(_("MM:SS"))
         connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
@@ -156,7 +159,8 @@ class EditBookmarksPane(Gtk.Box):
         menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
         sw.get_child().connect("key-press-event", self.__view_key_press, remove)
-        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        # GTK4: Gtk.Menu removed, use PopoverMenu
+        self.connect("destroy", lambda _: menu.destroy())
         if parent:
             parent.connect("changed", self.__parent_changed)
 

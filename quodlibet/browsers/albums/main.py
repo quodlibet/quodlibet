@@ -573,7 +573,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         view.set_search_column(0)
         view.set_model(model_filter)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
 
         view.connect("row-activated", self.__play_selection)
         self.__sig = view.connect(

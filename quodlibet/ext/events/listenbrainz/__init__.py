@@ -463,7 +463,8 @@ class ListenbrainzSubmission(EventPlugin):
         label_names = [_("User _token:")]
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             table.attach(
                 label,
@@ -503,7 +504,8 @@ class ListenbrainzSubmission(EventPlugin):
         labels = []
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             table.attach(
                 label,

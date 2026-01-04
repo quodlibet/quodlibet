@@ -647,7 +647,8 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         for row, (label_text, entry) in enumerate(rows):
             label = Gtk.Label(label=label_text)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             label.set_mnemonic_widget(entry)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)

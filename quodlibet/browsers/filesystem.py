@@ -114,7 +114,7 @@ class FileSystem(Browser, Gtk.Box):
         connect_obj(sel, "changed", copool.add, self.__songs_selected, dt)
         sel.connect("changed", self._on_selection_changed)
         dt.connect("row-activated", lambda *a: self.songs_activated())
-        sw.add(dt)
+        sw.set_child(dt)
         self.prepend(sw)
 
         self.show_all()

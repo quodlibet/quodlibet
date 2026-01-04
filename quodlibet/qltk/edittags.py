@@ -541,7 +541,7 @@ class EditTags(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
         self.prepend(sw)
 
         cb = ConfigCheckButton(

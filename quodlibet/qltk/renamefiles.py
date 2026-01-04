@@ -196,7 +196,7 @@ class RenameFiles(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(self.view)
+        sw.set_child(self.view)
         self.prepend(sw)
 
         # rename options

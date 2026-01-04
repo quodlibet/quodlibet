@@ -99,7 +99,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
         tree = MatchListsTreeView(a_items, b_items, columns)
         self._tree = tree
-        sw.add(tree)
+        sw.set_child(tree)
         tree.b_order = b_order
 
         default_order_text = ", ".join(

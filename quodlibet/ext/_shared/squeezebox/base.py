@@ -144,7 +144,8 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         rows.append((lbl, ve))
 
         for row, (label, entry) in enumerate(rows):
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 

@@ -282,7 +282,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.songlist.sortable = not browser_cls.can_reorder
 
         sw = ScrolledWindow()
-        sw.add(view)
+        sw.set_child(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.browser = browser = browser_cls(library)
@@ -307,7 +307,8 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         filter_menu.get_widget().show()
 
         self.__statusbar = Gtk.Label()
-        self.__statusbar.set_alignment(1.0, 0.5)
+        self.__statusbar.set_xalign(1.0)
+        self.__statusbar.set_yalign(0.5)
         self.__statusbar.set_padding(6, 3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
         bottom.append(self.__statusbar)

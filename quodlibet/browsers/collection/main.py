@@ -241,7 +241,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.append_column(column)
 
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
 
         hbox = Gtk.Box(spacing=6)
 

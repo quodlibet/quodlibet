@@ -39,7 +39,8 @@ class FileListExpander(Gtk.Expander):
 
         paths = [fsn2text(unexpand(p)) for p in paths]
         lab = Gtk.Label(label="\n".join(paths))
-        lab.set_alignment(0.0, 0.0)
+        lab.set_xalign(0.0)
+        lab.set_yalign(0.0)
         lab.set_selectable(True)
         win = Gtk.ScrolledWindow()
         win.add_with_viewport(Align(lab, border=6))

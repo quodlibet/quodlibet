@@ -217,7 +217,8 @@ class WaitLoadBar(WaitLoadBase, Gtk.Box):
     def __init__(self):
         super().__init__()
 
-        self._label.set_alignment(0.0, 0.5)
+        self._label.set_xalign(0.0)
+        self._label.set_yalign(0.5)
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())

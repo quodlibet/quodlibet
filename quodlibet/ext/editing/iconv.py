@@ -54,7 +54,8 @@ class Iconv(EditTagsPlugin):
             item = Gtk.MenuItem()
             item.value = i
             item_label = Gtk.Label(label=i)
-            item_label.set_alignment(0.0, 0.5)
+            item_label.set_xalign(0.0)
+            item_label.set_yalign(0.5)
             item.add(item_label)
             item.connect("activate", self.__convert)
             submenu.append(item)

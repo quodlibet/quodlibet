@@ -268,7 +268,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             scale.connect("value-changed", on_change)
 
             label = Gtk.Label(label=lbl_text)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_padding(0, 6)
             label.set_mnemonic_widget(scale)
 

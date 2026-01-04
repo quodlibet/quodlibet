@@ -688,11 +688,13 @@ class WaveformSeekBarPlugin(EventPlugin):
         def create_color(label_text, config_item):
             hbox = Gtk.Box(spacing=6)
             label = Gtk.Label(label=label_text)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             hbox.prepend(label)
             colour = getattr(CONFIG, config_item)
             colour_label = Gtk.Label()
-            colour_label.set_alignment(0.0, 0.5)
+            colour_label.set_xalign(0.0)
+            colour_label.set_yalign(0.5)
             colour_label.set_size_request(160, -1)
 
             def colour_updated(_widget, c: Gdk.RGBA):

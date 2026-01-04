@@ -143,7 +143,8 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
 
         def make_label(label_text):
             label = Gtk.Label(label_text, selectable=True)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_margin_end(3)
             return label
 

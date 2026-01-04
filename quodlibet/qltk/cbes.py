@@ -102,7 +102,8 @@ class _KeyValueEditor(qltk.Window):
 
         selection = view.get_selection()
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
-        connect_obj(self.value, "activate", Gtk.Button.clicked, add)
+        # GTK4: Gtk.Button.clicked() as method removed, use emit() instead
+        self.value.connect("activate", lambda entry: add.emit("clicked"))
         self.value.connect("changed", self.__changed, [add])
         connect_obj(add, "clicked", self.__add, selection, name, self.value, self.model)
         selection.connect("changed", self.__set_text, name, self.value, rem_b)

@@ -54,7 +54,7 @@ class TextEditBox(Gtk.Box):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(TextView(buffer=TextBuffer()))
+        sw.set_child(TextView(buffer=TextBuffer()))
         self.prepend(sw)
         self.buffer = sw.get_child().get_buffer()
 

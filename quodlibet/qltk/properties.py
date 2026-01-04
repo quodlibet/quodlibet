@@ -112,7 +112,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         fview.append_column(c1)
 
         sw = ScrolledWindow()
-        sw.add(fview)
+        sw.set_child(fview)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         if len(songs) > 1:

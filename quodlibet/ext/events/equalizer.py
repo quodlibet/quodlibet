@@ -405,11 +405,13 @@ class Equalizer(EventPlugin):
         for i, band in enumerate(bands):
             # align numbers and suffixes in separate rows for great justice
             lbl = Gtk.Label(label=band.split()[0])
-            lbl.set_alignment(1, 0.5)
+            lbl.set_xalign(1)
+            lbl.set_yalign(0.5)
             lbl.set_padding(0, 4)
             table.attach(lbl, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             lbl = Gtk.Label(label=band.split()[1])
-            lbl.set_alignment(1, 0.5)
+            lbl.set_xalign(1)
+            lbl.set_yalign(0.5)
             table.attach(lbl, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             adj = Gtk.Adjustment.new(levels[i], -24.0, 12.0, 0.5, 3, 0)
             adj.connect("value-changed", set_band, i)

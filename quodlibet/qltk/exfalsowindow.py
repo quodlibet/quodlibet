@@ -132,7 +132,8 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         bbox.prepend(statusbox)
 
         l = Gtk.Label()
-        l.set_alignment(1.0, 0.5)
+        l.set_xalign(1.0)
+        l.set_yalign(0.5)
         l.set_ellipsize(Pango.EllipsizeMode.END)
         bbox.prepend(l)
 
