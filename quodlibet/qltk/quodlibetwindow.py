@@ -341,7 +341,8 @@ class TopBar(Gtk.Box):
         context.add_class("primary-toolbar")
 
     def set_seekbar_widget(self, widget):
-        children = self._pattern_box.get_children()
+        from quodlibet.qltk import get_children
+        children = get_children(self._pattern_box)
         if len(children) > 1:
             self._pattern_box.remove(children[-1])
 

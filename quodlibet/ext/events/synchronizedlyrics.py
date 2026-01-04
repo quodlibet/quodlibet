@@ -145,7 +145,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
-        self.scrolled_window.add_with_viewport(self.textview)
+        # GTK4: add_with_viewport removed, use set_child (viewport auto-created)
+        self.scrolled_window.set_child(self.textview)
 
         vb = Gtk.Box()
         vb.prepend(self.scrolled_window)

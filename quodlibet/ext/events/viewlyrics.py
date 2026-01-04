@@ -67,7 +67,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.plugin_on_song_started(cur)
 
     def create_sidebar(self):
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.prepend(self.scrolled_window)
         vbox.show_all()
         return vbox

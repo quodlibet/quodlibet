@@ -706,6 +706,46 @@ def _init_gtk():
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 
+    # GTK4: StatusIcon removed - system tray APIs changed
+    if not hasattr(Gtk, "StatusIcon"):
+
+        class StatusIcon:
+            def __init__(self):
+                print_d("GTK4: StatusIcon not supported, plugin may not work")
+
+        Gtk.StatusIcon = StatusIcon
+
+    # GTK4: RC file system removed - themes work differently
+    if not hasattr(Gtk, "rc_get_theme_dir"):
+        Gtk.rc_get_theme_dir = lambda: None
+
+    # GTK4: Dialog.run() removed - dialogs are now async
+    if not hasattr(Gtk.Dialog, "run"):
+
+        def _dialog_run_compat(self):
+            # GTK4: Dialog.run() removed, need to use async show()
+            # This is a blocking compatibility shim - proper fix is to use async
+            print_d("GTK4: Dialog.run() called - using compatibility blocking mode")
+            import gi.repository.GLib as GLib
+
+            response = [None]
+
+            def on_response(dialog, response_id):
+                response[0] = response_id
+
+            handler_id = self.connect("response", on_response)
+            self.show()
+
+            # Run a nested event loop (not ideal but maintains compatibility)
+            context = GLib.MainContext.default()
+            while response[0] is None:
+                context.iteration(True)
+
+            self.disconnect(handler_id)
+            return response[0]
+
+        Gtk.Dialog.run = _dialog_run_compat
+
     # GTK4: set_border_width removed - use margins instead
     if not hasattr(Gtk.Frame, "set_border_width"):
 
