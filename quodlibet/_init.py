@@ -312,7 +312,7 @@ def _init_gtk():
         "button-press-event",
         "button-release-event",
         "motion-notify-event",
-        "key-press-event",
+        # Note: key-press-event handled specially below via EventControllerKey
         "key-release-event",
         "scroll-event",
         "enter-notify-event",
