@@ -757,7 +757,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     @property
     def side_book_empty(self):
-        return not self.side_book.get_children()
+        # GTK4: get_children() removed, use helper
+        from quodlibet.qltk import get_children
+
+        return not get_children(self.side_book)
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.

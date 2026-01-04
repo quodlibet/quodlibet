@@ -802,10 +802,23 @@ def _init_gtk():
 
     # GTK4: StatusIcon removed - system tray APIs changed
     if not hasattr(Gtk, "StatusIcon"):
+        from gi.repository import GObject
 
-        class StatusIcon:
+        class StatusIcon(GObject.Object):
+            """Stub StatusIcon for GTK4 - supports signals but no tray functionality"""
+
             def __init__(self):
+                super().__init__()
                 print_d("GTK4: StatusIcon not supported, plugin may not work")
+
+            def set_from_pixbuf(self, pixbuf):
+                pass
+
+            def set_tooltip_text(self, text):
+                pass
+
+            def set_visible(self, visible):
+                pass
 
         Gtk.StatusIcon = StatusIcon
 
