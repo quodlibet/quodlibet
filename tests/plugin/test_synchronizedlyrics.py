@@ -21,6 +21,11 @@ class TSynchronizedlyrics(PluginTestCase):
     [01:01.00]Starting here?
     [61:00.00]Past the hour mark now!
     """
+    EXPECTED_LYRICS = [
+        (1000 * 61, "Starting here?"),
+        (1000 * (60 + 23.45), "This is some text"),
+        (1000 * 61.0 * 60, "Past the hour mark now!"),
+    ]
 
     def setUp(self):
         self.mod = self.modules["SynchronizedLyrics"]
@@ -33,11 +38,7 @@ class TSynchronizedlyrics(PluginTestCase):
         assert self.plugin._parse_lrc("") == []
 
     def test_lrc_parsing(self):
-        assert self.plugin._parse_lrc(self.AN_LRC) == [
-            (1000 * 61, "Starting here?"),
-            (1000 * (60 + 23.45), "This is some text"),
-            (1000 * 61.0 * 60, "Past the hour mark now!"),
-        ]
+        assert self.plugin._parse_lrc(self.AN_LRC) == self.EXPECTED_LYRICS
 
     def test_build_data_for_no_song(self):
         assert self.plugin._build_data(None) == []
@@ -54,4 +55,17 @@ class TSynchronizedlyrics(PluginTestCase):
             path = Path(dir_) / f"{song('artist')} - {song('title')}.lrc"
             with open(path, "w") as f:
                 f.write(self.AN_LRC)
-            assert len(self.plugin._build_data(song)) == 3
+            assert self.plugin._build_data(song) == self.EXPECTED_LYRICS
+
+    def test_build_data_for_embedded_lyrics(self):
+        with TemporaryDirectory() as dir_:
+            song = AudioFile(
+                {
+                    "~filename": f"{dir_}/ARTIST - TITLE.mp3",
+                    "artist": "ARTIST",
+                    "title": "TITLE",
+                    "lyrics": self.AN_LRC,
+                }
+            )
+            data = self.plugin._build_data(song)
+            assert data == self.EXPECTED_LYRICS
