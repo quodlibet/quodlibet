@@ -336,24 +336,32 @@ def _init_gtk():
     }
 
     def _connect_compat(self, signal_name, *args, **kwargs):
-        # GTK4: key-press-event exists but with different signature
-        # GTK3: callback(widget, event)
-        # GTK4: callback(widget, keyval, keycode, state, user_data)
+        # GTK4 native: Use EventControllerKey for keyboard events
         if signal_name == "key-press-event" and args:
             original_callback = args[0]
             user_data = args[1:] if len(args) > 1 else ()
 
-            def wrapped_callback(widget, keyval, keycode, state):
-                # Create a fake event object for GTK3 compatibility
+            # Create GTK4 EventControllerKey
+            controller = Gtk.EventControllerKey()
+            self.add_controller(controller)
+
+            def adapted_callback(ctrl, keyval, keycode, state):
+                # Create event-like object with GTK3 attributes
                 class FakeEvent:
-                    def __init__(self, keyval, keycode, state):
+                    def __init__(self):
                         self.keyval = keyval
                         self.state = state
                         self.hardware_keycode = keycode
 
-                return original_callback(widget, FakeEvent(keyval, keycode, state), *user_data)
+                # Call original with widget (not controller) as first arg
+                return original_callback(self, FakeEvent(), *user_data)
 
-            return _orig_gobject_connect(self, signal_name, wrapped_callback, **kwargs)
+            handler_id = controller.connect("key-pressed", adapted_callback)
+            # Store controller on widget to prevent garbage collection
+            if not hasattr(self, "_event_controllers"):
+                self._event_controllers = []
+            self._event_controllers.append(controller)
+            return handler_id
 
         # Silently ignore other GTK3 event signals that don't exist in GTK4
         if signal_name in _removed_signals:
