@@ -88,7 +88,11 @@ class PluginErrorWindow(UniqueWindow):
             failure = Gtk.Label(label="".join(message).strip())
             failure.set_xalign(0)
             failure.set_yalign(0)
-            failure.set_padding(12, 6)
+            # GTK4: set_padding() removed, use margins
+            failure.set_margin_start(12)
+            failure.set_margin_end(12)
+            failure.set_margin_top(6)
+            failure.set_margin_bottom(6)
             failure.set_selectable(True)
             failure.set_line_wrap(True)
 
@@ -209,7 +213,11 @@ class PluginListView(HintedTreeView):
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
-        render.set_padding(6, 3)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(6)
+        render.set_margin_end(6)
+        render.set_margin_top(3)
+        render.set_margin_bottom(3)
 
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -225,7 +233,11 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
-        render.set_padding(1, 1)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(1)
+        render.set_margin_end(1)
+        render.set_margin_top(1)
+        render.set_margin_bottom(1)
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -241,7 +253,11 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.set_property("xalign", 0.0)
-        render.set_padding(6, 6)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(6)
+        render.set_margin_end(6)
+        render.set_margin_top(6)
+        render.set_margin_bottom(6)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):

@@ -263,7 +263,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             "dimensions": item.dimensions,
         }
         frame = Gtk.Frame.new(text)
-        img.set_padding(12, 12)
+        # GTK4: set_padding() removed, use margins
+        img.set_margin_start(12)
+        img.set_margin_end(12)
+        img.set_margin_top(12)
+        img.set_margin_bottom(12)
         frame.set_border_width(12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)

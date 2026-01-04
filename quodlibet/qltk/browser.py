@@ -309,7 +309,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.__statusbar = Gtk.Label()
         self.__statusbar.set_xalign(1.0)
         self.__statusbar.set_yalign(0.5)
-        self.__statusbar.set_padding(6, 3)
+        # GTK4: set_padding() removed, use margins
+        self.__statusbar.set_margin_start(6)
+        self.__statusbar.set_margin_end(6)
+        self.__statusbar.set_margin_top(3)
+        self.__statusbar.set_margin_bottom(3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
         bottom.append(self.__statusbar)
         self.__statusbar.show()
@@ -325,7 +329,10 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             view.connect("columns-changed", self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         sw.show_all()
-        for c in self.get_child().get_children():
+        # GTK4: get_children() removed, use helper
+        from quodlibet.qltk import get_children
+
+        for c in get_children(self.get_child()):
             c.show()
         self.get_child().show()
 

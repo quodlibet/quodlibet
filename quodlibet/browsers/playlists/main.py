@@ -281,7 +281,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
-        render.set_padding(3, 3)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(3)
+        render.set_margin_end(3)
+        render.set_margin_top(3)
+        render.set_margin_bottom(3)
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.connect("editing-started", self.__start_editing)
         render.connect("edited", self.__edited)

@@ -98,11 +98,26 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
 
     size = max(width, height)
     theme = Gtk.IconTheme.get_default()
-    icon_info = theme.lookup_icon("quodlibet-missing-cover", size, 0)
-    if icon_info is None:
+    # GTK4: lookup_icon() signature changed
+    # GTK3: lookup_icon(icon_name, size, flags)
+    # GTK4: lookup_icon(icon_name, fallbacks, size, scale, direction, flags)
+    icon_paintable = theme.lookup_icon(
+        "quodlibet-missing-cover",
+        None,  # fallbacks
+        size,
+        scale_factor,
+        Gtk.TextDirection.NONE,
+        0,  # flags
+    )
+    if icon_paintable is None:
         return None
 
-    filename = icon_info.get_filename()
+    # GTK4: IconPaintable.get_file() returns Gio.File, not filename string
+    icon_file = icon_paintable.get_file()
+    if icon_file is None:
+        return None
+
+    filename = icon_file.get_path()
     try:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(filename, width, height)
     except GLib.GError:

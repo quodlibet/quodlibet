@@ -273,9 +273,17 @@ class TreeViewHints(Gtk.Window):
         else:
             extra_xpad = 0
 
-        label.set_padding(render_xpad + extra_xpad, 0)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(render_xpad + extra_xpad)
+        label.set_margin_end(render_xpad + extra_xpad)
+        label.set_margin_top(0)
+        label.set_margin_bottom(0)
         set_text(clabel)
-        clabel.set_padding(render_xpad, 0)
+        # GTK4: set_padding() removed, use margins
+        clabel.set_margin_start(render_xpad)
+        clabel.set_margin_end(render_xpad)
+        clabel.set_margin_top(0)
+        clabel.set_margin_bottom(0)
         label_width = clabel.get_layout().get_pixel_size()[0]
         label_width += clabel.get_layout_offsets()[0] or 0
         # layout offset includes the left padding, so add one more

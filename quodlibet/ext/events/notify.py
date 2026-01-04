@@ -107,7 +107,11 @@ class PreferencesWidget(Gtk.Box):
         table.attach(body_scrollarea, 1, 2, 1, 2)
 
         body_label = Gtk.Label(label=_("_Body:"))
-        body_label.set_padding(0, 3)
+        # GTK4: set_padding() removed, use margins
+        body_label.set_margin_start(0)
+        body_label.set_margin_end(0)
+        body_label.set_margin_top(3)
+        body_label.set_margin_bottom(3)
         body_label.set_use_underline(True)
         body_label.set_alignment(0, 0)
         body_label.set_mnemonic_widget(body_textview)

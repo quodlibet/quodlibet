@@ -57,7 +57,11 @@ class JSONBasedEditor(qltk.UniqueWindow):
         view.set_headers_visible(False)
         view.set_reorderable(True)
         render = Gtk.CellRendererText()
-        render.set_padding(3, 6)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(3)
+        render.set_margin_end(3)
+        render.set_margin_top(6)
+        render.set_margin_bottom(6)
         render.props.ellipsize = Pango.EllipsizeMode.END
         column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf)

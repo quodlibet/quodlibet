@@ -81,7 +81,11 @@ class Preferences(Gtk.Box):
             label.set_tooltip_text(tooltip)
             label.set_xalign(0.0)
             label.set_yalign(0.5)
-            label.set_padding(0, 6)
+            # GTK4: set_padding() removed, use margins
+            label.set_margin_start(0)
+            label.set_margin_end(0)
+            label.set_margin_top(6)
+            label.set_margin_bottom(6)
             label.set_use_underline(True)
             table.attach(
                 label,

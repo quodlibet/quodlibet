@@ -407,7 +407,11 @@ class Equalizer(EventPlugin):
             lbl = Gtk.Label(label=band.split()[0])
             lbl.set_xalign(1)
             lbl.set_yalign(0.5)
-            lbl.set_padding(0, 4)
+            # GTK4: set_padding() removed, use margins
+            lbl.set_margin_start(0)
+            lbl.set_margin_end(0)
+            lbl.set_margin_top(4)
+            lbl.set_margin_bottom(4)
             table.attach(lbl, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             lbl = Gtk.Label(label=band.split()[1])
             lbl.set_xalign(1)

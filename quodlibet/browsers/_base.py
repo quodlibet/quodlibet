@@ -370,7 +370,11 @@ class EditDisplayPatternMixin:
         label = Gtk.Label()
         label.set_xalign(0.0)
         label.set_yalign(0.5)
-        label.set_padding(6, 6)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
         eb = Gtk.Box()
         eb.get_style_context().add_class("entry")
         eb.add(label)

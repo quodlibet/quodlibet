@@ -71,7 +71,11 @@ class _KeyValueEditor(qltk.Window):
         view.set_reorderable(True)
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
-        render.set_padding(3, 3)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(3)
+        render.set_margin_end(3)
+        render.set_margin_top(3)
+        render.set_margin_bottom(3)
         column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf, None)
         view.append_column(column)

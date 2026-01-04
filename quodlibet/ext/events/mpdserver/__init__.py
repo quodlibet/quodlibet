@@ -157,7 +157,11 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(entry, 1, 3, 2, 3)
 
         label = Gtk.Label()
-        label.set_padding(6, 6)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
         label.set_xalign(0.0)
         label.set_yalign(0.5)
         label.set_selectable(True)
@@ -171,7 +175,11 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         clients = Gtk.Label()
-        clients.set_padding(6, 6)
+        # GTK4: set_padding() removed, use margins
+        clients.set_margin_start(6)
+        clients.set_margin_end(6)
+        clients.set_margin_top(6)
+        clients.set_margin_bottom(6)
         clients.set_markup("""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid</a> (Android)

@@ -748,6 +748,32 @@ def _init_gtk():
         Gtk.ShadowType = ShadowType
 
 
+    # GTK4: cairo_surface_create_from_pixbuf moved
+    if not hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
+        # In GTK4, this function exists in GdkPixbuf module
+        try:
+            from gi.repository import GdkPixbuf
+
+            Gdk.cairo_surface_create_from_pixbuf = (
+                GdkPixbuf.cairo_surface_create_from_pixbuf
+            )
+        except (ImportError, AttributeError):
+            # Fallback if not available
+            import cairo
+
+            def _cairo_surface_from_pixbuf(pixbuf, scale, window):
+                if pixbuf is None:
+                    return None
+                width = pixbuf.get_width()
+                height = pixbuf.get_height()
+                surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+                ctx = cairo.Context(surface)
+                Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
+                ctx.paint()
+                return surface
+
+            Gdk.cairo_surface_create_from_pixbuf = _cairo_surface_from_pixbuf
+
     # GTK4: AccelMap removed
     class AccelMap:
         @staticmethod
