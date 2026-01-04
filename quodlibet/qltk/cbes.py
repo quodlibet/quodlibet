@@ -78,7 +78,7 @@ class _KeyValueEditor(qltk.Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
         self.get_child().prepend(sw)
 
         menu = Gtk.PopoverMenu()

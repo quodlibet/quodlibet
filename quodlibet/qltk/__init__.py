@@ -347,14 +347,18 @@ def add_fake_accel(widget, accel):
     accelgroup without any actions..
     """
 
-    if not hasattr(add_fake_accel, "_group"):
-        add_fake_accel._group = Gtk.AccelGroup()
-    group = add_fake_accel._group
+    # GTK4: Accelerators system completely redesigned
+    # For menu items, shortcuts are handled differently
+    # This function is mainly for display purposes, so we can skip it in GTK4
+    if hasattr(widget, "add_accelerator"):
+        if not hasattr(add_fake_accel, "_group"):
+            add_fake_accel._group = Gtk.AccelGroup()
+        group = add_fake_accel._group
 
-    key, val = Gtk.accelerator_parse(accel)
-    assert key is not None
-    assert val is not None
-    widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
+        key, val = Gtk.accelerator_parse(accel)
+        assert key is not None
+        assert val is not None
+        widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
 def is_accel(event, *accels):
