@@ -40,7 +40,7 @@ class TSynchronizedlyrics(PluginTestCase):
         ]
 
     def test_build_data_for_no_song(self):
-        assert self.plugin._build_data(None) == []
+        assert self.plugin._build_data(None, 0) == []
 
     def test_build_data_for_munged_name(self):
         with TemporaryDirectory() as dir_:
