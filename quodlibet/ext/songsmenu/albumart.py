@@ -657,9 +657,10 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
         self.search_button.connect("clicked", self.start_search)
-        search_button_box = Gtk.Alignment()
-        search_button_box.set(1, 0, 0, 0)
-        search_button_box.add(self.search_button)
+        search_button_box = Gtk.Box()
+        self.search_button.set_halign(Gtk.Align.END)
+        self.search_button.set_valign(Gtk.Align.START)
+        search_button_box.append(self.search_button)
 
         search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
         search_table.set_col_spacings(6)
