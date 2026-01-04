@@ -182,16 +182,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             self.show()
 
     def __recenter(self, parent, event):
-        # GTK4: get_position() and move() removed - skip centering
-        if not hasattr(self, "move") or not hasattr(parent, "get_position"):
-            return
-
-        x, y = parent.get_position()
-        # GTK4: get_size() removed, use get_width()/get_height()
-        dx, dy = parent.get_width(), parent.get_height()
-        # GTK4: get_size() removed, use get_width()/get_height()
-        dx2, dy2 = self.get_width(), self.get_height()
-        self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
+        # GTK4: Window positioning removed - window managers control this
+        pass
 
     def __disconnect(self, widget, sig, parent):
         parent.disconnect(sig)

@@ -342,22 +342,8 @@ class PersistentWindowMixin:
         if not pos:
             return
 
-        try:
-            x, y = map(int, pos.split())
-        except ValueError:
-            return
-
-        # GTK4: get_position() and move() removed - skip position restoration
-        if not hasattr(self, "move"):
-            return
-
-        parent = self.get_transient_for()
-        if parent and hasattr(parent, "get_position"):
-            px, py = parent.get_position()
-            x += px
-            y += py
-
-        self.move(x, y)
+        # GTK4: Window positioning removed - window managers control this
+        pass
 
     def __restore_size(self):
         print_d("Restore size")
@@ -435,22 +421,8 @@ class PersistentWindowMixin:
         self.__do_save_pos()
 
     def __do_save_pos(self):
-        if self._should_ignore_state():
-            return
-
-        # GTK4: get_position() removed - window managers control positioning
-        if not hasattr(self, "get_position"):
-            return
-
-        x, y = self.get_position()
-        parent = self.get_transient_for()
-        if parent:
-            px, py = parent.get_position()
-            x -= px
-            y -= py
-
-        pos_value = f"{x} {y}"
-        config.set("memory", self.__conf("position"), pos_value)
+        # GTK4: Window positioning removed - window managers control this
+        pass
 
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state
