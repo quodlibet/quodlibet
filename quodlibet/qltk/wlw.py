@@ -153,16 +153,16 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
         self._label.set_size_request(170, -1)
         self._label.set_line_wrap(True)
         self._label.set_justify(Gtk.Justification.CENTER)
-        vbox.prepend(self._label)
-        vbox.prepend(self._progress)
+        vbox.append(self._label)
+        vbox.append(self._progress)
 
         if self._cancel_button and self._pause_button:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
             hbox = Gtk.Box(spacing=6, homogeneous=True)
-            hbox.prepend(self._cancel_button)
-            hbox.prepend(self._pause_button)
-            vbox.prepend(hbox)
+            hbox.append(self._cancel_button)
+            hbox.append(self._pause_button)
+            vbox.append(hbox)
 
         self.get_child().add(vbox)
 
@@ -230,10 +230,10 @@ class WaitLoadBar(WaitLoadBase, Gtk.Box):
             )
         )
 
-        self.prepend(self._label)
-        self.prepend(self._progress)
-        self.prepend(self._pause_button)
-        self.prepend(self._cancel_button)
+        self.append(self._label)
+        self.append(self._progress)
+        self.append(self._pause_button)
+        self.append(self._cancel_button)
 
         for child in self.get_children():
             child.show_all()

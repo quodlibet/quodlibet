@@ -297,10 +297,10 @@ class TopBar(Gtk.Box):
         self.append(t)
 
         spacer = Gtk.Box()
+        spacer.set_hexpand(True)
         self.append(spacer)
 
         info_item = Gtk.Box()
-        info_item.set_hexpand(True)
         self.append(info_item)
 
         box = Gtk.Box(spacing=6)
@@ -312,8 +312,8 @@ class TopBar(Gtk.Box):
         # song text
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        self._pattern_box.prepend(text)
-        box.prepend(self._pattern_box)
+        self._pattern_box.append(text)
+        box.append(self._pattern_box)
 
         # cover image
         self.image = CoverImage(resize=True)
@@ -325,7 +325,7 @@ class TopBar(Gtk.Box):
                 app.cover_manager, "cover-changed", self.__song_art_changed, library
             )
 
-        box.prepend(Align(self.image, top=3, right=3))
+        box.append(Align(self.image, top=3, right=3))
 
         # GTK4: margin property removed - individual margin-* properties exist
         # On older Gtk+ (3.4, at least)
@@ -347,7 +347,7 @@ class TopBar(Gtk.Box):
             self._pattern_box.remove(children[-1])
 
         if widget:
-            self._pattern_box.prepend(widget)
+            self._pattern_box.append(widget)
 
     def _on_volume_changed(self, player, *args):
         config.set("memory", "volume", str(player.volume))
@@ -392,16 +392,16 @@ class QueueButton(HighlightToggleButton):
 class StatusBarBox(Gtk.Box):
     def __init__(self, play_order, queue):
         super().__init__(spacing=6)
-        self.prepend(play_order)
+        self.append(play_order)
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.prepend(self.statusbar)
+        self.append(self.statusbar)
         queue_button = QueueButton()
         queue_button.bind_property(
             "active", queue, "visible", GObject.BindingFlags.BIDIRECTIONAL
         )
         queue_button.props.active = queue.props.visible
 
-        self.prepend(queue_button)
+        self.append(queue_button)
 
 
 class PlaybackErrorDialog(ErrorMessage):
@@ -641,10 +641,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             if isinstance(child, Gtk.ImageMenuItem):
                 child.set_image(None)
 
-        main_box.prepend(menubar)
+        main_box.append(menubar)
 
         top_bar = TopBar(self, player, library)
-        main_box.prepend(top_bar)
+        main_box.append(top_bar)
         self.top_bar = top_bar
 
         self.__browserbox = Align(top=3, bottom=3)
@@ -654,7 +654,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         paned.set_resize_start_child(True)
         # We'll set_end_child when necessary (when the first sidebar plugin is set up)
 
-        main_box.prepend(paned)
+        main_box.append(paned)
 
         play_order = PlayOrderWidget(self.songlist.model, player)
         statusbox = StatusBarBox(play_order, self.qexpander)
@@ -662,7 +662,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.statusbar = statusbox.statusbar
 
         align = Align(statusbox, top=1, bottom=4, left=6, right=6)
-        main_box.prepend(align)
+        main_box.append(align)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
         self.songpane.show_all()
@@ -734,7 +734,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def add_sidebar(self, box, name):
         vbox = Gtk.Box()
-        vbox.prepend(box)
+        vbox.append(box)
         vbox.show()
         if self.side_book_empty:
             self.add_sidebar_to_layout(self.side_book)

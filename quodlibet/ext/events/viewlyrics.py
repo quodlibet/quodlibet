@@ -51,11 +51,11 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(self.textview)
+        vbox.append(self.textview)
         self._edit_button = Button("Edit Lyrics", Icons.EDIT)
         hbox = Gtk.Box()
         hbox.append(self._edit_button)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
         self.scrolled_window.set_child(vbox)
         self.textview.show()
 
@@ -68,7 +68,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def create_sidebar(self):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(self.scrolled_window)
+        vbox.append(self.scrolled_window)
         vbox.show_all()
         return vbox
 
@@ -183,5 +183,5 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             "plugins", "view_lyrics_hide_timestamps", True
         )
         ccb.set_active(hide_timestamps)
-        box.prepend(qltk.Frame(_("Preferences"), child=ccb))
+        box.append(qltk.Frame(_("Preferences"), child=ccb))
         return box

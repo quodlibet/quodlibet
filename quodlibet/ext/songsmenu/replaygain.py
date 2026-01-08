@@ -366,13 +366,13 @@ class RGDialog(Dialog):
 
         hbox = Gtk.Box(spacing=6)
         info = Gtk.Label()
-        hbox.prepend(info)
-        self.vbox.prepend(hbox)
+        hbox.append(info)
+        self.vbox.append(hbox)
 
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        self.vbox.prepend(swin)
+        self.vbox.append(swin)
         view = HintedTreeView()
         swin.add(view)
 
@@ -657,7 +657,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         # Server settings Frame
         frame = Frame(_("Existing Tags"), table)
 
-        vb.prepend(frame)
+        vb.append(frame)
         return vb
 
 

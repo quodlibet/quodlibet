@@ -379,18 +379,18 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         # GTK4: Label() requires label= keyword argument
         label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
-        hbox.prepend(label)
-        hbox.prepend(slider)
+        hbox.append(label)
+        hbox.append(slider)
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         def create_save_box():
             hbox = Gtk.Box()
             # GTK4: Label() requires label= keyword argument
             label = Gtk.Label(label=_("Save destination"))
-            hbox.prepend(label)
+            hbox.append(label)
             model = Gtk.ListStore(str)
             for val in SAVE_PATTERNS:
                 model.append(row=[val])
@@ -429,12 +429,12 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
             re_encode.connect("toggled", lambda _: hbox.queue_draw())
-            hbox.prepend(re_encode)
+            hbox.append(re_encode)
             return hbox
 
         save_box = create_save_box()
         save_box.set_margin_top(6)
-        vbox.prepend(save_box)
+        vbox.append(save_box)
         frame.add(vbox)
 
         self.button = self.add_icon_button(

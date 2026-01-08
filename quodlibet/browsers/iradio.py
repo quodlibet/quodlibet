@@ -662,7 +662,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        vb.prepend(scrolled_window)
+        vb.append(scrolled_window)
         fb = Gtk.FlowBox()
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
@@ -685,12 +685,12 @@ class InternetRadio(Browser, util.InstanceTracker):
         pane.show_all()
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        songbox.prepend(self._searchbox)
+        songbox.append(self._searchbox)
         self._songpane_container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        songbox.prepend(self._songpane_container)
-        songbox.prepend(self.qbar)
+        songbox.append(self._songpane_container)
+        songbox.append(self.qbar)
         songbox.show_all()
         # GTK4: pack2() → set_end_child()
 
@@ -699,7 +699,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         pane.set_resize_end_child(resize=True)
 
         pane.set_shrink_end_child(shrink=False)
-        self.prepend(pane)
+        self.append(pane)
         self.show()
 
     @property

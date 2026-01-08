@@ -140,9 +140,9 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl)
-        hb.prepend(entry)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # Paused
         hb = Gtk.Box(spacing=6)
@@ -155,9 +155,9 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl)
-        hb.prepend(entry)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # No Song
         hb = Gtk.Box(spacing=6)
@@ -167,12 +167,12 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         entry.set_tooltip_text(_("Plain text for status when there is no current song"))
         lbl = Gtk.Label(label=_("No song:"))
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl)
-        hb.prepend(entry)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # Frame
         frame = qltk.Frame(_("Status Patterns"), child=vb)
-        outer_vb.prepend(frame)
+        outer_vb.append(frame)
 
         return outer_vb

@@ -210,10 +210,10 @@ def _Button(type_, label, icon_name, size):
     if size is not None:
         image.set_icon_size(size)
     # GTK4: prepend() only takes widget, no packing args
-    hbox.prepend(image)
+    hbox.append(image)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
-    hbox.prepend(label)
+    hbox.append(label)
     align.add(hbox)
     align.show_all()
     button = type_()

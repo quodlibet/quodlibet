@@ -65,8 +65,8 @@ class MediaServer(EventPlugin):
         conf_lbl.set_alignment(0, 0)
         conf_lbl.set_markup(f"<span font='mono'>{conf_cont}</span>")
 
-        vbox.prepend(exp_lbl)
-        vbox.prepend(conf_lbl)
+        vbox.append(exp_lbl)
+        vbox.append(conf_lbl)
         return vbox
 
     def enabled(self):

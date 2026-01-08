@@ -99,10 +99,10 @@ class PatternEditor(Gtk.Box):
 
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for button in buttons:
-            radio_box.prepend(button)
+            radio_box.append(button)
             button.connect("toggled", self.__toggled, button_box, model)
 
-        self.prepend(radio_box)
+        self.append(radio_box)
 
         example = util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
         tooltip = _("Tag pattern with optional markup e.g. %(short)s or\n%(long)s") % {
@@ -123,7 +123,7 @@ class PatternEditor(Gtk.Box):
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
-        ctrl_box.prepend(remove)
+        ctrl_box.append(remove)
         remove.connect("clicked", self.__remove, view)
 
         selection = view.get_selection()
@@ -135,12 +135,12 @@ class PatternEditor(Gtk.Box):
         sw.set_child(view)
 
         edit_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        edit_box.prepend(cb)
-        edit_box.prepend(sw)
+        edit_box.append(cb)
+        edit_box.append(sw)
 
-        button_box.prepend(edit_box)
-        button_box.prepend(ctrl_box)
-        self.prepend(button_box)
+        button_box.append(edit_box)
+        button_box.append(ctrl_box)
+        self.append(button_box)
 
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
@@ -256,14 +256,14 @@ class Preferences(qltk.UniqueWindow):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.EDGE)
-        box.prepend(equal_width)
-        box.prepend(apply_)
+        box.append(equal_width)
+        box.append(apply_)
         self.use_header_bar()
         if not self.has_close_button():
-            box.prepend(cancel)
+            box.append(cancel)
 
         vbox.prepend(column_mode_frame)
-        vbox.prepend(editor_frame)
+        vbox.append(editor_frame)
         vbox.prepend(box)
 
         self.add(vbox)

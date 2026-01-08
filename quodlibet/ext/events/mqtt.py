@@ -171,11 +171,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
         t = self.config_table_for(self._CONFIG[:_TOTAL_MQTT_ITEMS])
         frame = qltk.Frame(_("MQTT Configuration"), child=t)
-        outer_vb.prepend(frame)
+        outer_vb.append(frame)
 
         t = self.config_table_for(self._CONFIG[_TOTAL_MQTT_ITEMS:])
         frame = qltk.Frame(_("Status Text"), child=t)
-        outer_vb.prepend(frame)
+        outer_vb.append(frame)
 
         return outer_vb
 

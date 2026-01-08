@@ -104,15 +104,15 @@ class GstPlayerPreferences(Gtk.Box):
         _jack_activated(jack_button, None)
 
         hb = self._create_pipeline_box(pipe_label, e, apply_button)
-        self.prepend(hb)
+        self.append(hb)
 
         # Buffer
         hb = self._create_buffer_box(buffer_label, scale)
-        self.prepend(hb)
+        self.append(hb)
 
-        self.prepend(gapless_button)
-        self.prepend(jack_button)
-        self.prepend(jack_connect)
+        self.append(gapless_button)
+        self.append(jack_button)
+        self.append(jack_connect)
 
         if debug:
 
@@ -123,11 +123,11 @@ class GstPlayerPreferences(Gtk.Box):
             connect_obj(b, "clicked", print_bin, player)
             hb = Gtk.Box(spacing=6)
             hb.append(b)
-            self.prepend(hb)
+            self.append(hb)
 
     def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.Scale):
         hb = Gtk.Box(spacing=6)
-        hb.prepend(label)
+        hb.append(label)
         hb.append(scale)
         return hb
 
@@ -135,7 +135,7 @@ class GstPlayerPreferences(Gtk.Box):
         self, pipe_label: Gtk.Label, e: Gtk.Widget, apply_button: Gtk.Button
     ):
         hb = Gtk.Box(spacing=12)
-        hb.prepend(pipe_label)
-        hb.prepend(e)
+        hb.append(pipe_label)
+        hb.append(e)
         hb.append(apply_button)
         return hb

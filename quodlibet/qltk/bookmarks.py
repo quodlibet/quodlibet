@@ -42,13 +42,13 @@ def MenuItems(marks, player, seekable):
         l.set_xalign(0.0)
         l.set_yalign(0.5)
         sizes.add_widget(l)
-        hbox.prepend(l)
+        hbox.append(l)
         text = Gtk.Label(label=mark)
         text.set_max_width_chars(80)
         text.set_ellipsize(Pango.EllipsizeMode.END)
         text.set_xalign(0.0)
         text.set_yalign(0.5)
-        hbox.prepend(text)
+        hbox.append(text)
         i.show_all()
         items.append(i)
     return items
@@ -123,10 +123,10 @@ class EditBookmarksPane(Gtk.Box):
         hbox.prepend(remove)
         if close:
             self.close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
-            hbox.prepend(self.close)
+            hbox.append(self.close)
         else:
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
-        self.prepend(hbox)
+        self.append(hbox)
 
         connect_obj(add, "clicked", self.__add, model, time, name)
 

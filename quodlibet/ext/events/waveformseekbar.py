@@ -80,9 +80,9 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label = TimeLabel()
         self._waveform_scale = WaveformScale(player)
 
-        self.prepend(Align(self._elapsed_label, border=6))
-        self.prepend(self._waveform_scale)
-        self.prepend(Align(self._remaining_label, border=6))
+        self.append(Align(self._elapsed_label, border=6))
+        self.append(self._waveform_scale)
+        self.append(Align(self._remaining_label, border=6))
 
         for child in get_children(self):
             child.show_all()
@@ -690,7 +690,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             label = Gtk.Label(label=label_text)
             label.set_xalign(0.0)
             label.set_yalign(0.5)
-            hbox.prepend(label)
+            hbox.append(label)
             colour = getattr(CONFIG, config_item)
             colour_label = Gtk.Label()
             colour_label.set_xalign(0.0)
@@ -735,53 +735,53 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=9)
         box = create_color(_("Foreground color"), "elapsed_color")
-        vbox.prepend(box)
+        vbox.append(box)
 
         box = create_color(_("Hover color"), "hover_color")
-        vbox.prepend(box)
+        vbox.append(box)
 
         box = create_color(_("Remaining color"), "remaining_color")
-        vbox.prepend(box)
+        vbox.append(box)
 
         sw = Gtk.Switch()
         label = Gtk.Label(_("Show current position whilst hovering"))
         sw.set_active(CONFIG.show_current_pos)
         sw.connect("notify::active", on_show_pos_toggled)
         hbox = Gtk.Box(spacing=6)
-        hbox.prepend(label)
+        hbox.append(label)
         hbox.append(sw)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         sw = Gtk.Switch()
         label = Gtk.Label(_("Show time labels"))
         sw.set_active(CONFIG.show_time_labels)
         sw.connect("notify::active", on_show_time_labels_toggled)
         hbox = Gtk.Box(spacing=6)
-        hbox.prepend(label)
+        hbox.append(label)
         hbox.append(sw)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         hbox = Gtk.Box(spacing=6)
         label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
-        hbox.prepend(label)
+        hbox.append(label)
         seek_amount = Gtk.SpinButton(
             adjustment=Gtk.Adjustment(CONFIG.seek_amount, 0, 60000, 1000, 1000, 0)
         )
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
         hbox.append(seek_amount)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         hbox = Gtk.Box(spacing=6)
         label = Gtk.Label(label=_("Waveform height (pixels):"))
-        hbox.prepend(label)
+        hbox.append(label)
         height_px = Gtk.SpinButton(
             adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
         )
         height_px.set_numeric(True)
         height_px.connect("changed", on_height_px_changed)
         hbox.append(height_px)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         return vbox
 

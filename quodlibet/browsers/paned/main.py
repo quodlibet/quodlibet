@@ -46,7 +46,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def pack(self, songpane):
         container = Gtk.Box()
         self.show()
-        container.prepend(self)
+        container.append(self)
         # GTK4: pack2() → set_end_child()
         self.main_box.set_end_child(songpane)
         self.main_box.set_resize_end_child(True)
@@ -87,16 +87,16 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=0)
-        self.prepend(align)
+        self.append(align)
 
         keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         select.connect("clicked", self.__select_all)
-        sbb.prepend(select)
+        sbb.append(select)
 
         prefs = PreferencesButton(self)
-        sbb.prepend(prefs)
+        sbb.append(prefs)
 
         connect_destroy(library, "changed", self.__changed)
         connect_destroy(library, "added", self.__added)
@@ -106,7 +106,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         # contains the panes and the song list
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
-        self.prepend(self.main_box)
+        self.append(self.main_box)
 
         self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()

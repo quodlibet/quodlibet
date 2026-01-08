@@ -61,9 +61,9 @@ class PictureSaver(EventPlugin):
 
         hb = Gtk.Box(spacing=6)
         hb.set_border_width(6)
-        hb.prepend(Gtk.Label(label=_("File:")))
+        hb.append(Gtk.Label(label=_("File:")))
         e = Gtk.Entry()
         e.set_text(str(get_path()))
         e.connect("changed", changed)
-        hb.prepend(e)
+        hb.append(e)
         return hb

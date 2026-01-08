@@ -90,12 +90,12 @@ class ScanBox(Gtk.Box):
         connect_obj(remove, "clicked", self.__remove, view)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(add)
-        vbox.prepend(remove)
-        vbox.prepend(move)
+        vbox.append(add)
+        vbox.append(remove)
+        vbox.append(move)
 
-        self.prepend(sw)
-        self.prepend(vbox)
+        self.append(sw)
+        self.append(vbox)
 
         for path in get_scan_dirs():
             model.append(row=[path])

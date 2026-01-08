@@ -251,25 +251,25 @@ class TaskWidget(Gtk.Box):
         self.label.set_xalign(1.0)
         self.label.set_yalign(0.5)
         self.label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.prepend(self.label)
+        self.append(self.label)
         self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(200, 12)
         add_css(self.progress, "progress, trough { min-height: 12px }")
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, valign=Gtk.Align.CENTER)
-        vb.prepend(self.progress)
-        self.prepend(vb)
+        vb.append(self.progress)
+        self.append(vb)
         self.pause = SmallImageToggleButton()
         # GTK4: Image.new_from_icon_name() only takes icon_name, not size
         image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE)
         self.pause.add(image)
         self.pause.connect("toggled", self.__pause_toggled)
-        self.prepend(self.pause)
+        self.append(self.pause)
         self.stop = SmallImageButton()
         # GTK4: Image.new_from_icon_name() only takes icon_name, not size
         image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP)
         self.stop.add(image)
         self.stop.connect("clicked", self.__stop_clicked)
-        self.prepend(self.stop)
+        self.append(self.stop)
 
     def __pause_toggled(self, btn):
         if self.task.pausable:
@@ -306,9 +306,9 @@ class StatusBar(Gtk.Box):
 
         self.default_label = Gtk.Label(selectable=True)
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.prepend(Align(self.default_label, halign=Gtk.Align.END))
+        self.append(Align(self.default_label, halign=Gtk.Align.END))
         self.task_widget = TaskWidget(task_controller)
-        self.prepend(self.task_widget)
+        self.append(self.task_widget)
 
         self.show_all()
         self.set_no_show_all(True)

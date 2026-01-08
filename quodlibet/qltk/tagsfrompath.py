@@ -139,23 +139,23 @@ class TagsFromPath(Gtk.Box):
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
         addreplace.connect("changed", self.__add_changed)
-        vbox.prepend(addreplace)
+        vbox.append(addreplace)
         addreplace.show()
-        self.prepend(vbox)
+        self.append(vbox)
 
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
         filter_box.connect("preview", self.__filter_preview)
         filter_box.connect("changed", self.__filter_changed)
         self.filter_box = filter_box
-        self.prepend(filter_box)
+        self.append(filter_box)
 
         # Save button
         self.save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.prepend(self.save)
-        self.prepend(bbox)
+        bbox.append(self.save)
+        self.append(bbox)
 
         connect_obj(self.preview, "clicked", self.__preview, None)
         connect_obj(parent, "changed", self.__class__.__preview, self)

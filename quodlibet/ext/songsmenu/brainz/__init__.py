@@ -61,6 +61,6 @@ class MyBrainz(SongsMenuPlugin):
 
         for key, label in items:
             ccb = pconfig.ConfigCheckButton(label, key, populate=True)
-            vb.prepend(ccb)
+            vb.append(ccb)
 
         return vb

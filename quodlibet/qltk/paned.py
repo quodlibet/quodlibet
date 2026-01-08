@@ -81,15 +81,12 @@ class RPaned(Paned):
         # before first alloc and set_relative not called
         return 0.5
 
-    def do_size_allocate(self, *args):
-        ret = super().do_size_allocate(self, *args)
+    def do_size_allocate(self, width, height, baseline):
+        super().do_size_allocate(width, height, baseline)
+        # On first allocation, set the relative position
         if not self.__alloced and self.__relative is not None:
-            self.__alloced = True
             self.set_relative(self.__relative)
-            # call again so the children get alloced
-            ret = super().do_size_allocate(self, *args)
         self.__alloced = True
-        return ret
 
 
 class RHPaned(RPaned):

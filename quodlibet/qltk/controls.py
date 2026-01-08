@@ -265,8 +265,8 @@ class PlayControls(Gtk.Box):
         seekbutton.set_hexpand(True)
         lower.attach(seekbutton, 1, 0, 2, 1)
 
-        self.prepend(upper)
-        self.prepend(lower)
+        self.append(upper)
+        self.append(lower)
 
         connect_obj(prev, "clicked", self.__previous, player)
         self._toggle_id = play.connect("toggled", self.__playpause, player)

@@ -839,6 +839,8 @@ def _init_gtk():
         class StatusIcon(GObject.Object):
             """Stub StatusIcon for GTK4 - supports signals but no tray functionality"""
 
+            embedded = GObject.Property(type=bool, default=False)
+
             def __init__(self):
                 super().__init__()
                 print_d("GTK4: StatusIcon not supported, plugin may not work")
@@ -851,6 +853,14 @@ def _init_gtk():
 
             def set_visible(self, visible):
                 pass
+
+            def get_size(self):
+                """Return a default icon size since tray is not available"""
+                return 24
+
+            def is_embedded(self):
+                """Return False since tray is not available in GTK4"""
+                return False
 
         Gtk.StatusIcon = StatusIcon
 

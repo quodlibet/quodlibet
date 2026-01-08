@@ -169,7 +169,7 @@ class OneSong(Gtk.Box):
         self.append(Frame(tag("album"), hb))
 
         cover = ReactiveCoverImage(song=song)
-        hb.prepend(cover)
+        hb.append(cover)
 
     def _people(self, song):
         data = []

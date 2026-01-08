@@ -123,9 +123,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.login_state = State.LOGGED_IN if self.online else State.LOGGED_OUT
         self._create_searchbar(self.library)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(self._create_header())
-        vbox.prepend(self._create_category_widget())
-        vbox.prepend(self.create_login_button())
+        vbox.append(self._create_header())
+        vbox.append(self._create_category_widget())
+        vbox.append(self.create_login_button())
         vbox.show()
         pane = qltk.ConfigRHPaned("browsers", "soundcloud_pos", 0.4)
         pane.show()
@@ -139,7 +139,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self._songs_box = songs_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6
         )
-        songs_box.prepend(self._searchbox)
+        songs_box.append(self._searchbox)
         songs_box.show()
         # GTK4: pack2() → set_end_child()
 
@@ -148,7 +148,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         pane.set_resize_end_child(resize=True)
 
         pane.set_shrink_end_child(shrink=False)
-        self.prepend(pane)
+        self.append(pane)
         self.show()
 
     def menu(self, songs, library, items):
@@ -164,7 +164,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
-        hbox.prepend(button)
+        hbox.append(button)
         hbox.show_all()
         return hbox
 
@@ -233,7 +233,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.login_button = login = Gtk.Button(always_show_image=True)
         self.update_connect_button()
         login.connect("clicked", clicked_login)
-        hbox.prepend(login)
+        hbox.append(login)
         hbox.show_all()
         return hbox
 

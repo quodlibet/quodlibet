@@ -129,7 +129,7 @@ class SessionInhibit(EventPlugin):
         hb = Gtk.Box(spacing=6)
         hb.set_border_width(6)
         # Translators: Inhibiting Mode
-        hb.prepend(Gtk.Label(label=_("Mode:")))
+        hb.append(Gtk.Label(label=_("Mode:")))
         combo = Gtk.ComboBoxText()
         combo.append_text(_("Inhibit Screensaver"))
         combo.append_text(_("Inhibit Suspend"))

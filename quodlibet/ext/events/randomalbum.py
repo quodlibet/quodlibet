@@ -79,22 +79,22 @@ class RandomAlbum(EventPlugin):
             adjustment=Gtk.Adjustment.new(self.delay, 0, 3600, 1, 10, 0)
         )
         spin.connect("value-changed", delay_changed_cb)
-        hbox.prepend(spin)
+        hbox.append(spin)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
         hbox.prepend(lbl)
-        vbox.prepend(hbox)
+        vbox.append(hbox)
 
         frame = Gtk.Frame(label=_("Weights"))
 
         check = Gtk.CheckButton(label=_("Play some albums more than others"))
-        vbox.prepend(check)
+        vbox.append(check)
         # Toggle both frame and contained table; frame doesn't always work?
         check.connect("toggled", toggled_cb, [frame, table])
         check.set_active(self.use_weights)
         toggled_cb(check, [frame, table])
 
         frame.add(table)
-        vbox.prepend(frame)
+        vbox.append(frame)
 
         # Less label
         less_lbl = Gtk.Label()
@@ -102,8 +102,8 @@ class RandomAlbum(EventPlugin):
         less_lbl.set_markup(util.italic(_("avoid")))
         less_lbl.set_alignment(0, 0)
         hb = Gtk.Box(spacing=0)
-        hb.prepend(arr)
-        hb.prepend(less_lbl)
+        hb.append(arr)
+        hb.append(less_lbl)
         table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()

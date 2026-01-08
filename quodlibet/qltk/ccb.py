@@ -51,7 +51,7 @@ class ConfigSwitch(Gtk.Box):
             self.label = Gtk.Label(label, use_underline=True)
             self.label.set_mnemonic_widget(self.switch)
             eb.append(self.label)
-        self.prepend(eb)
+        self.append(eb)
         self.append(self.switch)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)

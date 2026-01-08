@@ -96,7 +96,7 @@ class PluginErrorWindow(UniqueWindow):
             failure.set_selectable(True)
             failure.set_line_wrap(True)
 
-            vbox.prepend(expander)
+            vbox.append(expander)
             expander.add(failure)
 
         self.use_header_bar()
@@ -107,9 +107,9 @@ class PluginErrorWindow(UniqueWindow):
             close.connect("clicked", lambda *x: self.destroy())
             b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
             b.set_layout(Gtk.ButtonBoxStyle.END)
-            b.prepend(close)
-            vbox2.prepend(scrolledwin)
-            vbox2.prepend(b)
+            b.append(close)
+            vbox2.append(scrolledwin)
+            vbox2.append(b)
             self.add(vbox2)
             close.grab_focus()
         else:
@@ -327,10 +327,10 @@ class PluginPreferencesContainer(Gtk.Box):
         desc.set_xalign(0)
         desc.set_yalign(0.5)
         desc.set_selectable(True)
-        self.prepend(desc)
+        self.append(desc)
 
         self.prefs = prefs = Gtk.Frame()
-        self.prepend(prefs)
+        self.append(prefs)
 
     def set_no_plugins(self):
         self.set_plugin(None)
@@ -453,7 +453,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         vbox.prepend(sw)
         align_bbox = Align(bbox, left=3, right=3, top=0)
         align_bbox.set_margin_top(3)
-        vbox.prepend(align_bbox)
+        vbox.append(align_bbox)
         paned = Paned()
         paned.pack1(vbox, False, False)
 
@@ -462,7 +462,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bb.set_layout(Gtk.ButtonBoxStyle.END)
-        bb.prepend(close)
+        bb.append(close)
         bb_align.add(bb)
 
         selection = plv.get_selection()
@@ -470,9 +470,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         selection.emit("changed")
 
         right_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        right_box.prepend(pref_box)
+        right_box.append(pref_box)
         if not self.has_close_button():
-            right_box.prepend(bb_align)
+            right_box.append(bb_align)
 
         align = Align(right_box, left=6, right=15, top=12, bottom=3)
         paned.pack2(align, True, False)

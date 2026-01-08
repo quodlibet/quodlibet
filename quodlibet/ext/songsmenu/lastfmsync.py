@@ -216,10 +216,10 @@ class LastFMSyncWindow(qltk.Dialog):
         vbox.set_spacing(12)
 
         self.progbar = Gtk.ProgressBar()
-        vbox.prepend(self.progbar)
+        vbox.append(self.progbar)
         self.status = Gtk.Label(label="")
-        vbox.prepend(self.status)
-        self.get_content_area().prepend(vbox)
+        vbox.append(self.status)
+        self.get_content_area().append(vbox)
 
         self.set_response_sensitive(Gtk.ResponseType.ACCEPT, False)
         self.show_all()
@@ -295,7 +295,7 @@ class LastFMSync(SongsMenuPlugin):
 
         hbox = Gtk.Box()
         hbox.set_spacing(6)
-        hbox.prepend(label)
-        hbox.prepend(entry)
+        hbox.append(label)
+        hbox.append(entry)
 
         return qltk.Frame(_("Account"), child=hbox)

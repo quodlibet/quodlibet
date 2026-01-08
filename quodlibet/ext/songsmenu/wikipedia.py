@@ -55,16 +55,16 @@ class WikiSearch(SongsMenuPlugin):
         e.set_max_width_chars(3)
         e.set_text(get_lang())
         e.connect("changed", cls.changed)
-        hb.prepend(
+        hb.append(
             Gtk.Label(label=_("Search at %(website)s") % {"website": "https://"}),
             False,
             True,
             0,
         )
-        hb.prepend(e)
-        hb.prepend(Gtk.Label(label=".wikipedia.org"))
+        hb.append(e)
+        hb.append(Gtk.Label(label=".wikipedia.org"))
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vb.prepend(hb)
+        vb.append(hb)
 
         def _open_editor(widget):
             def _editor_closed(widget):
@@ -78,7 +78,7 @@ class WikiSearch(SongsMenuPlugin):
 
         button = Gtk.Button(_("Edit Tags"))
         button.connect("clicked", _open_editor)
-        vb.prepend(button)
+        vb.append(button)
         vb.show_all()
 
         return vb

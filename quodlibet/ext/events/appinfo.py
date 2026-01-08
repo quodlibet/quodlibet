@@ -137,7 +137,7 @@ class AppInformation(EventPlugin):
         grid.attach(v, 1, row, 1, 1)
         row += 1
 
-        vb.prepend(grid)
+        vb.append(grid)
         vb.show_all()
 
         return vb

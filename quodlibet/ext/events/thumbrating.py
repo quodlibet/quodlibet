@@ -14,7 +14,7 @@ from quodlibet.plugins.gui import UserInterfacePlugin
 
 class RatingBox(Gtk.Box):
     def __init__(self):
-        super().__init__(self, orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.thumb_ups = 1
         self.thumb_downs = 1
@@ -31,13 +31,13 @@ class RatingBox(Gtk.Box):
         self.score_label = Gtk.Label("----")
         self.upvote.set_property("height-request", 50)
         self.downvote.set_property("height-request", 50)
-        hbox.prepend(self.upvote)
-        hbox.prepend(self.downvote)
+        hbox.append(self.upvote)
+        hbox.append(self.downvote)
 
         self.hbox = hbox
-        self.prepend(self.title)
-        self.prepend(self.score_label)
-        self.prepend(self.hbox)
+        self.append(self.title)
+        self.append(self.score_label)
+        self.append(self.hbox)
 
     def set_current_title(self, title):
         self.title.set_text(title)
@@ -106,7 +106,7 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        vbox.prepend(self.rating_box)
+        vbox.append(self.rating_box)
         vbox.show_all()
         return vbox
 

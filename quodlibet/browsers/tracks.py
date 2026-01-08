@@ -58,8 +58,8 @@ class TrackList(Browser):
 
     def pack(self, songpane):
         container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        container.prepend(self)
-        container.prepend(songpane)
+        container.append(self)
+        container.append(songpane)
         return container
 
     def unpack(self, container, songpane):
@@ -90,10 +90,10 @@ class TrackList(Browser):
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.prepend(prefs)
+        sbb.append(prefs)
 
-        self.prepend(Align(sbb, left=6, right=6))
-        self.prepend(sbb.flow_box)
+        self.append(Align(sbb, left=6, right=6))
+        self.append(sbb.flow_box)
         self.connect("destroy", self.__destroy)
         self.show_all()
 

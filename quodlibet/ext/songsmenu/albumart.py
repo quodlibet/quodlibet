@@ -323,21 +323,21 @@ class CoverArea(Gtk.Box, PluginConfigMixin):
         bb_align.add(bbox)
 
         main_hbox = Gtk.Box()
-        main_hbox.prepend(grid)
-        main_hbox.prepend(bb_align)
+        main_hbox.append(grid)
+        main_hbox.append(bb_align)
 
         top_hbox = Gtk.Box()
-        top_hbox.prepend(self.open_check)
-        top_hbox.prepend(self.window_fit)
+        top_hbox.append(self.open_check)
+        top_hbox.append(self.window_fit)
 
         main_vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        main_vbox.prepend(top_hbox)
-        main_vbox.prepend(main_hbox)
+        main_vbox.append(top_hbox)
+        main_vbox.append(main_hbox)
 
-        self.prepend(self.scrolled)
-        self.prepend(main_vbox)
+        self.append(self.scrolled)
+        self.append(main_vbox)
 
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
@@ -700,8 +700,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.progress = Gtk.ProgressBar()
 
         left_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=widget_space)
-        left_vbox.prepend(search_table)
-        left_vbox.prepend(sw_list)
+        left_vbox.append(search_table)
+        left_vbox.append(sw_list)
 
         hpaned = ConfigRHPaned(
             section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
@@ -717,7 +717,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.show_all()
 
-        left_vbox.prepend(self.progress)
+        left_vbox.append(self.progress)
 
         self.connect("destroy", self.__save_config)
 

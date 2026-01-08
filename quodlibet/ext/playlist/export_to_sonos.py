@@ -107,7 +107,7 @@ class GetSonosPlaylistDialog(Dialog):
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.prepend(label)
+        box.append(label)
 
         self._combo = ComboBoxEntry(choices)
         box.prepend(self._combo)

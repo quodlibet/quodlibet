@@ -257,11 +257,11 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
-        hbox.prepend(search)
-        hbox.prepend(prefs)
+        hbox.append(search)
+        hbox.append(prefs)
 
-        self.prepend(Align(hbox, left=6, top=0))
-        self.prepend(sw)
+        self.append(Align(hbox, left=6, top=0))
+        self.append(sw)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = view.get_selection().connect("changed", self.__selection_changed)

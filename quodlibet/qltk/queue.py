@@ -69,7 +69,7 @@ class PlaybackStatusIcon(Gtk.Box):
         child = self.get_first_child()
         if child:
             self.remove(child)
-        self.prepend(image)
+        self.append(image)
 
     def play(self):
         self._set("media-playback-start")
@@ -114,11 +114,11 @@ class QueueExpander(Gtk.Expander):
         state_icon = PlaybackStatusIcon()
         state_icon.stop()
         state_icon.show()
-        hb2.prepend(state_icon)
+        hb2.append(state_icon)
         name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
         name_label.set_size_request(-1, 24)
-        hb2.prepend(name_label)
-        left.prepend(hb2)
+        hb2.append(name_label)
+        left.append(hb2)
 
         menu = Gtk.PopoverMenu()
         menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -128,9 +128,9 @@ class QueueExpander(Gtk.Expander):
         self.count_label.set_property("ellipsize", Pango.EllipsizeMode.END)
         self.count_label.set_width_chars(10)
         self.count_label.get_style_context().add_class("dim-label")
-        left.prepend(count_label)
+        left.append(count_label)
 
-        outer.prepend(left)
+        outer.append(left)
 
         clear_item = SmallImageButton(
             image=SymbolicIconImage(Icons.USER_TRASH, Gtk.IconSize.NORMAL),
@@ -138,7 +138,7 @@ class QueueExpander(Gtk.Expander):
         )
         clear_item.connect("clicked", self.__clear_queue)
         clear_item.set_margin_start(3)
-        outer.prepend(clear_item)
+        outer.append(clear_item)
 
         toggle = SmallImageToggleButton(
             image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN, Gtk.IconSize.NORMAL),
@@ -149,7 +149,7 @@ class QueueExpander(Gtk.Expander):
         self.__queue_disable(disabled)
         toggle.connect("toggled", lambda b: self.__queue_disable(b.props.active))
         toggle.set_margin_start(3)
-        outer.prepend(toggle)
+        outer.append(toggle)
 
         mode_menu = Gtk.PopoverMenu()
         mode_menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -200,7 +200,7 @@ class QueueExpander(Gtk.Expander):
         menu.show_all()
         button.set_menu(menu)
         button.set_margin_start(3)
-        outer.prepend(button)
+        outer.append(button)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.NORMAL),
@@ -208,7 +208,7 @@ class QueueExpander(Gtk.Expander):
 
         close_button.connect("clicked", lambda *x: self.hide())
         close_button.set_margin_start(6)
-        outer.prepend(close_button)
+        outer.append(close_button)
 
         self.set_label_widget(outer)
         self.set_child(sw)

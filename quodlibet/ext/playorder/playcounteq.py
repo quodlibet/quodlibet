@@ -76,13 +76,13 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
         vb.set_border_width(10)
         hbox = Gtk.Box(spacing=6)
         lbl = Gtk.Label(label=_("Priority for less played tracks"))
-        hbox.prepend(lbl)
+        hbox.append(lbl)
 
         val = cls.config_get("magnitude", cls._MAGNITUDE_DEFAULT)
 
         spin = Gtk.SpinButton(adjustment=Gtk.Adjustment.new(int(val), 1, 100, 1, 10, 0))
         spin.connect("value-changed", magnitude_changed)
-        hbox.prepend(spin)
-        vb.prepend(hbox)
+        hbox.append(spin)
+        vb.append(hbox)
         vb.show_all()
         return vb

@@ -158,14 +158,14 @@ class PreferencesWidget(Gtk.Box):
             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
         )
 
-        self.prepend(text_frame)
+        self.append(text_frame)
 
         # notification display settings
         display_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         display_frame = qltk.Frame(_("Show notifications"), child=display_box)
 
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        display_box.prepend(radio_box)
+        display_box.append(radio_box)
 
         only_user_radio = Gtk.CheckButton(
             label=_("Only on <i>_manual</i> song changes"), use_underline=True
@@ -174,7 +174,7 @@ class PreferencesWidget(Gtk.Box):
         only_user_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "user"
         )
-        radio_box.prepend(only_user_radio)
+        radio_box.append(only_user_radio)
 
         only_auto_radio = Gtk.CheckButton(
             group=only_user_radio,
@@ -185,7 +185,7 @@ class PreferencesWidget(Gtk.Box):
         only_auto_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "auto"
         )
-        radio_box.prepend(only_auto_radio)
+        radio_box.append(only_auto_radio)
 
         all_radio = Gtk.CheckButton(
             group=only_user_radio,
@@ -196,7 +196,7 @@ class PreferencesWidget(Gtk.Box):
         all_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "all"
         )
-        radio_box.prepend(all_radio)
+        radio_box.append(all_radio)
 
         {"user": only_user_radio, "auto": only_auto_radio, "all": all_radio}.get(
             pconfig.gettext("show_notifications"), all_radio
@@ -209,14 +209,14 @@ class PreferencesWidget(Gtk.Box):
         focus_check.connect(
             "toggled", self.on_checkbutton_toggled, "show_only_when_unfocused"
         )
-        display_box.prepend(focus_check)
+        display_box.append(focus_check)
 
         show_next = Gtk.CheckButton(label=_('Show "_Next" button'), use_underline=True)
         show_next.set_active(pconfig.getboolean("show_next_button"))
         show_next.connect("toggled", self.on_checkbutton_toggled, "show_next_button")
-        display_box.prepend(show_next)
+        display_box.append(show_next)
 
-        self.prepend(display_frame)
+        self.append(display_frame)
 
         self.show_all()
         self.connect("destroy", self.on_destroyed)

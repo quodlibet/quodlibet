@@ -449,7 +449,7 @@ class Podcasts(Browser):
 
         connect_obj(self, "destroy", self.__save, view)
 
-        self.prepend(Align(new, left=3, bottom=3))
+        self.append(Align(new, left=3, bottom=3))
 
         for child in get_children(self):
             child.show_all()

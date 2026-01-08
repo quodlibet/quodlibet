@@ -72,12 +72,12 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
             self.enable_window_tracking(id_for_window_tracking)
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        self.get_content_area().prepend(vb)
+        self.get_content_area().append(vb)
         vb.set_spacing(24)
         self.set_border_width(5)
 
         desc_lbl = Gtk.Label(f"\n{description}\n", wrap=True)
-        vb.prepend(desc_lbl)
+        vb.append(desc_lbl)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(ok_button_text, ok_button_icon, Gtk.ResponseType.OK)
@@ -85,17 +85,17 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         order_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 
         lbl = Gtk.Label(_("Right side order:"))
-        order_box.prepend(lbl)
+        order_box.append(lbl)
 
         self.order_entry = Gtk.Entry()
-        order_box.prepend(self.order_entry)
+        order_box.append(self.order_entry)
 
-        vb.prepend(order_box)
+        vb.append(order_box)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        vb.prepend(sw)
+        vb.append(sw)
 
         tree = MatchListsTreeView(a_items, b_items, columns)
         self._tree = tree

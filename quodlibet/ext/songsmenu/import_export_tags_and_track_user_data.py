@@ -204,7 +204,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         info_frame = qltk.Frame(_("Further information"), child=info_box)
-        vbox.prepend(info_frame)
+        vbox.append(info_frame)
 
         meta_markup = util.monospace(", ".join(MIGRATE))
         info_text = (
@@ -225,25 +225,25 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         )
 
         info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
-        info_box.prepend(info_lbl)
+        info_box.append(info_lbl)
 
         manual_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         manual_frame = qltk.Frame(_("User interaction on import"), child=manual_box)
-        vbox.prepend(manual_frame)
+        vbox.append(manual_frame)
 
         tsd = Gtk.CheckButton(
             label=_("Require confirmation if number of tracks differs")
         )
         tsd.set_active(CONFIG.need_user_check_if_number_of_tracks_differs)
         tsd.connect("toggled", tsd_toggled)
-        manual_box.prepend(tsd)
+        manual_box.append(tsd)
 
         asd = Gtk.CheckButton(
             label=_("Require confirmation if number of albums differs")
         )
         asd.set_active(CONFIG.need_user_check_if_number_of_albums_differs)
         asd.connect("toggled", asd_toggled)
-        manual_box.prepend(asd)
+        manual_box.append(asd)
 
         desc = _(
             "Percentage below which the user will have to manually check and "
@@ -299,17 +299,17 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         export_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         export_frame = qltk.Frame(_("Export files"), child=export_box)
-        vbox.prepend(export_frame)
+        vbox.append(export_frame)
 
         pp = Gtk.CheckButton(label=_("Write pretty and clear JSON (slower)"))
         pp.set_active(CONFIG.pretty_print_json)
         pp.connect("toggled", pp_toggled)
-        export_box.prepend(pp)
+        export_box.append(pp)
 
         de = Gtk.CheckButton(label=_("Delete export files after they've been imported"))
         de.set_active(CONFIG.delete_exports_after_importing)
         de.connect("toggled", de_toggled)
-        export_box.prepend(de)
+        export_box.append(de)
 
         return vbox
 

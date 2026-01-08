@@ -36,7 +36,7 @@ class Preferences(Gtk.Box):
         ccb = pconfig.ConfigCheckButton(
             _("Hide main window on close"), "window_hide", populate=True
         )
-        self.prepend(qltk.Frame(_("Behavior"), child=ccb))
+        self.append(qltk.Frame(_("Behavior"), child=ccb))
 
         def on_scroll_changed(button, new_state):
             if button.get_active():
@@ -50,16 +50,16 @@ class Preferences(Gtk.Box):
         )
         group.connect("toggled", on_scroll_changed, False)
         group.set_active(not modifier_swap)
-        scrollwheel_box.prepend(group)
+        scrollwheel_box.append(group)
         group = Gtk.CheckButton(
             group=group, label=_("Scroll wheel changes song"), use_underline=True
         )
         group.connect("toggled", on_scroll_changed, True)
         group.set_active(modifier_swap)
-        scrollwheel_box.prepend(group)
+        scrollwheel_box.append(group)
 
         if supports_scrolling():
-            self.prepend(
+            self.append(
                 qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box), True, True, 0
             )
 
@@ -68,7 +68,7 @@ class Preferences(Gtk.Box):
         entry_box = Gtk.Box(spacing=6)
 
         entry = UndoEntry()
-        entry_box.prepend(entry)
+        entry_box.append(entry)
 
         def on_reverted(*args):
             pconfig.reset("tooltip")
@@ -79,21 +79,21 @@ class Preferences(Gtk.Box):
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE)
         )
         revert.connect("clicked", on_reverted)
-        entry_box.prepend(revert)
+        entry_box.append(revert)
 
-        box.prepend(entry_box)
+        box.append(entry_box)
 
         preview = Gtk.Label()
         preview.set_line_wrap(True)
         preview_frame = Gtk.Frame(label=_("Preview"))
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=18)
-        vbox.prepend(preview)
+        vbox.append(preview)
         preview_frame.add(vbox)
-        box.prepend(preview_frame)
+        box.append(preview_frame)
 
         tt_frame = qltk.Frame(_("Tooltip Display"), child=box)
         tt_frame.get_label_widget().set_mnemonic_widget(entry)
-        self.prepend(tt_frame)
+        self.append(tt_frame)
 
         entry.connect("changed", self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))

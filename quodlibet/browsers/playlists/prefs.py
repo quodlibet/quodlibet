@@ -54,20 +54,20 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         edit_frame = self.edit_display_pane(browser, _("Playlist display"))
-        box.prepend(edit_frame)
+        box.append(edit_frame)
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.prepend(close)
+        b.append(close)
 
-        main_box.prepend(box)
+        main_box.append(box)
         self.use_header_bar()
 
         if not self.has_close_button():
-            main_box.prepend(b)
+            main_box.append(b)
         self.add(main_box)
 
         close.grab_focus()

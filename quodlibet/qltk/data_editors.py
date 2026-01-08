@@ -95,7 +95,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         bbox.prepend(self.new_but)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
-        bbox.prepend(close)
+        bbox.append(close)
         vbox.append(bbox)
 
         self.get_child().prepend(vbox)
@@ -313,12 +313,12 @@ class TagListEditor(qltk.Window):
         vbbox.prepend(add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
-        vbbox.prepend(remove)
+        vbbox.append(remove)
         edit = Button(_("_Edit"), Icons.LIST_EDIT)
         edit.connect("clicked", self.__edit)
-        vbbox.prepend(edit)
-        hbox.prepend(vbbox)
-        vbox.prepend(hbox)
+        vbbox.append(edit)
+        hbox.append(vbbox)
+        vbox.append(hbox)
 
         # Close buttons
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -328,8 +328,8 @@ class TagListEditor(qltk.Window):
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         if not self.has_close_button():
-            bbox.prepend(close)
-            vbox.prepend(bbox)
+            bbox.append(close)
+            vbox.append(bbox)
 
         # Finish up
         self.add(vbox)

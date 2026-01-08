@@ -135,12 +135,12 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         l.set_xalign(1.0)
         l.set_yalign(0.5)
         l.set_ellipsize(Pango.EllipsizeMode.END)
-        bbox.prepend(l)
+        bbox.append(l)
 
         self._fs = fs = MainFileSelector()
 
-        vb.prepend(fs)
-        vb.prepend(Align(bbox, border=6))
+        vb.append(fs)
+        vb.append(Align(bbox, border=6))
         vb.show_all()
 
         hp.pack1(vb, resize=True, shrink=False)
@@ -314,4 +314,4 @@ class StatusBarBox(Gtk.Box):
     def __init__(self):
         super().__init__(spacing=6)
         self.statusbar = StatusBar(TaskController.default_instance)
-        self.prepend(self.statusbar)
+        self.append(self.statusbar)

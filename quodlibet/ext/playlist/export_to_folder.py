@@ -46,7 +46,7 @@ class ExportToFolderDialog(Dialog):
         destination_label = Gtk.Label(_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
-        box.prepend(destination_label)
+        box.append(destination_label)
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
@@ -56,18 +56,18 @@ class ExportToFolderDialog(Dialog):
         self.directory_chooser.set_border_width(1)
         frame.add(self.directory_chooser)
         frame.set_border_width(0)
-        box.prepend(frame)
+        box.append(frame)
 
         pattern_label = Gtk.Label(_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
-        box.prepend(pattern_label)
+        box.append(pattern_label)
 
         self.pattern_entry = UndoEntry()
         self.pattern_entry.set_text(pattern)
-        box.prepend(self.pattern_entry)
+        box.append(self.pattern_entry)
 
-        self.vbox.prepend(box)
+        self.vbox.append(box)
 
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
 
@@ -175,14 +175,14 @@ class ExportToFolder(PlaylistPlugin):
             hbox = Gtk.Box(spacing=6)
             hbox.set_border_width(6)
             label = Gtk.Label(label=_("Default filename pattern:"))
-            hbox.prepend(label)
+            hbox.append(label)
             entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect("changed", changed)
-            hbox.prepend(entry)
+            hbox.append(entry)
             return hbox
 
-        vbox.prepend(create_pattern(), True, True, 0)
+        vbox.append(create_pattern(), True, True, 0)
 
         return vbox

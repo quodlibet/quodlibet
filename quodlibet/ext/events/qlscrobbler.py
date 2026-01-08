@@ -572,7 +572,7 @@ class QLScrobbler(EventPlugin):
         button.connect("clicked", check_login)
         table.attach(button, 0, 2, 4, 5)
 
-        box.prepend(qltk.Frame(_("Account"), child=table))
+        box.append(qltk.Frame(_("Account"), child=table))
 
         # second frame
         table = Gtk.Table(n_rows=4, n_columns=2)
@@ -646,6 +646,6 @@ class QLScrobbler(EventPlugin):
         )
         table.attach(offline, 0, 2, row, row + 1)
 
-        box.prepend(qltk.Frame(_("Submission"), child=table))
+        box.append(qltk.Frame(_("Submission"), child=table))
 
         return box

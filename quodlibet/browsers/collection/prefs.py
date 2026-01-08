@@ -72,10 +72,10 @@ class PatternEditor(Gtk.Box):
 
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for button in buttons:
-            radio_box.prepend(button)
+            radio_box.append(button)
             button.connect("toggled", self.__toggled, button_box, model)
 
-        self.prepend(radio_box)
+        self.append(radio_box)
 
         cb = TagsComboBoxEntry(self.COMPLETION)
 
@@ -90,7 +90,7 @@ class PatternEditor(Gtk.Box):
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
-        ctrl_box.prepend(remove)
+        ctrl_box.append(remove)
         remove.connect("clicked", self.__remove, view)
 
         selection = view.get_selection()
@@ -102,12 +102,12 @@ class PatternEditor(Gtk.Box):
         sw.set_child(view)
 
         edit_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        edit_box.prepend(cb)
-        edit_box.prepend(sw)
+        edit_box.append(cb)
+        edit_box.append(sw)
 
-        button_box.prepend(edit_box)
-        button_box.prepend(ctrl_box)
-        self.prepend(button_box)
+        button_box.append(edit_box)
+        button_box.append(ctrl_box)
+        self.append(button_box)
 
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
@@ -199,13 +199,13 @@ class Preferences(qltk.UniqueWindow):
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.END)
-        box.prepend(apply)
+        box.append(apply)
         self.use_header_bar()
         if not self.has_close_button():
-            box.prepend(cancel)
+            box.append(cancel)
 
-        vbox.prepend(editor)
-        vbox.prepend(box)
+        vbox.append(editor)
+        vbox.append(box)
 
         self.add(vbox)
 

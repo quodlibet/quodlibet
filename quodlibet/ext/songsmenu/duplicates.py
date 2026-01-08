@@ -342,14 +342,14 @@ class DuplicateDialog(Gtk.Window):
             label=_("Duplicate key expression is '%s'")
             % Duplicates.get_key_expression()
         )
-        hbox.prepend(label)
+        hbox.append(label)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", self.__quit)
-        hbox.prepend(close)
+        hbox.append(close)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(swin)
-        vbox.prepend(hbox)
+        vbox.append(swin)
+        vbox.append(hbox)
         self.add(vbox)
         self.show_all()
 
@@ -405,10 +405,10 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
-        hbox.prepend(lbl)
-        hbox.prepend(e)
+        hbox.append(lbl)
+        hbox.append(e)
         frame = qltk.Frame(label=_("Duplicate Key"), child=hbox)
-        vb.prepend(frame)
+        vb.append(frame)
 
         # Matching Option
         toggles = [
@@ -421,10 +421,10 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         for key, label in toggles:
             ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
-            vb2.prepend(ccb)
+            vb2.append(ccb)
 
         frame = qltk.Frame(label=_("Matching options"), child=vb2)
-        vb.prepend(frame)
+        vb.append(frame)
 
         vb.show_all()
         return vb

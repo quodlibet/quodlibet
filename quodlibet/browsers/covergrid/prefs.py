@@ -72,19 +72,19 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         cb = ConfigCheckButton(_("Show album _text"), "browsers", "album_text")
         cb.set_active(config.getboolean("browsers", "album_text", True))
         cb.connect("toggled", lambda s: browser.toggle_text())
-        vbox.prepend(cb)
+        vbox.append(cb)
 
         cb2 = ConfigCheckButton(
             _('Show "All Albums" Item'), "browsers", "covergrid_all"
         )
         cb2.set_active(config.getboolean("browsers", "covergrid_all", True))
         cb2.connect("toggled", lambda s: browser.toggle_item_all())
-        vbox.prepend(cb2)
+        vbox.append(cb2)
 
         cb3 = ConfigCheckButton(_("Wide Mode"), "browsers", "covergrid_wide")
         cb3.set_active(config.getboolean("browsers", "covergrid_wide", False))
         cb3.connect("toggled", lambda s: browser.toggle_wide())
-        vbox.prepend(cb3)
+        vbox.append(cb3)
 
         def mag_changed(mag):
             newmag = mag.get_value()
@@ -111,27 +111,27 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
         mag_scale.connect("value-changed", mag_changed)
 
-        vbox.prepend(l)
-        vbox.prepend(mag_scale)
+        vbox.append(l)
+        vbox.append(mag_scale)
 
         f = qltk.Frame(_("Options"), child=vbox)
-        box.prepend(f)
+        box.append(f)
 
         display_frame = self.edit_display_pane(browser, _("Album Display"))
-        box.prepend(display_frame)
+        box.append(display_frame)
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.prepend(close)
+        b.append(close)
 
-        main_box.prepend(box)
+        main_box.append(box)
         self.use_header_bar()
 
         if not self.has_close_button():
-            main_box.prepend(b)
+            main_box.append(b)
         self.add(main_box)
 
         close.grab_focus()

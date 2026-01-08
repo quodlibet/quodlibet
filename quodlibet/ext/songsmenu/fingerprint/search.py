@@ -279,17 +279,17 @@ class SearchWindow(Window):
         save.set_sensitive(False)
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda *x: self.destroy())
-        bbox.prepend(save)
-        bbox.prepend(cancel)
+        bbox.append(save)
+        bbox.append(cancel)
 
         inner_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        inner_box.prepend(sw)
+        inner_box.append(sw)
 
         ccb = ConfigCheckButton(
             _("Write MusicBrainz tags"), "plugins", "fingerprint_write_mb_tags"
         )
         ccb.set_active(get_write_mb_tags())
-        inner_box.prepend(ccb)
+        inner_box.append(ccb)
 
         ccb = ConfigCheckButton(
             _("Group by directory"), "plugins", "fingerprint_group_by_dir"
@@ -298,7 +298,7 @@ class SearchWindow(Window):
         ccb.connect("toggled", self.__group_toggled)
         self._group_ccb = ccb
 
-        outer_box.prepend(inner_box)
+        outer_box.append(inner_box)
 
         bottom_box = Gtk.Box(spacing=12)
         mode_button = Gtk.ToggleButton(label=_("Album Mode"))
@@ -310,11 +310,11 @@ class SearchWindow(Window):
         )
         mode_button.set_active(True)
         mode_button.connect("toggled", self.__mode_toggle)
-        bottom_box.prepend(mode_button)
-        bottom_box.prepend(self._group_ccb)
-        bottom_box.prepend(bbox)
+        bottom_box.append(mode_button)
+        bottom_box.append(self._group_ccb)
+        bottom_box.append(bbox)
 
-        outer_box.prepend(bottom_box)
+        outer_box.append(bottom_box)
 
         outer_box.show_all()
         self.add(outer_box)

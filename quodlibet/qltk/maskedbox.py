@@ -93,11 +93,11 @@ class MaskedBox(Gtk.Box):
         connect_obj(remove, "clicked", self.__remove, view, library)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.prepend(unhide)
-        vbox.prepend(remove)
+        vbox.append(unhide)
+        vbox.append(remove)
 
-        self.prepend(sw)
-        self.prepend(vbox)
+        self.append(sw)
+        self.append(vbox)
 
         for path in library.masked_mount_points:
             model.append(row=[path])

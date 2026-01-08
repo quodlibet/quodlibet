@@ -371,14 +371,14 @@ class AddTagDialog(Dialog):
         table.attach(valuebox, 1, 1, 1, 1)
         hbox = Gtk.Box()
         valuebox.add(hbox)
-        hbox.prepend(self.__val)
+        hbox.append(self.__val)
         hbox.set_spacing(6)
         invalid = Gtk.Image.new_from_icon_name(
             Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR
         )
-        hbox.prepend(invalid)
+        hbox.append(invalid)
 
-        self.vbox.prepend(table)
+        self.vbox.append(table)
         self.get_child().show_all()
         invalid.hide()
 
@@ -542,7 +542,7 @@ class EditTags(Gtk.Box):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
-        self.prepend(sw)
+        self.append(sw)
 
         cb = ConfigCheckButton(
             _("Show _programmatic tags"),
@@ -556,7 +556,7 @@ class EditTags(Gtk.Box):
         )
         cb.connect("toggled", self.__checkbox_toggled)
         hb = Gtk.Box()
-        hb.prepend(cb)
+        hb.append(cb)
 
         cb = ConfigCheckButton(
             _("Show _multi-line tags"),
@@ -566,8 +566,8 @@ class EditTags(Gtk.Box):
             tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"),
         )
         cb.connect("toggled", self.__checkbox_toggled)
-        hb.prepend(cb)
-        self.prepend(hb)
+        hb.append(cb)
+        self.append(hb)
 
         # Add and Remove [tags] buttons
         buttonbox = Gtk.Box(spacing=18)
@@ -578,7 +578,7 @@ class EditTags(Gtk.Box):
         add.set_focus_on_click(False)
         self._add = add
         add.connect("clicked", self.__add_tag, model, library)
-        bbox1.prepend(add)
+        bbox1.append(add)
         # Remove button
         remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_focus_on_click(False)
@@ -586,7 +586,7 @@ class EditTags(Gtk.Box):
         remove.set_sensitive(False)
         self._remove = remove
 
-        bbox1.prepend(remove)
+        bbox1.append(remove)
 
         # Revert and save buttons
         # Both can have customised translated text (and thus accels)
@@ -602,12 +602,12 @@ class EditTags(Gtk.Box):
         save = Button(C_("edittags", "_Save"), Icons.DOCUMENT_SAVE)
         save.set_sensitive(False)
         self._save = save
-        bbox2.prepend(revert)
-        bbox2.prepend(save)
+        bbox2.append(revert)
+        bbox2.append(save)
 
-        buttonbox.prepend(bbox1)
-        buttonbox.prepend(bbox2)
-        self.prepend(buttonbox)
+        buttonbox.append(bbox1)
+        buttonbox.append(bbox2)
+        self.append(buttonbox)
         self._buttonbox = buttonbox
 
         parent.connect("changed", self.__parent_changed)

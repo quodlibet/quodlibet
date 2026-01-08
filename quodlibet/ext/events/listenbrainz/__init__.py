@@ -486,7 +486,7 @@ class ListenbrainzSubmission(EventPlugin):
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
-        box.prepend(qltk.Frame(_("Account"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Account"), child=table), True, True, 0)
 
         # second frame
         table = Gtk.Table(n_rows=5, n_columns=2)
@@ -575,6 +575,6 @@ class ListenbrainzSubmission(EventPlugin):
         )
         table.attach(offline, 0, 2, row, row + 1)
 
-        box.prepend(qltk.Frame(_("Submission"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Submission"), child=table), True, True, 0)
 
         return box

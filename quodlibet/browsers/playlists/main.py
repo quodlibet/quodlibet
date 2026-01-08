@@ -112,14 +112,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box.set_shrink_start_child(False)
         self._rh_box = rhbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=0)
-        rhbox.prepend(align)
-        rhbox.prepend(songpane)
+        rhbox.append(align)
+        rhbox.append(songpane)
         # GTK4: pack2() → set_end_child()
         self._main_box.set_end_child(rhbox)
         self._main_box.set_resize_end_child(True)
         self._main_box.set_shrink_end_child(False)
         rhbox.show()
         align.show_all()
+        songpane.show()
         return self._main_box
 
     def unpack(self, container, songpane):
@@ -211,7 +212,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         swin = ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.prepend(swin)
+        self.append(swin)
 
     def __configure_buttons(self, library):
         new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.NORMAL)
@@ -236,7 +237,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         hb = Gtk.Box()
         hb.prepend(fb)
         hb.append(fb2)
-        self.prepend(hb)
+        self.append(hb)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -281,11 +282,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
-        # GTK4: set_padding() removed, use margins
-        render.set_margin_start(3)
-        render.set_margin_end(3)
-        render.set_margin_top(3)
-        render.set_margin_bottom(3)
+        # Cell renderers use xpad/ypad properties, not margins
+        render.props.xpad = 3
+        render.props.ypad = 3
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.connect("editing-started", self.__start_editing)
         render.connect("edited", self.__edited)

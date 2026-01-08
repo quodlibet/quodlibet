@@ -66,7 +66,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
             ccb = cls.ConfigCheckButton(label, key, default)
             if tooltip:
                 ccb.set_tooltip_text(tooltip)
-            vb.prepend(ccb)
+            vb.append(ccb)
         return vb
 
     def activated(self, tag, value):

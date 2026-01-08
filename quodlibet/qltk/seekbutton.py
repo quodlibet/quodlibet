@@ -152,7 +152,7 @@ class HSlider(Gtk.Button):
         self.__window.resize(1, 1)
 
     def set_slider_widget(self, widget):
-        self._box.prepend(Align(widget, border=6, left=-3))
+        self._box.append(Align(widget, border=6, left=-3))
 
     def __clicked(self, button):
         if self.__window.get_property("visible"):
@@ -218,9 +218,9 @@ class SeekButton(HSlider):
         hbox = Gtk.Box(spacing=3)
         l = TimeLabel()
         self._time_label = l
-        hbox.prepend(l)
+        hbox.append(l)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
-        hbox.prepend(arrow)
+        hbox.append(arrow)
         super().__init__(hbox)
 
         self._slider_label = TimeLabel()

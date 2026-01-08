@@ -116,9 +116,9 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             )
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl)
-        hb.prepend(entry)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # Bookmark name to use for point B
         hb = Gtk.Box(spacing=6)
@@ -135,8 +135,8 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
             )
         )
         lbl.set_mnemonic_widget(entry)
-        hb.prepend(lbl)
-        hb.prepend(entry)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         return vb

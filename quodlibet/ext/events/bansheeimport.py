@@ -173,7 +173,7 @@ class BansheeImport(EventPlugin):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        box.prepend(grid)
-        box.prepend(button)
+        box.append(grid)
+        box.append(button)
 
         return box

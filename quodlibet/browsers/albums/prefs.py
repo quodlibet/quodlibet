@@ -69,31 +69,31 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         cb = ConfigCheckButton(_("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         cb.connect("toggled", lambda s: browser.toggle_covers())
-        vbox.prepend(cb)
+        vbox.append(cb)
 
         cb = ConfigCheckButton(
             _("Inline _search includes people"), "browsers", "album_substrings"
         )
         cb.set_active(config.getboolean("browsers", "album_substrings"))
-        vbox.prepend(cb)
+        vbox.append(cb)
         f = qltk.Frame(_("Options"), child=vbox)
-        box.prepend(f)
+        box.append(f)
 
         display_frame = self.edit_display_pane(browser, _("Album Display"))
-        box.prepend(display_frame)
+        box.append(display_frame)
 
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.prepend(close)
+        b.append(close)
 
-        main_box.prepend(box)
+        main_box.append(box)
         self.use_header_bar()
 
         if not self.has_close_button():
-            main_box.prepend(b)
+            main_box.append(b)
         self.add(main_box)
 
         close.grab_focus()

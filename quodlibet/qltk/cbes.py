@@ -102,7 +102,7 @@ class _KeyValueEditor(qltk.Window):
             bbox.prepend(close)
         else:
             bbox.set_layout(Gtk.ButtonBoxStyle.START)
-        self.get_child().prepend(bbox)
+        self.get_child().append(bbox)
 
         selection = view.get_selection()
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)

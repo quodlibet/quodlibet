@@ -158,9 +158,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         # Server settings Frame
         cfg_frame = Frame(_("Squeezebox Server"), table)
 
-        vb.prepend(cfg_frame)
+        vb.append(cfg_frame)
         debug = cls.ConfigCheckButton(_("Debug"), "debug")
-        vb.prepend(debug)
+        vb.append(debug)
         return vb
 
     @classmethod

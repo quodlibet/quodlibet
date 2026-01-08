@@ -114,9 +114,9 @@ class TrackNumbers(Gtk.Box):
         connect_obj(save, "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
-        bbox.prepend(revert)
-        bbox.prepend(save)
-        self.prepend(bbox)
+        bbox.append(revert)
+        bbox.append(save)
+        self.append(bbox)
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect("clicked", self.__preview_tracks, *preview_args)

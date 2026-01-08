@@ -55,15 +55,15 @@ class TextEditBox(Gtk.Box):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(TextView(buffer=TextBuffer()))
-        self.prepend(sw)
+        self.append(sw)
         self.buffer = sw.get_child().get_buffer()
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         rev = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         app = Button(_("_Apply"))
-        box.prepend(rev)
-        box.prepend(app)
-        self.prepend(box)
+        box.append(rev)
+        box.append(app)
+        self.append(box)
         connect_obj(rev, "clicked", self.buffer.set_text, default)
         self.revert = rev
         self.apply = app
@@ -167,13 +167,13 @@ class TextEdit(qltk.UniqueWindow):
         close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.prepend(close)
+        b.append(close)
 
         self.box = box = self.Box(default, **kwargs)
-        vbox.prepend(box)
+        vbox.append(box)
         self.use_header_bar()
         if not self.has_close_button():
-            vbox.prepend(b)
+            vbox.append(b)
 
         self.add(vbox)
         self.apply = box.apply

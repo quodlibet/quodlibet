@@ -54,8 +54,8 @@ class AlbumWidget(Gtk.FlowBoxChild):
             ellipsize=Pango.EllipsizeMode.END, justify=Gtk.Justification.CENTER
         )
 
-        box.prepend(self._image)
-        box.prepend(self._label)
+        box.append(self._image)
+        box.append(self._label)
 
         eb = Gtk.Box()
         eb.connect("popup-menu", lambda _: self.emit("songs-menu"))

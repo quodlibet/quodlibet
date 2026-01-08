@@ -104,7 +104,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.attach(s, 1, 2, 4, 5)
         s.connect("value-changed", self._set_font_size)
 
-        vb.prepend(t)
+        vb.append(t)
         return vb
 
     @classmethod
@@ -149,9 +149,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.scrolled_window.set_child(self.textview)
 
         vb = Gtk.Box()
-        vb.prepend(self.scrolled_window)
+        vb.append(self.scrolled_window)
         vb.show_all()
-        app.window.get_child().prepend(vb)
+        app.window.get_child().append(vb)
         app.window.get_child().reorder_child(vb, 2)
 
         self._style_lyrics_window()

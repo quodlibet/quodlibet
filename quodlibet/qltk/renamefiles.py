@@ -210,7 +210,7 @@ class RenameFiles(Gtk.Box):
 
         frame_filename_options = Frame(_("File names"), filter_box)
         frame_filename_options.show_all()
-        rename_options.prepend(frame_filename_options)
+        rename_options.append(frame_filename_options)
 
         # album art options
         albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -227,7 +227,7 @@ class RenameFiles(Gtk.Box):
             )
         )
         self.moveart.show()
-        moveart_box.prepend(self.moveart)
+        moveart_box.append(self.moveart)
         self.moveart_overwrite = ConfigCheckButton(
             _("_Overwrite album art at target"),
             "rename",
@@ -235,30 +235,30 @@ class RenameFiles(Gtk.Box):
             populate=True,
         )
         self.moveart_overwrite.show()
-        moveart_box.prepend(self.moveart_overwrite)
-        albumart_box.prepend(moveart_box)
+        moveart_box.append(self.moveart_overwrite)
+        albumart_box.append(moveart_box)
         # remove empty
         removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.removeemptydirs = ConfigCheckButton(
             _("_Remove empty directories"), "rename", "remove_empty_dirs", populate=True
         )
         self.removeemptydirs.show()
-        removeemptydirs_box.prepend(self.removeemptydirs)
-        albumart_box.prepend(removeemptydirs_box)
+        removeemptydirs_box.append(self.removeemptydirs)
+        albumart_box.append(removeemptydirs_box)
 
         frame_albumart_options = Frame(_("Album art"), albumart_box)
         frame_albumart_options.show_all()
-        rename_options.prepend(frame_albumart_options)
+        rename_options.append(frame_albumart_options)
 
-        self.prepend(rename_options)
+        self.append(rename_options)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.prepend(self.save)
-        self.prepend(bbox)
+        bbox.append(self.save)
+        self.append(bbox)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))

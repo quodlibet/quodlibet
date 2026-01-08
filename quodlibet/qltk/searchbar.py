@@ -223,7 +223,7 @@ class LimitSearchBarBox(SearchBarBox):
             # GTK4: no_show_all property removed
             super().__init__(spacing=3)
             label = Gtk.Label(label=_("_Limit:"))
-            self.prepend(label)
+            self.append(label)
 
             self.__limit = limit = Gtk.SpinButton()
             self.__limit.connect("value-changed", self.__changed)
@@ -232,11 +232,11 @@ class LimitSearchBarBox(SearchBarBox):
             limit.set_increments(5, 100)
             label.set_mnemonic_widget(limit)
             label.set_use_underline(True)
-            self.prepend(limit)
+            self.append(limit)
 
             self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
-            self.prepend(self.__weight)
+            self.append(self.__weight)
 
             # GTK4: Use get_children() helper instead of direct method call
             for child in get_children(self):
@@ -257,7 +257,7 @@ class LimitSearchBarBox(SearchBarBox):
         super().__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
-        self.prepend(self.__limit)
+        self.append(self.__limit)
         self.__limit.connect("changed", self.__limit_changed)
 
     def __limit_changed(self, *args):
@@ -299,7 +299,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
         # GTK4: Button.new_from_icon_name() only takes icon_name, not size
         self._add_button = Gtk.Button.new_from_icon_name("list-add")
         self._add_button.set_no_show_all(True)
-        self.prepend(self._add_button)
+        self.append(self._add_button)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
@@ -385,10 +385,10 @@ class QueryItem(Gtk.FlowBoxChild):
         self.query = Query(string)
 
         hbox = Gtk.Box()
-        hbox.prepend(Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0)
+        hbox.append(Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0)
         btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.LARGE)
         btn.connect("clicked", self.remove)
-        hbox.prepend(btn)
+        hbox.append(btn)
         frame = Gtk.Frame()
         frame.add(hbox)
         self.add(frame)

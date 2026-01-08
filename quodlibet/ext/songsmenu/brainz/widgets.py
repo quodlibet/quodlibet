@@ -113,7 +113,7 @@ class ResultComboBox(Gtk.ComboBox):
             )
             cell.set_property("markup", markup)
 
-        self.prepend(render, True)
+        self.append(render, True)
         self.set_cell_data_func(render, celldata, None)
 
 
@@ -383,10 +383,10 @@ class SearchWindow(Dialog):
         lbl.set_mnemonic_widget(sq)
         stb = self.search_button = Gtk.Button(_("S_earch"), use_underline=True)
         stb.connect("clicked", self._do_query)
-        hb.prepend(lbl)
-        hb.prepend(sq)
-        hb.prepend(stb)
-        vb.prepend(hb)
+        hb.append(lbl)
+        hb.append(sq)
+        hb.append(stb)
+        vb.append(hb)
 
         self.result_combo = ResultComboBox(self._resultlist)
         self.result_combo.connect("changed", self._result_changed)
@@ -406,7 +406,7 @@ class SearchWindow(Dialog):
         rtv = self.result_treeview = ResultTreeView(self.album)
         rtv.set_border_width(8)
         sw.set_child(rtv)
-        vb.prepend(sw)
+        vb.append(sw)
 
         # TODO: remove deprecated get_action_area
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area

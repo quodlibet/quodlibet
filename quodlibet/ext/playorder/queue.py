@@ -40,7 +40,7 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
         )
         autoplay = config.getboolean("plugins", "queue_only_autoplay", False)
         ccb.set_active(autoplay)
-        box.prepend(qltk.Frame(_("Preferences"), child=ccb))
+        box.append(qltk.Frame(_("Preferences"), child=ccb))
         return box
 
     def next(self, playlist, iter):

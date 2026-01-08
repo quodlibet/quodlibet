@@ -127,7 +127,7 @@ class FilterPluginBox(Gtk.Box):
         filters = [Kind() for Kind in filter_types]
         filters.sort()
         for f in filters:
-            self.prepend(f)
+            self.append(f)
         self.__filters = filters
 
         # plugins
@@ -136,8 +136,8 @@ class FilterPluginBox(Gtk.Box):
         expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
         expander.set_no_show_all(True)
-        hb.prepend(expander)
-        self.prepend(hb)
+        hb.append(expander)
+        self.append(hb)
 
         for filt in filters:
             filt.connect("preview", lambda *x: self.emit("preview"))
@@ -181,7 +181,7 @@ class FilterPluginBox(Gtk.Box):
 
         for f in instances:
             try:
-                vbox.prepend(f)
+                vbox.append(f)
             except Exception:
                 errorhook()
                 # GTK4: destroy() removed - f cleaned up automatically

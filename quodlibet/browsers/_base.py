@@ -382,8 +382,8 @@ class EditDisplayPatternMixin:
         edit.text = browser.display_pattern_text
         edit.apply.connect("clicked", self._set_pattern, edit, browser)
         connect_obj(edit.buffer, "changed", self._preview_pattern, edit, label)
-        vbox.prepend(eb)
-        vbox.prepend(edit)
+        vbox.append(eb)
+        vbox.append(edit)
         self._preview_pattern(edit, label)
         return qltk.Frame(frame_title, child=vbox) if frame_title else vbox
 

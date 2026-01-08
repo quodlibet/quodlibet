@@ -371,7 +371,7 @@ class Equalizer(EventPlugin):
         if not self.player_has_eq:
             l = Gtk.Label()
             l.set_markup(_("The current backend does not support equalization."))
-            main_vbox.prepend(l)
+            main_vbox.append(l)
             return main_vbox
 
         def format_hertz(band):
@@ -426,7 +426,7 @@ class Equalizer(EventPlugin):
             hs.set_value_pos(Gtk.PositionType.RIGHT)
             hs.connect("format-value", lambda s, v: _("%.1f dB") % v)
             table.attach(hs, 2, 3, i, i + 1)
-        main_vbox.prepend(table)
+        main_vbox.append(table)
 
         # Reset EQ button
         def clicked_rb(button):
@@ -519,13 +519,13 @@ class Equalizer(EventPlugin):
         padboxh.prepend(padboxv)
         frame.add(padboxh)
 
-        main_middle_hbox.prepend(frame)
+        main_middle_hbox.append(frame)
 
         reset = Button(_("_Reset EQ"), Icons.EDIT_UNDO)
         reset.connect("clicked", clicked_rb)
         main_middle_hbox.prepend(reset)
 
-        main_vbox.prepend(main_middle_hbox)
+        main_vbox.append(main_middle_hbox)
 
         frame = Gtk.Frame(label=_("Custom presets"), label_xalign=0.5)
         main_bottom_vbox = Gtk.Box(
@@ -557,29 +557,29 @@ class Equalizer(EventPlugin):
 
         hb = Gtk.Box()
         l = Gtk.Label(label=_("Preset name for saving:"))
-        hb.prepend(l)
-        main_bottom_vbox.prepend(hb)
+        hb.append(l)
+        main_bottom_vbox.append(hb)
 
         e = Gtk.Entry()
         e.connect("changed", save_name_changed)
         self._preset_name_entry = e
         hb = Gtk.Box(spacing=6)
-        hb.prepend(e)
+        hb.append(e)
 
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         save.connect("clicked", clicked_sb)
         save.set_sensitive(False)
         self._save_button = save
-        hb.prepend(save)
+        hb.append(save)
 
-        main_bottom_vbox.prepend(hb)
+        main_bottom_vbox.append(hb)
 
         # This block is just for padding.
         padboxh = Gtk.Box()
-        padboxh.prepend(main_bottom_vbox)
+        padboxh.append(main_bottom_vbox)
         frame.add(padboxh)
 
-        main_vbox.prepend(frame)
+        main_vbox.append(frame)
         return main_vbox
 
     def __rightclick(self, hs, event):
