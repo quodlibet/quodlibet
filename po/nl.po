@@ -1193,9 +1193,9 @@ msgid ""
 "review the data before sending it below."
 msgstr ""
 "Er wordt verscheidene informatie over deze fout en je systeem verstuurd naar "
-"een online-dienst van een derde partij (<a href=‘{sentry_url}'>"
-"www.sentry.io</a>). Hieronder zie je welke gegevens zullen worden "
-"doorgestuurd."
+"een online-dienst van een derde partij (<a "
+"href=‘{sentry_url}'>www.sentry.io</a>). Hieronder zie je welke gegevens "
+"zullen worden doorgestuurd."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
@@ -1384,7 +1384,7 @@ msgid "_Fill:"
 msgstr "_Vullen:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "Kleuren"
 
@@ -2966,31 +2966,30 @@ msgid_plural "skipped {count} files synchronized previously"
 msgstr[0] "{count} bestand uit een eerdere synchronisatie overgeslagen"
 msgstr[1] "{count} bestanden uit een eerdere synchronisatie overgeslagen"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "Gesynchroniseerde songteksten"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "Toont gesynchroniseerde songteksten uit .lrc-bestanden met dezelfde naam als "
 "de nummers (of vergelijkbaar)."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "Tekst:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "Achtergrond:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "Lettertype"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "Grootte (px):"
 
