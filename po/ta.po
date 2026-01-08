@@ -1378,7 +1378,7 @@ msgid "_Fill:"
 msgstr "_ ஃபில்:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "நிறங்கள்"
 
@@ -2956,31 +2956,30 @@ msgid_plural "skipped {count} files synchronized previously"
 msgstr[0] "{count} கோப்பு முன்பு ஒத்திசைக்கப்பட்டது"
 msgstr[1] "{count} கோப்புகள் முன்பு ஒத்திசைக்கப்பட்டன"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "ஒத்திசைக்கப்பட்ட பாடல்"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "தடத்தின் (அல்லது ஒத்த) அதே பெயருடன் .lrc கோப்பிலிருந்து ஒத்திசைக்கப்பட்ட பாடல்களைக் "
 "காட்டுகிறது."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "உரை:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "பின்னணி:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "எழுத்துரு"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "அளவு (பிஎக்ச்):"
 

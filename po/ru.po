@@ -1397,7 +1397,7 @@ msgid "_Fill:"
 msgstr "За_ливка:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "Цвета"
 
@@ -2975,31 +2975,30 @@ msgstr[0] "пропущен {count} файл, синхронизированны
 msgstr[1] "пропущены {count} файла, синхронизированные ранее"
 msgstr[2] "пропущено {count} файлов, синхронизированных ранее"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "Синхронизованные тексты песен"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "Синхронно показывает текст песни из файла .lrc с тем же именем (или "
 "похожим), что и трек ."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "Текст:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "Фон:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "Шрифт"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "Размер (пикс):"
 

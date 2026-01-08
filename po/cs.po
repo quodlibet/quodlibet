@@ -1388,7 +1388,7 @@ msgid "_Fill:"
 msgstr "_Rámeček:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "Barvy"
 
@@ -2972,31 +2972,30 @@ msgstr[0] "přeskočen {count} dříve synchronizovaný soubor"
 msgstr[1] "přeskočeny {count} dříve synchronizované soubory"
 msgstr[2] "přeskočeno {count} dříve synchronizovaných souborů"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "Synchronizované texty"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "Zobrazuje synchronizované texty z .lrc souboru se stejným (nebo podobným) "
 "názvem souboru jako skladba."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "Text:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "Pozadí:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "Písmo"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "Velikost (px):"
 

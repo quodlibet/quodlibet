@@ -1382,7 +1382,7 @@ msgid "_Fill:"
 msgstr "_Doldur:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "Renkler"
 
@@ -2959,31 +2959,30 @@ msgid_plural "skipped {count} files synchronized previously"
 msgstr[0] "daha önce eşitlenmiş {count} dosya atlandı"
 msgstr[1] "daha önce eşitlenmiş {count} dosya atlandı"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "Eşitlenen Şarkı Sözleri"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "Parça ile aynı (veya benzer) ada sahip .lrc dosyasından eşitlenen şarkı "
 "sözlerini göster."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "Metin:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "Arkaplan:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "Yazı Tipi"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "Boyut (pks):"
 
