@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-12-10 12:02+0000\n"
-"Last-Translator: Sketch6580 <sketch6580@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-12-15 08:00+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -7921,9 +7922,8 @@ msgstr ""
 "Musepack、Wavpack、MPEG-4 AAC、Monkeys Audio、WMA、SPC、MIDI。"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "标签编辑"
+msgstr "标签编辑界面"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -7936,14 +7936,12 @@ msgstr ""
 "持网络电台和音频源。此外它还有非常灵活的标签编辑以及搜索功能。"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "专辑列表"
+msgstr "专辑列表视图"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
-msgstr "音轨列表"
+msgstr "曲目列表"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "
