@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-11-17 21:51+0000\n"
+"PO-Revision-Date: 2025-12-15 08:00+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -6655,15 +6655,16 @@ msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
 msgstr ""
+"Povolit jen tyto názvy souborů. Jednotlivé soubory oddělte čárkou. Podporuje "
+"zástupné znaky."
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "_Upřednostňované názvy přebalů"
+msgstr "Omezit názvy přebalů"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "Použít jen přebaly se zadanými názvy souborů."
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
@@ -8208,9 +8209,8 @@ msgstr ""
 "MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "Úprava tagů"
+msgstr "Rozhraní pro úpravu tagů"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8224,12 +8224,10 @@ msgstr ""
 "Zároveň je skvěle vybaven pro úpravy metadat a jejich prohledávání."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "Alba"
+msgstr "Seznam alb"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
 msgstr "Seznam skladeb"
 
