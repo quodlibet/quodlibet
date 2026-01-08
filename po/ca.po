@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-11 04:51+0000\n"
+"PO-Revision-Date: 2025-12-16 09:00+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -6703,15 +6703,16 @@ msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
 msgstr ""
+"Permet només aquests noms de fitxers. Separeu diversos fitxers per comes. Es "
+"permeten els comodins."
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "Noms de fitxers d'imatge fixos _preferits"
+msgstr "Restringeix els noms dels fitxers d'imatge"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "Restringeix les caràtules als noms de fitxer especificats."
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
@@ -8255,9 +8256,8 @@ msgstr ""
 "MIDI."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "Edició d'etiquetes"
+msgstr "Interfície d'edició d'etiquetes"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8272,12 +8272,10 @@ msgstr ""
 "metadades molt flexibles."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "Llista d'àlbums"
+msgstr "Visualització de llista d'àlbums"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
 msgstr "Llista de pistes"
 
