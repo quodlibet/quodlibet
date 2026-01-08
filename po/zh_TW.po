@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-12-16 09:00+0000\n"
+"PO-Revision-Date: 2026-01-06 06:01+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2873,9 +2873,8 @@ msgid "Synchronized Lyrics"
 msgstr "同步歌詞"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
-#, fuzzy
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
-msgstr "顯示來自 .lrc 檔案的同步歌詞，其名稱與音軌相同(或近似)。"
+msgstr "顯示同步取得歌詞，來自內嵌的歌詞、或是歌詞(lrc)檔案。"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
