@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-12-10 12:02+0000\n"
+"PO-Revision-Date: 2025-12-15 08:00+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -8284,9 +8284,8 @@ msgstr ""
 "SPC, MIDI."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "Édition d'étiquettes"
+msgstr "Interface d'édition des étiquettes"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -8301,14 +8300,12 @@ msgstr ""
 "extrêmement souples d'édition et de recherche des étiquettes de métadonnées."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "Liste des albums"
+msgstr "Vue en liste des albums"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
-msgstr "Liste de pistes"
+msgstr "Liste des pistes"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "
