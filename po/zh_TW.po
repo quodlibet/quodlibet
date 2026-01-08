@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-11-13 00:51+0000\n"
+"PO-Revision-Date: 2025-12-16 09:00+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.15.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1062,7 +1062,7 @@ msgstr "設定目前的瀏覽"
 
 #: quodlibet/cli.py:163
 msgid "Stop after the playing song"
-msgstr "播放曲目完結後停止"
+msgstr "目前播放曲目結束後停止"
 
 #: quodlibet/cli.py:164
 msgid "Open a new browser"
@@ -1392,7 +1392,7 @@ msgstr "預覽"
 
 #: quodlibet/ext/events/appinfo.py:33
 msgid "Application Information"
-msgstr "憗用程式資訊"
+msgstr "應用程式資訊"
 
 #: quodlibet/ext/events/appinfo.py:34
 msgid "Various information about the application and its environment."
@@ -2471,7 +2471,7 @@ msgstr "錯誤找尋 %s 。 請檢查設定"
 
 #: quodlibet/ext/events/stop_on_pause.py:20
 msgid "Stop on Pause"
-msgstr "暫停時停止"
+msgstr "暫停時即停止"
 
 #: quodlibet/ext/events/stop_on_pause.py:23
 msgid ""
@@ -6412,28 +6412,27 @@ msgstr "評分"
 
 #: quodlibet/qltk/prefs.py:363
 msgid "Prefer _embedded art"
-msgstr "偏好內嵌藝術圖案(_M)"
+msgstr "偏好所內嵌的文藝圖面(_E)"
 
 #: quodlibet/qltk/prefs.py:368
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
-msgstr "選用在音檔(存在可用)中內嵌的圖案，而非其他來源"
+msgstr "選用音檔(存在可用)中內嵌的圖面，而非其他來源"
 
 #: quodlibet/qltk/prefs.py:375
 msgid ""
 "Only allow these filenames. Separate multiple files with commas. Supports "
 "wildcards."
-msgstr ""
+msgstr "僅允許這些檔案名稱。使用逗號來分隔多個檔案。支援使用萬用字元。"
 
 #: quodlibet/qltk/prefs.py:380
-#, fuzzy
 msgid "Restrict image filename(s)"
-msgstr "偏好固定的圖案檔名(_P)"
+msgstr "限制圖片檔案名稱"
 
 #: quodlibet/qltk/prefs.py:384
 msgid "Restrict album art to the specified filenames."
-msgstr ""
+msgstr "限制專輯圖面為指定的檔案名稱。"
 
 #: quodlibet/qltk/prefs.py:401
 msgid "Album Art"
@@ -6737,7 +6736,7 @@ msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:1011
 msgid "Stop After This Song"
-msgstr "此首歌曲播完之後停止"
+msgstr "此首曲目播完之後停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:1017
 msgid "_Keyboard Shortcuts"
@@ -6861,7 +6860,7 @@ msgstr "檔案名稱"
 
 #: quodlibet/qltk/renamefiles.py:222
 msgid "_Move album art"
-msgstr "移動專輯圖案(_M)"
+msgstr "移動專輯圖面(_M)"
 
 #: quodlibet/qltk/renamefiles.py:226
 msgid ""
@@ -6870,7 +6869,7 @@ msgstr "查看 '[albumart] search_filenames' 的調設輸入，用於其圖片�
 
 #: quodlibet/qltk/renamefiles.py:233
 msgid "_Overwrite album art at target"
-msgstr "覆寫專輯圖案(_O)"
+msgstr "覆寫專輯圖面於目標(_O)"
 
 #: quodlibet/qltk/renamefiles.py:244
 msgid "_Remove empty directories"
@@ -7389,7 +7388,7 @@ msgstr "內嵌的專輯封面"
 
 #: quodlibet/util/cover/built_in.py:36
 msgid "Uses covers embedded into audio files."
-msgstr "使用聲音檔案內嵌的封面圖案。"
+msgstr "使用聲音檔案所內嵌的封面圖面。"
 
 #: quodlibet/util/cover/built_in.py:63
 msgid "Filesystem cover"
@@ -7923,9 +7922,8 @@ msgstr ""
 "Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI.。"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
-#, fuzzy
 msgid "Tag editing interface"
-msgstr "標籤編輯"
+msgstr "標籤編輯介面"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
@@ -7938,12 +7936,10 @@ msgstr ""
 "廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
-#, fuzzy
 msgid "Album list view"
-msgstr "專輯清單"
+msgstr "專輯清單檢視"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
-#, fuzzy
 msgid "Track list"
 msgstr "音軌清單"
 
