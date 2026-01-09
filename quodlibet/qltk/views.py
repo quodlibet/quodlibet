@@ -694,7 +694,19 @@ class BaseView(Gtk.TreeView):
             return False
         return Gtk.TreeView.do_key_press_event(self, event)
 
-    def __key_pressed(self, view, event):
+    def __key_pressed(self, controller, keyval, keycode, state):
+        # GTK4: EventControllerKey.key-pressed has different signature
+        # Create event-like object for compatibility
+        class KeyEvent:
+            def __init__(self, keyval, keycode, state):
+                self.type = Gdk.EventType.KEY_PRESS
+                self.keyval = keyval
+                self.keycode = keycode
+                self.state = state
+            def get_state(self):
+                return self.state
+
+        event = KeyEvent(keyval, keycode, state)
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
@@ -1007,20 +1019,25 @@ class MultiDragTreeView(BaseView):
         self.add_controller(controller)
         self.__pending_action = None
 
-    def __button_press(self, view, event):
-        if event.button == Gdk.BUTTON_PRIMARY:
-            return self.__block_selection(event)
+    def __button_press(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        if button == Gdk.BUTTON_PRIMARY:
+            return self.__block_selection(gesture, x, y)
         return None
 
-    def __block_selection(self, event):
-        x, y = map(int, [event.x, event.y])
+    def __block_selection(self, gesture, x, y):
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
             return True
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
-        mod_active = event.get_state() & (
+        # GTK4: get modifier state from gesture
+        event = gesture.get_last_event(gesture.get_current_sequence())
+        state = event.get_modifier_state() if event else 0
+        mod_active = state & (
             get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK
         )
 
@@ -1032,7 +1049,8 @@ class MultiDragTreeView(BaseView):
             selection.set_select_function(lambda *args: True, None)
         return None
 
-    def __button_release(self, view, event):
+    def __button_release(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.released signal has different signature
         if self.__pending_action:
             path, col, single_unselect = self.__pending_action
             selection = self.get_selection()
@@ -1053,13 +1071,16 @@ class RCMTreeView(BaseView):
         controller.connect("pressed", self.__button_press)
         self.add_controller(controller)
 
-    def __button_press(self, view, event):
-        if event.triggers_context_menu():
-            return self.__check_popup(event)
+    def __button_press(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        # GTK4: Right click is secondary button, used for context menu
+        if button == Gdk.BUTTON_SECONDARY:
+            return self.__check_popup(x, y)
         return None
 
-    def __check_popup(self, event):
-        x, y = map(int, [event.x, event.y])
+    def __check_popup(self, x, y):
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:

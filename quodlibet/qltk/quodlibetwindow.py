@@ -921,7 +921,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                     self.__library.scan, dirs, cofuncid="library", funcid="library"
                 )
 
-    def __songlist_key_press(self, songlist, event):
+    def __songlist_key_press(self, controller, keyval, keycode, state):
+        # GTK4: EventControllerKey.key-pressed has different signature
+        # Create a simple event-like object for compatibility with browser.key_pressed()
+        class KeyEvent:
+            def __init__(self, keyval, keycode, state):
+                self.type = Gdk.EventType.KEY_PRESS
+                self.keyval = keyval
+                self.keycode = keycode
+                self.state = state
+            def get_state(self):
+                return self.state
+
+        event = KeyEvent(keyval, keycode, state)
         return self.browser.key_pressed(event)
 
     def __songlist_drag_data_recv(self, view, *args):
@@ -1230,7 +1242,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             label, icon = _("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE
 
         menu.set_label(label)
-        image.set_from_icon_name(icon, Gtk.IconSize.NORMAL)
+        # GTK4: set_from_icon_name() only takes icon name, size set separately
+        image.set_from_icon_name(icon)
+        image.set_icon_size(Gtk.IconSize.NORMAL)
 
     def __song_ended(self, player, song, stopped):
         # Check if the song should be removed, based on the

@@ -163,9 +163,13 @@ def get_top_parent(widget):
     using this makes is that it will be a Gtk.Window, i.e. the widget
     is fully packed when this is called."""
 
-    parent = widget and widget.get_toplevel()
-    if parent and parent.is_toplevel():
-        return parent
+    # GTK4: get_toplevel() and is_toplevel() removed
+    # Use get_root() to find the toplevel window
+    if widget:
+        parent = widget.get_root()
+        # Check if it's actually a window (not just a root)
+        if parent and isinstance(parent, Gtk.Window):
+            return parent
     return None
 
 
@@ -377,7 +381,6 @@ def is_accel(event, *accels):
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
-    keymap = Gdk.Keymap.get_default()
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
@@ -391,13 +394,13 @@ def is_accel(event, *accels):
             mod = Gtk.accelerator_name(0, non_default) or ""
             print_w(f"Accelerator {accel!r} contains a non default modifier {mod!r}")
 
-        # event.state contains the real mod mask + the virtual one, while
-        # we usually pass only virtual one as text.
-        # This adds the real one so that they match in the end.
-        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
+        # GTK4: In GTK4, event.state already contains the correct modifiers,
+        # no need for virtual modifier mapping like in GTK3
+        # Just compare keyval and masked modifier state
+        event_mod = event.state & default_mod
 
         # Remove everything except default modifiers and compare
-        if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
+        if accel_keyval == keyval and accel_mod == event_mod:
             return True
 
     return False

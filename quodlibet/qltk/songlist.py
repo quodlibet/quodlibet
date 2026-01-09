@@ -624,16 +624,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         browser.filter_on(songs, header)
 
-    def __button_press(self, view, event, librarian):
-        if event.button != Gdk.BUTTON_PRIMARY:
+    def __button_press(self, gesture, n_press, x, y, librarian):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        if button != Gdk.BUTTON_PRIMARY:
             return None
-        x, y = map(int, [event.x, event.y])
+
+        view = gesture.get_widget()
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
             return True
-        if event.window != self.get_bin_window():
-            return False
+        # GTK4: event.window check removed - not available with GestureClick
         if col.header_name == "~rating":
             if not config.getboolean("browsers", "rating_click"):
                 return None
@@ -665,7 +668,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian, player):
+    def __key_press(self, controller, keyval, keycode, state, librarian, player):
+        # GTK4: EventControllerKey.key-pressed has different signature
+        # Create event-like object for compatibility
+        class KeyEvent:
+            def __init__(self, keyval, keycode, state):
+                self.type = Gdk.EventType.KEY_PRESS
+                self.keyval = keyval
+                self.keycode = keycode
+                self.state = state
+            def get_state(self):
+                return self.state
+
+        event = KeyEvent(keyval, keycode, state)
         if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
