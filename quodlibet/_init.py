@@ -851,6 +851,10 @@ def _init_gtk():
             def set_tooltip_text(self, text):
                 pass
 
+            def set_tooltip_markup(self, markup):
+                """GTK4: tooltip markup not supported in stub"""
+                pass
+
             def set_visible(self, visible):
                 pass
 
