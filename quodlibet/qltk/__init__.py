@@ -163,11 +163,8 @@ def get_top_parent(widget):
     using this makes is that it will be a Gtk.Window, i.e. the widget
     is fully packed when this is called."""
 
-    # GTK4: get_toplevel() and is_toplevel() removed
-    # Use get_root() to find the toplevel window
     if widget:
         parent = widget.get_root()
-        # Check if it's actually a window (not just a root)
         if parent and isinstance(parent, Gtk.Window):
             return parent
     return None

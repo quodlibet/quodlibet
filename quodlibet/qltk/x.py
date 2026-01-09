@@ -446,7 +446,6 @@ class WebImage(Gtk.Image):
         call_async(self._fetch_image, self._cancel, self._finished, (url,))
         self.connect("destroy", self._on_destroy)
         self.set_size_request(width, height)
-        # GTK4: set_from_icon_name() only takes icon name, size set separately
         self.set_from_icon_name("image-loading")
         self.set_icon_size(Gtk.IconSize.LARGE)
 
@@ -471,7 +470,6 @@ class WebImage(Gtk.Image):
 
     def _finished(self, pixbuf):
         if pixbuf is None:
-            # GTK4: set_from_icon_name() only takes icon name, size set separately
             self.set_from_icon_name("image-missing")
             self.set_icon_size(Gtk.IconSize.LARGE)
         else:

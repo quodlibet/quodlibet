@@ -599,7 +599,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         )
         self.song_scroller.set_property("has-frame", True)
         self.song_scroller.set_child(self.songlist)
-        # GTK4: explicit show needed (show_all is a no-op)
         self.songlist.show()
         self.song_scroller.show()
 
@@ -668,7 +667,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box.append(align)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
-        # GTK4: show_all() is a no-op, use explicit show()
         self.songpane.show()
 
         try:
@@ -1242,7 +1240,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             label, icon = _("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE
 
         menu.set_label(label)
-        # GTK4: set_from_icon_name() only takes icon name, size set separately
         image.set_from_icon_name(icon)
         image.set_icon_size(Gtk.IconSize.NORMAL)
 

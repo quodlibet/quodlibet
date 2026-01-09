@@ -69,7 +69,7 @@ class ReactiveCoverImage(CoverImage):
 
 def Frame(name, widget):
     f = Gtk.Frame()
-    f.set_label_align(0.01, 0.5)
+    f.set_label_align(0.01)
     qltk.add_css(f, "* {border-radius: 6px; padding: 3px 6px 12px 9px}")
     l = Gtk.Label(label=name)
     qltk.add_css(l, " * {opacity: 0.6; margin: 2px;}")

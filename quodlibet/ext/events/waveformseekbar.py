@@ -286,8 +286,7 @@ class WaveformSeekBar(Gtk.Box):
             if position == 0 or full_redraw:
                 self._waveform_scale.queue_draw()
             else:
-                (x, y, w, h) = self._waveform_scale.compute_redraw_area()
-                self._waveform_scale.queue_draw_area(x, y, w, h)
+                self._waveform_scale.queue_draw()
         else:
             self._rms_vals.clear()
             self._waveform_scale.queue_draw()
@@ -300,11 +299,7 @@ class WaveformSeekBar(Gtk.Box):
         width = self._waveform_scale.get_allocation().width
         self._waveform_scale.set_mouse_x_position(clamp(0, event.x, width))
 
-        if self._hovering:
-            (x, y, w, h) = self._waveform_scale.compute_hover_redraw_area()
-            self._waveform_scale.queue_draw_area(x, y, w, h)
-        else:
-            self._waveform_scale.queue_draw()
+        self._waveform_scale.queue_draw()
 
         self._update_label(self._player)
         self._hovering = True
