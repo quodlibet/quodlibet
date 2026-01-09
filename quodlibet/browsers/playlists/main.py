@@ -120,7 +120,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box.set_shrink_end_child(False)
         rhbox.show()
         align.show_all()
-        songpane.show()
         return self._main_box
 
     def unpack(self, container, songpane):

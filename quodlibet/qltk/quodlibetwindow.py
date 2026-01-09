@@ -599,6 +599,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         )
         self.song_scroller.set_property("has-frame", True)
         self.song_scroller.set_child(self.songlist)
+        # GTK4: explicit show needed (show_all is a no-op)
+        self.songlist.show()
+        self.song_scroller.show()
 
         self.qexpander = QueueExpander(library, player)
         self.qexpander.set_no_show_all(True)
@@ -665,7 +668,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box.append(align)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
-        self.songpane.show_all()
+        # GTK4: show_all() is a no-op, use explicit show()
+        self.songpane.show()
 
         try:
             orders = []

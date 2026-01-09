@@ -48,6 +48,8 @@ class RPaned(Paned):
         # after the first alloc: use the normal properties
         self.__alloced = False
         self.__relative = None
+        # GTK4: Use signal instead of overriding do_size_allocate
+        self.connect("map", self.__on_first_map)
 
     def _get_max(self):
         alloc = self.get_allocation()
@@ -81,12 +83,13 @@ class RPaned(Paned):
         # before first alloc and set_relative not called
         return 0.5
 
-    def do_size_allocate(self, width, height, baseline):
-        super().do_size_allocate(width, height, baseline)
-        # On first allocation, set the relative position
+    def __on_first_map(self, widget):
+        """Set the relative position on first map (GTK4 replacement for do_size_allocate)"""
         if not self.__alloced and self.__relative is not None:
             self.set_relative(self.__relative)
         self.__alloced = True
+        # Disconnect after first use
+        self.disconnect_by_func(self.__on_first_map)
 
 
 class RHPaned(RPaned):

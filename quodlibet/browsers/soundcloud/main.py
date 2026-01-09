@@ -327,8 +327,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        container.add(self)
-        self._songs_box.add(songpane)
+        container.append(self)
+        self._songs_box.append(songpane)
         return container
 
     def unpack(self, container, songpane):

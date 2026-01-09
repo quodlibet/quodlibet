@@ -710,8 +710,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        container.add(self)
-        self._songpane_container.add(songpane)
+        container.append(self)
+        self._songpane_container.append(songpane)
         return container
 
     def unpack(self, container, songpane):
