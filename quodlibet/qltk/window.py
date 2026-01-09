@@ -216,7 +216,8 @@ class Window(Gtk.Window):
 
         """
 
-        is_toplevel = parent and parent.props.type == Gtk.WindowType.TOPLEVEL
+        # GTK4: WindowType removed - just check if it's a Window
+        is_toplevel = parent and isinstance(parent, Gtk.Window)
 
         if parent is None or not is_toplevel:
             if parent:

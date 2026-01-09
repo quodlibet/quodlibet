@@ -169,6 +169,7 @@ class HSlider(Gtk.Button):
         frame.show_all()
 
         window.set_transient_for(get_top_parent(self))
+        # GTK4: WindowTypeHint is a no-op compatibility stub
         # this type hint tells the wayland backend to create a popup
         window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
 

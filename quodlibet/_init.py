@@ -349,9 +349,14 @@ def _init_gtk():
                 # Create event-like object with GTK3 attributes
                 class FakeEvent:
                     def __init__(self):
+                        self.type = Gdk.EventType.KEY_PRESS
                         self.keyval = keyval
                         self.state = state
                         self.hardware_keycode = keycode
+                        self.keycode = keycode
+
+                    def get_state(self):
+                        return self.state
 
                 # Call original with widget (not controller) as first arg
                 return original_callback(self, FakeEvent(), *user_data)
@@ -478,8 +483,14 @@ def _init_gtk():
 
     # GTK4 compatibility: Window type hints removed
     if not hasattr(Gtk.Window, "set_type_hint"):
-        Gtk.Window.set_type_hint = lambda self, hint: None
-        Gtk.Window.get_type_hint = lambda self: None
+        def _set_type_hint(self, hint):
+            self._gtk4_type_hint = hint
+
+        def _get_type_hint(self):
+            return getattr(self, "_gtk4_type_hint", Gdk.WindowTypeHint.NORMAL)
+
+        Gtk.Window.set_type_hint = _set_type_hint
+        Gtk.Window.get_type_hint = _get_type_hint
 
     # GTK4 compatibility: Gdk.WindowTypeHint removed
     from gi.repository import Gdk, GLib
@@ -530,6 +541,16 @@ def _init_gtk():
             DIALOG = 1
             MENU = 2
             TOOLBAR = 3
+            SPLASHSCREEN = 4
+            UTILITY = 5
+            DOCK = 6
+            DESKTOP = 7
+            DROPDOWN_MENU = 8
+            POPUP_MENU = 9
+            TOOLTIP = 10
+            NOTIFICATION = 11
+            COMBO = 12
+            DND = 13
 
         Gdk.WindowTypeHint = WindowTypeHint
 
