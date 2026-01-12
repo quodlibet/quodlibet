@@ -17,6 +17,7 @@ Audio Playback
   * Weighted (by rating) random playback
   * Proper 'Previous' support in shuffle mode
   * A configurable play queue
+  * A-B repeat support
 
 
 Editing Tags
@@ -73,7 +74,7 @@ Library Browsing
   * iTunes/Rhythmbox-like paned browser, but with any tags you want
     (Genre, Date, etc)
   * Album list with cover art
-  * By directory, including songs not in your library 
+  * By directory, including songs not in your library
 
 
 Python-based plugins
@@ -101,7 +102,7 @@ Quod Libet has over 80 plugins contributed by devs and users, including:
 File Format Support
 ^^^^^^^^^^^^^^^^^^^
 
-    * MP3, Ogg Vorbis / Speex / Opus, FLAC, Musepack, MOD/XM/IT, Wavpack, 
+    * MP3, Ogg Vorbis / Speex / Opus, FLAC, Musepack, MOD/XM/IT, Wavpack,
       MPEG-4 AAC, WMA, MIDI, Monkey's Audio
 
 
