@@ -30,7 +30,7 @@ def _fill_view(view):
     model = Gtk.ListStore(str)
     column = Gtk.TreeViewColumn("foo")
     title = Gtk.CellRendererText()
-    column.pack_start(title, True)
+    column.prepend(title, True)
     column.add_attribute(title, "text", 0)
     view.append_column(column)
     for _x in range(100):
@@ -228,7 +228,7 @@ class TRCMTreeView(TestCase):
             send_button_click(self.c, Gdk.BUTTON_SECONDARY, primary=True)
 
     def test_popup(self):
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         selection = self.c.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 

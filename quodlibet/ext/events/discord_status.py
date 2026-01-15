@@ -286,7 +286,7 @@ class DiscordStatusMessage(EventPlugin):
             self.song = None
 
     def PluginPreferences(self, parent):
-        vb: Gtk.VBox = Gtk.VBox(spacing=6)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         def rp_line1_changed(entry):
             discord_status_config.rp_line1 = entry.get_text()
@@ -298,31 +298,27 @@ class DiscordStatusMessage(EventPlugin):
             if not app.player.paused:
                 self.plugin_on_unpaused()
 
-        status_line1_box: Gtk.HBox = Gtk.HBox(spacing=6)
+        status_line1_box = Gtk.Box(spacing=6)
         status_line1_box.set_border_width(3)
 
         status_line1: Gtk.Entry = Gtk.Entry()
         status_line1.set_text(discord_status_config.rp_line1)
         status_line1.connect("changed", rp_line1_changed)
 
-        status_line1_box.pack_start(
-            Gtk.Label(label=_("Status Line #1")), False, True, 0
-        )
-        status_line1_box.pack_start(status_line1, True, True, 0)
+        status_line1_box.append(Gtk.Label(label=_("Status Line #1")))
+        status_line1_box.append(status_line1)
 
-        status_line2_box: Gtk.HBox = Gtk.HBox(spacing=3)
+        status_line2_box = Gtk.Box(spacing=3)
         status_line2_box.set_border_width(3)
 
         status_line2: Gtk.Entry = Gtk.Entry()
         status_line2.set_text(discord_status_config.rp_line2)
         status_line2.connect("changed", rp_line2_changed)
 
-        status_line2_box.pack_start(
-            Gtk.Label(label=_("Status Line #2")), False, True, 0
-        )
-        status_line2_box.pack_start(status_line2, True, True, 0)
+        status_line2_box.append(Gtk.Label(label=_("Status Line #2")))
+        status_line2_box.append(status_line2)
 
-        vb.pack_start(status_line1_box, True, True, 0)
-        vb.pack_start(status_line2_box, True, True, 0)
+        vb.append(status_line1_box)
+        vb.append(status_line2_box)
 
         return vb

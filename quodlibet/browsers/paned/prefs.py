@@ -30,9 +30,9 @@ class ColumnMode(int):
     COLUMNAR = 2
 
 
-class ColumnModeSelection(Gtk.VBox):
+class ColumnModeSelection(Gtk.Box):
     def __init__(self, browser):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.browser = browser
         self.buttons = []
 
@@ -44,10 +44,10 @@ class ColumnModeSelection(Gtk.VBox):
         }
         for mode in ColumnMode.values:
             lbl = mode_label[ColumnMode.value_of(mode)]
-            group = Gtk.RadioButton(group=group, label=lbl)
+            group = Gtk.CheckButton(group=group, label=lbl)
             if mode == config.getint("browsers", "pane_mode", ColumnMode.SMALL):
                 group.set_active(True)
-            self.pack_start(group, False, True, 0)
+            self.prepend(group)
             self.buttons.append(group)
 
         # Connect to signal after the correct radio button has been
@@ -65,7 +65,7 @@ class ColumnModeSelection(Gtk.VBox):
         self.browser.set_all_column_mode(selected_mode)
 
 
-class PatternEditor(Gtk.VBox):
+class PatternEditor(Gtk.Box):
     PRESETS = [
         ["genre", "~people", "album"],
         ["~people", "album"],
@@ -75,7 +75,7 @@ class PatternEditor(Gtk.VBox):
     _COMPLEX_PATTERN_EXAMPLE = "<~year|[b]<~year>[/b]|[i]unknown year[/i]>"
 
     def __init__(self):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         self.__headers = headers = {}
         buttons = []
@@ -83,26 +83,26 @@ class PatternEditor(Gtk.VBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join(tags)
-            group = Gtk.RadioButton(
+            group = Gtk.CheckButton(
                 group=group, label="_" + util.tag(tied), use_underline=True
             )
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton(group=group, label=_("_Custom"), use_underline=True)
+        group = Gtk.CheckButton(group=group, label=_("_Custom"), use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
 
-        button_box = Gtk.HBox(spacing=6)
+        button_box = Gtk.Box(spacing=6)
         self.__model = model = Gtk.ListStore(str)
 
-        radio_box = Gtk.VBox(spacing=6)
+        radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for button in buttons:
-            radio_box.pack_start(button, False, True, 0)
+            radio_box.append(button)
             button.connect("toggled", self.__toggled, button_box, model)
 
-        self.pack_start(radio_box, False, True, 0)
+        self.append(radio_box)
 
         example = util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
         tooltip = _("Tag pattern with optional markup e.g. %(short)s or\n%(long)s") % {
@@ -116,14 +116,14 @@ class PatternEditor(Gtk.VBox):
         view.set_reorderable(True)
         view.set_headers_visible(False)
 
-        ctrl_box = Gtk.VBox(spacing=6)
+        ctrl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         add = Button(_("_Add"), Icons.LIST_ADD)
-        ctrl_box.pack_start(add, False, True, 0)
+        ctrl_box.prepend(add)
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
-        ctrl_box.pack_start(remove, False, True, 0)
+        ctrl_box.append(remove)
         remove.connect("clicked", self.__remove, view)
 
         selection = view.get_selection()
@@ -132,16 +132,15 @@ class PatternEditor(Gtk.VBox):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
 
-        edit_box = Gtk.VBox(spacing=6)
-        edit_box.pack_start(cb, False, True, 0)
-        edit_box.pack_start(sw, True, True, 0)
+        edit_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        edit_box.append(cb)
+        edit_box.append(sw)
 
-        button_box.pack_start(edit_box, True, True, 0)
-        button_box.pack_start(ctrl_box, False, True, 0)
-        self.pack_start(button_box, True, True, 0)
+        button_box.append(edit_box)
+        button_box.append(ctrl_box)
+        self.append(button_box)
 
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
@@ -196,11 +195,11 @@ class PatternEditor(Gtk.VBox):
         edit_widget.set_sensitive(button.get_active() and button is self.__custom)
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, browser):
         super().__init__()
 
-        self._menu = menu = Gtk.Menu()
+        self._menu = menu = Gtk.PopoverMenu()
 
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
 
@@ -214,11 +213,11 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
         button.show()
-        self.pack_start(button, True, True, 0)
+        self.prepend(button)
 
 
 class Preferences(qltk.UniqueWindow):
@@ -233,7 +232,7 @@ class Preferences(qltk.UniqueWindow):
 
         self.set_title(_("Paned Browser Preferences"))
 
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         column_modes = ColumnModeSelection(browser)
         column_mode_frame = qltk.Frame(_("Column layout"), child=column_modes)
@@ -254,18 +253,18 @@ class Preferences(qltk.UniqueWindow):
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())
 
-        box = Gtk.HButtonBox()
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_spacing(6)
         box.set_layout(Gtk.ButtonBoxStyle.EDGE)
-        box.pack_start(equal_width, True, True, 0)
-        box.pack_start(apply_, False, False, 0)
+        box.append(equal_width)
+        box.append(apply_)
         self.use_header_bar()
         if not self.has_close_button():
-            box.pack_start(cancel, True, True, 0)
+            box.append(cancel)
 
-        vbox.pack_start(column_mode_frame, False, False, 0)
-        vbox.pack_start(editor_frame, True, True, 0)
-        vbox.pack_start(box, False, True, 0)
+        vbox.prepend(column_mode_frame)
+        vbox.append(editor_frame)
+        vbox.prepend(box)
 
         self.add(vbox)
 
@@ -281,4 +280,5 @@ class Preferences(qltk.UniqueWindow):
             browser.make_pane_widths_equal()
 
         if close:
-            self.destroy()
+            # TODO: GTK4: destroy() removed
+            pass

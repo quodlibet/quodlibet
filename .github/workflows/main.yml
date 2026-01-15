@@ -42,7 +42,7 @@ jobs:
             mingw-w64-clang-x86_64-gettext
             mingw-w64-clang-x86_64-gdk-pixbuf2
             mingw-w64-clang-x86_64-librsvg
-            mingw-w64-clang-x86_64-gtk3
+            mingw-w64-clang-x86_64-gtk4
             mingw-w64-clang-x86_64-libsoup3
             mingw-w64-clang-x86_64-gstreamer
             mingw-w64-clang-x86_64-gst-plugins-base
@@ -121,7 +121,7 @@ jobs:
             gir1.2-appindicator3-0.1 \
             gir1.2-gst-plugins-base-1.0 \
             gir1.2-gstreamer-1.0 \
-            gir1.2-gtk-3.0 \
+            gir1.2-gtk-4.0 \
             gir1.2-gtksource-4 \
             gir1.2-keybinder-3.0 \
             gir1.2-soup-3.0 \
@@ -169,7 +169,7 @@ jobs:
             libdbus-glib-1-dev \
             gettext \
             gir1.2-gst-plugins-base-1.0 \
-            gir1.2-gtk-3.0 \
+            gir1.2-gtk-4.0 \
             gir1.2-soup-3.0 \
             gstreamer1.0-plugins-good \
             libcairo2-dev \

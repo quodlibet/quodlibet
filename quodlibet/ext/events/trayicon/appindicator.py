@@ -89,7 +89,7 @@ class AppIndicator(BaseIndicator):
         self.__scroll_id = None
         self.indicator.set_status(AppIndicator3.IndicatorStatus.PASSIVE)
         self.indicator = None
-        self.menu.destroy()
+        self.menu.close()
         self.menu = None
 
     def __on_scroll(self, indicator, steps, direction):

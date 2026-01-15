@@ -451,7 +451,7 @@ class ListenbrainzSubmission(EventPlugin):
             if entry.get_property("sensitive"):
                 plugin_config.set(key, entry.get_text())
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # first frame
         table = Gtk.Table(n_rows=2, n_columns=2)
@@ -463,7 +463,8 @@ class ListenbrainzSubmission(EventPlugin):
         label_names = [_("User _token:")]
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             table.attach(
                 label,
@@ -485,7 +486,7 @@ class ListenbrainzSubmission(EventPlugin):
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
-        box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Account"), child=table), True, True, 0)
 
         # second frame
         table = Gtk.Table(n_rows=5, n_columns=2)
@@ -503,7 +504,8 @@ class ListenbrainzSubmission(EventPlugin):
         labels = []
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             table.attach(
                 label,
@@ -573,6 +575,6 @@ class ListenbrainzSubmission(EventPlugin):
         )
         table.attach(offline, 0, 2, row, row + 1)
 
-        box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Submission"), child=table), True, True, 0)
 
         return box

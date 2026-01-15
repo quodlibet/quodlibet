@@ -21,7 +21,7 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.paned import Paned
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import connect_destroy, format_size, escape
@@ -66,7 +66,7 @@ class DownloadCoverArt(SongsMenuPlugin):
         ret = dialog.run()
         if ret == Gtk.ResponseType.APPLY:
             manager.cover_changed(songs)
-        dialog.destroy()
+        dialog.close()
 
 
 class Config:
@@ -207,11 +207,24 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned = Paned(orientation=Gtk.Orientation.VERTICAL)
         paned.ensure_wide_handle()
         sw = Gtk.ScrolledWindow()
-        sw.add(self.flow_box)
+        # GTK4: ScrolledWindow.add() → set_child()
+        sw.set_child(self.flow_box)
 
-        paned.pack1(sw, True, True)
-        paned.pack2(self.create_options(), False, False)
-        self.vbox.pack_start(paned, True, True, 0)
+        # GTK4: pack1() → set_start_child()
+
+        paned.set_start_child(sw)
+
+        paned.set_resize_start_child(True)
+
+        paned.set_shrink_start_child(True)
+        # GTK4: pack2() → set_end_child()
+
+        paned.set_end_child(self.create_options())
+
+        paned.set_resize_end_child(False)
+
+        paned.set_shrink_end_child(False)
+        self.get_content_area().prepend(paned)
 
         connect_destroy(manager, "covers-found", self._covers_found)
         connect_destroy(manager, "searches-complete", self._finished)
@@ -250,8 +263,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             "dimensions": item.dimensions,
         }
         frame = Gtk.Frame.new(text)
-        img.set_padding(12, 12)
-        frame.set_shadow_type(Gtk.ShadowType.NONE)
+        # GTK4: set_padding() removed, use margins
+        img.set_margin_start(12)
+        img.set_margin_end(12)
+        img.set_margin_top(12)
+        img.set_margin_bottom(12)
         frame.set_border_width(12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)
@@ -260,7 +276,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         reveal.props.transition_duration = 800
         reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
 
-        eb = Gtk.EventBox()
+        eb = Gtk.Box()
         eb.add(img)
         reveal.add(eb)
         frame.add(reveal)
@@ -275,7 +291,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             and event.type != Gdk.EventType.BUTTON_PRESS
         ):
             self.__save(None)
-            self.destroy()
+            self.close()
 
     def _filenames(self, pat_text, ext, full_path=False) -> list[str]:
         def fn_for(song):
@@ -326,7 +342,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             escape_desc=False,
         )
         dialog.run()
-        self.destroy()
+        self.close()
 
     @staticmethod
     def __image_from_child(child):
@@ -335,7 +351,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box()
         sizes = self.SIZES.keys()
         slider = Gtk.Scale.new_with_range(
             Gtk.Orientation.HORIZONTAL, min(sizes), max(sizes), 100
@@ -352,7 +368,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         def slider_changed(_slider):
             new_size = slider.get_value()
             try:
-                for child in self.flow_box.get_children():
+                for child in get_children(self.flow_box):
                     img = self.__image_from_child(child)
                     img.resize(new_size)
             except AttributeError as e:
@@ -360,23 +376,28 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         slider.connect("format-value", format_dims)
         slider.connect("value-changed", slider_changed)
-        label = Gtk.Label(_("Preview size"))
+        # GTK4: Label() requires label= keyword argument
+        label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
-        hbox.pack_start(label, False, False, 6)
-        hbox.pack_start(slider, True, True, 6)
-        vbox = Gtk.VBox()
-        vbox.pack_start(hbox, False, False, 6)
+        hbox.append(label)
+        hbox.append(slider)
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
+        vbox.append(hbox)
 
         def create_save_box():
-            hbox = Gtk.HBox()
-            label = Gtk.Label(_("Save destination"))
-            hbox.pack_start(label, False, False, 6)
+            hbox = Gtk.Box()
+            # GTK4: Label() requires label= keyword argument
+            label = Gtk.Label(label=_("Save destination"))
+            hbox.append(label)
             model = Gtk.ListStore(str)
             for val in SAVE_PATTERNS:
                 model.append(row=[val])
             save_filename = Gtk.ComboBox(model=model)
             label.set_mnemonic_widget(save_filename)
             cell = Gtk.CellRendererText()
+            # GTK4: ComboBox.prepend() removed - use pack_start() instead
             save_filename.pack_start(cell, True)
 
             def draw_save_type(column, cell, model, it, data):
@@ -398,7 +419,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
             save_filename.connect("changed", changed)
             select_value(save_filename, self.config.save_pattern)
-            hbox.pack_start(save_filename, False, False, 6)
+            hbox.prepend(save_filename)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
                 "If not already a JPEG, convert the image to "
@@ -408,10 +429,12 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
             re_encode.connect("toggled", lambda _: hbox.queue_draw())
-            hbox.pack_start(re_encode, False, False, 6)
+            hbox.append(re_encode)
             return hbox
 
-        vbox.pack_start(create_save_box(), False, False, 6)
+        save_box = create_save_box()
+        save_box.set_margin_top(6)
+        vbox.append(save_box)
         frame.add(vbox)
 
         self.button = self.add_icon_button(

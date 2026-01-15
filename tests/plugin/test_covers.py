@@ -13,7 +13,7 @@ from tests import run_gtk_loop
 FORMAT_HEADERS = (b"\x89PNG", b"\xff\xd8\xff", b"GIF")
 
 gi.require_version("Soup", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from dataclasses import dataclass, field
 from time import time, sleep
@@ -109,7 +109,7 @@ def test_live_cover_download(plugin_class_name):
             plugin.search()
         plugin.fetch_cover()
         while time() - start < 10 and results.success is None:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()
 
         assert results.success is not None, "No signal triggered"
         assert results.success, f"Didn't succeed: {results.covers}"
@@ -160,7 +160,7 @@ def test_live_cover_failure(plugin_class_name):
             plugin.search()
         plugin.fetch_cover()
         while time() - start < 1:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()  # was: iteration(False)
     finally:
         plugin.disconnect(sig)
         plugin.disconnect(sig2)

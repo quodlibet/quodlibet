@@ -144,7 +144,7 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
 
         if win.step():
             break
-    win.destroy()
+    win.close()
     return pl_lib.create_from_songs(songs, title=name)
 
 

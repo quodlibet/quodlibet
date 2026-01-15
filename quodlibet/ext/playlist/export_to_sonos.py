@@ -52,7 +52,7 @@ class ComboBoxEntry(Gtk.ComboBox):
     def _fill_model(self, choices: dict[str, str]):
         self.clear()
         render = Gtk.CellRendererText()
-        self.pack_start(render, True)
+        self.prepend(render, True)
         self.add_attribute(render, "text", 1)
 
         model = self.get_model()
@@ -97,7 +97,7 @@ class GetSonosPlaylistDialog(Dialog):
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label(
             label=_(
                 "Type a new playlist name,\n"
@@ -107,12 +107,12 @@ class GetSonosPlaylistDialog(Dialog):
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.pack_start(label, True, True, 0)
+        box.append(label)
 
         self._combo = ComboBoxEntry(choices)
-        box.pack_start(self._combo, False, False, 0)
+        box.prepend(self._combo)
 
-        self.vbox.pack_start(box, True, True, 0)
+        self.vbox.prepend(box)
         self.get_child().show_all()
 
     def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
@@ -124,7 +124,7 @@ class GetSonosPlaylistDialog(Dialog):
         try:
             return self._combo.get_chosen() if resp == Gtk.ResponseType.OK else None
         finally:
-            self.destroy()
+            self.close()
 
 
 class SonosPlaylistPlugin(PlaylistPlugin):

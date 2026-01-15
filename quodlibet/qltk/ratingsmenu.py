@@ -40,15 +40,15 @@ class ConfirmRateMultipleDialog(qltk.Message):
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 
-class RatingsMenuItem(Gtk.ImageMenuItem):
+class RatingsMenuItem(Gtk.Widget):
     def __init__(self, songs, library, label=_("_Rating")):  # noqa
         super().__init__(label=label, use_underline=True)
         self._songs = songs
-        image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
+        image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.NORMAL)
         image.show()
         self.set_image(image)
 
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         self.set_submenu(submenu)
         self._rating_menu_items = []
         for i in RATINGS.all:
