@@ -63,6 +63,8 @@ class NamedPipeServer(threading.Thread):
 
     """
 
+    BUFFER_SIZE = 4096
+
     def __init__(self, name, callback):
         """name is the name of the pipe file (should be unique I guess)
         callback will be called with new data until close() is called.
@@ -94,9 +96,47 @@ class NamedPipeServer(threading.Thread):
             # something went wrong (maybe another instance is running)
             raise NamedPipeServerError("Setting up named pipe failed")
 
-    def run(self):
-        buffer_size = 4096
+    def _run_loop(self, handle):
+        """Can raise `OSError` or `WinError`."""
+        data = bytearray()
+        try:
+            if winapi.ConnectNamedPipe(handle, None) == 0:
+                raise ctypes.WinError()
 
+            while 1:
+                readbuf = ctypes.create_string_buffer(self.BUFFER_SIZE)
+                bytesread = winapi.DWORD()
+                try:
+                    if (
+                        winapi.ReadFile(
+                            handle,
+                            readbuf,
+                            self.BUFFER_SIZE,
+                            ctypes.byref(bytesread),
+                            None,
+                        )
+                        == 0
+                    ):
+                        raise ctypes.WinError()
+                except OSError:
+                    # Breaks only this local inner loop, allowing this
+                    # method to be called again.
+                    break
+                else:
+                    message = readbuf[: bytesread.value]
+
+                data += message
+
+            if winapi.DisconnectNamedPipe(handle) == 0:
+                raise ctypes.WinError()
+        except OSError as e:
+            print_w(f"Error during pipe communication: {e}")
+            raise e
+        finally:
+            if data and not self._stopped:
+                self._process(bytes(data))
+
+    def run(self):
         try:
             handle = winapi.CreateNamedPipeW(
                 self._filename,
@@ -108,8 +148,8 @@ class NamedPipeServer(threading.Thread):
                     | winapi.PIPE_REJECT_REMOTE_CLIENTS
                 ),
                 winapi.PIPE_UNLIMITED_INSTANCES,
-                buffer_size,
-                buffer_size,
+                self.BUFFER_SIZE,
+                self.BUFFER_SIZE,
                 winapi.NMPWAIT_USE_DEFAULT_WAIT,
                 None,
             )
@@ -125,45 +165,13 @@ class NamedPipeServer(threading.Thread):
 
         self._event.set()
 
-        while 1:
-            data = bytearray()
+        while not self._stopped:
             try:
-                if winapi.ConnectNamedPipe(handle, None) == 0:
-                    raise ctypes.WinError()
-
-                while 1:
-                    readbuf = ctypes.create_string_buffer(buffer_size)
-                    bytesread = winapi.DWORD()
-                    try:
-                        if (
-                            winapi.ReadFile(
-                                handle,
-                                readbuf,
-                                buffer_size,
-                                ctypes.byref(bytesread),
-                                None,
-                            )
-                            == 0
-                        ):
-                            raise ctypes.WinError()
-                    except OSError:
-                        break
-                    else:
-                        message = readbuf[: bytesread.value]
-
-                    data += message
-
-                if winapi.DisconnectNamedPipe(handle) == 0:
-                    raise ctypes.WinError()
-            except OSError as e:
-                # better not loop forever...
-                print_w(f"Error during pipe communication: {e}")
+                self._run_loop(handle)
+            except ctypes.WinError:
+                continue
+            except OSError:
                 break
-            finally:
-                if self._stopped:
-                    break  # noqa
-                if data:
-                    self._process(bytes(data))
 
         # ignore errors here..
         winapi.CloseHandle(handle)
