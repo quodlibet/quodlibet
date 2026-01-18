@@ -101,7 +101,10 @@ class MutagenVCFile(AudioFile):
                 key = f"{keyed_key}{subkey}"
                 if key in self:
                     try:
-                        self[f"~#{keyed_key}"] = func(self[key])
+                        if key == "rating":
+                            self[f"~#{keyed_key}"] = func(self[key]) / 100
+                        else:
+                            self[f"~#{keyed_key}"] = func(self[key])
                     except ValueError:
                         pass
                     del self[key]
@@ -272,6 +275,7 @@ class MutagenVCFile(AudioFile):
             email = email or const.EMAIL
             if self.has_rating:
                 comments[f"rating:{email}"] = str(self("~#rating"))
+                comments["rating"] = str(int(100 * self("~#rating")))
             playcount = self.get("~#playcount", 0)
             if playcount != 0:
                 comments[f"playcount:{email}"] = str(playcount)
