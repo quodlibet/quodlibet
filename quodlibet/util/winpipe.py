@@ -168,7 +168,9 @@ class NamedPipeServer(threading.Thread):
         while not self._stopped:
             try:
                 self._run_loop(handle)
-            except (OSError, ctypes.WinError):
+            except ctypes.WinError:
+                continue
+            except OSError:
                 break
 
         # ignore errors here..
