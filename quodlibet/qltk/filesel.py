@@ -22,7 +22,7 @@ from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, MultiDragTreeVi
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util.path import (
     listdir,
     xdg_get_user_dirs,
@@ -240,13 +240,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         menu = self._create_menu()
         connect_obj(self, "popup-menu", self._popup_menu, menu)
-
-        # Allow to drag and drop files from outside
-        targets = [("text/uri-list", 0, 42)]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
 
     def _create_menu(self):
         menu = Gtk.PopoverMenu()
@@ -342,7 +336,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         model, paths = self.get_selection().get_selected_rows()
 
         directories = [model[path][0] for path in paths]
-        menu_items = menu.get_children()
+        menu_items = get_children(menu)
         delete = menu_items[1]
         try:
             is_empty = not any(len(os.listdir(d)) for d in directories)

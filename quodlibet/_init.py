@@ -420,9 +420,30 @@ def _init_gtk():
     if not hasattr(Gtk.Box, "add"):
         Gtk.Box.add = lambda self, child: self.append(child)
 
+    # GTK4: ButtonBox removed - set_layout is a no-op on regular Box
+    if not hasattr(Gtk.Box, "set_layout"):
+        Gtk.Box.set_layout = lambda self, layout: None
+
+    # GTK4: FlowBox.add() → FlowBox.append()
+    if not hasattr(Gtk.FlowBox, "add"):
+        Gtk.FlowBox.add = lambda self, child: self.append(child)
+
     # GTK4: ComboBox.add() → ComboBox.set_child() for entry widget
     if not hasattr(Gtk.ComboBox, "add"):
         Gtk.ComboBox.add = lambda self, child: self.set_child(child)
+
+    # GTK4: Grid.add() removed - use attach() instead
+    if not hasattr(Gtk.Grid, "add"):
+        def _grid_add(self, child):
+            # GTK3 Grid.add appends to row 0, incrementing column
+            col = getattr(self, "_add_column", 0)
+            self.attach(child, col, 0, 1, 1)
+            self._add_column = col + 1
+        Gtk.Grid.add = _grid_add
+
+    # GTK4: ScrolledWindow.add_with_viewport() removed
+    if not hasattr(Gtk.ScrolledWindow, "add_with_viewport"):
+        Gtk.ScrolledWindow.add_with_viewport = lambda self, child: self.set_child(child)
 
     # GTK4: Wrap Box.prepend/append to ignore GTK3 pack_start/pack_end arguments
     _orig_box_prepend = Gtk.Box.prepend
@@ -442,6 +463,46 @@ def _init_gtk():
     # GTK4: Frame.add() → Frame.set_child()
     if not hasattr(Gtk.Frame, "add"):
         Gtk.Frame.add = lambda self, child: self.set_child(child)
+
+    # GTK4: Image.new_from_icon_name() only takes icon_name, not size
+    _orig_image_new_from_icon_name = Gtk.Image.new_from_icon_name
+
+    def _image_new_from_icon_name_compat(icon_name, size=None):
+        # GTK4: ignore size parameter
+        return _orig_image_new_from_icon_name(icon_name)
+
+    Gtk.Image.new_from_icon_name = _image_new_from_icon_name_compat
+
+    # GTK4: HScale/VScale removed - use Scale with orientation
+    if not hasattr(Gtk, "HScale"):
+
+        class HScaleCompat(Gtk.Scale):
+            def __init__(self, adjustment=None):
+                super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+                if adjustment:
+                    self.set_adjustment(adjustment)
+
+            @staticmethod
+            def new(adjustment):
+                scale = Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adjustment)
+                return scale
+
+        Gtk.HScale = HScaleCompat
+
+    if not hasattr(Gtk, "VScale"):
+
+        class VScaleCompat(Gtk.Scale):
+            def __init__(self, adjustment=None):
+                super().__init__(orientation=Gtk.Orientation.VERTICAL)
+                if adjustment:
+                    self.set_adjustment(adjustment)
+
+            @staticmethod
+            def new(adjustment):
+                scale = Gtk.Scale.new(Gtk.Orientation.VERTICAL, adjustment)
+                return scale
+
+        Gtk.VScale = VScaleCompat
 
     if not hasattr(Gtk.Window, "add_accel_group"):
         Gtk.Window.add_accel_group = lambda self, group: None
@@ -800,6 +861,19 @@ def _init_gtk():
 
         Gtk.ShadowType = ShadowType
 
+    # GTK4: ButtonBoxStyle removed (ButtonBox removed)
+    if not hasattr(Gtk, "ButtonBoxStyle"):
+        from enum import IntEnum
+
+        class ButtonBoxStyle(IntEnum):
+            SPREAD = 0
+            EDGE = 1
+            START = 2
+            END = 3
+            CENTER = 4
+            EXPAND = 5
+
+        Gtk.ButtonBoxStyle = ButtonBoxStyle
 
     # GTK4: cairo_surface_create_from_pixbuf moved
     if not hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
@@ -950,6 +1024,7 @@ def _init_gtk():
         Gtk.Frame.set_border_width = _set_border_width
         Gtk.Window.set_border_width = _set_border_width
         Gtk.Paned.set_border_width = _set_border_width
+        Gtk.Box.set_border_width = _set_border_width
 
     # GTK4: PopoverMenu.append() compatibility
     _orig_popover_menu_init = Gtk.PopoverMenu.__init__

@@ -30,7 +30,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons, Button, Frame
+from quodlibet.qltk import Icons, Button, Frame, get_children
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
@@ -296,7 +296,7 @@ class RenameFiles(Gtk.Box):
 
         render.connect("edited", self.__row_edited)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show()
 
     def __filter_preview(self, *args):

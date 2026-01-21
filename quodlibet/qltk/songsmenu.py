@@ -129,7 +129,7 @@ class SongsMenuPluginHandler(PluginHandler):
                     menu.append(item)
                     args = (library, songs)
                     if item.get_submenu():
-                        for subitem in item.get_submenu().get_children():
+                        for subitem in qltk.get_children(item.get_submenu()):
                             subitem.connect("activate", self.__on_activate, item, *args)
                     else:
                         item.connect("activate", self.__on_activate, item, *args)
@@ -525,13 +525,15 @@ class SongsMenu(Gtk.PopoverMenu):
             self.append(b)
 
     def separate(self):
-        if not self.get_children():
+        children = qltk.get_children(self)
+        if not children:
             return
-        if not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
+        if not isinstance(children[-1], Gtk.SeparatorMenuItem):
             self.append(SeparatorMenuItem())
 
     def preseparate(self):
-        if not self.get_children():
+        children = qltk.get_children(self)
+        if not children:
             return
-        if not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
+        if not isinstance(children[0], Gtk.SeparatorMenuItem):
             self.prepend(SeparatorMenuItem())

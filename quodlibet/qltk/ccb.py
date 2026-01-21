@@ -48,7 +48,7 @@ class ConfigSwitch(Gtk.Box):
         self.switch = Gtk.Switch()
         eb = Gtk.Box()
         if label is not None:
-            self.label = Gtk.Label(label, use_underline=True)
+            self.label = Gtk.Label(label=label, use_underline=True)
             self.label.set_mnemonic_widget(self.switch)
             eb.append(self.label)
         self.append(eb)

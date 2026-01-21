@@ -115,9 +115,8 @@ class OneSong(Gtk.Box):
 
     def __check_changed(self, library, songs, vbox, song):
         if song in songs:
-            for c in vbox.get_children():
+            for c in qltk.get_children(vbox):
                 vbox.remove(c)
-                # GTK4: destroy() removed - c cleaned up automatically
             self._title(song)
             self._album(song)
             self._people(song)

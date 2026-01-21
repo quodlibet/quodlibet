@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GLib
 from senf import fsn2text
 
 from quodlibet import ngettext, _
@@ -53,7 +53,7 @@ class MaskedBox(Gtk.Box):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
-        sw.set_size_request(-1, max(sw.size_request().height, 80))
+        sw.set_size_request(-1, 80)
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
@@ -105,7 +105,7 @@ class MaskedBox(Gtk.Box):
         if not len(model):
             self.set_sensitive(False)
 
-        for child in self.get_children():
+        for child in qltk.get_children(self):
             child.show_all()
 
     def __popup(self, view, menu):

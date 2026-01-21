@@ -139,7 +139,7 @@ class TrackNumbers(Gtk.Box):
             revert,
         )
 
-        for child in self.get_children():
+        for child in qltk.get_children(self):
             child.show_all()
 
     def __row_edited(self, render, path, new, model, preview, save):

@@ -39,41 +39,7 @@ class Volume(Gtk.VolumeButton):
         self._orig_icon_list = self.props.icons
         player.notify("volume")
         player.notify("mute")
-
-        # TODO GTK4: Reimplement with event controllers for GTK4
-        # self.connect("event", self._on_button_event, player)
-
-        replaygain_menu = VolumeMenu(player)
-        # TODO GTK4: popup-menu and button-press-event signals don't exist
-        # Need to use Gtk.GestureClick controller instead
-        # self.connect("popup-menu", self.__popup, replaygain_menu)
-        # connect_obj(
-        #     self,
-        #     "button-press-event",
-        #     self.__volume_button_press,
-        #     replaygain_menu,
-        #     player,
-        # )
-
-    def __popup(self, widget, menu):
-        time = GLib.CURRENT_TIME
-        button = 3
-        qltk.popup_menu_under_widget(menu, widget, button, time)
-        return True
-
-    def __volume_button_press(self, menu, event, player):
-        if event.type != Gdk.EventType.BUTTON_PRESS:
-            return False
-
-        if event.triggers_context_menu():
-            qltk.popup_menu_at_widget(menu, self, event.button, event.time)
-            return True
-        if event.button == Gdk.BUTTON_MIDDLE:
-            # toggle the muted state, if the backend doesn't support it
-            # this action will just be ignored
-            player.mute = not player.mute
-            return True
-        return None
+        # TODO GTK4: Add VolumeMenu with GestureClick controller
 
     def __iadd__(self, v):
         self.set_value(self.get_value() + v)
@@ -104,18 +70,6 @@ class Volume(Gtk.VolumeButton):
         else:
             self.props.icons = self._orig_icon_list
 
-    def _on_button_event(self, widget, event, player):
-        # pulsesink doesn't emit volume changes when it's paused, but
-        # fetching the value works. To prevent user volume changes based on a
-        # false starting point update the slider on any action on the
-        # volume button.
-        self.handler_block(self._id)
-        self.set_value(player.volume)
-        self.handler_unblock(self._id)
-        # same with mute
-        self._update_mute(player)
-
-
 class VolumeMenu(Gtk.PopoverMenu):
     __modes = (
         ("auto", _("Auto_matic"), None),
@@ -145,8 +99,6 @@ class VolumeMenu(Gtk.PopoverMenu):
         self.__set_mode(player, replaygain_mode)
 
         rg = Gtk.PopoverMenu()
-        # GTK4: Don't call show() on unparented widgets - causes crashes
-        # rg.show()
         item.set_submenu(rg)
         item = None
         for mode, title, _profile in self.__modes:
@@ -174,7 +126,7 @@ class VolumeMenu(Gtk.PopoverMenu):
 
     def popup(self, *args):
         gain = config.getboolean("player", "replaygain")
-        for child in self.get_children():
+        for child in qltk.get_children(self):
             child.set_sensitive(gain)
         return super().popup(*args)
 

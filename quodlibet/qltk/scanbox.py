@@ -16,7 +16,7 @@ from quodlibet.qltk.chooser import choose_folders, _get_chooser, _run_chooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import MenuItem, Button
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util.path import unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj, copool
@@ -43,7 +43,7 @@ class ScanBox(Gtk.Box):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
-        sw.set_size_request(-1, max(sw.size_request().height, 80))
+        sw.set_size_request(-1, 80)
         sw.set_tooltip_text(
             _(
                 "Songs in the listed folders will be added "
@@ -100,7 +100,7 @@ class ScanBox(Gtk.Box):
         for path in get_scan_dirs():
             model.append(row=[path])
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def __popup(self, view, menu):

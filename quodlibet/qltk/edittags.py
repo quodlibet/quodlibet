@@ -9,7 +9,7 @@
 import sys
 from collections.abc import Sequence
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import C_, _, ngettext, print_e, print_d
 from quodlibet import app
@@ -628,7 +628,7 @@ class EditTags(Gtk.Box):
 
         self._parent = parent
 
-        for child in self.get_children():
+        for child in qltk.get_children(self):
             child.show_all()
 
     def __checkbox_toggled(self, *args):
@@ -723,7 +723,7 @@ class EditTags(Gtk.Box):
                     item.set_sensitive(False)
                 if len(vals) > 1 and vals[1][1]:
                     split_menu.append(item)
-            if split_menu.get_children():
+            if qltk.get_children(split_menu):
                 split_menu.append(SeparatorMenuItem())
 
             plugins = self.handler.plugins
@@ -759,7 +759,7 @@ class EditTags(Gtk.Box):
 
             split_item = MenuItem(_("_Split Tag"), Icons.EDIT_FIND_REPLACE)
 
-            if split_menu.get_children():
+            if qltk.get_children(split_menu):
                 split_item.set_submenu(split_menu)
             else:
                 split_item.set_sensitive(False)
@@ -779,7 +779,7 @@ class EditTags(Gtk.Box):
         menu.show_all()
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
-        for c in menu.get_children():
+        for c in qltk.get_children(menu):
             c.set_sensitive(can_change and c.get_property("sensitive"))
         copy_b.set_sensitive(True)
         remove_b.set_sensitive(True)

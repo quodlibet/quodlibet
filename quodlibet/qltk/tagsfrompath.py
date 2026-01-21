@@ -163,7 +163,7 @@ class TagsFromPath(Gtk.Box):
         # Save changes
         connect_obj(self.save, "clicked", self.__save, addreplace, library)
 
-        for child in self.get_children():
+        for child in qltk.get_children(self):
             child.show()
 
     def __filter_preview(self, *args):

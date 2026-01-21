@@ -17,7 +17,7 @@ from quodlibet import _
 from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.errorreport import errorhook
 
@@ -154,7 +154,7 @@ class FilterPluginBox(Gtk.Box):
         expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show()
 
         plugin_handler.changed()
@@ -174,9 +174,8 @@ class FilterPluginBox(Gtk.Box):
                 instances.append(f)
         instances.sort()
 
-        for child in vbox.get_children():
-            # GTK4: destroy() removed - child cleaned up automatically
-            pass
+        for child in get_children(vbox):
+            vbox.remove(child)
         del self.__plugins[:]
 
         for f in instances:
@@ -184,7 +183,6 @@ class FilterPluginBox(Gtk.Box):
                 vbox.append(f)
             except Exception:
                 errorhook()
-                # GTK4: destroy() removed - f cleaned up automatically
                 continue
 
             try:

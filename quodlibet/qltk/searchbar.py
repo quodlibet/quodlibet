@@ -338,11 +338,11 @@ class MultiSearchBarBox(LimitSearchBarBox):
             os.makedirs(os.path.dirname(self.multi_filename))
 
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n" for lq in self.flow_box.get_children())
+            f.writelines(lq.string + "\n" for lq in get_children(self.flow_box))
 
     def _update_query_from(self, text):
         if self.flow_box.get_visible():
-            matches = [lq.query._unpack() for lq in self.flow_box.get_children()]
+            matches = [lq.query._unpack() for lq in get_children(self.flow_box)]
 
             self._query = Query(text, star=self._star)
             self._query._match = reduce(operator.and_, matches, self._query._match)

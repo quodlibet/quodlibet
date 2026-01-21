@@ -171,8 +171,6 @@ class HSlider(Gtk.Button):
         window.set_transient_for(get_top_parent(self))
         window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
 
-        # position_window_beside_widget(window, self)
-
         self.__grabbed = window_grab_and_map(
             window,
             Gdk.EventMask.BUTTON_PRESS_MASK
@@ -279,9 +277,8 @@ class SeekButton(HSlider):
         return None
 
     def __popup_menu(self, menu, player, event=None):
-        for child in menu.get_children()[2:-1]:
+        for child in get_children(menu)[2:-1]:
             menu.remove(child)
-            # GTK4: destroy() removed - child cleaned up automatically
 
         try:
             marks = player.song.bookmarks

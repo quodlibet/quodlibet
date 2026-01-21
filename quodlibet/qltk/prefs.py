@@ -176,20 +176,28 @@ class PreferencesWindow(UniqueWindow):
                 return b
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            # Store ordered columns
             self._columns = []
             self.set_border_width(12)
             self.title = _("Song List")
             visible_columns_frame, buttons = create_visible_columns_widgets()
-            self.prepend(create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
-            self.prepend(visible_columns_frame)  # TODO GTK4: add set_margin_top(MARGIN)
-            self.prepend(create_columns_prefs_frame())  # TODO GTK4: add set_margin_top(MARGIN)
+
+            behavior = create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.prepend(behavior)
+
+            visible_columns_frame.set_margin_top(MARGIN)
+            self.prepend(visible_columns_frame)
+
+            columns_prefs = create_columns_prefs_frame()
+            columns_prefs.set_margin_top(MARGIN)
+            self.prepend(columns_prefs)
+
             self.prepend(create_update_columns_button())
 
             # Run it now
             self.__update(buttons, self._toggle_data, get_columns())
 
-            for child in self.get_children():
+            for child in qltk.get_children(self):
                 child.show_all()
 
         def __update(self, buttons, toggle_data, columns):
@@ -295,7 +303,7 @@ class PreferencesWindow(UniqueWindow):
                     model.append([df, format_time_preferred(4954, df)])
                 duration = Gtk.ComboBox(model=model)
                 cell = Gtk.CellRendererText()
-                duration.prepend(cell, True)
+                duration.pack_start(cell, True)
                 duration.set_cell_data_func(cell, draw_duration, None)
                 index = sorted(DurationFormat.values).index(DURATION.format)
                 duration.set_active(index)
@@ -325,8 +333,14 @@ class PreferencesWindow(UniqueWindow):
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
             self.set_border_width(MARGIN)
             self.title = _("Browsers")
-            self.append(create_search_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
-            self.append(create_display_frame())  # TODO GTK4: add set_margin_top(MARGIN)
+
+            search_frame = create_search_frame()
+            search_frame.set_margin_top(TOP_MARGIN)
+            self.append(search_frame)
+
+            display_frame = create_display_frame()
+            display_frame.set_margin_top(MARGIN)
+            self.append(display_frame)
 
             # Ratings
             c1 = CS(
@@ -354,7 +368,8 @@ class PreferencesWindow(UniqueWindow):
             vbox.prepend(c1)
             vbox.prepend(c2)
             f = qltk.Frame(_("Ratings"), child=vbox)
-            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
+            f.set_margin_top(MARGIN)
+            self.prepend(f)
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
 
@@ -399,9 +414,10 @@ class PreferencesWindow(UniqueWindow):
             vb.append(hb)
 
             f = qltk.Frame(_("Album Art"), child=vb)
-            self.append(f)  # TODO GTK4: add set_margin_top(MARGIN)
+            f.set_margin_top(MARGIN)
+            self.append(f)
 
-            for child in self.get_children():
+            for child in qltk.get_children(self):
                 child.show_all()
 
         def __changed_text(self, entry, name):
@@ -415,9 +431,6 @@ class PreferencesWindow(UniqueWindow):
 
     class Player(Gtk.Box):
         name = "playback"
-
-        def __init__(self):
-            super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         def _gain_scale_for(self, adj: Gtk.Adjustment) -> Gtk.Scale:
             def format_gain(scale, value):
@@ -436,13 +449,16 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Playback")
 
-            self.append(self.create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
+            behavior = self.create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.append(behavior)
 
             # player backend
             if app.player and hasattr(app.player, "PlayerPreferences"):
                 player_prefs = app.player.PlayerPreferences()
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
-                self.append(f)  # TODO GTK4: add set_margin_top(MARGIN)
+                f.set_margin_top(MARGIN)
+                self.append(f)
 
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
             adj = Gtk.Adjustment.new(fallback_gain, -12.0, 6.0, 0.5, 1, 0.0)
@@ -501,9 +517,10 @@ class PreferencesWindow(UniqueWindow):
             hb.append(grid)
             vb.append(hb)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
-            self.prepend(f)  # TODO GTK4: add set_margin_top(MARGIN)
+            f.set_margin_top(MARGIN)
+            self.prepend(f)
 
-            for child in self.get_children():
+            for child in qltk.get_children(self):
                 child.show_all()
 
         def create_behavior_frame(self):
@@ -534,9 +551,6 @@ class PreferencesWindow(UniqueWindow):
 
     class Tagging(Gtk.Box):
         name = "tagging"
-
-        def __init__(self):
-            super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         def ratings_vbox(self):
             """Returns a new Box containing all ratings widgets"""
@@ -580,7 +594,7 @@ class PreferencesWindow(UniqueWindow):
                 combo.set_active(active)
 
             cell = Gtk.CellRendererText()
-            default_combo.prepend(cell, True)
+            default_combo.pack_start(cell, True)
             default_combo.set_cell_data_func(cell, draw_rating, None)
             default_combo.connect("changed", default_rating_changed, model)
             default_lab.set_mnemonic_widget(default_combo)
@@ -755,13 +769,15 @@ class PreferencesWindow(UniqueWindow):
             self.title = _("Tags")
             self._songs = []
 
-            f = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
-            self.append(f)  # TODO GTK4: add set_margin_top(TOP_MARGIN)
+            tag_editing = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
+            tag_editing.set_margin_top(TOP_MARGIN)
+            self.append(tag_editing)
 
-            f = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
-            self.append(f)  # TODO GTK4: add set_margin_top(MARGIN)
+            ratings = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
+            ratings.set_margin_top(MARGIN)
+            self.append(ratings)
 
-            for child in self.get_children():
+            for child in qltk.get_children(self):
                 child.show_all()
 
         def __changed(self, entry, section, name):
@@ -809,8 +825,13 @@ class PreferencesWindow(UniqueWindow):
             hbox.append(refresh)
             vb.append(hbox)
 
-            self.append(self.create_behavior_frame())  # TODO GTK4: add set_margin_top(TOP_MARGIN)
-            self.append(self.create_scandirs_frame())  # TODO GTK4: add set_margin_top(MARGIN)
+            behavior = self.create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.append(behavior)
+
+            scandirs = self.create_scandirs_frame()
+            scandirs.set_margin_top(MARGIN)
+            self.append(scandirs)
 
             # during testing
             if app.library is not None:
@@ -818,7 +839,7 @@ class PreferencesWindow(UniqueWindow):
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
                 self.append(f)
 
-            for child in self.get_children():
+            for child in qltk.get_children(self):
                 child.show_all()
 
         def create_behavior_frame(self):

@@ -63,7 +63,6 @@ from quodlibet.util.library import background_filter, scan_library
 from quodlibet.util.path import uri_is_valid
 from quodlibet.qltk.window import PersistentWindowMixin, Window, on_first_map
 from quodlibet.qltk.songlistcolumns import CurrentColumn
-from tests import run_gtk_loop
 
 
 class PlayerOptions(GObject.Object):
@@ -327,13 +326,6 @@ class TopBar(Gtk.Box):
 
         box.append(Align(self.image, top=3, right=3))
 
-        # GTK4: margin property removed - individual margin-* properties exist
-        # On older Gtk+ (3.4, at least)
-        # setting a margin on CoverImage leads to errors and result in the
-        # QL window not being visible for some reason.
-        # assert self.image.props.margin == 0
-
-        # GTK4: get_children() removed - use qltk helper
         for child in qltk.get_children(self):
             child.show_all()
 
@@ -639,7 +631,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         # toplevel menu items show an empty 16x16 image. While we don't
         # need image items there UIManager creates them by default.
         # Work around by removing the empty GtkImages
-        for child in menubar.get_children():
+        for child in qltk.get_children(menubar):
             if isinstance(child, Gtk.ImageMenuItem):
                 child.set_image(None)
 
@@ -651,7 +643,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.__browserbox = Align(top=3, bottom=3)
         self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
-        # GTK4: pack1(widget, resize) → set_start_child(widget) + set_resize_start_child()
         paned.set_start_child(self.__browserbox)
         paned.set_resize_start_child(True)
         # We'll set_end_child when necessary (when the first sidebar plugin is set up)
@@ -749,7 +740,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.side_book.remove_page(self.side_book.page_num(widget))
         if self.side_book_empty:
             print_d("Hiding sidebar")
-            self.__paned.remove(self.__paned.get_children()[1])
+            self.__paned.remove(qltk.get_children(self.__paned)[1])
 
     def add_sidebar_to_layout(self, widget):
         print_d("Recreating sidebar")
@@ -759,10 +750,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     @property
     def side_book_empty(self):
-        # GTK4: get_children() removed, use helper
-        from quodlibet.qltk import get_children
-
-        return not get_children(self.side_book)
+        return not qltk.get_children(self.side_book)
 
     def set_seekbar_widget(self, widget):
         """Add an alternative seek bar widget.
@@ -819,9 +807,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
-        if self._playback_error_dialog:
-            # GTK4: self.destroy() removed - _playback_error_dialog cleaned up automatically
-            pass
         dialog = PlaybackErrorDialog(self, player_error)
         self._playback_error_dialog = dialog
         dialog.run()
@@ -870,9 +855,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         return None
 
     def __destroy(self, *args):
-        # GTK4: self.destroy() removed - playlist cleaned up automatically
-        pass
-
         # The tray icon plugin tries to unhide QL because it gets disabled
         # on Ql exit. The window should stay hidden after destroy.
         self.show = lambda: None

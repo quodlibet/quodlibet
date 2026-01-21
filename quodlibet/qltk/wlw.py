@@ -12,7 +12,7 @@ import time
 from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import _
-from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
+from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton, get_children
 from quodlibet.util import format_int_locale, format_time_display
 
 
@@ -235,7 +235,7 @@ class WaitLoadBar(WaitLoadBase, Gtk.Box):
         self.append(self._pause_button)
         self.append(self._cancel_button)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def step(self, **values):
