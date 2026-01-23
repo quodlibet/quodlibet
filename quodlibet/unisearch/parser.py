@@ -7,9 +7,14 @@
 
 from collections.abc import Callable
 import re
-import sre_parse
-import sre_constants
 import unicodedata
+
+try:
+    from re import _parser as sre_parse  # type: ignore
+    from re import _constants as sre_constants  # type: ignore
+except ImportError:
+    import sre_parse
+    import sre_constants
 
 from quodlibet import print_d
 from quodlibet.util import re_escape
