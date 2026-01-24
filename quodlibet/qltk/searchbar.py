@@ -98,9 +98,6 @@ class SearchBarBox(Gtk.Box):
             key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0, lambda *x: entry.mnemonic_activate(True))
 
-        # GTK4: Use get_children() helper instead of direct method call
-        for child in get_children(self):
-            child.show_all()
 
     def set_enabled(self, enabled=True):
         self._entry.set_sensitive(enabled)
@@ -238,9 +235,6 @@ class LimitSearchBarBox(SearchBarBox):
             self.__weight.connect("toggled", self.__changed)
             self.append(self.__weight)
 
-            # GTK4: Use get_children() helper instead of direct method call
-            for child in get_children(self):
-                child.show()
 
         def __changed(self, *args):
             self.emit("changed")
@@ -298,7 +292,6 @@ class MultiSearchBarBox(LimitSearchBarBox):
 
         # GTK4: Button.new_from_icon_name() only takes icon_name, not size
         self._add_button = Gtk.Button.new_from_icon_name("list-add")
-        self._add_button.set_no_show_all(True)
         self.append(self._add_button)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
@@ -385,14 +378,19 @@ class QueryItem(Gtk.FlowBoxChild):
         self.query = Query(string)
 
         hbox = Gtk.Box()
-        hbox.append(Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0)
-        btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.LARGE)
+        label = Gtk.Label(label=string, halign=Gtk.Align.START)
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
+        label.set_hexpand(True)
+        hbox.append(label)
+        btn = Gtk.Button.new_from_icon_name("window-close")
         btn.connect("clicked", self.remove)
         hbox.append(btn)
         frame = Gtk.Frame()
-        frame.add(hbox)
-        self.add(frame)
-        self.show_all()
+        frame.set_child(hbox)
+        self.set_child(frame)
 
     def remove(self, _):
         # GTK4: destroy() removed - self cleaned up automatically

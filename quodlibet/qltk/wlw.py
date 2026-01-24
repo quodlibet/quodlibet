@@ -9,10 +9,10 @@
 import math
 import time
 
-from gi.repository import Gtk, Pango, Gdk, GLib
+from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import _
-from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton, get_children
+from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
 from quodlibet.util import format_int_locale, format_time_display
 
 
@@ -128,30 +128,29 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
     def __init__(self, parent, *args):
         """parent: the parent window, or None"""
-        Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
+        # GTK4: Window type parameter removed
+        Gtk.Window.__init__(self)
         self.set_decorated(False)
         WaitLoadBase.__init__(self)
         self.setup(*args)
 
         parent = get_top_parent(parent)
         if parent:
-            sig = parent.connect("configure-event", self.__recenter)
-            self.connect("destroy", self.__reset_cursor, parent)
-            self.connect("destroy", self.__disconnect, sig, parent)
-            sig_vis = parent.connect("visibility-notify-event", self.__update_visible)
-            self.connect("destroy", self.__disconnect, sig_vis, parent)
             self.set_transient_for(parent)
-            window = parent.get_window()
-            if window:
-                window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            # GTK4: cursor API changed, set via CSS or widget cursor property
+            parent.set_cursor_from_name("wait")
+            self.connect("destroy", self.__reset_cursor, parent)
         # Note that this should not be modal as popups occuring during
         # progress will not be clickable
-        self.add(Gtk.Frame())
-        self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
+        frame = Gtk.Frame()
+        # GTK4: set_shadow_type() removed - use CSS for styling
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        vbox.set_border_width(12)
+        vbox.set_margin_start(12)
+        vbox.set_margin_end(12)
+        vbox.set_margin_top(12)
+        vbox.set_margin_bottom(12)
         self._label.set_size_request(170, -1)
-        self._label.set_line_wrap(True)
+        self._label.set_wrap(True)
         self._label.set_justify(Gtk.Justification.CENTER)
         vbox.append(self._label)
         vbox.append(self._progress)
@@ -164,33 +163,19 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             hbox.append(self._pause_button)
             vbox.append(hbox)
 
-        self.get_child().add(vbox)
+        frame.set_child(vbox)
+        self.set_child(frame)
 
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        # GTK4: set_position() removed - window managers control this
 
-        self.get_child().show_all()
-        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
-
-    context = GLib.MainContext.default()
-    while context.pending():
-        context.iteration(False)
-
-    def __update_visible(self, parent, event):
-        if event.state == Gdk.VisibilityState.FULLY_OBSCURED:
-            self.hide()
-        else:
-            self.show()
-
-    def __recenter(self, parent, event):
-        # GTK4: Window positioning removed - window managers control this
-        pass
-
-    def __disconnect(self, widget, sig, parent):
-        parent.disconnect(sig)
+        # Process pending events
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
 
     def __reset_cursor(self, widget, parent):
-        if parent.get_window():
-            parent.get_window().set_cursor(None)
+        # GTK4: Reset cursor via widget property
+        parent.set_cursor(None)
 
 
 class WritingWindow(WaitLoadWindow):
@@ -234,9 +219,6 @@ class WaitLoadBar(WaitLoadBase, Gtk.Box):
         self.append(self._progress)
         self.append(self._pause_button)
         self.append(self._cancel_button)
-
-        for child in get_children(self):
-            child.show_all()
 
     def step(self, **values):
         ret = super().step(**values)

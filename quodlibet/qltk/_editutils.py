@@ -135,7 +135,6 @@ class FilterPluginBox(Gtk.Box):
         hb = Gtk.Box()
         expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
-        expander.set_no_show_all(True)
         hb.append(expander)
         self.append(hb)
 
@@ -153,9 +152,6 @@ class FilterPluginBox(Gtk.Box):
 
         expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)
-
-        for child in get_children(self):
-            child.show()
 
         plugin_handler.changed()
 
@@ -195,8 +191,6 @@ class FilterPluginBox(Gtk.Box):
                     continue
 
             self.__plugins.append(f)
-
-        vbox.show_all()
 
         # Don't display the expander if there aren't any plugins.
         if not self.__plugins:

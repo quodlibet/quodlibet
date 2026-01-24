@@ -235,7 +235,6 @@ class DockMenu(Gtk.PopoverMenu):
         self.append(SeparatorMenuItem())
         self.append(browse)
 
-        self.show_all()
         self.hide()
 
     def _on_play(self, item, player):
@@ -325,9 +324,6 @@ class TopBar(Gtk.Box):
             )
 
         box.append(Align(self.image, top=3, right=3))
-
-        for child in qltk.get_children(self):
-            child.show_all()
 
         context = self.get_style_context()
         context.add_class("primary-toolbar")
@@ -672,8 +668,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.browser = None
         self.ui = ui
 
-        main_box.show_all()
-
         self._playback_error_dialog = None
         connect_destroy(player, "song-started", self.__song_started)
         connect_destroy(player, "paused", self.__update_paused, True)
@@ -733,7 +727,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.add_sidebar_to_layout(self.side_book)
         self.side_book.append_page(vbox, label=name)
         self.side_book.set_tab_detachable(vbox, False)
-        self.side_book.show_all()
         return vbox
 
     def remove_sidebar(self, widget):
@@ -746,7 +739,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         print_d("Recreating sidebar")
         align = Align(widget, top=6, bottom=3)
         self.__paned.pack2(align, shrink=True)
-        align.show_all()
 
     @property
     def side_book_empty(self):

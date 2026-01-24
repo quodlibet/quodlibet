@@ -47,7 +47,6 @@ class MaskedBox(Gtk.Box):
         connect_obj(remove_item, "activate", self.__remove, view, library)
         menu.append(remove_item)
 
-        menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
 
         sw = Gtk.ScrolledWindow()
@@ -104,9 +103,6 @@ class MaskedBox(Gtk.Box):
 
         if not len(model):
             self.set_sensitive(False)
-
-        for child in qltk.get_children(self):
-            child.show_all()
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)

@@ -36,7 +36,6 @@ class ScanBox(Gtk.Box):
         menu = Gtk.PopoverMenu()
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
-        menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
         connect_obj(remove_item, "activate", self.__remove, view)
 
@@ -99,9 +98,6 @@ class ScanBox(Gtk.Box):
 
         for path in get_scan_dirs():
             model.append(row=[path])
-
-        for child in get_children(self):
-            child.show_all()
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)

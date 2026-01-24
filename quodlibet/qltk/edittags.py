@@ -379,7 +379,6 @@ class AddTagDialog(Dialog):
         hbox.append(invalid)
 
         self.vbox.append(table)
-        self.get_child().show_all()
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:
@@ -628,9 +627,6 @@ class EditTags(Gtk.Box):
 
         self._parent = parent
 
-        for child in qltk.get_children(self):
-            child.show_all()
-
     def __checkbox_toggled(self, *args):
         self._update()
 
@@ -776,7 +772,6 @@ class EditTags(Gtk.Box):
         qltk.add_fake_accel(remove_b, "Delete")
         menu.append(remove_b)
 
-        menu.show_all()
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
         for c in qltk.get_children(menu):

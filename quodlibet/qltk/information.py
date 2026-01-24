@@ -126,7 +126,6 @@ class OneSong(Gtk.Box):
             parent = qltk.get_top_parent(self)
             if parent:
                 parent.set_title(self.title + " - Quod Libet")
-            vbox.show_all()
 
     def _title(self, song):
         text = util.italic(song.comma("title"))
@@ -642,6 +641,5 @@ class Information(Window, PersistentWindowMixin):
 
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add_with_viewport(content)
-        swin.show_all()
         self.add(swin)
         self.set_title(content.title + " - Quod Libet")
