@@ -24,10 +24,10 @@ from quodlibet.qltk.x import SymbolicIconImage, Align
 from quodlibet.qltk import Icons
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, search_bar_box):
         super().__init__()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         limit_item = ConfigCheckMenuItem(
             _("_Limit Results"), "browsers", "search_limit", True
@@ -44,10 +44,10 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.prepend(button)
 
 
 class TrackList(Browser):
@@ -57,9 +57,9 @@ class TrackList(Browser):
     priority = 1
 
     def pack(self, songpane):
-        container = Gtk.VBox(spacing=6)
-        container.pack_start(self, False, True, 0)
-        container.pack_start(songpane, True, True, 0)
+        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        container.append(self)
+        container.append(songpane)
         return container
 
     def unpack(self, container, songpane):
@@ -90,10 +90,10 @@ class TrackList(Browser):
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.pack_start(prefs, False, True, 0)
+        sbb.append(prefs)
 
-        self.pack_start(Align(sbb, left=6, right=6), False, True, 0)
-        self.pack_start(sbb.flow_box, False, True, 0)
+        self.append(Align(sbb, left=6, right=6))
+        self.append(sbb.flow_box)
         self.connect("destroy", self.__destroy)
         self.show_all()
 

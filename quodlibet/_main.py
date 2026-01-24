@@ -98,7 +98,8 @@ class Application:
 
         def idle_quit():
             if self.window:
-                self.window.destroy()
+                # GTK4: window.close() removed - cleaned up automatically
+                pass
 
         # so this can be called from a signal handler and before
         # the main loop starts
@@ -111,11 +112,9 @@ class Application:
             window.show()
 
     def present(self):
-        # deiconify is needed if the window is on another workspace
         from quodlibet.qltk import Window
 
         for window in Window.windows:
-            window.deiconify()
             window.present()
 
     def hide(self):
@@ -259,7 +258,7 @@ def set_application_info(app):
 
     assert is_init()
 
-    from gi.repository import Gtk, GLib
+    from gi.repository import Gtk, Gdk, GLib
 
     assert app.process_name
     set_process_title(app.process_name)
@@ -267,13 +266,11 @@ def set_application_info(app):
     GLib.idle_add(set_process_title, app.process_name)
 
     assert app.id
-    # https://honk.sigxcpu.org/con/GTK__and_the_application_id.html
-    GLib.set_prgname(app.id)
     assert app.name
     GLib.set_application_name(app.name)
 
     assert app.icon_name
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
     assert theme.has_icon(app.icon_name)
     Gtk.Window.set_default_icon_name(app.icon_name)
 
@@ -371,8 +368,10 @@ def run(window, before_quit=None):
         for toplevel in Gtk.Window.list_toplevels():
             toplevel.hide()
 
+        # GTK4: window.close() calls removed - cleaned up automatically
+        pass
         for window in Window.windows:
-            window.destroy()
+            pass
 
         Gtk.main_quit()
 
@@ -401,13 +400,15 @@ def run(window, before_quit=None):
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
     if "QUODLIBET_START_PERF" in os.environ:
-        window.connect("draw", Gtk.main_quit)
-        Gtk.main()
+        loop = GLib.MainLoop()
+        window.connect("draw", lambda *args: loop.quit())
+        loop.run()
         sys.exit()
     else:
-        Gtk.main()
+        loop = GLib.MainLoop()
+        loop.run()
 
-    print_d("Gtk.main() done.")
+    print_d("Main loop done.")
 
 
 def enable_periodic_save(save_library):

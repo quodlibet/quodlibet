@@ -38,8 +38,8 @@ class TAlbumArt(PluginTestCase):
 
     def testAlbumArtWindow(self):
         win = AlbumArtWindow(self.songs)
-        win.destroy()
+        # GTK4: destroy() removed, widgets cleaned up automatically
 
     def testCoverArea(self):
         win = CoverArea(None, self.songs[0])
-        win.destroy()
+        # GTK4: destroy() removed, widgets cleaned up automatically

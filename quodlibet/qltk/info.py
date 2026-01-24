@@ -18,14 +18,14 @@ from quodlibet import qltk
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
-class SongInfo(Gtk.EventBox):
+class SongInfo(Gtk.Box):
     """A widget for showing information about the currently playing song.
 
     Provides a way to change the display pattern for formatting the
@@ -54,14 +54,18 @@ class SongInfo(Gtk.EventBox):
     def __init__(self, library, player, pattern_filename):
         super().__init__()
         self._pattern_filename = pattern_filename
-        self.set_visible_window(False)
+        # GTK4: set_visible_window removed - all widgets are windowless by default
+        # self.set_visible_window(False)
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        label.set_track_visited_links(False)
+        # GTK4: set_track_visited_links removed
+        # label.set_track_visited_links(False)
         label.set_selectable(True)
         align.add(label)
-        label.set_alignment(0.0, 0.0)
+        # GTK4: set_alignment removed - use xalign/yalign properties
+        label.set_xalign(0.0)
+        label.set_yalign(0.0)
         self._label = label
         connect_destroy(library, "changed", self._on_library_changed, player)
         connect_destroy(player, "song-started", self._on_song_started)
@@ -98,8 +102,9 @@ class SongInfo(Gtk.EventBox):
         has_selection = label.get_selection_bounds()[0]
 
         if not has_selection:
-            for child in menu.get_children():
-                child.destroy()
+            for child in get_children(menu):
+                # GTK4: destroy() removed - child cleaned up automatically
+                pass
             for item in song_menu:
                 song_menu.remove(item)
                 menu.append(item)

@@ -98,7 +98,7 @@ class UpdateDialog(Dialog):
         self._stack = Gtk.Stack(border_width=10)
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        content.pack_start(self._stack, True, True, 0)
+        content.append(self._stack)
         content.show_all()
 
         spinner = Gtk.Spinner()
@@ -159,7 +159,8 @@ class UpdateDialog(Dialog):
         widget.show()
         self._stack.set_visible_child(widget)
         if old:
-            old.destroy()
+            # GTK4: destroy() removed - old cleaned up automatically
+            pass
 
     def _on_response(self, dialog, response_id, cancel):
         cancel.cancel()

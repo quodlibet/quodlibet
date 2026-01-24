@@ -5,9 +5,9 @@
 
 from random import Random
 from quodlibet.qltk.queue import QueueModel
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
@@ -22,8 +22,7 @@ import quodlibet.config
 
 
 def do_events():
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
 
 
 class TPlaylistModel(TestCase):
@@ -60,7 +59,7 @@ class TPlaylistModel(TestCase):
     def test_get(self):
         self.assertEqual(self.pl.get(), list(range(10)))
         self.pl.set(range(12))
-        Gtk.main_iteration_do(False)
+        run_gtk_loop()
         self.assertEqual(self.pl.get(), list(range(12)))
 
     def test_next(self):
@@ -211,7 +210,7 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(5)
         self.assertEqual(self.pl.current, 5)
         self.pl.set([5, 10, 15, 20])
-        Gtk.main_iteration_do(False)
+        run_gtk_loop()  # was: iteration(False)
         self.pl.next()
         self.assertEqual(self.pl.current, 10)
 
@@ -260,7 +259,7 @@ class TPlaylistModel(TestCase):
     def test_restart(self):
         self.pl.go_to(1)
         self.pl.set([101, 102, 103, 104])
-        Gtk.main_iteration_do(False)
+        run_gtk_loop()  # was: iteration(False)
         self.pl.next()
         self.assertEqual(self.pl.current, 101)
 
@@ -268,7 +267,7 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(1)
         self.pl.order = OrderShuffle()
         self.pl.set([])
-        Gtk.main_iteration_do(False)
+        run_gtk_loop()  # was: iteration(False)
         self.pl.next()
 
     def test_clear_current(self):

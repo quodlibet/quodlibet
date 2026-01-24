@@ -64,36 +64,36 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         # Do this config-driven setup at instance-time
         self._PREVIEW_ITEM["~rating"] = format_rating(0.75)
 
-        box = Gtk.VBox(spacing=6)
-        vbox = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         cb = ConfigCheckButton(_("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         cb.connect("toggled", lambda s: browser.toggle_covers())
-        vbox.pack_start(cb, False, True, 0)
+        vbox.append(cb)
 
         cb = ConfigCheckButton(
             _("Inline _search includes people"), "browsers", "album_substrings"
         )
         cb.set_active(config.getboolean("browsers", "album_substrings"))
-        vbox.pack_start(cb, False, True, 0)
+        vbox.append(cb)
         f = qltk.Frame(_("Options"), child=vbox)
-        box.pack_start(f, False, True, 12)
+        box.append(f)
 
         display_frame = self.edit_display_pane(browser, _("Album Display"))
-        box.pack_start(display_frame, True, True, 0)
+        box.append(display_frame)
 
-        main_box = Gtk.VBox(spacing=12)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        b = Gtk.HButtonBox()
+        b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.pack_start(close, True, True, 0)
+        b.append(close)
 
-        main_box.pack_start(box, True, True, 0)
+        main_box.append(box)
         self.use_header_bar()
 
         if not self.has_close_button():
-            main_box.pack_start(b, False, True, 0)
+            main_box.append(b)
         self.add(main_box)
 
         close.grab_focus()

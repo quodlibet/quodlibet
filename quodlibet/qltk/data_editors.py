@@ -44,7 +44,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(Gtk.HBox(spacing=6))
+        self.add(Gtk.Box(spacing=6))
         self.get_child().set_homogeneous(True)
         self.accels = Gtk.AccelGroup()
 
@@ -56,51 +56,49 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.view = view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
-        view.set_rules_hint(True)
         render = Gtk.CellRendererText()
-        render.set_padding(3, 6)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(3)
+        render.set_margin_end(3)
+        render.set_margin_top(6)
+        render.set_margin_bottom(6)
         render.props.ellipsize = Pango.EllipsizeMode.END
         column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf)
         view.append_column(column)
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
-        self.get_child().pack_start(sw, True, True, 0)
+        sw.set_child(view)
+        self.get_child().prepend(sw)
 
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         # Input for new ones.
         frame = self.__build_input_frame()
-        vbox.pack_start(frame, False, True, 0)
+        vbox.prepend(frame)
 
         # Add context menu
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         rem = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        keyval, mod = Gtk.accelerator_parse("Delete")
-        rem.add_accelerator(
-            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
-        )
         connect_obj(rem, "activate", self.__remove, view)
         menu.append(rem)
         menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
         view.connect("key-press-event", self.__view_key_press)
-        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
 
         # New and Close buttons
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box()
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         self.new_but = Button(_("_New"), Icons.DOCUMENT_NEW)
         self.new_but.connect("clicked", self._new_item)
-        bbox.pack_start(self.new_but, True, True, 0)
+        bbox.prepend(self.new_but)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
-        bbox.pack_start(close, True, True, 0)
-        vbox.pack_end(bbox, False, True, 0)
+        bbox.append(close)
+        vbox.append(bbox)
 
-        self.get_child().pack_start(vbox, True, True, 0)
+        self.get_child().prepend(vbox)
         # Initialise
         self.selection = view.get_selection()
 
@@ -181,10 +179,9 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 widget.set_text(val or "")
 
     def __build_input_frame(self):
-        t = Gtk.Table(n_rows=2, n_columns=3)
-        t.set_row_spacings(6)
-        t.set_col_spacing(0, 3)
-        t.set_col_spacing(1, 12)
+        t = Gtk.Grid()
+        t.set_row_spacing(6)
+        t.set_column_spacing(12)
 
         empty = self.proto_cls("empty")
         for i, (key, val) in enumerate(empty.data):
@@ -199,13 +196,15 @@ class JSONBasedEditor(qltk.UniqueWindow):
             self.input_entries[key] = entry
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
-            l.set_alignment(0.0, 0.5)
+            l.set_xalign(0.0)
+            l.set_yalign(0.5)
             if isinstance(val, int | bool):
                 align = Align(entry, halign=Gtk.Align.START)
-                t.attach(align, 1, 2, i, i + 1)
+                t.attach(align, 1, i, 1, 1)
             else:
-                t.attach(entry, 1, 2, i, i + 1)
-            t.attach(l, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
+                entry.set_hexpand(True)
+                t.attach(entry, 1, i, 1, 1)
+            t.attach(l, 0, i, 1, 1)
         frame = qltk.Frame(label=self.name, child=t)
         self.input_entries["name"].grab_focus()
         return frame
@@ -238,7 +237,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         view.remove_selection()
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __view_key_press(self, view, event):
         if event.keyval == Gtk.accelerator_parse("Delete")[0]:
@@ -272,8 +271,8 @@ class TagListEditor(qltk.Window):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        vbox = Gtk.VBox(spacing=12)
-        hbox = Gtk.HBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        hbox = Gtk.Box(spacing=12)
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str)
@@ -291,15 +290,14 @@ class TagListEditor(qltk.Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
         sw.set_size_request(-1, max(sw.size_request().height, 100))
-        hbox.pack_start(sw, True, True, 0)
+        hbox.prepend(sw)
 
         self.__setup_column(view)
 
         # Context menu
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
@@ -307,31 +305,31 @@ class TagListEditor(qltk.Window):
         connect_obj(remove_item, "activate", self.__remove, view)
 
         # Add and Remove buttons
-        vbbox = Gtk.VButtonBox()
+        vbbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbbox.set_layout(Gtk.ButtonBoxStyle.START)
         vbbox.set_spacing(6)
         add = Button(_("_Add…"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
-        vbbox.pack_start(add, False, True, 0)
+        vbbox.prepend(add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
-        vbbox.pack_start(remove, False, True, 0)
+        vbbox.append(remove)
         edit = Button(_("_Edit"), Icons.LIST_EDIT)
         edit.connect("clicked", self.__edit)
-        vbbox.pack_start(edit, False, True, 0)
-        hbox.pack_start(vbbox, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        vbbox.append(edit)
+        hbox.append(vbbox)
+        vbox.append(hbox)
 
         # Close buttons
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         if not self.has_close_button():
-            bbox.pack_start(close, True, True, 0)
-            vbox.pack_start(bbox, False, True, 0)
+            bbox.append(close)
+            vbox.append(bbox)
 
         # Finish up
         self.add(vbox)
@@ -411,4 +409,4 @@ class TagListEditor(qltk.Window):
             self.model[path][0] = edited
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time()).show()
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME).show()

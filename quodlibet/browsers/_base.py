@@ -258,10 +258,8 @@ class Browser(Gtk.Box, Filter):
     the browser is.
     """
 
-    def menu(self, songs, library, items) -> Gtk.Menu:
-        """This method returns a Gtk.Menu, probably a SongsMenu. After this
-        menu is returned the SongList may modify it further.
-        """
+    def menu(self, songs, library, items) -> Gtk.PopoverMenu:
+        """After this menu is returned the SongList may modify it further."""
 
         return SongsMenu(library, songs, delete=True, items=items)
 
@@ -368,19 +366,24 @@ class EditDisplayPatternMixin:
         """Returns a Pattern edit widget, with preview,
         optionally wrapped in a named Frame"""
 
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label()
-        label.set_alignment(0.0, 0.5)
-        label.set_padding(6, 6)
-        eb = Gtk.EventBox()
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
+        eb = Gtk.Box()
         eb.get_style_context().add_class("entry")
         eb.add(label)
         edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
         edit.apply.connect("clicked", self._set_pattern, edit, browser)
         connect_obj(edit.buffer, "changed", self._preview_pattern, edit, label)
-        vbox.pack_start(eb, False, True, 3)
-        vbox.pack_start(edit, True, True, 0)
+        vbox.append(eb)
+        vbox.append(edit)
         self._preview_pattern(edit, label)
         return qltk.Frame(frame_title, child=vbox) if frame_title else vbox
 

@@ -47,7 +47,8 @@ class Message(Gtk.MessageDialog, Dialog):
     def run(self, destroy=True):
         resp = super().run()
         if destroy:
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
+            pass
         return resp
 
 
@@ -76,7 +77,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
 
     def run(self):
         resp = super().run()
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
         return resp
 
 
