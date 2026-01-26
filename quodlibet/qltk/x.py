@@ -325,7 +325,10 @@ def SymbolicIconImage(name, size, fallbacks=None):
 
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
-    return Gtk.Image.new_from_gicon(gicon)
+    image = Gtk.Image.new_from_gicon(gicon)
+    # GTK4: Apply icon size - use set_icon_size() for symbolic sizes
+    image.set_icon_size(size)
+    return image
 
 
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
@@ -336,7 +339,6 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
 class Action(Gio.SimpleAction):
     def __init__(self, *args, **kwargs):
         # GTK4: SimpleAction doesn't have label/icon_name properties
-        pass
         # Store them as instance attributes for compatibility
         self.label = kwargs.pop("label", None)
         self.icon_name = kwargs.pop("icon_name", None)

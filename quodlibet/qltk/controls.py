@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, GObject
 
 from quodlibet import config
 from quodlibet import qltk
@@ -139,10 +139,10 @@ class PlayPauseButton(Gtk.Button):
     def __init__(self):
         super().__init__()
         self._pause_image = SymbolicIconImage(
-            "media-playback-pause", Gtk.IconSize.LARGE_TOOLBAR
+            "media-playback-pause", Gtk.IconSize.NORMAL
         )
         self._play_image = SymbolicIconImage(
-            "media-playback-start", Gtk.IconSize.LARGE_TOOLBAR
+            "media-playback-start", Gtk.IconSize.NORMAL
         )
         self._set_active(False)
         self.connect("clicked", self._on_clicked)
@@ -179,7 +179,7 @@ class PlayControls(Gtk.Box):
         upper.set_column_homogeneous(True)
 
         prev = Gtk.Button()
-        prev.add(SymbolicIconImage("media-skip-backward", Gtk.IconSize.LARGE_TOOLBAR))
+        prev.set_child(SymbolicIconImage("media-skip-backward", Gtk.IconSize.NORMAL))
         prev.set_hexpand(True)
         upper.attach(prev, 0, 0, 1, 1)
 
@@ -188,7 +188,7 @@ class PlayControls(Gtk.Box):
         upper.attach(play, 1, 0, 1, 1)
 
         next_ = Gtk.Button()
-        next_.add(SymbolicIconImage("media-skip-forward", Gtk.IconSize.LARGE_TOOLBAR))
+        next_.set_child(SymbolicIconImage("media-skip-forward", Gtk.IconSize.NORMAL))
         next_.set_hexpand(True)
         upper.attach(next_, 2, 0, 1, 1)
 
@@ -222,8 +222,13 @@ class PlayControls(Gtk.Box):
 
         connect_obj(prev, "clicked", self.__previous, player)
         self._toggle_id = play.connect("toggled", self.__playpause, player)
-        play.add_events(Gdk.EventMask.SCROLL_MASK)
-        connect_obj(play, "scroll-event", self.__scroll, player)
+        # GTK4: Use EventControllerScroll instead of scroll-event signal
+        scroll_controller = Gtk.EventControllerScroll.new(
+            Gtk.EventControllerScrollFlags.VERTICAL |
+            Gtk.EventControllerScrollFlags.HORIZONTAL
+        )
+        scroll_controller.connect("scroll", self.__scroll, player)
+        play.add_controller(scroll_controller)
         connect_obj(next_, "clicked", self.__next, player)
         connect_destroy(player, "song-started", self.__song_started, next_, play)
         connect_destroy(player, "paused", self.__on_set_paused_unpaused, play, False)
@@ -236,11 +241,13 @@ class PlayControls(Gtk.Box):
         button.set_active(state)
         button.handler_unblock(self._toggle_id)
 
-    def __scroll(self, player, event):
-        if event.direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
+    def __scroll(self, controller, dx, dy, player):
+        # GTK4: EventControllerScroll provides dx, dy deltas
+        if dy < 0 or dx < 0:
             player.previous()
-        elif event.direction in [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]:
+        elif dy > 0 or dx > 0:
             player.next()
+        return True
 
     def __song_started(self, player, song, next, play):
         play.set_active(not player.paused)

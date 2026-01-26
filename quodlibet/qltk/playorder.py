@@ -140,7 +140,6 @@ class ToggledPlayOrderMenu(Gtk.Box):
         if tooltip:
             toggle.set_tooltip_text(tooltip)
         toggle.set_active(enabled)
-        toggle.show_all()
         qltk.remove_padding(toggle)
         toggle.set_size_request(26, 26)
         self.append(toggle)
@@ -155,7 +154,6 @@ class ToggledPlayOrderMenu(Gtk.Box):
         from quodlibet.qltk.menubutton import MenuButton
 
         arrow = MenuButton(arrow=True, down=arrow_down)
-        arrow.show_all()
         arrow.set_size_request(20, 26)
         qltk.remove_padding(arrow)
         self.prepend(arrow)
@@ -223,7 +221,15 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if item.get_active():
                 self.current = order
 
-        menu = Gtk.PopoverMenu()
+        # GTK4: Use Popover with Box instead of PopoverMenu (which needs MenuModel)
+        menu = Gtk.Popover()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        box.set_margin_start(6)
+        box.set_margin_end(6)
+        box.set_margin_top(6)
+        box.set_margin_bottom(6)
+        menu.set_child(box)
+
         group = None
         prev_priority = None
 
@@ -232,15 +238,14 @@ class ToggledPlayOrderMenu(Gtk.Box):
 
         for order in ui_sorted(self.__orders):
             if prev_priority and order.priority > prev_priority:
-                menu.append(SeparatorMenuItem())
+                box.append(SeparatorMenuItem())
             prev_priority = order.priority
             group = RadioMenuItem(
                 label=order.accelerated_name, use_underline=True, group=group
             )
             group.set_active(order == self.__current)
             group.connect("toggled", toggled_cb, order)
-            menu.append(group)
-        menu.show_all()
+            box.append(group)
         self._menu_button.set_menu(menu)
 
 
