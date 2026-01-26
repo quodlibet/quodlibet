@@ -31,9 +31,9 @@ from quodlibet.util import (
     print_exc,
     DeferredSignal,
 )
-from quodlibet.qltk import Icons, gtk_version, add_css
+from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
+from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
@@ -62,7 +62,6 @@ class PlaybackStatusIcon(Gtk.Box):
         if name not in self._icons:
             image = SymbolicIconImage(name, Gtk.IconSize.LARGE)
             self._icons[name] = image
-            image.show()
         else:
             image = self._icons[name]
 
@@ -113,15 +112,19 @@ class QueueExpander(Gtk.Expander):
         hb2 = Gtk.Box(spacing=3)
         state_icon = PlaybackStatusIcon()
         state_icon.stop()
-        state_icon.show()
         hb2.append(state_icon)
         name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
         name_label.set_size_request(-1, 24)
         hb2.append(name_label)
         left.append(hb2)
 
-        menu = Gtk.PopoverMenu()
-        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        # GTK4: Use Popover instead of PopoverMenu (which requires MenuModel)
+        menu = Gtk.Popover()
+        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        menu_box.set_margin_start(6)
+        menu_box.set_margin_end(6)
+        menu_box.set_margin_top(6)
+        menu_box.set_margin_bottom(6)
         menu.set_child(menu_box)
 
         self.count_label = count_label = Gtk.Label()
@@ -151,8 +154,12 @@ class QueueExpander(Gtk.Expander):
         toggle.set_margin_start(3)
         outer.append(toggle)
 
-        mode_menu = Gtk.PopoverMenu()
-        mode_menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        mode_menu = Gtk.Popover()
+        mode_menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        mode_menu_box.set_margin_start(6)
+        mode_menu_box.set_margin_end(6)
+        mode_menu_box.set_margin_top(6)
+        mode_menu_box.set_margin_bottom(6)
         mode_menu.set_child(mode_menu_box)
 
         norm_mode_item = RadioMenuItem(
@@ -194,10 +201,7 @@ class QueueExpander(Gtk.Expander):
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
-        button.show_all()
-        button.hide()
-        button.set_no_show_all(True)
-        menu.show_all()
+        button.set_visible(False)
         button.set_menu(menu)
         button.set_margin_start(3)
         outer.append(button)
@@ -213,9 +217,8 @@ class QueueExpander(Gtk.Expander):
         self.set_label_widget(outer)
         self.set_child(sw)
         self.connect("notify::expanded", self.__expand, button)
-        self.connect("notify::expanded", self.__expand, button)
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget with GdkContentFormats
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
 
         self.queue.model.connect_after(
             "row-inserted", DeferredSignal(self.__check_expand), count_label
@@ -515,7 +518,6 @@ class PlayQueue(SongList):
         qltk.add_fake_accel(remove, "Delete")
         remove.connect("activate", self.__remove)
         menu.prepend(remove)
-        menu.show_all()
         return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, *args):
