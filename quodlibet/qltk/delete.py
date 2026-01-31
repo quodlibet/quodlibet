@@ -39,12 +39,12 @@ class FileListExpander(Gtk.Expander):
 
         paths = [fsn2text(unexpand(p)) for p in paths]
         lab = Gtk.Label(label="\n".join(paths))
-        lab.set_alignment(0.0, 0.0)
+        lab.set_xalign(0.0)
+        lab.set_yalign(0.0)
         lab.set_selectable(True)
         win = Gtk.ScrolledWindow()
         win.add_with_viewport(Align(lab, border=6))
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        win.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         win.set_size_request(-1, 100)
         self.add(win)
         win.show_all()
@@ -88,7 +88,7 @@ class DeleteDialog(WarningMessage):
         area = self.get_message_area()
         exp = FileListExpander(paths)
         exp.show()
-        area.pack_start(exp, False, True, 0)
+        area.append(exp)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(
@@ -134,7 +134,7 @@ class TrashDialog(WarningMessage):
         area = self.get_message_area()
         exp = FileListExpander(paths)
         exp.show()
-        area.pack_start(exp, False, True, 0)
+        area.append(exp)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(_("_Move to Trash"), Icons.USER_TRASH, self.RESPONSE_TRASH)
@@ -170,7 +170,7 @@ def _do_trash_songs(parent, songs, librarian):
         else:
             ok.append(song)
         w.step()
-    w.destroy()
+    # GTK4: destroy() removed - w cleaned up automatically
 
     if failed:
         ErrorMessage(
@@ -212,7 +212,7 @@ def _do_trash_files(parent, paths):
         else:
             ok.append(path)
         w.step()
-    w.destroy()
+    # GTK4: destroy() removed - w cleaned up automatically
 
     if failed:
         ErrorMessage(
@@ -245,7 +245,7 @@ def _do_delete_songs(parent, songs, librarian):
         else:
             ok.append(song)
         w.step()
-    w.destroy()
+    # GTK4: destroy() removed - w cleaned up automatically
 
     if failed:
         ErrorMessage(
@@ -277,7 +277,7 @@ def _do_delete_files(parent, paths):
         else:
             ok.append(path)
         w.step()
-    w.destroy()
+    # GTK4: destroy() removed - w cleaned up automatically
 
     if failed:
         ErrorMessage(

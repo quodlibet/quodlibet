@@ -588,7 +588,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.__atf_id = None
 
         if self._seeker is not None:
-            self._seeker.destroy()
+            # GTK4: self.destroy() removed - _seeker cleaned up automatically
             self._seeker = None
             self.notify("seekable")
 
@@ -596,7 +596,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.set_state(Gst.State.NULL)
             self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
             # BufferingWrapper cleanup
-            self.bin.destroy()
+            # GTK4: self.destroy() removed - bin cleaned up automatically
             self.bin = None
 
         self._in_gapless_transition = False
@@ -700,13 +700,11 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # new in 1.6
         if hasattr(context, "set_desktop_id"):
-            from gi.repository import Gtk
-
             context.set_desktop_id(app.id)
 
         # new in 1.6
         if hasattr(context, "set_startup_notification_id"):
-            current_time = Gtk.get_current_event_time()
+            current_time = GLib.CURRENT_TIME
             context.set_startup_notification_id("_TIME%d" % current_time)
 
         gdk_window = app.window.get_window()

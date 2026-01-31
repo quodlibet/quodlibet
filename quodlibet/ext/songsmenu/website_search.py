@@ -16,7 +16,7 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, print_w, print_d
@@ -93,12 +93,12 @@ class WebsiteSearch(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        hb = Gtk.HBox(spacing=3)
+        hb = Gtk.Box(spacing=3)
         hb.set_border_width(0)
 
         button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
-        hb.pack_start(button, True, True, 0)
+        hb.append(button)
         hb.show_all()
         return hb
 
@@ -114,7 +114,7 @@ class WebsiteSearch(SongsMenuPlugin):
         super().__init__(*args, **kwargs)
         self.chosen_site = None
         self._url_pats = []
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         self._get_saved_searches()
         for name, _url_pat in self._url_pats:
             item = Gtk.MenuItem(label=name)
@@ -125,7 +125,7 @@ class WebsiteSearch(SongsMenuPlugin):
         connect_obj(configure, "activate", self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)
-        if submenu.get_children():
+        if get_children(submenu):
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)

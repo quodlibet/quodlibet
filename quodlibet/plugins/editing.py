@@ -8,6 +8,7 @@
 
 from gi.repository import Gtk
 
+from quodlibet.qltk import get_children
 from quodlibet.util import connect_obj
 from quodlibet.util.misc import total_ordering
 
@@ -95,9 +96,8 @@ class TagsFromPathPlugin:
         return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
-class EditTagsPlugin(Gtk.ImageMenuItem):
-    """Plugins of this type are subclasses of gtk.ImageMenuItem.
-    They will be added to the context menu of the EditTags tree view.
+class EditTagsPlugin(Gtk.Widget):
+    """Plugins will be added to the context menu of the EditTags tree view.
 
     The 'tags' attribute is a list of tags this plugin should appear on,
     or false if it should appear for all tags. This must be a class
@@ -143,7 +143,7 @@ class EditTagsPlugin(Gtk.ImageMenuItem):
 
     def connect(self, signal, callback, *args, **kwargs):
         if self.get_submenu():
-            for item in self.get_submenu().get_children():
+            for item in get_children(self.get_submenu()):
                 connect_obj(item, signal, callback, self, *args, **kwargs)
         else:
             super().connect(signal, callback, *args, **kwargs)

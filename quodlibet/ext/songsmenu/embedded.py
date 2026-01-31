@@ -32,7 +32,7 @@ class EditEmbedded(SongsMenuPlugin):
 
     def __init__(self, songs, *args, **kwargs):
         super().__init__(songs, *args, **kwargs)
-        self.__menu = Gtk.Menu()
+        self.__menu = Gtk.PopoverMenu()
         self._init_submenu_items(self.__menu, songs)
         self.set_submenu(self.__menu)
 
@@ -51,7 +51,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        win.destroy()
+        win.close()
         self.plugin_finish()
 
     def __set_image(self, menu_item, songs):
@@ -69,7 +69,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        win.destroy()
+        win.close()
         self.plugin_finish()
 
     def __choose_image(self, menu_item, songs):
@@ -86,7 +86,8 @@ class EditEmbedded(SongsMenuPlugin):
         dialog.set_title(msg)
         response = dialog.run()
         path = dialog.get_filename()
-        dialog.destroy()
+        # GTK4: destroy() removed - dialog cleaned up automatically
+        pass
         if response != Gtk.ResponseType.ACCEPT:
             print_d("User cancelled image embedding")
             return
@@ -103,7 +104,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         self.plugin_finish()
 
     def _init_submenu_items(self, menu, songs):

@@ -67,24 +67,24 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         self._PREVIEW_ITEM["~rating"] = format_rating(0.75)
         self.mag_lock = False
 
-        box = Gtk.VBox(spacing=6)
-        vbox = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         cb = ConfigCheckButton(_("Show album _text"), "browsers", "album_text")
         cb.set_active(config.getboolean("browsers", "album_text", True))
         cb.connect("toggled", lambda s: browser.toggle_text())
-        vbox.pack_start(cb, False, True, 0)
+        vbox.append(cb)
 
         cb2 = ConfigCheckButton(
             _('Show "All Albums" Item'), "browsers", "covergrid_all"
         )
         cb2.set_active(config.getboolean("browsers", "covergrid_all", True))
         cb2.connect("toggled", lambda s: browser.toggle_item_all())
-        vbox.pack_start(cb2, False, True, 0)
+        vbox.append(cb2)
 
         cb3 = ConfigCheckButton(_("Wide Mode"), "browsers", "covergrid_wide")
         cb3.set_active(config.getboolean("browsers", "covergrid_wide", False))
         cb3.connect("toggled", lambda s: browser.toggle_wide())
-        vbox.pack_start(cb3, False, True, 0)
+        vbox.append(cb3)
 
         def mag_changed(mag):
             newmag = mag.get_value()
@@ -111,27 +111,27 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
         mag_scale.connect("value-changed", mag_changed)
 
-        vbox.pack_start(l, False, True, 0)
-        vbox.pack_start(mag_scale, False, True, 0)
+        vbox.append(l)
+        vbox.append(mag_scale)
 
         f = qltk.Frame(_("Options"), child=vbox)
-        box.pack_start(f, False, True, 12)
+        box.append(f)
 
         display_frame = self.edit_display_pane(browser, _("Album Display"))
-        box.pack_start(display_frame, True, True, 0)
+        box.append(display_frame)
 
-        main_box = Gtk.VBox(spacing=12)
+        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        b = Gtk.HButtonBox()
+        b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         b.set_layout(Gtk.ButtonBoxStyle.END)
-        b.pack_start(close, True, True, 0)
+        b.append(close)
 
-        main_box.pack_start(box, True, True, 0)
+        main_box.append(box)
         self.use_header_bar()
 
         if not self.has_close_button():
-            main_box.pack_start(b, False, True, 0)
+            main_box.append(b)
         self.add(main_box)
 
         close.grab_focus()

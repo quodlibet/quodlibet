@@ -17,7 +17,7 @@ from quodlibet import _
 from quodlibet.plugins import PluginHandler
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.errorreport import errorhook
 
@@ -109,7 +109,7 @@ class FilterCheckButton(ConfigCheckButton):
         return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
-class FilterPluginBox(Gtk.VBox):
+class FilterPluginBox(Gtk.Box):
     __gsignals__ = {
         # the list should be updated
         "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
@@ -118,7 +118,7 @@ class FilterPluginBox(Gtk.VBox):
     }
 
     def __init__(self, plugin_handler, filter_types=None):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         # static filters
         if filter_types is None:
@@ -127,22 +127,23 @@ class FilterPluginBox(Gtk.VBox):
         filters = [Kind() for Kind in filter_types]
         filters.sort()
         for f in filters:
-            self.pack_start(f, True, True, 0)
+            self.append(f)
         self.__filters = filters
 
         # plugins
         self.__plugins = []
-        hb = Gtk.HBox()
+        hb = Gtk.Box()
         expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
-        expander.set_no_show_all(True)
-        hb.pack_start(expander, True, True, 0)
-        self.pack_start(hb, False, True, 0)
+        hb.append(expander)
+        self.append(hb)
 
         for filt in filters:
             filt.connect("preview", lambda *x: self.emit("preview"))
 
-        vbox = Gtk.VBox()
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         expander.add(vbox)
 
         connect_destroy(
@@ -151,9 +152,6 @@ class FilterPluginBox(Gtk.VBox):
 
         expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)
-
-        for child in self.get_children():
-            child.show()
 
         plugin_handler.changed()
 
@@ -172,16 +170,15 @@ class FilterPluginBox(Gtk.VBox):
                 instances.append(f)
         instances.sort()
 
-        for child in vbox.get_children():
-            child.destroy()
+        for child in get_children(vbox):
+            vbox.remove(child)
         del self.__plugins[:]
 
         for f in instances:
             try:
-                vbox.pack_start(f, True, True, 0)
+                vbox.append(f)
             except Exception:
                 errorhook()
-                f.destroy()
                 continue
 
             try:
@@ -194,8 +191,6 @@ class FilterPluginBox(Gtk.VBox):
                     continue
 
             self.__plugins.append(f)
-
-        vbox.show_all()
 
         # Don't display the expander if there aren't any plugins.
         if not self.__plugins:

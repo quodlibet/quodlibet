@@ -36,20 +36,7 @@ class TreeViewHints(Gtk.Window):
         def do_get_preferred_width(*args):
             return (0, Gtk.Label.do_get_preferred_width(*args)[0])
 
-    # input_shape_combine_region does not work under Windows, we have
-    # to pass all events to the treeview. In case it does work, this handlers
-    # will never be called.
-    __gsignals__: GSignals = dict.fromkeys(
-        [
-            "button-press-event",
-            "button-release-event",
-            "motion-notify-event",
-            "scroll-event",
-            "enter-notify-event",
-            "leave-notify-event",
-        ],
-        "override",
-    )
+    # TODO GTK4: replace with Gtk EventController stuff
 
     __empty_region = cairo.Region(cairo.RectangleInt())
 
@@ -60,47 +47,47 @@ class TreeViewHints(Gtk.Window):
         except AttributeError:
             pass
 
-        super().__init__(type=Gtk.WindowType.POPUP)
-        # set the type hint so the wayland backend maps it as a subsurface
-        # which supports relative positioning
-        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
+        super().__init__()
         self.__clabel = Gtk.Label()
         self.__clabel.show()
-        self.__clabel.set_alignment(0, 0.5)
+        self.__clabel.set_valign(0.5)
         self.__clabel.set_ellipsize(Pango.EllipsizeMode.NONE)
 
-        screen = self.get_screen()
-        rgba = screen.get_rgba_visual()
-        if rgba is not None:
-            self.set_visual(rgba)
+        # screen = self.get_screen()
+        # rgba = screen.get_rgba_visual()
+        # if rgba is not None:
+        #     self.set_visual(rgba)
 
         self.__label = label = self._MinLabel()
-        label.set_alignment(0, 0.5)
+        label.set_valign(0.5)
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
         label.show()
-        self.add(label)
+        self.set_child(label)
 
-        self.add_events(
-            Gdk.EventMask.BUTTON_MOTION_MASK
-            | Gdk.EventMask.BUTTON_PRESS_MASK
-            | Gdk.EventMask.BUTTON_RELEASE_MASK
-            | Gdk.EventMask.KEY_PRESS_MASK
-            | Gdk.EventMask.KEY_RELEASE_MASK
-            | Gdk.EventMask.ENTER_NOTIFY_MASK
-            | Gdk.EventMask.LEAVE_NOTIFY_MASK
-            | Gdk.EventMask.SCROLL_MASK
-            | Gdk.EventMask.POINTER_MOTION_MASK
-        )
+        # TODO GTK4: EventController?
+        # self.add_events(
+        #     Gdk.EventMask.BUTTON_MOTION_MASK
+        #     | Gdk.EventMask.BUTTON_PRESS_MASK
+        #     | Gdk.EventMask.BUTTON_RELEASE_MASK
+        #     | Gdk.EventMask.KEY_PRESS_MASK
+        #     | Gdk.EventMask.KEY_RELEASE_MASK
+        #     | Gdk.EventMask.ENTER_NOTIFY_MASK
+        #     | Gdk.EventMask.LEAVE_NOTIFY_MASK
+        #     | Gdk.EventMask.SCROLL_MASK
+        #     | Gdk.EventMask.POINTER_MOTION_MASK
+        # )
 
         context = self.get_style_context()
         context.add_class("tooltip")
         context.add_class("ql-tooltip")
 
-        self.set_accept_focus(False)
+        self.set_can_focus(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
 
-        self.connect("leave-notify-event", self.__undisplay)
+        controller = Gtk.EventControllerMotion()
+        controller.connect("leave", self.__undisplay)
+        self.add_controller(controller)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -124,20 +111,26 @@ class TreeViewHints(Gtk.Window):
 
         # somehow this doesn't apply if we set it on the window, only
         # if set for the screen. gets reverted again in disconnect_view()
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
             style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
 
+        motion_controller = Gtk.EventControllerMotion()
+        scroll_controller = Gtk.EventControllerScroll()
+        key_controller = Gtk.EventControllerKey()
         self.__handlers[view] = [
-            view.connect("motion-notify-event", self.__motion),
-            view.connect("leave-notify-event", self.__motion),
-            view.connect("scroll-event", self.__undisplay),
-            view.connect("key-press-event", self.__undisplay),
+            motion_controller.connect("motion", self.__motion),
+            motion_controller.connect("leave", self.__motion),
+            scroll_controller.connect("scroll", self.__undisplay),
+            key_controller.connect("key-pressed", self.__undisplay),
             view.connect("unmap", self.__undisplay),
             view.connect("destroy", self.disconnect_view),
         ]
+        self.add_controller(motion_controller)
+        self.add_controller(scroll_controller)
+        self.add_controller(key_controller)
 
     def disconnect_view(self, view):
         try:
@@ -280,9 +273,17 @@ class TreeViewHints(Gtk.Window):
         else:
             extra_xpad = 0
 
-        label.set_padding(render_xpad + extra_xpad, 0)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(render_xpad + extra_xpad)
+        label.set_margin_end(render_xpad + extra_xpad)
+        label.set_margin_top(0)
+        label.set_margin_bottom(0)
         set_text(clabel)
-        clabel.set_padding(render_xpad, 0)
+        # GTK4: set_padding() removed, use margins
+        clabel.set_margin_start(render_xpad)
+        clabel.set_margin_end(render_xpad)
+        clabel.set_margin_top(0)
+        clabel.set_margin_bottom(0)
         label_width = clabel.get_layout().get_pixel_size()[0]
         label_width += clabel.get_layout_offsets()[0] or 0
         # layout offset includes the left padding, so add one more
@@ -403,7 +404,7 @@ class TreeViewHints(Gtk.Window):
             fake_event = Gdk.Event.new(Gdk.EventType.LEAVE_NOTIFY)
             fake_event.any.window = parent.get_window()
             struct = fake_event.crossing
-            struct.time = Gtk.get_current_event_time()
+            struct.time = GLib.CURRENT_TIME
             ok, state = Gtk.get_current_event_state()
             if ok:
                 struct.state = state
@@ -646,7 +647,10 @@ class BaseView(Gtk.TreeView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("key-press-event", self.__key_pressed)
+        event_controller = Gtk.EventControllerKey()
+        event_controller.connect("key-pressed", self.__key_pressed)
+        self.add_controller(event_controller)
+
         self._setup_selection_signal()
 
     def _setup_selection_signal(self):
@@ -657,12 +661,12 @@ class BaseView(Gtk.TreeView):
         # a row.
 
         self._sel_ignore_next = False
-        self._sel_ignore_time = -1
+        self._sel_should_ignore = False
 
         def on_selection_changed(selection):
-            if self._sel_ignore_time != Gtk.get_current_event_time():
+            if not self._sel_should_ignore:
                 self.emit("selection-changed", selection)
-            self._sel_ignore_time = -1
+            self._sel_should_ignore = False
 
         id_ = self.get_selection().connect("changed", on_selection_changed)
 
@@ -676,19 +680,33 @@ class BaseView(Gtk.TreeView):
 
         self.connect_after("row-activated", on_row_activated)
 
-        def on_button_release_event(self, event):
+        def on_button_release_event(gesture, n_press, x, y):
             if self._sel_ignore_next:
-                self._sel_ignore_time = Gtk.get_current_event_time()
+                self._sel_should_ignore = True
             self._sel_ignore_next = False
 
-        self.connect("button-release-event", on_button_release_event)
+        controller = Gtk.GestureClick()
+        controller.connect("released", on_button_release_event)
+        self.add_controller(controller)
 
     def do_key_press_event(self, event):
         if is_accel(event, "space", "KP_Space"):
             return False
         return Gtk.TreeView.do_key_press_event(self, event)
 
-    def __key_pressed(self, view, event):
+    def __key_pressed(self, controller, keyval, keycode, state):
+        # GTK4: EventControllerKey.key-pressed has different signature
+        # Create event-like object for compatibility
+        class KeyEvent:
+            def __init__(self, keyval, keycode, state):
+                self.type = Gdk.EventType.KEY_PRESS
+                self.keyval = keyval
+                self.keycode = keycode
+                self.state = state
+            def get_state(self):
+                return self.state
+
+        event = KeyEvent(keyval, keycode, state)
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
@@ -901,7 +919,9 @@ class DragIconTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("drag-begin", self.__begin)
+        controller = Gtk.DragSource()
+        controller.connect("drag-begin", self.__begin)
+        self.add_controller(controller)
 
     def __begin(self, view, drag_ctx):
         model, paths = view.get_selection().get_selected_rows()
@@ -993,24 +1013,31 @@ class MultiDragTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("button-press-event", self.__button_press)
-        self.connect("button-release-event", self.__button_release)
+        controller = Gtk.GestureClick()
+        controller.connect("pressed", self.__button_press)
+        controller.connect("released", self.__button_release)
+        self.add_controller(controller)
         self.__pending_action = None
 
-    def __button_press(self, view, event):
-        if event.button == Gdk.BUTTON_PRIMARY:
-            return self.__block_selection(event)
+    def __button_press(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        if button == Gdk.BUTTON_PRIMARY:
+            return self.__block_selection(gesture, x, y)
         return None
 
-    def __block_selection(self, event):
-        x, y = map(int, [event.x, event.y])
+    def __block_selection(self, gesture, x, y):
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
             return True
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
-        mod_active = event.get_state() & (
+        # GTK4: get modifier state from gesture
+        event = gesture.get_last_event(gesture.get_current_sequence())
+        state = event.get_modifier_state() if event else 0
+        mod_active = state & (
             get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK
         )
 
@@ -1022,7 +1049,8 @@ class MultiDragTreeView(BaseView):
             selection.set_select_function(lambda *args: True, None)
         return None
 
-    def __button_release(self, view, event):
+    def __button_release(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.released signal has different signature
         if self.__pending_action:
             path, col, single_unselect = self.__pending_action
             selection = self.get_selection()
@@ -1039,15 +1067,20 @@ class RCMTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("button-press-event", self.__button_press)
+        controller = Gtk.GestureClick()
+        controller.connect("pressed", self.__button_press)
+        self.add_controller(controller)
 
-    def __button_press(self, view, event):
-        if event.triggers_context_menu():
-            return self.__check_popup(event)
+    def __button_press(self, gesture, n_press, x, y):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        # GTK4: Right click is secondary button, used for context menu
+        if button == Gdk.BUTTON_SECONDARY:
+            return self.__check_popup(x, y)
         return None
 
-    def __check_popup(self, event):
-        x, y = map(int, [event.x, event.y])
+    def __check_popup(self, x, y):
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
@@ -1088,14 +1121,23 @@ class RCMTreeView(BaseView):
         else:
             pos_func = None
 
-        # force attach the menu to the view
-        attached_widget = menu.get_attach_widget()
-        if attached_widget != self:
-            if attached_widget is not None:
-                menu.detach()
-            menu.attach_to_widget(self, None)
-
-        menu_popup(menu, None, None, pos_func, None, button, time)
+        # GTK4: PopoverMenu uses set_parent() instead of attach_to_widget()
+        if isinstance(menu, Gtk.PopoverMenu):
+            current_parent = menu.get_parent()
+            if current_parent != self:
+                if current_parent is not None:
+                    menu.unparent()
+                menu.set_parent(self)
+            # GTK4: PopoverMenus position automatically, ignore pos_func
+            menu_popup(menu, None, None, None, None, button, time)
+        else:
+            # GTK3 fallback
+            attached_widget = menu.get_attach_widget()
+            if attached_widget != self:
+                if attached_widget is not None:
+                    menu.detach()
+                menu.attach_to_widget(self, None)
+            menu_popup(menu, None, None, pos_func, None, button, time)
         return True
 
     def __popup_position(self, menu, *args):
@@ -1112,7 +1154,8 @@ class RCMTreeView(BaseView):
         x, y = self.get_window().get_origin()[1:]
         x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
 
-        menu.realize()
+        # GTK4: Don't call realize() - causes crashes, PopoverMenus don't use this anyway
+        # menu.realize()
         ma = menu.get_allocation()
         menu_y = rect.height + y
         if self.get_direction() == Gtk.TextDirection.LTR:
@@ -1260,7 +1303,6 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         GObject.Object.__init__(self, **kwargs)
 
         label = _TreeViewColumnLabel(label=title)
-        label.set_padding(1, 1)
         label.show()
         self.set_widget(label)
 
@@ -1314,11 +1356,14 @@ class TreeViewColumnButton(TreeViewColumn):
         del widget.__realize
         button = widget.get_ancestor(Gtk.Button)
         if button:
-            button.connect("button-press-event", self.button_press_event)
+            controller = Gtk.GestureClick()
+            controller.connect("pressed", self.button_press_event)
+            button.add_controller(controller)
             button.connect("popup-menu", self.popup_menu)
 
     def button_press_event(self, widget, event):
-        return self.emit("button-press-event", event)
+        # TODO GTK4: fix
+        return self.get_controller().emit("button-press-event", event)
 
     def popup_menu(self, widget):
         return self.emit("popup-menu")

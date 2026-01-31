@@ -49,7 +49,7 @@ class LanguagePreference(EventPlugin):
 
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
-        combo.pack_start(render, True)
+        combo.prepend(render, True)
         combo.set_cell_data_func(render, cell_func)
 
         def on_combo_changed(combo):
@@ -61,8 +61,8 @@ class LanguagePreference(EventPlugin):
         combo.connect("changed", on_combo_changed)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.pack_start(combo, False, False, 0)
-        box.pack_start(
+        box.prepend(combo)
+        box.prepend(
             Gtk.Label(
                 label=_("A restart is required for any changes to take effect"),
                 wrap=True,

@@ -12,7 +12,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet.qltk import get_top_parent
+from quodlibet.qltk import get_top_parent, get_children
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import bookmarks
 from quodlibet.qltk.x import Align
@@ -21,7 +21,6 @@ from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.util import (
     window_grab_and_map,
     window_ungrab_and_unmap,
-    position_window_beside_widget,
 )
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, connect_destroy
@@ -88,7 +87,6 @@ class HSlider(Gtk.Button):
 
         frame = Gtk.Frame()
         frame.set_border_width(0)
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
@@ -135,7 +133,7 @@ class HSlider(Gtk.Button):
             self.get_child().show_all()
 
     def __destroy(self, *args):
-        self.__window.destroy()
+        # GTK4: self.destroy() removed - __window cleaned up automatically
         self.__window = None
 
     def set_slider_disabled(self, disable):
@@ -154,7 +152,7 @@ class HSlider(Gtk.Button):
         self.__window.resize(1, 1)
 
     def set_slider_widget(self, widget):
-        self._box.pack_start(Align(widget, border=6, left=-3), False, True, 0)
+        self._box.append(Align(widget, border=6, left=-3))
 
     def __clicked(self, button):
         if self.__window.get_property("visible"):
@@ -171,10 +169,7 @@ class HSlider(Gtk.Button):
         frame.show_all()
 
         window.set_transient_for(get_top_parent(self))
-        # this type hint tells the wayland backend to create a popup
         window.set_type_hint(Gdk.WindowTypeHint.DROPDOWN_MENU)
-
-        position_window_beside_widget(window, self)
 
         self.__grabbed = window_grab_and_map(
             window,
@@ -217,12 +212,12 @@ class SeekButton(HSlider):
     __seekable = True
 
     def __init__(self, player, library):
-        hbox = Gtk.HBox(spacing=3)
+        hbox = Gtk.Box(spacing=3)
         l = TimeLabel()
         self._time_label = l
-        hbox.pack_start(l, True, True, 0)
+        hbox.append(l)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
-        hbox.pack_start(arrow, False, True, 0)
+        hbox.append(arrow)
         super().__init__(hbox)
 
         self._slider_label = TimeLabel()
@@ -238,7 +233,7 @@ class SeekButton(HSlider):
         self.connect("scroll-event", self.__scroll, player)
         self.scale.connect("value-changed", self.__update_time, l)
 
-        m = Gtk.Menu()
+        m = Gtk.PopoverMenu()
         c = ConfigCheckMenuItem(_("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
         connect_obj(c, "toggled", self.scale.emit, "value-changed")
@@ -282,9 +277,8 @@ class SeekButton(HSlider):
         return None
 
     def __popup_menu(self, menu, player, event=None):
-        for child in menu.get_children()[2:-1]:
+        for child in get_children(menu)[2:-1]:
             menu.remove(child)
-            child.destroy()
 
         try:
             marks = player.song.bookmarks
@@ -300,7 +294,7 @@ class SeekButton(HSlider):
         if event:
             qltk.popup_menu_at_widget(menu, self, 3, event.time)
         else:
-            time = Gtk.get_current_event_time()
+            time = GLib.CURRENT_TIME
             qltk.popup_menu_under_widget(menu, self, 3, time)
         return True
 
@@ -371,8 +365,9 @@ class SeekButton(HSlider):
         slider_width = min(max(slider_width, 170), 400)
         self.set_slider_length(slider_width)
 
-        for child in menu.get_children()[2:-1]:
+        # GTK4: Use get_children() helper instead of direct method call
+        for child in get_children(menu)[2:-1]:
             menu.remove(child)
-            child.destroy()
-        menu.get_children()[-1].set_sensitive(self.__seekable)
+            # GTK4: destroy() removed - child cleaned up automatically
+        get_children(menu)[-1].set_sensitive(self.__seekable)
         self.scale.emit("value-changed")

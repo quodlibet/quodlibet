@@ -11,7 +11,7 @@ import shutil
 import unicodedata
 from pathlib import Path
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GLib
 from senf import fsn2text
 
 from quodlibet import _
@@ -25,7 +25,7 @@ from quodlibet.pattern import FileFromPattern
 from quodlibet.plugins import PM
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.views import HintedTreeView
@@ -127,11 +127,15 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             # query_file is empty
             return self._no_queries_frame()
 
-        main_vbox = Gtk.VBox(spacing=self.spacing_main)
+        main_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_main
+        )
         self.main_vbox = main_vbox
 
         # Saved search selection frame
-        saved_search_vbox = Gtk.VBox(spacing=self.spacing_large)
+        saved_search_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
         self.saved_search_vbox = saved_search_vbox
         for query_name, _query in self.queries.items():
             query_config = self.CONFIG_QUERY_PREFIX + query_name
@@ -139,14 +143,14 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                 query_name, PM.CONFIG_SECTION, self._config_key(query_config)
             )
             check_button.set_active(self.config_get_bool(query_config))
-            saved_search_vbox.pack_start(check_button, False, False, 0)
+            saved_search_vbox.append(check_button)
         saved_search_scroll = self._expandable_scroll(min_h=0, max_h=300)
         saved_search_scroll.add(saved_search_vbox)
         frame = qltk.Frame(
             label=_("Synchronize the following saved searches:"),
             child=saved_search_scroll,
         )
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.append(frame)
 
         # Destination path entry field
         destination_entry = Gtk.Entry(
@@ -161,9 +165,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         destination_button.connect("clicked", self._select_destination_path)
 
         # Destination path hbox
-        destination_path_hbox = Gtk.HBox(spacing=self.spacing_small)
-        destination_path_hbox.pack_start(destination_entry, True, True, 0)
-        destination_path_hbox.pack_start(destination_button, False, False, 0)
+        destination_path_hbox = Gtk.Box(spacing=self.spacing_small)
+        destination_path_hbox.append(destination_entry)
+        destination_path_hbox.append(destination_button)
 
         # Destination path information
         destination_warn_label = self._label_with_icon(
@@ -184,12 +188,14 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Destination path frame
-        destination_vbox = Gtk.VBox(spacing=self.spacing_large)
-        destination_vbox.pack_start(destination_path_hbox, False, False, 0)
-        destination_vbox.pack_start(destination_warn_label, False, False, 0)
-        destination_vbox.pack_start(destination_info_label, False, False, 0)
+        destination_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
+        destination_vbox.append(destination_path_hbox)
+        destination_vbox.append(destination_warn_label)
+        destination_vbox.append(destination_info_label)
         frame = qltk.Frame(label=_("Destination path:"), child=destination_vbox)
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.append(frame)
 
         # Export pattern frame
         export_pattern_combo = ComboBoxEntrySave(
@@ -212,7 +218,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         export_pattern_entry.connect("changed", self._export_pattern_changed)
         self.export_pattern_entry = export_pattern_entry
         frame = qltk.Frame(label=_("Export pattern:"), child=export_pattern_combo)
-        main_vbox.pack_start(frame, False, False, 0)
+        main_vbox.prepend(frame)
 
         # Start preview button
         preview_start_button = qltk.Button(
@@ -236,7 +242,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.model = Gtk.ListStore(*column_types)
         self.details_tree = details_tree = HintedTreeView(model=self.model)
         details_scroll = self._expandable_scroll()
-        details_scroll.set_shadow_type(Gtk.ShadowType.IN)
         details_scroll.add(details_tree)
         self.renders = {}
 
@@ -298,15 +303,17 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         )
 
         # Section for previewing exported files
-        preview_vbox = Gtk.VBox(spacing=self.spacing_large)
-        preview_vbox.pack_start(preview_start_button, False, False, 0)
-        preview_vbox.pack_start(preview_stop_button, False, False, 0)
-        preview_vbox.pack_start(details_scroll, True, True, 0)
-        preview_vbox.pack_start(self.status_operation, False, False, 0)
-        preview_vbox.pack_start(self.status_progress, False, False, 0)
-        preview_vbox.pack_start(self.status_duplicates, False, False, 0)
-        preview_vbox.pack_start(self.status_deletions, False, False, 0)
-        main_vbox.pack_start(preview_vbox, True, True, 0)
+        preview_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
+        preview_vbox.append(preview_start_button)
+        preview_vbox.append(preview_stop_button)
+        preview_vbox.append(details_scroll)
+        preview_vbox.append(self.status_operation)
+        preview_vbox.append(self.status_progress)
+        preview_vbox.append(self.status_duplicates)
+        preview_vbox.append(self.status_deletions)
+        main_vbox.append(preview_vbox)
 
         # Start sync button
         sync_start_button = qltk.Button(
@@ -327,10 +334,12 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.sync_stop_button = sync_stop_button
 
         # Section for the sync buttons
-        sync_vbox = Gtk.VBox(spacing=self.spacing_large)
-        sync_vbox.pack_start(sync_start_button, False, False, 0)
-        sync_vbox.pack_start(sync_stop_button, False, False, 0)
-        main_vbox.pack_start(sync_vbox, False, False, 0)
+        sync_vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing_large
+        )
+        sync_vbox.append(sync_start_button)
+        sync_vbox.append(sync_stop_button)
+        main_vbox.append(sync_vbox)
 
         return main_vbox
 
@@ -367,15 +376,15 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         :param icon_name: An icon name or None.
         :return: A HBox containing an icon followed by a label.
         """
-        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.BUTTON)
+        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.LARGE)
         label = Gtk.Label(label=text, xalign=0.0, yalign=0.5, wrap=True)
 
-        hbox = Gtk.HBox(spacing=self.spacing_large)
+        hbox = Gtk.Box(spacing=self.spacing_large)
         if not visible:
             hbox.set_visible(False)
             hbox.set_no_show_all(True)
-        hbox.pack_start(image, False, False, 0)
-        hbox.pack_start(label, True, True, 0)
+        hbox.append(image)
+        hbox.append(label)
 
         return hbox
 
@@ -406,7 +415,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if sort:
             tvc.set_sort_column_id(sort)
         tvc.set_cell_data_func(render, cdf)
-        tvc.pack_start(render, True)
+        tvc.prepend(render, True)
         self.renders[tvc] = render
         return tvc
 
@@ -449,7 +458,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         response_path = dialog.get_filename()
 
         # Close the dialog and save the selected path
-        dialog.destroy()
+        dialog.close()
         if response == Gtk.ResponseType.OK and response_path != destination_entry_text:
             self.destination_entry.set_text(response_path)
 
@@ -694,8 +703,11 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         """
         Prevent the application from becoming unresponsive.
         """
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)
 
     def _start_preview(self, button):
         """
@@ -828,7 +840,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                     counter,
                 ).format(count=counter)
             )
-            for child in self.status_duplicates.get_children():
+            for child in get_children(self.status_duplicates):
                 child.set_visible(True)
             self.status_duplicates.set_visible(True)
 
@@ -839,7 +851,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                     count=counter
                 )
             )
-            for child in self.status_deletions.get_children():
+            for child in get_children(self.status_deletions):
                 child.set_visible(True)
             self.status_deletions.set_visible(True)
 

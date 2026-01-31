@@ -21,7 +21,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.information import Information
@@ -89,7 +89,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box = self.__create_box()
         self.show_all()
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
         self._ids = [
@@ -106,12 +106,18 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         del self._ids
 
     def pack(self, songpane):
-        self._main_box.pack1(self, True, False)
-        self._rh_box = rhbox = Gtk.VBox(spacing=6)
+        # GTK4: pack1() → set_start_child()
+        self._main_box.set_start_child(self)
+        self._main_box.set_resize_start_child(True)
+        self._main_box.set_shrink_start_child(False)
+        self._rh_box = rhbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         align = Align(self._sb_box, left=0, right=6, top=0)
-        rhbox.pack_start(align, False, True, 0)
-        rhbox.pack_start(songpane, True, True, 0)
-        self._main_box.pack2(rhbox, True, False)
+        rhbox.append(align)
+        rhbox.append(songpane)
+        # GTK4: pack2() → set_end_child()
+        self._main_box.set_end_child(rhbox)
+        self._main_box.set_resize_end_child(True)
+        self._main_box.set_shrink_end_child(False)
         rhbox.show()
         align.show_all()
         return self._main_box
@@ -203,15 +209,14 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __embed_in_scrolledwin(self, view):
         swin = ScrolledWindow()
-        swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.add(view)
-        self.pack_start(swin, True, True, 0)
+        self.append(swin)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.NORMAL)
         new_pl.connect("clicked", self.__new_playlist, library)
-        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
+        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.NORMAL)
         import_pl.connect("clicked", self.__import, library)
 
         fb = Gtk.FlowBox()
@@ -228,10 +233,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2 = Gtk.FlowBox()
         fb2.insert(pref, 0)
 
-        hb = Gtk.HBox()
-        hb.pack_start(fb, True, True, 3)
-        hb.pack_end(fb2, False, False, 0)
-        self.pack_start(hb, False, False, 0)
+        hb = Gtk.Box()
+        hb.prepend(fb)
+        hb.append(fb2)
+        self.append(hb)
 
     def __create_playlists_view(self, render):
         view = RCMHintedTreeView()
@@ -247,25 +252,26 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         col.set_cell_data_func(render, self.cell_data)
         view.append_column(col)
         view.set_model(self._lists)
-        view.set_rules_hint(True)
         view.set_headers_visible(False)
         return view
 
     def __configure_dnd(self, view):
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
+            # ("text/uri-list", 0, DND_URI_LIST),
+            # ("text/x-moz-url", 0, DND_MOZ_URL),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        view.enable_model_drag_source(
-            Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY
-        )
-        view.connect("drag-data-received", self.__drag_data_received)
-        view.connect("drag-data-get", self._drag_data_get)
-        view.connect("drag-motion", self.__drag_motion)
-        view.connect("drag-leave", self.__drag_leave)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
+        # view.enable_model_drag_source(
+        # Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY
+        # )
+        # view.connect("drag-data-received", self.__drag_data_received)
+        # view.connect("drag-data-get", self._drag_data_get)
+        # view.connect("drag-motion", self.__drag_motion)
+        # view.connect("drag-leave", self.__drag_leave)
 
     def __connect_signals(self, view):
         view.connect("row-activated", lambda *x: self.songs_activated())
@@ -275,7 +281,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
-        render.set_padding(3, 3)
+        # Cell renderers use xpad/ypad properties, not margins
+        render.props.xpad = 3
+        render.props.ypad = 3
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.connect("editing-started", self.__start_editing)
         render.connect("edited", self.__edited)
@@ -400,79 +408,81 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
-        view.emit_stop_by_name("drag-data-received")
-        model = view.get_model()
-        if tid == DND_QL:
-            filenames = qltk.selection_get_filenames(sel)
-            songs = list(filter(None, [self.songs_lib.get(f) for f in filenames]))
-            # Used in conjunction with the prompt for DnD to decide whether to
-            # perform various updates/refreshes.
-            was_modified = True
-            if not songs:
-                Gtk.drag_finish(ctx, False, False, etime)
-                return
-
-            try:
-                path, pos = view.get_dest_row_at_pos(x, y)
-            except TypeError:
-                # e.g. the target is the empty area after the list of playlists?
-                # TODO: Maybe prompt for this too? Though getting a new playlist is
-                # less intrusive than modifying an existing playlist.
-                # XXX: There does not seem to be an empty area anymore (changed
-                # by one of these pull-requests: #3751 #3974 or the newish browser
-                # code?).
-                playlist = self.pl_lib.create_from_songs(songs)
-                GLib.idle_add(self._select_playlist, playlist)
-            else:
-                playlist = model[path][0]
-                # Call a helper-function that adds the tracks to the playlist if the
-                # user accepts the prompt.
-                was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
-
-            Gtk.drag_finish(ctx, True, False, etime)
-            # Cause a refresh to the dragged-to playlist if it is selected
-            # so that the dragged (duplicate) track(s) appears
-            if playlist is self._selected_playlist() and was_modified:
-                model, plist_iter = self.__selected_playlists()
-                songlist = qltk.get_top_parent(self).songlist
-                self.activate(resort=not songlist.is_sorted())
-        else:
-            if tid == DND_URI_LIST:
-                uri = sel.get_uris()[0]
-                name = os.path.basename(uri)
-            elif tid == DND_MOZ_URL:
-                data = sel.get_data()
-                uri, name = data.decode("utf16", "replace").split("\n")
-            else:
-                Gtk.drag_finish(ctx, False, False, etime)
-                return
-            name = _name_for(name or os.path.basename(uri))
-            try:
-                sock = urlopen(uri)
-                uri = uri.lower()
-                if uri.endswith(".pls"):
-                    playlist = parse_pls(
-                        sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
-                    )
-                elif uri.endswith((".m3u", ".m3u8")):
-                    playlist = parse_m3u(
-                        sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
-                    )
-                else:
-                    raise OSError
-                self.songs_lib.add(playlist.songs)
-                # TODO: change to use playlist library too?
-                Gtk.drag_finish(ctx, True, False, etime)
-            except OSError:
-                Gtk.drag_finish(ctx, False, False, etime)
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self),
-                    _("Unable to import playlist"),
-                    _(
-                        "Quod Libet can only import playlists in the M3U/M3U8 "
-                        "and PLS formats."
-                    ),
-                ).run()
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        pass
+        # view.emit_stop_by_name("drag-data-received")
+        # model = view.get_model()
+        # if tid == DND_QL:
+        #     filenames = qltk.selection_get_filenames(sel)
+        #     songs = list(filter(None, [self.songs_lib.get(f) for f in filenames]))
+        #     # Used in conjunction with the prompt for DnD to decide whether to
+        #     # perform various updates/refreshes.
+        #     was_modified = True
+        #     if not songs:
+        #         Gtk.drag_finish(ctx, False, False, etime)
+        #         return
+        #
+        #     try:
+        #         path, pos = view.get_dest_row_at_pos(x, y)
+        #     except TypeError:
+        #         # e.g. the target is the empty area after the list of playlists?
+        #         # TODO: Maybe prompt for this too? Though getting a new playlist is
+        #         # less intrusive than modifying an existing playlist.
+        #         # XXX: There does not seem to be an empty area anymore (changed
+        #         # by one of these pull-requests: #3751 #3974 or the newish browser
+        #         # code?).
+        #         playlist = self.pl_lib.create_from_songs(songs)
+        #         GLib.idle_add(self._select_playlist, playlist)
+        #     else:
+        #         playlist = model[path][0]
+        #         # Call a helper-function that adds the tracks to the playlist if the
+        #         # user accepts the prompt.
+        #         was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
+        #
+        #     Gtk.drag_finish(ctx, True, False, etime)
+        #     # Cause a refresh to the dragged-to playlist if it is selected
+        #     # so that the dragged (duplicate) track(s) appears
+        #     if playlist is self._selected_playlist() and was_modified:
+        #         model, plist_iter = self.__selected_playlists()
+        #         songlist = qltk.get_top_parent(self).songlist
+        #         self.activate(resort=not songlist.is_sorted())
+        # else:
+        #     if tid == DND_URI_LIST:
+        #     uri = sel.get_uris()[0]
+        #     name = os.path.basename(uri)
+        #     elif tid == DND_MOZ_URL:
+        #     data = sel.get_data()
+        #     uri, name = data.decode("utf16", "replace").split("\n")
+        #     else:
+        #     Gtk.drag_finish(ctx, False, False, etime)
+        #     return
+        #     name = _name_for(name or os.path.basename(uri))
+        #     try:
+        #     sock = urlopen(uri)
+        #     uri = uri.lower()
+        #     if uri.endswith(".pls"):
+        #     playlist = parse_pls(
+        #     sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+        #     )
+        #     elif uri.endswith((".m3u", ".m3u8")):
+        #     playlist = parse_m3u(
+        #     sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+        #     )
+        #     else:
+        #     raise OSError
+        #     self.songs_lib.add(playlist.songs)
+        # TODO: change to use playlist library too?
+        #     Gtk.drag_finish(ctx, True, False, etime)
+        #     except OSError:
+        #     Gtk.drag_finish(ctx, False, False, etime)
+        #     qltk.ErrorMessage(
+        #         qltk.get_top_parent(self),
+        #         _("Unable to import playlist"),
+        #         _(
+        #             "Quod Libet can only import playlists in the M3U/M3U8 "
+        #             "and PLS formats."
+        #         ),
+        #     ).run()
 
     def _drag_data_get(self, view, ctx, sel, tid, etime):
         model, iters = self.__view.get_selection().get_selected_rows()
@@ -528,7 +538,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist = model[itr][0]
         PLAYLIST_HANDLER.populate_menu(menu, library, self, [playlist])
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def _start_rename(self, path):
         view = self.__view
@@ -702,11 +712,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return self.__view.get_selection().get_selected()
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, browser):
         super().__init__()
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
         menu.append(pref_item)
@@ -715,7 +725,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.prepend(button)

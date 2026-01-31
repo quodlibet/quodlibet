@@ -15,7 +15,7 @@ from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
 from quodlibet.util.collection import Playlist
 
 
-class PlaylistMenu(Gtk.Menu):
+class PlaylistMenu(Gtk.PopoverMenu):
     def __init__(self, songs, pl_lib: PlaylistLibrary):
         super().__init__()
         self.pl_lib = pl_lib

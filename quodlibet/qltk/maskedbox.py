@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GLib
 from senf import fsn2text
 
 from quodlibet import ngettext, _
@@ -28,7 +28,7 @@ class ConfirmMaskedRemoval(qltk.Message):
         self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE, Gtk.ResponseType.YES)
 
 
-class MaskedBox(Gtk.HBox):
+class MaskedBox(Gtk.Box):
     def __init__(self, library):
         super().__init__(spacing=6)
 
@@ -38,7 +38,7 @@ class MaskedBox(Gtk.HBox):
         view.set_headers_visible(False)
         self.view = view
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         unhide_item = qltk.MenuItem(_("Unhide"), Icons.LIST_ADD)
         connect_obj(unhide_item, "activate", self.__unhide, view, library)
         menu.append(unhide_item)
@@ -47,14 +47,12 @@ class MaskedBox(Gtk.HBox):
         connect_obj(remove_item, "activate", self.__remove, view, library)
         menu.append(remove_item)
 
-        menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
-        sw.set_size_request(-1, max(sw.size_request().height, 80))
+        sw.set_child(view)
+        sw.set_size_request(-1, 80)
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
@@ -71,6 +69,7 @@ class MaskedBox(Gtk.HBox):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_cell_data_func(render, cdf)
 
@@ -92,12 +91,12 @@ class MaskedBox(Gtk.HBox):
 
         connect_obj(remove, "clicked", self.__remove, view, library)
 
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(unhide, False, True, 0)
-        vbox.pack_start(remove, False, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.append(unhide)
+        vbox.append(remove)
 
-        self.pack_start(sw, True, True, 0)
-        self.pack_start(vbox, False, True, 0)
+        self.append(sw)
+        self.append(vbox)
 
         for path in library.masked_mount_points:
             model.append(row=[path])
@@ -105,11 +104,8 @@ class MaskedBox(Gtk.HBox):
         if not len(model):
             self.set_sensitive(False)
 
-        for child in self.get_children():
-            child.show_all()
-
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __unhide(self, view, library):
         selection = view.get_selection()

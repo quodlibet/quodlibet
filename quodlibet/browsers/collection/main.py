@@ -90,8 +90,20 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "collectionbrowser_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -150,7 +162,6 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             self._init_model(library)
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = CollectionView()
         view.set_headers_visible(False)
         model_sort = CollectionSortModel(model=self.__model)
@@ -223,18 +234,19 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if view.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)
         column.set_cell_data_func(imgrender, cell_data_pb)
         view.append_column(column)
 
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL))
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
@@ -245,11 +257,11 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
-        hbox.pack_start(search, True, True, 0)
-        hbox.pack_start(prefs, False, True, 0)
+        hbox.append(search)
+        hbox.append(prefs)
 
-        self.pack_start(Align(hbox, left=6, top=0), False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        self.append(Align(hbox, left=6, top=0))
+        self.append(sw)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = view.get_selection().connect("changed", self.__selection_changed)
@@ -257,15 +269,18 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         connect_obj(view, "popup-menu", self.__popup, view, library)
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            ("text/uri-list", 0, 2),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            # ("text/uri-list", 0, 2),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        view.connect("drag-data-get", self.__drag_data_get)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.drag_source_set(
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
+        # view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
         self.connect("key-press-event", self.__key_pressed, library.librarian)
@@ -324,7 +339,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __play(self, view, path, col):
         model = view.get_model()

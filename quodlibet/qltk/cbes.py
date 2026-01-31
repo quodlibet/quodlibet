@@ -31,33 +31,36 @@ class _KeyValueEditor(qltk.Window):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(Gtk.VBox(spacing=6))
+        self.add(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6))
 
-        t = Gtk.Table(n_rows=2, n_columns=3)
-        t.set_row_spacings(6)
-        t.set_col_spacing(0, 3)
-        t.set_col_spacing(1, 12)
+        t = Gtk.Grid()
+        t.set_row_spacing(6)
+        t.set_column_spacing(12)
 
         l = Gtk.Label(label=_("_Name:"))
         name = entry.UndoEntry()
         l.set_mnemonic_widget(name)
         l.set_use_underline(True)
-        l.set_alignment(0.0, 0.5)
-        t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
-        t.attach(name, 1, 2, 0, 1)
+        l.set_xalign(0.0)
+        l.set_yalign(0.5)
+        t.attach(l, 0, 0, 1, 1)
+        name.set_hexpand(True)
+        t.attach(name, 1, 0, 1, 1)
 
         l = Gtk.Label(label=_("_Value:"))
         self.value = entry.ValidatingEntry(validator)
         l.set_mnemonic_widget(self.value)
         l.set_use_underline(True)
-        l.set_alignment(0.0, 0.5)
-        t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
-        t.attach(self.value, 1, 2, 1, 2)
+        l.set_xalign(0.0)
+        l.set_yalign(0.5)
+        t.attach(l, 0, 1, 1, 1)
+        self.value.set_hexpand(True)
+        t.attach(self.value, 1, 1, 1, 1)
         add = qltk.Button(_("_Add"), Icons.LIST_ADD)
         add.set_sensitive(False)
-        t.attach(add, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.FILL)
+        t.attach(add, 2, 1, 1, 1)
 
-        self.get_child().pack_start(t, False, True, 0)
+        self.get_child().prepend(t)
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str, str)
@@ -66,42 +69,45 @@ class _KeyValueEditor(qltk.Window):
         view = RCMHintedTreeView(model=self.model)
         view.set_headers_visible(False)
         view.set_reorderable(True)
-        view.set_rules_hint(True)
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
-        render.set_padding(3, 3)
+        # GTK4: set_padding() removed, use margins
+        render.set_margin_start(3)
+        render.set_margin_end(3)
+        render.set_margin_top(3)
+        render.set_margin_bottom(3)
         column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf, None)
         view.append_column(column)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
-        self.get_child().pack_start(sw, True, True, 3)
+        sw.set_child(view)
+        self.get_child().prepend(sw)
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(remove, "activate", self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
-        bbox.pack_start(rem_b, True, True, 0)
+        bbox.prepend(rem_b)
         self.use_header_bar()
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
-            bbox.pack_start(close, True, True, 0)
+            bbox.prepend(close)
         else:
             bbox.set_layout(Gtk.ButtonBoxStyle.START)
-        self.get_child().pack_start(bbox, False, True, 0)
+        self.get_child().append(bbox)
 
         selection = view.get_selection()
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
-        connect_obj(self.value, "activate", Gtk.Button.clicked, add)
+        # GTK4: Gtk.Button.clicked() as method removed, use emit() instead
+        self.value.connect("activate", lambda entry: add.emit("clicked"))
         self.value.connect("changed", self.__changed, [add])
         connect_obj(add, "clicked", self.__add, selection, name, self.value, self.model)
         selection.connect("changed", self.__set_text, name, self.value, rem_b)
@@ -109,7 +115,7 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(rem_b, "clicked", self.__remove, view)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         view.connect("key-press-event", self.__view_key_press)
-        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
 
         name.grab_focus()
         self.get_child().show_all()
@@ -123,7 +129,7 @@ class _KeyValueEditor(qltk.Window):
             self.__remove(view)
 
     def __popup(self, view, menu):
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, view):
         view.remove_selection()
@@ -231,13 +237,11 @@ class StandaloneEditor(_KeyValueEditor):
 def clone_css_classes(src, dest):
     """Makes dest have the same css classes as src"""
 
-    src_ctx = src.get_style_context()
-    dest_ctx = dest.get_style_context()
-
-    for class_ in dest_ctx.list_classes():
-        dest_ctx.remove_class(class_)
-    for class_ in src_ctx.list_classes():
-        dest_ctx.add_class(class_)
+    # GTK4: StyleContext.list_classes() removed - use widget methods directly
+    for class_ in dest.get_css_classes():
+        dest.remove_css_class(class_)
+    for class_ in src.get_css_classes():
+        dest.add_css_class(class_)
 
 
 class ComboBoxEntrySave(Gtk.ComboBox):
@@ -283,6 +287,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.add_attribute(render, "icon-name", 2)
 
         render = Gtk.CellRendererText()
+        # GTK4: ComboBox.prepend() removed - use pack_start() instead
         self.pack_start(render, True)
         self.add_attribute(render, "text", 1)
 
@@ -294,7 +299,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         old_entry = self.get_child()
         new_entry = entry.ValidatingEntry(validator)
         clone_css_classes(old_entry, new_entry)
-        old_entry.destroy()
+        # GTK4: destroy() removed - old_entry cleaned up automatically
         use_mono = config.getboolean("settings", "monospace_query")
         font = "font-family: monospace; " if use_mono else ""
         size = escape(config.gettext("settings", "query_font_size"))

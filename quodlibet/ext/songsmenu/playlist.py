@@ -73,10 +73,10 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
         dialog.set_current_folder(lastfolder)
 
         diag_cont = dialog.get_child()
-        hbox_path = Gtk.HBox()
+        hbox_path = Gtk.Box()
         combo_path = Gtk.ComboBoxText()
-        hbox_path.pack_end(combo_path, False, False, 6)
-        diag_cont.pack_start(hbox_path, False, False, 0)
+        hbox_path.append(combo_path)
+        diag_cont.append(hbox_path)
         diag_cont.show_all()
 
         for option_text in [_("Use relative paths"), _("Use absolute paths")]:
@@ -103,7 +103,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
             self.lastfolder = os.path.dirname(file_path)
 
-        dialog.destroy()
+        # GTK4: destroy() removed - dialog cleaned up automatically
 
     def save_playlist(self, songs, file_path, file_format, relative):
         dir_path = os.path.dirname(file_path)

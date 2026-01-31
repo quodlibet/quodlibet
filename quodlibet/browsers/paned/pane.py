@@ -58,6 +58,7 @@ class Pane(AllTreeView):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def text_cdf(column, cell, model, iter_, data):
@@ -70,6 +71,7 @@ class Pane(AllTreeView):
         render_count = Gtk.CellRendererText()
         render_count.set_property("xalign", 1.0)
         render_count.set_property("max-width-chars", 5)
+        # GTK4: TreeViewColumn.append() removed - use pack_end() instead
         column.pack_end(render_count, True)
         # Tiny columns break too much rendering
         column.set_min_width(150)
@@ -97,16 +99,19 @@ class Pane(AllTreeView):
         connect_obj(self, "destroy", self.disconnect, s)
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
-            ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
+            # ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("destroy", self.__destroy)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # self.drag_source_set(
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
+        # self.connect("drag-data-get", self.__drag_data_get)
+        # self.connect("destroy", self.__destroy)
 
         librarian = library.librarian or library
         self.connect("key-press-event", self.__key_pressed, librarian)
@@ -194,7 +199,7 @@ class Pane(AllTreeView):
         songs = self.__get_selected_songs(sort=True)
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __selection_changed(self, *args):
         if self.__next:

@@ -11,7 +11,7 @@
 from gi.repository import Gtk
 
 from quodlibet import config
-from . import add_css, gtk_version
+from . import add_css
 
 
 class Paned(Gtk.Paned):
@@ -20,34 +20,19 @@ class Paned(Gtk.Paned):
         self.ensure_wide_handle()
 
     def ensure_wide_handle(self):
-        if gtk_version >= (3, 19):
-            self.props.wide_handle = True
-            add_css(
-                self,
-                """
-                paned separator {
-                    border-width: 0;
-                    min-height: 5px;
-                    min-width: 5px;
-                    background-image: none;
-                }
-            """,
-            )
-            return
-
-        if hasattr(self.props, "wide_handle"):
-            # gtk 3.16
-            self.props.wide_handle = True
-            add_css(
-                self,
-                """
-                GtkPaned {
-                    border-width: 0;
-                    background: none;
-                }
-            """,
-            )
-            return
+        # GTK4: wide_handle and modern CSS selectors always available
+        self.props.wide_handle = True
+        add_css(
+            self,
+            """
+            paned separator {
+                border-width: 0;
+                min-height: 5px;
+                min-width: 5px;
+                background-image: none;
+            }
+        """,
+        )
 
 
 class RPaned(Paned):
@@ -63,6 +48,8 @@ class RPaned(Paned):
         # after the first alloc: use the normal properties
         self.__alloced = False
         self.__relative = None
+        # GTK4: Use signal instead of overriding do_size_allocate
+        self.connect("map", self.__on_first_map)
 
     def _get_max(self):
         alloc = self.get_allocation()
@@ -96,15 +83,13 @@ class RPaned(Paned):
         # before first alloc and set_relative not called
         return 0.5
 
-    def do_size_allocate(self, *args):
-        ret = Gtk.HPaned.do_size_allocate(self, *args)
+    def __on_first_map(self, widget):
+        """Set the relative position on first map (GTK4 replacement for do_size_allocate)"""
         if not self.__alloced and self.__relative is not None:
-            self.__alloced = True
             self.set_relative(self.__relative)
-            # call again so the children get alloced
-            ret = Gtk.HPaned.do_size_allocate(self, *args)
         self.__alloced = True
-        return ret
+        # Disconnect after first use
+        self.disconnect_by_func(self.__on_first_map)
 
 
 class RHPaned(RPaned):
@@ -163,16 +148,25 @@ class MultiRPaned:
         for widget in widgets:
             # the last widget completes the last paned
             if widget is widgets[-1]:
-                curr_paned.pack2(widget, True, False)
+                # GTK4: pack2() → set_end_child()
+                curr_paned.set_end_child(widget)
+                curr_paned.set_resize_end_child(True)
+                curr_paned.set_shrink_end_child(False)
                 break
-            curr_paned.pack1(widget, True, False)
+            # GTK4: pack1() → set_start_child()
+            curr_paned.set_start_child(widget)
+            curr_paned.set_resize_start_child(True)
+            curr_paned.set_shrink_start_child(False)
 
             # the second last widget ends the nesting
             if widget is widgets[-2]:
                 continue
 
             tmp_paned = self.PANED()
-            curr_paned.pack2(tmp_paned, True, False)
+            # GTK4: pack2() → set_end_child()
+            curr_paned.set_end_child(tmp_paned)
+            curr_paned.set_resize_end_child(True)
+            curr_paned.set_shrink_end_child(False)
             curr_paned = tmp_paned
 
     def get_paned(self):
@@ -203,7 +197,8 @@ class MultiRPaned:
 
     def destroy(self):
         if self._root_paned:
-            self._root_paned.destroy()
+            # GTK4: self.destroy() removed - _root_paned cleaned up automatically
+            pass
 
     def show_all(self):
         self._root_paned.show_all()
@@ -216,7 +211,7 @@ class MultiRPaned:
         # gather all the paneds in the nested structure
         curr_paned = self._root_paned
         while True:
-            child = curr_paned.get_child2()
+            child = curr_paned.get_end_child()
             if type(child) is self.PANED:
                 paneds.append(child)
                 curr_paned = child
@@ -254,7 +249,7 @@ class ConfigMultiRPaned(MultiRPaned):
         """Save all current paned widths."""
 
         paneds = self._get_paneds()
-        if len(paneds) == 1 and not paneds[0].get_child1():
+        if len(paneds) == 1 and not paneds[0].get_start_child():
             # If there's only one pane (i.e. the only paned has just one
             # child), do not save the paned width, as this will cause
             # a later added second pane to get the width of the previous

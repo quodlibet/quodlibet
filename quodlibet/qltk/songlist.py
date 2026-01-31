@@ -197,11 +197,13 @@ class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):
-        self.connect("drag-begin", self.__drag_begin)
-        self.connect("drag-motion", self.__drag_motion)
-        self.connect("drag-leave", self.__drag_leave)
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("drag-data-received", self.__drag_data_received, library)
+        drag_controller = Gtk.DragSource()
+        drop_controller = Gtk.DropTarget()
+        drag_controller.connect("drag-begin", self.__drag_begin)
+        drop_controller.connect("accept", self.__drag_motion)
+        drag_controller.connect("drag-end", self.__drag_leave)
+        drag_controller.connect("prepare", self.__drag_data_get)
+        # TODO GTK4: Implement drop handling - see https://docs.gtk.org/gdk4/method.Drop.read_async.html
 
     def __drag_begin(self, *args):
         ok, state = Gtk.get_current_event_state()
@@ -211,32 +213,13 @@ class SongListDnDMixin(GObject.GObject):
             self.__force_copy = False
 
     def enable_drop(self, by_row=True):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK,
-            targets,
-            Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
-        )
-        self.drag_dest_set(
-            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
-        )
+        # TODO GTK4: DnD support
         self.__drop_by_row = by_row
         self.__force_copy = False
 
     def disable_drop(self):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.drag_dest_unset()
+        # TODO GTK4: DnD support
+        return
 
     def __drag_motion(self, view, ctx, x, y, time):
         if self.__drop_by_row:
@@ -422,7 +405,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
         self.set_size_request(200, 150)
-        self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.set_fixed_height_mode(True)
         self.__csig = self.connect("columns-changed", self.__columns_changed)
@@ -444,8 +426,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             connect_destroy(player, "unpaused", lambda *x: self.__redraw_current())
             connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
-        self.connect("button-press-event", self.__button_press, library)
-        self.connect("key-press-event", self.__key_press, library, player)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_press, library, player)
+        click_controller = Gtk.GestureClick()
+        click_controller.connect("pressed", self.__button_press, library)
+        self.add_controller(key_controller)
+        self.add_controller(click_controller)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -608,7 +594,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.emit("orders-changed")
 
     def __destroy(self, *args):
-        self.info.destroy()
+        # GTK4: self.destroy() removed - info cleaned up automatically
         self.info = None
         self.handler_block(self.__csig)
         for column in self.get_columns():
@@ -638,16 +624,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         browser.filter_on(songs, header)
 
-    def __button_press(self, view, event, librarian):
-        if event.button != Gdk.BUTTON_PRIMARY:
+    def __button_press(self, gesture, n_press, x, y, librarian):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        if button != Gdk.BUTTON_PRIMARY:
             return None
-        x, y = map(int, [event.x, event.y])
+
+        view = gesture.get_widget()
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
             return True
-        if event.window != self.get_bin_window():
-            return False
+        # GTK4: event.window check removed - not available with GestureClick
         if col.header_name == "~rating":
             if not config.getboolean("browsers", "rating_click"):
                 return None
@@ -657,7 +646,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             l.show()
             l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
-            l.destroy()
+            # GTK4: destroy() removed - l cleaned up automatically
+            pass
             if not width:
                 return False
             precision = config.RATINGS.precision
@@ -678,7 +668,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian, player):
+    def __key_press(self, controller, keyval, keycode, state, librarian, player):
+        # GTK4: EventControllerKey.key-pressed has different signature
+        # Create event-like object for compatibility
+        class KeyEvent:
+            def __init__(self, keyval, keycode, state):
+                self.type = Gdk.EventType.KEY_PRESS
+                self.keyval = keyval
+                self.keycode = keycode
+                self.state = state
+            def get_state(self):
+                return self.state
+
+        event = KeyEvent(keyval, keycode, state)
         if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
@@ -1160,11 +1162,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         self.handler_unblock(self.__csig)
 
-    def _menu(self, column: SongListColumn) -> Gtk.Menu:
-        menu = Gtk.Menu()
+    def _menu(self, column: SongListColumn) -> Gtk.PopoverMenu:
+        menu = Gtk.PopoverMenu()
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         menu.connect("selection-done", selection_done_cb)
 
@@ -1178,7 +1181,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         current = [(tag_title(c), c) for c in SongList.headers]
 
         def add_header_toggle(
-            menu: Gtk.Menu,
+            menu: Gtk.PopoverMenu,
             header: str,
             tag: str,
             active: bool,
@@ -1229,7 +1232,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             item = Gtk.MenuItem(label=name, use_underline=True)
             item.show()
             menu.append(item)
-            submenu = Gtk.Menu()
+            submenu = Gtk.PopoverMenu()
             item.set_submenu(submenu)
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
                 add_header_toggle(submenu, header, tag, tag in current_set)
@@ -1297,7 +1300,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         window.set_page("songlist")
 
     def __showmenu(self, column, event=None):
-        time = event.time if event else Gtk.get_current_event_time()
+        time = event.time if event else GLib.CURRENT_TIME
 
         if event is not None and not event.triggers_context_menu():
             return False

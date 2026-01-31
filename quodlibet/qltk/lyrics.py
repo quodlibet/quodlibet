@@ -23,15 +23,14 @@ from quodlibet.qltk import Icons, add_css
 from quodlibet.util import connect_obj
 
 
-class LyricsPane(Gtk.VBox):
+class LyricsPane(Gtk.Box):
     def __init__(self, parent, _library):
-        super().__init__(spacing=12, margin=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.song = None
         self.title = _("Lyrics")
         self.text_view = view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
         self.save = save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.delete = delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
         view_online = qltk.Button(_("_View online"), Icons.APPLICATION_INTERNET)
@@ -44,17 +43,19 @@ class LyricsPane(Gtk.VBox):
         delete.connect("clicked", self.__delete, save)
         view_online.connect("clicked", self.__view_online)
 
-        self.pack_start(sw, True, True, 0)
+        # GTK4: Use append() with expand properties instead of pack_start()
+        sw.set_vexpand(True)
+        self.append(sw)
 
         bbox = Gtk.Box(spacing=9, orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_homogeneous(True)
-        bbox.pack_start(view_online, False, True, 0)
-        bbox.pack_start(delete, False, True, 0)
-        bbox.pack_start(save, False, True, 0)
+        bbox.append(view_online)
+        bbox.append(delete)
+        bbox.append(save)
         box2 = Gtk.Box()
         box2.props.halign = Gtk.Align.END
-        box2.pack_start(bbox, True, False, 0)
-        self.pack_start(box2, False, False, 0)
+        box2.append(bbox)
+        self.append(box2)
         add_css(sw, "scrolledwindow { padding: 0px 6px; }")
         connect_obj(buffer, "changed", save.set_sensitive, True)
         parent.connect("changed", self.__parent_changed)

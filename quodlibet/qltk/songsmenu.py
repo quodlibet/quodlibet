@@ -123,19 +123,19 @@ class SongsMenuPluginHandler(PluginHandler):
         items = [i for i in items if i.initialized]
 
         if items:
-            menu = Gtk.Menu()
+            menu = Gtk.PopoverMenu()
             for item in items:
                 try:
                     menu.append(item)
                     args = (library, songs)
                     if item.get_submenu():
-                        for subitem in item.get_submenu().get_children():
+                        for subitem in qltk.get_children(item.get_submenu()):
                             subitem.connect("activate", self.__on_activate, item, *args)
                     else:
                         item.connect("activate", self.__on_activate, item, *args)
                 except Exception:
                     errorhook()
-                    item.destroy()
+                    # GTK4: destroy() removed - item cleaned up automatically
             menu.append(SeparatorMenuItem())
             prefs = Gtk.MenuItem(label=_("Configure Plugins…"))
             prefs.connect("activate", lambda _: PluginWindow().show())
@@ -262,7 +262,7 @@ class SongsMenuPluginHandler(PluginHandler):
         self.__plugins.remove(plugin.cls)
 
 
-class SongsMenu(Gtk.Menu):
+class SongsMenu(Gtk.PopoverMenu):
     plugins = SongsMenuPluginHandler()
 
     @classmethod
@@ -353,7 +353,8 @@ class SongsMenu(Gtk.Menu):
             self.init_download(songs, folder_chooser)
 
         def selection_done_cb(menu):
-            menu.destroy()
+            # GTK4: destroy() removed - menu cleaned up automatically
+            pass
 
         self.connect("selection-done", selection_done_cb)
 
@@ -524,13 +525,15 @@ class SongsMenu(Gtk.Menu):
             self.append(b)
 
     def separate(self):
-        if not self.get_children():
+        children = qltk.get_children(self)
+        if not children:
             return
-        if not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
+        if not isinstance(children[-1], Gtk.SeparatorMenuItem):
             self.append(SeparatorMenuItem())
 
     def preseparate(self):
-        if not self.get_children():
+        children = qltk.get_children(self)
+        if not children:
             return
-        if not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
+        if not isinstance(children[0], Gtk.SeparatorMenuItem):
             self.prepend(SeparatorMenuItem())

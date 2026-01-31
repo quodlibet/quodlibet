@@ -20,7 +20,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet import util
 from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
-from quodlibet.qltk import add_css, is_accel, gtk_version
+from quodlibet.qltk import add_css, is_accel
 
 from .paned import (
     Paned,
@@ -39,112 +39,8 @@ Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned  # n
 class ScrolledWindow(Gtk.ScrolledWindow):
     """Draws a border around all edges that don't touch the parent window"""
 
-    def do_size_allocate(self, alloc):
-        if self.get_shadow_type() == Gtk.ShadowType.NONE:
-            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
-
-        toplevel = self.get_toplevel()
-        # try to get the child so we ignore the CSD
-        toplevel = toplevel.get_child() or toplevel
-
-        try:
-            dx, dy = self.translate_coordinates(toplevel, 0, 0)
-        except TypeError:
-            GLib.idle_add(self.queue_resize)
-            return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
-
-        ctx = self.get_style_context()
-        border = ctx.get_border(ctx.get_state())
-
-        # https://bugzilla.gnome.org/show_bug.cgi?id=694844
-        border.left = border.top = border.right = border.bottom = 1
-
-        # XXX: ugly, ugly hack
-        # Pretend the main window toolbar is the top of the window.
-        # This removes the top border in case the ScrolledWindow
-        # is drawn right below the toolbar.
-        try:
-            top_bar = toplevel.top_bar
-            if not isinstance(top_bar, Gtk.Widget):
-                raise TypeError
-        except (AttributeError, TypeError):
-            pass
-        else:
-            top_ctx = top_bar.get_style_context()
-            b = top_ctx.get_border(top_ctx.get_state())
-            if b.bottom:
-                dy_bar = self.translate_coordinates(top_bar, 0, 0)[1]
-                dy_bar -= top_bar.get_allocation().height
-                dy = min(dy, dy_bar)
-
-        # since 3.15 the gdkwindow moves to dx==-1 with the allocation
-        # so ignore anything < 0 (I guess something passes the adjusted alloc
-        # to us a second time)
-        # https://git.gnome.org/browse/gtk+/commit/?id=fdf367e8689cb
-        dx = max(0, dx)
-        dy = max(0, dy)
-
-        # Don't remove the border if the border is drawn inside
-        # and the scrollbar on that edge is visible
-        bottom = left = right = top = False
-
-        if gtk_version < (3, 19):
-            value = GObject.Value()
-            value.init(GObject.TYPE_BOOLEAN)
-            # default to True:
-            #    https://bugzilla.gnome.org/show_bug.cgi?id=701058
-            value.set_boolean(True)
-            ctx.get_style_property("scrollbars-within-bevel", value)
-            scroll_within = value.get_boolean()
-            value.unset()
-        else:
-            # was deprecated in gtk 3.20
-            # https://git.gnome.org/browse/gtk+/commit/?id=
-            #   7c0f0e882ae60911e39aaf7b42fb2d94108f3474
-            scroll_within = True
-
-        if not scroll_within:
-            h, v = self.get_hscrollbar(), self.get_vscrollbar()
-            hscroll = vscroll = False
-            if h.get_visible():
-                req = h.size_request()
-                hscroll = bool(req.width + req.height)
-
-            if v.get_visible():
-                req = v.size_request()
-                vscroll = bool(req.width + req.height)
-
-            placement = self.get_placement()
-            if placement == Gtk.CornerType.TOP_LEFT:
-                bottom = hscroll
-                right = vscroll
-            elif placement == Gtk.CornerType.BOTTOM_LEFT:
-                right = vscroll
-                top = hscroll
-            elif placement == Gtk.CornerType.TOP_RIGHT:
-                bottom = hscroll
-                left = vscroll
-            elif placement == Gtk.CornerType.BOTTOM_RIGHT:
-                left = vscroll
-                top = hscroll
-
-        top_alloc = toplevel.get_allocation()
-        width, height = top_alloc.width, top_alloc.height
-        if alloc.height + dy == height and not bottom:
-            alloc.height += border.bottom
-
-        if alloc.width + dx == width and not right:
-            alloc.width += border.right
-
-        if dy == 0 and not top:
-            alloc.y -= border.top
-            alloc.height += border.top
-
-        if dx == 0 and not left:
-            alloc.x -= border.left
-            alloc.width += border.left
-
-        return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
+    def do_size_allocate(self, width, height, baseline):
+        return Gtk.ScrolledWindow.do_size_allocate(self, width, height, baseline)
 
 
 MT = Gdk.ModifierType
@@ -155,12 +51,14 @@ class Notebook(Gtk.Notebook):
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
 
-    _KEY_MODS = MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD1_MASK | MT.MOD2_MASK
+    _KEY_MODS = MT.SHIFT_MASK | MT.CONTROL_MASK | MT.ALT_MASK | MT.SUPER_MASK
     """Keyboard modifiers of interest"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect("key-press-event", self.__key_pressed)
+        event_controller = Gtk.EventControllerKey()
+        event_controller.connect("key-pressed", self.__key_pressed)
+        self.add_controller(event_controller)
 
     def __key_pressed(self, _widget: Gtk.Widget, event: Gdk.Event):
         # alt+X switches to page X
@@ -174,52 +72,19 @@ class Notebook(Gtk.Notebook):
         if event.hardware_keycode == 23:
             total = self.get_n_pages()
             current = self.get_current_page()
-            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD2_MASK):
+            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + total - 1) % total)
                 return Gdk.EVENT_STOP
-            if state == (MT.CONTROL_MASK | MT.MOD2_MASK):
+            if state == (MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + 1) % total)
                 return Gdk.EVENT_STOP
             print_d(f"Unhandled tab key combo: {event.state}")
         return Gdk.EVENT_PROPAGATE
 
-    def do_size_allocate(self, alloc):
-        ctx = self.get_style_context()
-        border = ctx.get_border(ctx.get_state())
-
-        toplevel = self.get_toplevel()
-        # try to get the child so we ignore the CSD
-        toplevel = toplevel.get_child() or toplevel
-
-        try:
-            dx, dy = self.translate_coordinates(toplevel, 0, 0)
-        except TypeError:
-            GLib.idle_add(self.queue_resize)
-            return Gtk.Notebook.do_size_allocate(self, alloc)
-
-        dx = max(0, dx)
-        dy = max(0, dy)
-
-        # all 0 since gtk+ 3.12..
-        border.left = border.top = border.right = border.bottom = 1
-
-        top_alloc = toplevel.get_allocation()
-        width, height = top_alloc.width, top_alloc.height
-        if alloc.height + dy == height:
-            alloc.height += border.bottom
-
-        if alloc.width + dx == width:
-            alloc.width += border.right
-
-        if dy == 0:
-            alloc.y -= border.top
-            alloc.height += border.top
-
-        if dx == 0:
-            alloc.x -= border.left
-            alloc.width += border.left
-
-        return Gtk.Notebook.do_size_allocate(self, alloc)
+    def do_size_allocate(self, width, height, baseline):
+        # GTK4: Custom border allocation logic removed
+        # GTK4 handles widget borders through CSS
+        return Gtk.Notebook.do_size_allocate(self, width, height, baseline)
 
     def append_page(self, page, label=None):
         if label is None:
@@ -239,8 +104,7 @@ def Frame(label, child=None):
     label_w = Gtk.Label()
     label_w.set_markup(util.bold(label))
     align = Align(left=12, top=6)
-    frame.add(align)
-    frame.set_shadow_type(Gtk.ShadowType.NONE)
+    frame.set_child(align)  # GTK4: use set_child() instead of add()
     frame.set_label_widget(label_w)
     if child:
         align.add(child)
@@ -249,10 +113,8 @@ def Frame(label, child=None):
     return frame
 
 
-class Align(Gtk.Alignment):
-    """Note: With gtk3.12+ we could replace this with a Gtk.Bin +
-    margin properties.
-    """
+class Align(Gtk.Box):
+    """GTK4: Replaced Gtk.Alignment with Box + margin/align properties"""
 
     def __init__(
         self,
@@ -265,66 +127,73 @@ class Align(Gtk.Alignment):
         halign=Gtk.Align.FILL,
         valign=Gtk.Align.FILL,
     ):
-        def align_to_xy(a):
-            """(xyalign, xyscale)"""
+        super().__init__()
 
-            if a == Gtk.Align.FILL:
-                return 0.0, 1.0
-            if a == Gtk.Align.START:
-                return 0.0, 0.0
-            if a == Gtk.Align.END:
-                return 1.0, 0.0
-            if a == Gtk.Align.CENTER:
-                return 0.5, 0.0
-            return 0.5, 1.0
+        # Set alignment and margins
+        self.set_halign(halign)
+        self.set_valign(valign)
+        self.set_margin_top(border + top)
+        self.set_margin_bottom(border + bottom)
+        self.set_margin_start(border + left)
+        self.set_margin_end(border + right)
 
-        xalign, xscale = align_to_xy(halign)
-        yalign, yscale = align_to_xy(valign)
-        bottom_padding = border + bottom
-        top_padding = border + top
-        left_padding = border + left
-        right_padding = border + right
-
-        super().__init__(
-            xalign=xalign,
-            xscale=xscale,
-            yalign=yalign,
-            yscale=yscale,
-            bottom_padding=bottom_padding,
-            top_padding=top_padding,
-            left_padding=left_padding,
-            right_padding=right_padding,
-        )
+        # Store for compatibility methods
+        self._margins = {
+            "top": border + top,
+            "bottom": border + bottom,
+            "left": border + left,
+            "right": border + right,
+        }
 
         if child is not None:
-            self.add(child)
+            self.append(child)
 
     def get_margin_top(self):
-        return self.props.top_padding
+        return self._margins["top"]
 
     def get_margin_bottom(self):
-        return self.props.bottom_padding
+        return self._margins["bottom"]
 
     def get_margin_left(self):
-        return self.props.left_padding
+        return self._margins["left"]
 
     def get_margin_right(self):
-        return self.props.right_padding
+        return self._margins["right"]
+
+    def add(self, child):
+        """GTK4 compatibility: add() → append()"""
+        self.append(child)
+
+    def get_child(self):
+        """GTK4 compatibility: return first child"""
+        return self.get_first_child()
 
 
 def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
-    """An ImageMenuItem with a custom label and stock image."""
+    """A GTK4 menu item using Button.
 
-    if icon_name is None:
-        return Gtk.MenuItem.new_with_mnemonic(label)
+    Note: In GTK4, menus should use Gio.Menu with actions, but for compatibility
+    we provide a widget-based fallback using Button."""
 
-    item = Gtk.ImageMenuItem.new_with_mnemonic(label)
+    # Create a box to hold icon and label if needed
+    if icon_name:
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        image = Gtk.Image.new_from_icon_name(icon_name)
+        box.append(image)
+        label_widget = Gtk.Label(label=label, use_underline=True)
+        box.append(label_widget)
+
+        item = Gtk.Button()
+        item.set_child(box)
+    else:
+        item = Gtk.Button(label=label, use_underline=True)
+
     if tooltip:
         item.set_tooltip_text(tooltip)
-    item.set_always_show_image(True)
-    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU)
-    image.show()
-    item.set_image(image)
+
+    # Remove default button styling for menu-like appearance
+    item.add_css_class("flat")
+
     return item
 
 
@@ -333,20 +202,27 @@ def _Button(type_, label, icon_name, size):
         return type_.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
-    hbox = Gtk.HBox(spacing=6)
-    image = Gtk.Image.new_from_icon_name(icon_name, size)
-    hbox.pack_start(image, True, True, 0)
+    hbox = Gtk.Box(spacing=6)
+    # GTK4: new_from_icon_name only takes icon_name, size is set via property
+    image = Gtk.Image.new_from_icon_name(icon_name)
+    # GTK4: IconSize enum values map to pixel sizes, but the property expects
+    # Gtk.IconSize enum which was kept for compatibility
+    if size is not None:
+        image.set_icon_size(size)
+    # GTK4: prepend() only takes widget, no packing args
+    hbox.append(image)
     label = Gtk.Label(label=label)
     label.set_use_underline(True)
-    hbox.pack_start(label, True, True, 0)
+    hbox.append(label)
     align.add(hbox)
     align.show_all()
     button = type_()
-    button.add(align)
+    # GTK4: use set_child() instead of add() for single-child containers
+    button.set_child(align)
     return button
 
 
-def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def Button(label, icon_name=None, size=Gtk.IconSize.LARGE):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button.
     """
@@ -354,7 +230,7 @@ def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     return _Button(Gtk.Button, label, icon_name, size)
 
 
-def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def ToggleButton(label, icon_name=None, size=Gtk.IconSize.LARGE):
     """A ToggleButton with a custom label and stock image. It should pack
     exactly like a stock button.
     """
@@ -366,7 +242,12 @@ class _SmallImageButton:
     """A button for images with less padding"""
 
     def __init__(self, **kwargs):
+        # GTK4: Extract image from kwargs and set it as child
+        image = kwargs.pop("image", None)
         super().__init__(**kwargs)
+
+        if image is not None:
+            self.set_child(image)
 
         self.set_size_request(26, 26)
         add_css(
@@ -399,19 +280,42 @@ def EntryCompletion(words):
 
 
 def RadioMenuItem(*args, **kwargs):
-    """RadioMenuItem that allows None for group"""
+    """GTK4 RadioMenuItem replacement using ModelButton with radio mode.
 
-    if kwargs.get("group", None) is None:
-        kwargs.pop("group", None)
-    return Gtk.RadioMenuItem(*args, **kwargs)
+    In GTK4, radio menu items should ideally use Gio.Menu with radio actions,
+    but for compatibility we use ModelButton which can act as a radio button."""
+
+    label = kwargs.pop("label", None)
+    if args and not label:
+        label = args[0]
+
+    tooltip_text = kwargs.pop("tooltip_text", None)
+    group = kwargs.pop("group", None)
+
+    item = Gtk.CheckButton()
+    if label:
+        item.set_label(label)
+
+    if tooltip_text:
+        item.set_tooltip_text(tooltip_text)
+
+    if group is not None:
+        item.set_group(group)
+
+    # Store the group reference for later use
+    if not hasattr(item, "_radio_group"):
+        item._radio_group = group
+
+    return item
 
 
 def SeparatorMenuItem(*args, **kwargs):
-    # https://bugzilla.gnome.org/show_bug.cgi?id=670575
-    # PyGObject 3.2 always sets a label in __init__
-    if not args and not kwargs:
-        return Gtk.SeparatorMenuItem.new()
-    return Gtk.SeparatorMenuItem(*args, **kwargs)
+    """GTK4 SeparatorMenuItem replacement using Separator.
+
+    In GTK4, menu separators are typically handled by Gio.Menu,
+    but for widget-based menus we use a regular Separator."""
+
+    return Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
 
 
 def SymbolicIconImage(name, size, fallbacks=None):
@@ -421,7 +325,10 @@ def SymbolicIconImage(name, size, fallbacks=None):
 
     symbolic_name = name + "-symbolic"
     gicon = Gio.ThemedIcon.new_from_names([symbolic_name, name])
-    return Gtk.Image.new_from_gicon(gicon, size)
+    image = Gtk.Image.new_from_gicon(gicon)
+    # GTK4: Apply icon size - use set_icon_size() for symbolic sizes
+    image.set_icon_size(size)
+    return image
 
 
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
@@ -429,21 +336,97 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
         super().__init__(*args, **kwargs)
 
 
-class Action(Gtk.Action):
-    def __init__(self, *args, **kargs):
-        # Older pygobject didn't pass through kwargs to GObject.Object
-        # so skip the override __init__
-        GObject.Object.__init__(self, *args, **kargs)
+class Action(Gio.SimpleAction):
+    def __init__(self, *args, **kwargs):
+        # GTK4: SimpleAction doesn't have label/icon_name properties
+        # Store them as instance attributes for compatibility
+        self.label = kwargs.pop("label", None)
+        self.icon_name = kwargs.pop("icon_name", None)
+        super().__init__(*args, **kwargs)
 
 
-class ToggleAction(Gtk.ToggleAction):
-    def __init__(self, *args, **kargs):
-        GObject.Object.__init__(self, *args, **kargs)
+class ToggleAction(Gio.SimpleAction):
+    def __init__(self, *args, **kwargs):
+        # GTK4: SimpleAction doesn't have label property
+        self.label = kwargs.pop("label", None)
+        self.icon_name = kwargs.pop("icon_name", None)
+        name = kwargs.pop("name", None)
+        super().__init__(
+            name=name,
+            parameter_type=None,
+            state=GLib.Variant.new_boolean(False)
+        )
+
+    def get_active(self):
+        """Get the toggle state"""
+        state = self.get_state()
+        return state.get_boolean() if state else False
+
+    def set_active(self, active):
+        """Set the toggle state"""
+        self.set_state(GLib.Variant.new_boolean(active))
 
 
-class RadioAction(Gtk.RadioAction):
-    def __init__(self, *args, **kargs):
-        GObject.Object.__init__(self, *args, **kargs)
+class RadioAction(Gio.SimpleAction):
+    """GTK4: RadioAction reimplemented to support 'changed' signal"""
+
+    def __init__(self, *args, **kwargs):
+        self.label = kwargs.pop("label", None)
+        self._value = kwargs.pop("value", 0)
+        self._group = []
+        self._active = False
+        # Initialize as a SimpleAction
+        name = kwargs.pop("name", None)
+        super().__init__(name=name)
+
+    def join_group(self, group_source):
+        """GTK4: Stub for RadioAction group compatibility"""
+        if group_source is not None:
+            if not hasattr(group_source, "_group"):
+                group_source._group = [group_source]
+            if self not in group_source._group:
+                group_source._group.append(self)
+            self._group = group_source._group
+        return self
+
+    def get_group(self):
+        """GTK4: Return radio group"""
+        # Ensure self is in the group if we have a group
+        if self._group and self not in self._group:
+            self._group.append(self)
+        return self._group if self._group else [self]
+
+    def get_current_value(self):
+        """GTK4: Return current value"""
+        # Find the active action in the group
+        for action in self.get_group():
+            if action._active:
+                return action._value
+        return self._value
+
+    def set_active(self, active):
+        """GTK4: Set action as active"""
+        if active != self._active:
+            self._active = active
+            if active:
+                # Deactivate other actions in the group
+                for action in self.get_group():
+                    if action is not self and action._active:
+                        action._active = False
+                # Emit changed signal on all actions in the group
+                for action in self.get_group():
+                    action.emit("changed", self)
+
+
+# Register the 'changed' signal for RadioAction
+# GTK4: Must use signal_new() when subclassing GObject-based classes from C
+GObject.signal_new(
+    "changed",
+    RadioAction,
+    GObject.SignalFlags.RUN_FIRST,
+    None,  # return type
+    (object,),  # parameter types
+)
 
 
 class WebImage(Gtk.Image):
@@ -465,7 +448,8 @@ class WebImage(Gtk.Image):
         call_async(self._fetch_image, self._cancel, self._finished, (url,))
         self.connect("destroy", self._on_destroy)
         self.set_size_request(width, height)
-        self.set_from_icon_name("image-loading", Gtk.IconSize.BUTTON)
+        self.set_from_icon_name("image-loading")
+        self.set_icon_size(Gtk.IconSize.LARGE)
 
     def _on_destroy(self, *args):
         self._cancel.cancel()
@@ -488,7 +472,8 @@ class WebImage(Gtk.Image):
 
     def _finished(self, pixbuf):
         if pixbuf is None:
-            self.set_from_icon_name("image-missing", Gtk.IconSize.BUTTON)
+            self.set_from_icon_name("image-missing")
+            self.set_icon_size(Gtk.IconSize.LARGE)
         else:
             self.set_from_pixbuf(pixbuf)
 
@@ -497,7 +482,11 @@ class HighlightToggleButton(Gtk.ToggleButton):
     """A ToggleButton which changes the foreground color when active"""
 
     def __init__(self, *args, **kwargs):
+        # GTK4: image property removed - extract and set as child instead
+        image = kwargs.pop("image", None)
         super().__init__(*args, **kwargs)
+        if image is not None:
+            self.set_child(image)
         self._provider = None
         self._color = ""
         self._dummy = Gtk.ToggleButton()

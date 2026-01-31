@@ -16,13 +16,14 @@ import errno
 import io
 from pathlib import Path
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from quodlibet.util.i18n import GlibTranslations
 from senf import fsnative
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import normalize_path
+from tests import run_gtk_loop
 
 
 def dummy_path(path):
@@ -155,8 +156,10 @@ def realized(widget):
     own_window = False
     toplevel = widget.get_toplevel()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        window.add(widget)
+        # GTK4: Window constructor no longer accepts 'type' parameter
+        window = Gtk.Window()
+        # GTK4: use set_child() instead of add()
+        window.set_child(widget)
         own_window = True
     else:
         window = toplevel
@@ -165,8 +168,7 @@ def realized(widget):
     for sub in find_widgets(window, Gtk.Widget):
         sub.realize()
     widget.realize()
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
     assert widget.get_realized()
     assert window.get_realized()
     yield widget
@@ -175,8 +177,7 @@ def realized(widget):
         window.remove(widget)
         window.destroy()
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
 
 
 @contextlib.contextmanager
@@ -191,8 +192,10 @@ def visible(widget, width=None, height=None):
     own_window = False
     toplevel = widget.get_toplevel()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        window.add(widget)
+        # GTK4: Window constructor no longer accepts 'type' parameter
+        window = Gtk.Window()
+        # GTK4: use set_child() instead of add()
+        window.set_child(widget)
         own_window = True
     else:
         window = toplevel
@@ -201,21 +204,18 @@ def visible(widget, width=None, height=None):
         window.resize(width, height)
 
     window.show_all()
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
     assert widget.get_visible()
     assert window.get_visible()
     yield widget
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
     window.hide()
 
     if own_window:
         window.remove(widget)
         window.destroy()
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
 
 
 @contextlib.contextmanager
@@ -272,7 +272,7 @@ def temp_filename(*args, as_path=False, **kwargs):
             do_stuff(filename)
     """
 
-    from tests import mkstemp
+    from tests import mkstemp, run_gtk_loop
 
     try:
         del kwargs["as_path"]
@@ -293,7 +293,7 @@ def temp_filename(*args, as_path=False, **kwargs):
 def get_temp_copy(path):
     """Returns a copy of the file with the same extension"""
 
-    from tests import mkstemp
+    from tests import mkstemp, run_gtk_loop
 
     ext = os.path.splitext(path)[-1]
     fd, filename = mkstemp(suffix=ext)

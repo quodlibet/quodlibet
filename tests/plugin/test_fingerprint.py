@@ -7,7 +7,7 @@
 
 import time
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 try:
     from gi.repository import Gst
@@ -22,7 +22,7 @@ else:
 
 from quodlibet import config
 from quodlibet.formats import MusicFile
-from tests import get_data_path, skipUnless
+from tests import get_data_path, skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase
 
 
@@ -50,7 +50,7 @@ class TFingerprint(PluginTestCase):
         pipeline.start(song, callback)
         t = time.time()
         while not done and time.time() - t < self.TIMEOUT:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()
         assert done
         s, result, error = done
         # silence doesn't produce a fingerprint
@@ -74,7 +74,7 @@ class TFingerprint(PluginTestCase):
 
         t = time.time()
         while len(events) < 2 and time.time() - t < self.TIMEOUT:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()
 
         self.assertEqual(len(events), 2)
         self.assertEqual(events[0][-1], "start")

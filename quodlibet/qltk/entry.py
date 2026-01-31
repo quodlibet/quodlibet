@@ -53,11 +53,24 @@ class EditableUndo:
         self.__handlers = [
             self.connect("insert-text", self.__insert_before),
             self.connect("delete-text", self.__delete_before),
-            self.connect("populate-popup", self.__popup),
-            self.connect("key-press-event", self.__key_press),
         ]
 
-    def __key_press(self, entry, event):
+        # GTK4: Use EventControllerKey for keyboard events
+        key_controller = Gtk.EventControllerKey()
+        self.add_controller(key_controller)
+        key_controller.connect("key-pressed", self.__key_press_gtk4)
+        self.__key_controller = key_controller
+
+    def __key_press_gtk4(self, controller, keyval, keycode, state):
+        """GTK4: Handle key-pressed signal from EventControllerKey"""
+
+        # Create a fake event-like object for is_accel compatibility
+        class FakeEvent:
+            def __init__(self, keyval, state):
+                self.keyval = keyval
+                self.state = state
+
+        event = FakeEvent(keyval, state)
         if is_accel(event, "<Primary>z"):
             self.undo()
             return True
@@ -75,25 +88,6 @@ class EditableUndo:
         del self.__last_space
         del self.__in_pos
         del self.__del_pos
-
-    def __popup(self, entry, menu):
-        undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
-        add_fake_accel(undo, "<Primary>z")
-        redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
-        add_fake_accel(redo, "<Primary><shift>z")
-        sep = SeparatorMenuItem()
-
-        for widget in [sep, redo, undo]:
-            widget.show()
-
-        undo.connect("activate", lambda *x: self.undo())
-        redo.connect("activate", lambda *x: self.redo())
-
-        undo.set_sensitive(self.can_undo())
-        redo.set_sensitive(self.can_redo())
-
-        for item in [sep, redo, undo]:
-            menu.prepend(item)
 
     def __all(self):
         text = self.get_chars(0, -1)
@@ -251,11 +245,10 @@ class ValidatingEntryMixin(Gtk.Widget):
             self.connect("changed", self._set_color, validator)
 
     def _default_color(self) -> Gdk.RGBA:
-        # Don't use our *own* context here if possible else it changes as we mutate...
-        # Don't cache, as theme switching is async
+        # GTK4: get_color() no longer takes StateType, use get_color() directly
         parent = self.get_parent()
         ctx = parent.get_style_context() if parent else self.get_style_context()
-        return ctx.get_color(Gtk.StateType.NORMAL)
+        return ctx.get_color()
 
     def _set_color(self, _widget, validator):
         value = validator(self.get_text())
@@ -268,10 +261,18 @@ class ValidatingEntryMixin(Gtk.Widget):
         else:
             color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
+        # GTK4: override_color removed, use CSS provider instead
+        pass
         if color and self.get_property("sensitive"):
-            self.override_color(Gtk.StateType.NORMAL, color)
+            css = f"* {{ color: rgba({int(color.red*255)}, {int(color.green*255)}, {int(color.blue*255)}, {color.alpha}); }}"
+            from quodlibet.qltk import add_css
+
+            add_css(self, css)
         else:
-            self.override_color(Gtk.StateType.NORMAL, None)
+            # Reset to default by removing custom CSS
+            from quodlibet.qltk import add_css
+
+            add_css(self, "")
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

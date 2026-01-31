@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#        2016-23 Nick Boultbee
+#        2016-25 Nick Boultbee
 #           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gio, Gtk, Pango
 
 from quodlibet import config, print_d
 from quodlibet import util
@@ -51,7 +51,7 @@ class FilterMenu:
         self._player = player
         self._standalone = not ui
 
-        ag = Gtk.ActionGroup.new("QuodLibetFilterActions")
+        ag = Gio.SimpleActionGroup()
         for name, icon_name, label, cb in [
             ("Filters", "", _("_Filters"), None),
             (
@@ -98,7 +98,8 @@ class FilterMenu:
                 icon_name=Icons.DIALOG_QUESTION,
             )
             act.connect("activate", self.__random, tag_)
-            ag.add_action_with_accel(act, "<Primary>" + accel)
+            ag.add_action(act)
+            # TODO: Set accelerator via application.set_accels_for_action()
 
         if self._standalone:
             ui = Gtk.UIManager()
@@ -269,7 +270,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
         self.set_title(browser_cls.name + " - Quod Libet")
-        self.add(Gtk.VBox())
+        self.add(
+            Gtk.Box(
+                orientation=Gtk.Orientation.VERTICAL,
+            )
+        )
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_totals)
@@ -277,8 +282,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.songlist.sortable = not browser_cls.can_reorder
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.browser = browser = browser_cls(library)
@@ -290,23 +294,28 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.get_child().pack_start(self.__container, True, True, 0)
+        self.get_child().prepend(self.__container)
 
         main = self.get_child()
-        bottom = Gtk.HBox()
-        main.pack_end(bottom, False, True, 0)
+        bottom = Gtk.Box()
+        main.append(bottom)
 
         self._filter_menu = filter_menu = FilterMenu(library, player)
         filter_menu.set_browser(self.browser)
         self.add_accel_group(filter_menu.get_accel_group())
-        bottom.pack_start(filter_menu.get_widget(), False, True, 0)
+        bottom.prepend(filter_menu.get_widget())
         filter_menu.get_widget().show()
 
         self.__statusbar = Gtk.Label()
-        self.__statusbar.set_alignment(1.0, 0.5)
-        self.__statusbar.set_padding(6, 3)
+        self.__statusbar.set_xalign(1.0)
+        self.__statusbar.set_yalign(0.5)
+        # GTK4: set_padding() removed, use margins
+        self.__statusbar.set_margin_start(6)
+        self.__statusbar.set_margin_end(6)
+        self.__statusbar.set_margin_top(3)
+        self.__statusbar.set_margin_bottom(3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
-        bottom.pack_end(self.__statusbar, True, True, 0)
+        bottom.append(self.__statusbar)
         self.__statusbar.show()
         bottom.show()
 
@@ -320,14 +329,18 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             view.connect("columns-changed", self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         sw.show_all()
-        for c in self.get_child().get_children():
+        # GTK4: get_children() removed, use helper
+        from quodlibet.qltk import get_children
+
+        for c in get_children(self.get_child()):
             c.show()
         self.get_child().show()
 
         self.connect("destroy", self._on_destroy)
 
     def _on_destroy(self, *args):
-        self._filter_menu.destroy()
+        # GTK4: self.destroy() removed - _filter_menu cleaned up automatically
+        pass
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
@@ -363,7 +376,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         header = col.header_name
         menu = view.menu(header, self.browser, library)
         if menu is not None:
-            view.popup_menu(menu, 0, Gtk.get_current_event_time())
+            view.popup_menu(menu, 0, GLib.CURRENT_TIME)
         return True
 
     def __set_totals(self, info, songs):

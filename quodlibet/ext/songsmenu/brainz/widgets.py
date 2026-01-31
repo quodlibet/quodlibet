@@ -113,7 +113,7 @@ class ResultComboBox(Gtk.ComboBox):
             )
             cell.set_property("markup", markup)
 
-        self.pack_start(render, True)
+        self.append(render, True)
         self.set_cell_data_func(render, celldata, None)
 
 
@@ -128,7 +128,6 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
 
         super().__init__(self.model)
         self.set_headers_clickable(True)
-        self.set_rules_hint(True)
         self.set_reorderable(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -367,10 +366,12 @@ class SearchWindow(Dialog):
         save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
         save_button.set_sensitive(False)
 
-        vb = Gtk.VBox()
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vb.set_spacing(8)
 
-        hb = Gtk.HBox()
+        hb = Gtk.Box()
         hb.set_spacing(8)
         sq = self.search_query = Gtk.Entry()
         sq.connect("activate", self._do_query)
@@ -382,35 +383,35 @@ class SearchWindow(Dialog):
         lbl.set_mnemonic_widget(sq)
         stb = self.search_button = Gtk.Button(_("S_earch"), use_underline=True)
         stb.connect("clicked", self._do_query)
-        hb.pack_start(lbl, False, True, 0)
-        hb.pack_start(sq, True, True, 0)
-        hb.pack_start(stb, False, True, 0)
-        vb.pack_start(hb, False, True, 0)
+        hb.append(lbl)
+        hb.append(sq)
+        hb.append(stb)
+        vb.append(hb)
 
         self.result_combo = ResultComboBox(self._resultlist)
         self.result_combo.connect("changed", self._result_changed)
-        vb.pack_start(self.result_combo, False, True, 0)
+        vb.prepend(self.result_combo)
 
-        rhb = Gtk.HBox()
+        rhb = Gtk.Box()
         rl = Gtk.Label()
         rl.set_markup(_("Results <i>(drag to reorder)</i>"))
-        rl.set_alignment(0, 0.5)
-        rhb.pack_start(rl, False, True, 0)
+        rl.set_xalign(0)
+        rl.set_yalign(0.5)
+        rhb.prepend(rl)
         rl = self.result_label = Gtk.Label(label="")
-        rhb.pack_end(rl, False, True, 0)
-        vb.pack_start(rhb, False, True, 0)
+        rhb.append(rl)
+        vb.prepend(rhb)
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
         rtv.set_border_width(8)
-        sw.add(rtv)
-        vb.pack_start(sw, True, True, 0)
+        sw.set_child(rtv)
+        vb.append(sw)
 
         # TODO: remove deprecated get_action_area
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
         self.get_action_area().set_border_width(4)
-        self.get_content_area().pack_start(vb, True, True, 0)
+        self.get_content_area().prepend(vb)
         self.connect("response", self._on_response)
         self.connect("destroy", self._on_destroy)
 
@@ -422,7 +423,7 @@ class SearchWindow(Dialog):
 
     def _on_response(self, widget, response):
         if response != Gtk.ResponseType.ACCEPT:
-            self.destroy()
+            self.close()
             return
 
         self._save()
@@ -443,7 +444,7 @@ class SearchWindow(Dialog):
             )
             apply_to_song(meta, song)
 
-        self.destroy()
+        self.close()
 
     def _do_query(self, *args):
         """Search for album using the query text."""

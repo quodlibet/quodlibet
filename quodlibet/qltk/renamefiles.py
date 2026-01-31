@@ -30,7 +30,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons, Button, Frame
+from quodlibet.qltk import Icons, Button, Frame, get_children
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
@@ -152,7 +152,7 @@ class Entry:
 RESPONSE_SKIP_ALL = 1
 
 
-class RenameFiles(Gtk.VBox):
+class RenameFiles(Gtk.Box):
     title = _("Rename Files")
     FILTERS = [
         SpacesToUnderscores,
@@ -170,11 +170,11 @@ class RenameFiles(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.__skip_interactive = False
         self.set_border_width(12)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         cbes_defaults = NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(
             NBP,
@@ -183,11 +183,11 @@ class RenameFiles(Gtk.VBox):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.pack_start(self.combo, True, True, 0)
+        hbox.prepend(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.pack_start(self.preview, False, True, 0)
-        self.pack_start(hbox, False, True, 0)
+        hbox.prepend(self.preview)
+        self.prepend(hbox)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -195,13 +195,12 @@ class RenameFiles(Gtk.VBox):
         self.view.show()
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(self.view)
-        self.pack_start(sw, True, True, 0)
+        sw.set_child(self.view)
+        self.prepend(sw)
 
         # rename options
-        rename_options = Gtk.HBox()
+        rename_options = Gtk.Box()
 
         # file name options
         filter_box = FilterPluginBox(self.handler, self.FILTERS)
@@ -211,13 +210,13 @@ class RenameFiles(Gtk.VBox):
 
         frame_filename_options = Frame(_("File names"), filter_box)
         frame_filename_options.show_all()
-        rename_options.pack_start(frame_filename_options, False, True, 0)
+        rename_options.append(frame_filename_options)
 
         # album art options
-        albumart_box = Gtk.VBox()
+        albumart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
         # move art
-        moveart_box = Gtk.VBox()
+        moveart_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.moveart = ConfigCheckButton(
             _("_Move album art"), "rename", "move_art", populate=True
         )
@@ -228,7 +227,7 @@ class RenameFiles(Gtk.VBox):
             )
         )
         self.moveart.show()
-        moveart_box.pack_start(self.moveart, False, True, 0)
+        moveart_box.append(self.moveart)
         self.moveart_overwrite = ConfigCheckButton(
             _("_Overwrite album art at target"),
             "rename",
@@ -236,33 +235,34 @@ class RenameFiles(Gtk.VBox):
             populate=True,
         )
         self.moveart_overwrite.show()
-        moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
-        albumart_box.pack_start(moveart_box, False, True, 0)
+        moveart_box.append(self.moveart_overwrite)
+        albumart_box.append(moveart_box)
         # remove empty
-        removeemptydirs_box = Gtk.VBox()
+        removeemptydirs_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.removeemptydirs = ConfigCheckButton(
             _("_Remove empty directories"), "rename", "remove_empty_dirs", populate=True
         )
         self.removeemptydirs.show()
-        removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
-        albumart_box.pack_start(removeemptydirs_box, False, True, 0)
+        removeemptydirs_box.append(self.removeemptydirs)
+        albumart_box.append(removeemptydirs_box)
 
         frame_albumart_options = Frame(_("Album art"), albumart_box)
         frame_albumart_options.show_all()
-        rename_options.pack_start(frame_albumart_options, False, True, 0)
+        rename_options.append(frame_albumart_options)
 
-        self.pack_start(rename_options, False, True, 0)
+        self.append(rename_options)
 
         # Save button
         self.save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save.show()
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
-        bbox.pack_start(self.save, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.append(self.save)
+        self.append(bbox)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -277,6 +277,7 @@ class RenameFiles(Gtk.VBox):
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
         column = TreeViewColumn(title=_("New Name"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data_new_name(column, cell, model, iter_, data):
@@ -295,7 +296,7 @@ class RenameFiles(Gtk.VBox):
 
         render.connect("edited", self.__row_edited)
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show()
 
     def __filter_preview(self, *args):
@@ -399,7 +400,7 @@ class RenameFiles(Gtk.VBox):
                 break
 
         self.view.thaw_child_notify()
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         library.changed(was_changed)
         self.save.set_sensitive(False)
 

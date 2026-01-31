@@ -9,7 +9,7 @@ import os
 import errno
 from urllib.parse import urlsplit
 
-from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango, GLib
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
 
 from quodlibet import formats, print_d, util
@@ -22,7 +22,7 @@ from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, MultiDragTreeVi
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util.path import (
     listdir,
     xdg_get_user_dirs,
@@ -168,7 +168,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-4.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
@@ -204,6 +204,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         render = Gtk.CellRendererText()
         if self.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
@@ -239,15 +240,10 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         menu = self._create_menu()
         connect_obj(self, "popup-menu", self._popup_menu, menu)
-
-        # Allow to drag and drop files from outside
-        targets = [("text/uri-list", 0, 42)]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
 
     def _create_menu(self):
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         m = qltk.MenuItem(_("_New Folder…"), Icons.DOCUMENT_NEW)
         m.connect("activate", self.__mkdir)
         menu.append(m)
@@ -340,7 +336,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         model, paths = self.get_selection().get_selected_rows()
 
         directories = [model[path][0] for path in paths]
-        menu_items = menu.get_children()
+        menu_items = get_children(menu)
         delete = menu_items[1]
         try:
             is_empty = not any(len(os.listdir(d)) for d in directories)
@@ -356,7 +352,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         selection.unselect_all()
         for path in paths:
             selection.select_path(path)
-        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __mkdir(self, button):
         model, paths = self.get_selection().get_selected_rows()
@@ -452,7 +448,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         window = self.get_window()
         if window:
             window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-            Gtk.main_iteration_do(False)
+            GLib.MainContext.default().iteration(False)
         try:
             try:
                 if model is None:
@@ -530,6 +526,7 @@ class FileSelector(Paned):
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
@@ -539,7 +536,6 @@ class FileSelector(Paned):
         column.set_cell_data_func(render, cell_data)
 
         filelist.append_column(column)
-        filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         filelist.set_search_equal_func(search_func, False)
         filelist.set_search_column(0)
@@ -558,25 +554,23 @@ class FileSelector(Paned):
         dirlist.connect("row-activated", select_all_files, filelist.get_selection())
 
         sw = ScrolledWindow()
-        sw.add(dirlist)
+        sw.set_child(dirlist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack1(sw, resize=True)
 
         sw = ScrolledWindow()
-        sw.add(filelist)
+        sw.set_child(filelist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack2(sw, resize=True)
 
     def go_to(self, *args, **kwargs):
-        dirlist = self.get_child1().get_child()
+        dirlist = self.get_start_child().get_child()
         dirlist.go_to(*args, **kwargs)
 
     def get_selected_paths(self):
         """A list of fs paths"""
 
-        filelist = self.get_child2().get_child()
+        filelist = self.get_end_child().get_child()
         selection = filelist.get_selection()
         model, paths = selection.get_selected_rows()
         return [model[p][0] for p in paths]
@@ -584,8 +578,8 @@ class FileSelector(Paned):
     def rescan(self):
         """Refill the file list for the current directory selection"""
 
-        dirlist = self.get_child1().get_child()
-        filelist = self.get_child2().get_child()
+        dirlist = self.get_start_child().get_child()
+        filelist = self.get_end_child().get_child()
 
         dir_selection = dirlist.get_selection()
         self.__dir_selection_changed(dir_selection, filelist)

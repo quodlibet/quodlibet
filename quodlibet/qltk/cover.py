@@ -41,14 +41,13 @@ class BigCenteredImage(qltk.Window):
 
         # If image fails to set, abort construction.
         if not self.set_image(fileobj, parent, scale):
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
             return
 
-        event_box = Gtk.EventBox()
+        event_box = Gtk.Box()
         event_box.add(self.__image)
 
         frame = Gtk.Frame()
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
         frame.add(event_box)
 
         self.add(frame)
@@ -79,13 +78,15 @@ class BigCenteredImage(qltk.Window):
         return True
 
     def __calculate_screen_width(self, parent, scale=0.5):
-        width, height = parent.get_size()
+        # GTK4: get_size() removed, use get_width()/get_height()
+        width, height = parent.get_width(), parent.get_height()
         width = int(width * scale)
         height = int(height * scale)
         return (width, height)
 
     def __destroy(self, *args):
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
+        pass
 
 
 def get_no_cover_pixbuf(width, height, scale_factor=1):
@@ -98,20 +99,35 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
 
     size = max(width, height)
     theme = Gtk.IconTheme.get_default()
-    icon_info = theme.lookup_icon("quodlibet-missing-cover", size, 0)
-    if icon_info is None:
+    # GTK4: lookup_icon() signature changed
+    # GTK3: lookup_icon(icon_name, size, flags)
+    # GTK4: lookup_icon(icon_name, fallbacks, size, scale, direction, flags)
+    icon_paintable = theme.lookup_icon(
+        "quodlibet-missing-cover",
+        None,  # fallbacks
+        size,
+        scale_factor,
+        Gtk.TextDirection.NONE,
+        0,  # flags
+    )
+    if icon_paintable is None:
         return None
 
-    filename = icon_info.get_filename()
+    # GTK4: IconPaintable.get_file() returns Gio.File, not filename string
+    icon_file = icon_paintable.get_file()
+    if icon_file is None:
+        return None
+
+    filename = icon_file.get_path()
     try:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(filename, width, height)
     except GLib.GError:
         return None
 
 
-class ResizeImage(Gtk.Bin):
+class ResizeImage(Gtk.Widget):
     def __init__(self, resize=False, size=1):
-        Gtk.Bin.__init__(self)
+        super().__init__()
         self._dirty = True
         self._path = None
         self._file = None
@@ -218,7 +234,7 @@ class ResizeImage(Gtk.Bin):
         Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
 
 
-class CoverImage(Gtk.EventBox):
+class CoverImage(Gtk.Box):
     __gsignals__ = {
         # We do not necessarily display cover at the same instant this widget
         # is created or set_song is called. This signal allows callers know
@@ -229,7 +245,8 @@ class CoverImage(Gtk.EventBox):
 
     def __init__(self, resize=False, size=70, song=None):
         super().__init__()
-        self.set_visible_window(False)
+        # GTK4: set_visible_window removed - all widgets are windowless by default
+        # self.set_visible_window(False)
         self.__song = None
         self.__file = None
         self.__current_bci = None
@@ -239,13 +256,15 @@ class CoverImage(Gtk.EventBox):
         self.add(ResizeImage(resize, size))
         self.connect("button-press-event", self.__album_clicked)
         self.set_song(song)
-        self.get_child().show_all()
+        # GTK4: Box.get_child() → Box.get_first_child()
+        self.get_first_child().show_all()
 
     def set_image(self, _file):
         if _file is not None and not _file.name:
             print_w("Got file which is not in the filesystem!")
         self.__file = _file
-        self.get_child().set_file(_file)
+        # GTK4: Box.get_child() → Box.get_first_child()
+        self.get_first_child().set_file(_file)
 
     def set_song(self, song):
         self.__song = song
@@ -277,7 +296,8 @@ class CoverImage(Gtk.EventBox):
     def update_bci(self, albumfile):
         # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
-            self.__current_bci.destroy()
+            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
+            pass
             if albumfile:
                 if self._scale:
                     self.__show_cover(self.__song, self._scale)
@@ -320,7 +340,7 @@ class CoverImage(Gtk.EventBox):
 
         if self.__current_bci is not None:
             # We're displaying it; destroy it.
-            self.__current_bci.destroy()
+            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
             return True
 
         if not self.__file:

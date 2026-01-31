@@ -9,7 +9,7 @@
 import sys
 from collections.abc import Sequence
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import Gtk, Pango, Gdk, GLib
 
 from quodlibet import C_, _, ngettext, print_e, print_d
 from quodlibet import app
@@ -198,7 +198,7 @@ class SplitValues(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=_("Split into _Multiple Values"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
         )
         spls = config.gettext("editing", "split_on").split()
         vals = [
@@ -222,7 +222,7 @@ class SplitDisc(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=_("Split Disc out of _Album"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
         )
 
         album, disc = split_album(value)
@@ -245,7 +245,7 @@ class SplitTitle(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
         )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
@@ -275,7 +275,7 @@ class SplitPerson(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=self.title, use_underline=True)
         self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
         )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
@@ -335,44 +335,50 @@ class AddTagDialog(Dialog):
         add = self.add_icon_button(_("_Add"), Icons.LIST_ADD, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
-        table = Gtk.Table(n_rows=2, n_columns=2)
-        table.set_row_spacings(12)
-        table.set_col_spacings(6)
-        table.set_border_width(6)
+        table = Gtk.Grid()
+        table.set_row_spacing(12)
+        table.set_column_spacing(6)
+        table.set_margin_start(6)
+        table.set_margin_end(6)
+        table.set_margin_top(6)
+        table.set_margin_bottom(6)
 
         self.__tag = (
             TagsComboBoxEntry() if can_change is True else TagsComboBox(can_change)
         )
 
         label = Gtk.Label()
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_text(_("_Tag:"))
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.__tag)
-        table.attach(label, 0, 1, 0, 1)
-        table.attach(self.__tag, 1, 2, 0, 1)
+        table.attach(label, 0, 0, 1, 1)
+        self.__tag.set_hexpand(True)
+        table.attach(self.__tag, 1, 0, 1, 1)
 
         self.__val = Gtk.Entry()
         self.__val.set_completion(LibraryValueCompletion("", library))
         label = Gtk.Label()
         label.set_text(_("_Value:"))
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_use_underline(True)
         label.set_mnemonic_widget(self.__val)
-        valuebox = Gtk.EventBox()
-        table.attach(label, 0, 1, 1, 2)
-        table.attach(valuebox, 1, 2, 1, 2)
-        hbox = Gtk.HBox()
+        valuebox = Gtk.Box()
+        valuebox.set_hexpand(True)
+        table.attach(label, 0, 1, 1, 1)
+        table.attach(valuebox, 1, 1, 1, 1)
+        hbox = Gtk.Box()
         valuebox.add(hbox)
-        hbox.pack_start(self.__val, True, True, 0)
+        hbox.append(self.__val)
         hbox.set_spacing(6)
         invalid = Gtk.Image.new_from_icon_name(
             Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR
         )
-        hbox.pack_start(invalid, True, True, 0)
+        hbox.append(invalid)
 
-        self.vbox.pack_start(table, True, True, 0)
-        self.get_child().show_all()
+        self.vbox.append(table)
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:
@@ -441,7 +447,7 @@ class ListEntry:
         self.value = value
 
 
-class EditTags(Gtk.VBox):
+class EditTags(Gtk.Box):
     handler = EditTagsPluginHandler()
 
     _SPLITTERS: Sequence[type[TagSplitter]] = sorted(
@@ -462,7 +468,7 @@ class EditTags(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
         self._group_info = None
@@ -473,6 +479,7 @@ class EditTags(Gtk.VBox):
         selection = view.get_selection()
         render = Gtk.CellRendererPixbuf()
         column = TreeViewColumn()
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_fixed_width(24)
         column.set_expand(False)
@@ -493,6 +500,7 @@ class EditTags(Gtk.VBox):
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("Tag"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data_tag(column, cell, model, iter_, data):
@@ -514,6 +522,7 @@ class EditTags(Gtk.VBox):
         render.connect("edited", self.__edit_tag, model)
         render.connect("editing-started", self.__value_editing_started, model, library)
         column = TreeViewColumn(title=_("Value"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data_value(column, cell, model, iter_, data):
@@ -530,10 +539,9 @@ class EditTags(Gtk.VBox):
         view.append_column(column)
 
         sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
-        self.pack_start(sw, True, True, 0)
+        sw.set_child(view)
+        self.append(sw)
 
         cb = ConfigCheckButton(
             _("Show _programmatic tags"),
@@ -546,8 +554,8 @@ class EditTags(Gtk.VBox):
             ),
         )
         cb.connect("toggled", self.__checkbox_toggled)
-        hb = Gtk.HBox()
-        hb.pack_start(cb, False, True, 0)
+        hb = Gtk.Box()
+        hb.append(cb)
 
         cb = ConfigCheckButton(
             _("Show _multi-line tags"),
@@ -557,19 +565,19 @@ class EditTags(Gtk.VBox):
             tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"),
         )
         cb.connect("toggled", self.__checkbox_toggled)
-        hb.pack_start(cb, False, True, 12)
-        self.pack_start(hb, False, True, 0)
+        hb.append(cb)
+        self.append(hb)
 
         # Add and Remove [tags] buttons
-        buttonbox = Gtk.HBox(spacing=18)
-        bbox1 = Gtk.HButtonBox()
+        buttonbox = Gtk.Box(spacing=18)
+        bbox1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox1.set_spacing(9)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
         add = qltk.Button(_("_Add…"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
         self._add = add
         add.connect("clicked", self.__add_tag, model, library)
-        bbox1.pack_start(add, True, True, 0)
+        bbox1.append(add)
         # Remove button
         remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_focus_on_click(False)
@@ -577,11 +585,11 @@ class EditTags(Gtk.VBox):
         remove.set_sensitive(False)
         self._remove = remove
 
-        bbox1.pack_start(remove, True, True, 0)
+        bbox1.append(remove)
 
         # Revert and save buttons
         # Both can have customised translated text (and thus accels)
-        bbox2 = Gtk.HButtonBox()
+        bbox2 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox2.set_spacing(9)
         bbox2.set_layout(Gtk.ButtonBoxStyle.END)
         # Translators: Revert button in the tag editor
@@ -593,12 +601,12 @@ class EditTags(Gtk.VBox):
         save = Button(C_("edittags", "_Save"), Icons.DOCUMENT_SAVE)
         save.set_sensitive(False)
         self._save = save
-        bbox2.pack_start(revert, True, True, 0)
-        bbox2.pack_start(save, True, True, 0)
+        bbox2.append(revert)
+        bbox2.append(save)
 
-        buttonbox.pack_start(bbox1, True, True, 0)
-        buttonbox.pack_start(bbox2, True, True, 0)
-        self.pack_start(buttonbox, False, True, 0)
+        buttonbox.append(bbox1)
+        buttonbox.append(bbox2)
+        self.append(buttonbox)
         self._buttonbox = buttonbox
 
         parent.connect("changed", self.__parent_changed)
@@ -618,9 +626,6 @@ class EditTags(Gtk.VBox):
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         self._parent = parent
-
-        for child in self.get_children():
-            child.show_all()
 
     def __checkbox_toggled(self, *args):
         self._update()
@@ -686,7 +691,7 @@ class EditTags(Gtk.VBox):
             return item
 
     def _popup_menu(self, view: BaseView, _parent):
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
@@ -699,7 +704,7 @@ class EditTags(Gtk.VBox):
             comment = entry.value
             text = comment.text
 
-            split_menu = Gtk.Menu()
+            split_menu = Gtk.PopoverMenu()
 
             for Item in self._SPLITTERS:
                 if Item.tags and entry.tag not in Item.tags:
@@ -714,7 +719,7 @@ class EditTags(Gtk.VBox):
                     item.set_sensitive(False)
                 if len(vals) > 1 and vals[1][1]:
                     split_menu.append(item)
-            if split_menu.get_children():
+            if qltk.get_children(split_menu):
                 split_menu.append(SeparatorMenuItem())
 
             plugins = self.handler.plugins
@@ -750,7 +755,7 @@ class EditTags(Gtk.VBox):
 
             split_item = MenuItem(_("_Split Tag"), Icons.EDIT_FIND_REPLACE)
 
-            if split_menu.get_children():
+            if qltk.get_children(split_menu):
                 split_item.set_submenu(split_menu)
             else:
                 split_item.set_sensitive(False)
@@ -767,10 +772,9 @@ class EditTags(Gtk.VBox):
         qltk.add_fake_accel(remove_b, "Delete")
         menu.append(remove_b)
 
-        menu.show_all()
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
-        for c in menu.get_children():
+        for c in qltk.get_children(menu):
             c.set_sensitive(can_change and c.get_property("sensitive"))
         copy_b.set_sensitive(True)
         remove_b.set_sensitive(True)
@@ -778,7 +782,7 @@ class EditTags(Gtk.VBox):
 
         # XXX: Keep reference
         self.__menu = menu
-        return view.popup_menu(menu, 3, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 3, GLib.CURRENT_TIME)
 
     def __tag_select(self, selection, remove):
         model, rows = selection.get_selected_rows()
@@ -831,7 +835,7 @@ class EditTags(Gtk.VBox):
                 self.__add_new_tag(model, tag, value)
                 break
 
-        add.destroy()
+        # GTK4: destroy() removed - add cleaned up automatically
 
     def __remove_tag(self, activator, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -959,7 +963,7 @@ class EditTags(Gtk.VBox):
         else:
             all_done = True
 
-        win.destroy()
+        # GTK4: destroy() removed - win cleaned up automatically
         library.changed(was_changed)
         for b in [save, revert]:
             b.set_sensitive(not all_done)

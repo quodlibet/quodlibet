@@ -26,12 +26,13 @@ class ConfigLabel(Gtk.Label):
     def __init__(self, text, widget):
         super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
-        self.set_alignment(0.0, 0.5)
+        self.set_xalign(0.0)
+        self.set_yalign(0.5)
 
 
-class AnimOsdPrefs(Gtk.VBox):
+class AnimOsdPrefs(Gtk.Box):
     def __init__(self, plugin):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         self.Conf = plugin.Conf
         self.plugin = plugin
@@ -129,10 +130,10 @@ class AnimOsdPrefs(Gtk.VBox):
             show_preview()
 
         def build_display_widget():
-            vb2 = Gtk.VBox(spacing=3)
-            hb = Gtk.HBox(spacing=6)
+            vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+            hb = Gtk.Box(spacing=6)
             # Set monitor to display OSD on if there's more than one
-            monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
+            monitor_cnt = Gdk.Display.get_default().get_n_monitors()
             if monitor_cnt > 1:
                 adj = Gtk.Adjustment(
                     value=self.Conf.monitor,
@@ -144,14 +145,14 @@ class AnimOsdPrefs(Gtk.VBox):
                 monitor.set_numeric(True)
                 monitor.connect("value-changed", change_monitor)
                 l2 = ConfigLabel("_Monitor:", monitor)
-                hb.pack_start(l2, False, True, 0)
-                hb.pack_start(monitor, False, True, 0)
-                vb2.pack_start(hb, True, True, 0)
+                hb.append(l2)
+                hb.append(monitor)
+                vb2.append(hb)
             else:
                 # should be this by default anyway
                 self.Conf.monitor = 0
 
-            hb = Gtk.HBox(spacing=6)
+            hb = Gtk.Box(spacing=6)
             grid = Gtk.Grid(
                 column_homogeneous=True,
                 row_homogeneous=True,
@@ -163,7 +164,7 @@ class AnimOsdPrefs(Gtk.VBox):
             group = None
             for x in range(3):
                 for y in range(3):
-                    rb = Gtk.RadioButton(group=group, label=arrows[y][x])
+                    rb = Gtk.CheckButton(group=group, label=arrows[y][x])
                     if (
                         int(self.Conf.pos_x * 2.0) == x
                         and int(self.Conf.pos_y * 2.0) == y
@@ -180,11 +181,11 @@ class AnimOsdPrefs(Gtk.VBox):
                     rb.connect("toggled", change_position, x, y)
 
             lbl = ConfigLabel(_("_Position:"), grid)
-            hb.pack_start(lbl, False, True, 0)
-            hb.pack_start(grid, False, True, 0)
-            vb2.pack_start(hb, False, True, 6)
+            hb.append(lbl)
+            hb.append(grid)
+            vb2.append(hb)
 
-            hb = Gtk.HBox(spacing=6)
+            hb = Gtk.Box(spacing=6)
             coversize = Gtk.SpinButton(
                 adjustment=Gtk.Adjustment.new(self.Conf.coversize, 1, 600, 1, 10, 0),
                 climb_rate=1,
@@ -193,14 +194,14 @@ class AnimOsdPrefs(Gtk.VBox):
             coversize.set_numeric(True)
             coversize.connect("value-changed", change_coversize)
             l1 = ConfigLabel(_("_Cover size:"), coversize)
-            hb.pack_start(l1, False, True, 0)
-            hb.pack_start(coversize, False, True, 0)
-            vb2.pack_start(hb, False, True, 0)
+            hb.append(l1)
+            hb.append(coversize)
+            vb2.append(hb)
             return vb2
 
         frame = qltk.Frame(label=_("Display"), child=build_display_widget())
         frame.set_border_width(6)
-        self.pack_start(frame, False, True, 0)
+        self.append(frame)
 
         def build_text_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
@@ -229,7 +230,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
         frame = qltk.Frame(label=_("Text"), child=build_text_widget())
         frame.set_border_width(6)
-        self.pack_start(frame, False, True, 0)
+        self.append(frame)
 
         def build_colors_widget():
             t = Gtk.Table(n_rows=2, n_columns=2)
@@ -255,11 +256,11 @@ class AnimOsdPrefs(Gtk.VBox):
 
         f = qltk.Frame(label=_("Colors"), child=build_colors_widget())
         f.set_border_width(6)
-        self.pack_start(f, False, False, 0)
+        self.append(f)
 
         def build_effects_widget():
-            vb2 = Gtk.VBox(spacing=3)
-            hb = Gtk.HBox(spacing=6)
+            vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+            hb = Gtk.Box(spacing=6)
             toggles = [
                 (_("_Shadows"), self.Conf.shadow[0], change_shadow),
                 (_("_Outline"), self.Conf.outline[0], change_outline),
@@ -270,10 +271,10 @@ class AnimOsdPrefs(Gtk.VBox):
                 checkb = Gtk.CheckButton(label=label, use_underline=True)
                 checkb.set_active(current != -1)
                 checkb.connect("toggled", callback)
-                hb.pack_start(checkb, True, True, 0)
-            vb2.pack_start(hb, True, True, 0)
+                hb.append(checkb)
+            vb2.append(hb)
 
-            hb = Gtk.HBox(spacing=6)
+            hb = Gtk.Box(spacing=6)
             timeout = Gtk.SpinButton(
                 adjustment=Gtk.Adjustment.new(
                     self.Conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0
@@ -284,23 +285,23 @@ class AnimOsdPrefs(Gtk.VBox):
             timeout.set_numeric(True)
             timeout.connect("value-changed", change_delay)
             l1 = ConfigLabel(_("_Delay:"), timeout)
-            hb.pack_start(l1, False, True, 0)
-            hb.pack_start(timeout, False, True, 0)
-            vb2.pack_start(hb, False, True, 0)
+            hb.append(l1)
+            hb.append(timeout)
+            vb2.append(hb)
             return vb2
 
         frame = qltk.Frame(label=_("Effects"), child=build_effects_widget())
         frame.set_border_width(6)
-        self.pack_start(frame, False, True, 0)
+        self.append(frame)
 
         def build_buttons_widget():
-            hb = Gtk.HBox(spacing=6)
+            hb = Gtk.Box(spacing=6)
             edit_button = qltk.Button(_("Ed_it Display Pattern…"), Icons.EDIT)
             edit_button.connect("clicked", edit_pattern)
-            hb.pack_start(edit_button, False, True, 0)
+            hb.append(edit_button)
             preview_button = Gtk.Button(label=_("Preview"), use_underline=True)
             preview_button.connect("button-press-event", on_button_pressed)
-            hb.pack_start(preview_button, False, True, 0)
+            hb.append(preview_button)
             return hb
 
-        self.pack_start(build_buttons_widget(), False, True, 0)
+        self.append(build_buttons_widget())

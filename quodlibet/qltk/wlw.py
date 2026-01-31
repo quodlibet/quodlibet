@@ -9,7 +9,7 @@
 import math
 import time
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import _
 from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
@@ -108,8 +108,10 @@ class WaitLoadBase:
             values.setdefault("remaining", format_time_display(remaining))
         self._label.set_markup(self._text % values)
 
-        while not self.quit and (self.paused or Gtk.events_pending()):
-            Gtk.main_iteration()
+        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
+        context = GLib.MainContext.default()
+        while not self.quit and (self.paused or context.pending()):
+            context.iteration(False)
         return self.quit
 
 
@@ -121,73 +123,59 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
     w = WaitLoadWindow(None, 5, "%(current)d/%(total)d")
     for i in range(1, 6): w.step()
-    w.destroy()
+    # GTK4: destroy() removed - w cleaned up automatically
     """
 
     def __init__(self, parent, *args):
         """parent: the parent window, or None"""
-        Gtk.Window.__init__(self, type=Gtk.WindowType.TOPLEVEL)
+        # GTK4: Window type parameter removed
+        Gtk.Window.__init__(self)
         self.set_decorated(False)
         WaitLoadBase.__init__(self)
         self.setup(*args)
 
         parent = get_top_parent(parent)
         if parent:
-            sig = parent.connect("configure-event", self.__recenter)
-            self.connect("destroy", self.__reset_cursor, parent)
-            self.connect("destroy", self.__disconnect, sig, parent)
-            sig_vis = parent.connect("visibility-notify-event", self.__update_visible)
-            self.connect("destroy", self.__disconnect, sig_vis, parent)
             self.set_transient_for(parent)
-            window = parent.get_window()
-            if window:
-                window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            # GTK4: cursor API changed, set via CSS or widget cursor property
+            parent.set_cursor_from_name("wait")
+            self.connect("destroy", self.__reset_cursor, parent)
         # Note that this should not be modal as popups occuring during
         # progress will not be clickable
-        self.add(Gtk.Frame())
-        self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
-        vbox = Gtk.VBox(spacing=12)
-        vbox.set_border_width(12)
+        frame = Gtk.Frame()
+        # GTK4: set_shadow_type() removed - use CSS for styling
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        vbox.set_margin_start(12)
+        vbox.set_margin_end(12)
+        vbox.set_margin_top(12)
+        vbox.set_margin_bottom(12)
         self._label.set_size_request(170, -1)
-        self._label.set_line_wrap(True)
+        self._label.set_wrap(True)
         self._label.set_justify(Gtk.Justification.CENTER)
-        vbox.pack_start(self._label, True, True, 0)
-        vbox.pack_start(self._progress, True, True, 0)
+        vbox.append(self._label)
+        vbox.append(self._progress)
 
         if self._cancel_button and self._pause_button:
             # Display a stop/pause box. count = 0 means an indefinite
             # number of steps.
-            hbox = Gtk.HBox(spacing=6, homogeneous=True)
-            hbox.pack_start(self._cancel_button, True, True, 0)
-            hbox.pack_start(self._pause_button, True, True, 0)
-            vbox.pack_start(hbox, True, True, 0)
+            hbox = Gtk.Box(spacing=6, homogeneous=True)
+            hbox.append(self._cancel_button)
+            hbox.append(self._pause_button)
+            vbox.append(hbox)
 
-        self.get_child().add(vbox)
+        frame.set_child(vbox)
+        self.set_child(frame)
 
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        # GTK4: set_position() removed - window managers control this
 
-        self.get_child().show_all()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-    def __update_visible(self, parent, event):
-        if event.state == Gdk.VisibilityState.FULLY_OBSCURED:
-            self.hide()
-        else:
-            self.show()
-
-    def __recenter(self, parent, event):
-        x, y = parent.get_position()
-        dx, dy = parent.get_size()
-        dx2, dy2 = self.get_size()
-        self.move(x + dx // 2 - dx2 // 2, y + dy // 2 - dy2 // 2)
-
-    def __disconnect(self, widget, sig, parent):
-        parent.disconnect(sig)
+        # Process pending events
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
 
     def __reset_cursor(self, widget, parent):
-        if parent.get_window():
-            parent.get_window().set_cursor(None)
+        # GTK4: Reset cursor via widget property
+        parent.set_cursor(None)
 
 
 class WritingWindow(WaitLoadWindow):
@@ -208,29 +196,29 @@ class WritingWindow(WaitLoadWindow):
         return super().step()
 
 
-class WaitLoadBar(WaitLoadBase, Gtk.HBox):
+class WaitLoadBar(WaitLoadBase, Gtk.Box):
     def __init__(self):
         super().__init__()
 
-        self._label.set_alignment(0.0, 0.5)
+        self._label.set_xalign(0.0)
+        self._label.set_yalign(0.5)
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())
         self._cancel_button.add(
-            Gtk.Image.new_from_icon_name(Icons.PROCESS_STOP, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.PROCESS_STOP, Gtk.IconSize.NORMAL)
         )
         self._pause_button.remove(self._pause_button.get_child())
         self._pause_button.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(
+                Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.NORMAL
+            )
         )
 
-        self.pack_start(self._label, True, True, 0)
-        self.pack_start(self._progress, False, True, 6)
-        self.pack_start(self._pause_button, False, True, 0)
-        self.pack_start(self._cancel_button, False, True, 0)
-
-        for child in self.get_children():
-            child.show_all()
+        self.append(self._label)
+        self.append(self._progress)
+        self.append(self._pause_button)
+        self.append(self._cancel_button)
 
     def step(self, **values):
         ret = super().step(**values)

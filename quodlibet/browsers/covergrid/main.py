@@ -51,7 +51,7 @@ from quodlibet.qltk import popup_menu_at_widget
 
 class PreferencesButton(AlbumPreferencesButton):
     def __init__(self, browser, model):
-        Gtk.HBox.__init__(self)
+        Gtk.Box.__init__(self)
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
@@ -64,10 +64,10 @@ class PreferencesButton(AlbumPreferencesButton):
             (_("Play_count"), self.__compare_avgplaycount),
         ]
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.Menu()
+        sort_menu = Gtk.PopoverMenu()
 
         active = config.getint("browsers", "album_sort", 1)
 
@@ -93,10 +93,10 @@ class PreferencesButton(AlbumPreferencesButton):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.prepend(button)
 
 
 class CoverGridContainer(ScrolledWindow):
@@ -104,7 +104,6 @@ class CoverGridContainer(ScrolledWindow):
         super().__init__(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
-            shadow_type=Gtk.ShadowType.IN,
         )
         self._fb = fb
         fb.set_hadjustment(self.props.hadjustment)
@@ -176,8 +175,20 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     def pack(self, songpane):
         container = self.songcontainer
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -196,7 +207,6 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     @classmethod
     def _destroy_model(cls):
-        cls.__model.destroy()
         cls.__model = None
 
     @classmethod
@@ -282,16 +292,19 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         )
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            ("text/uri-list", 0, 2),
+            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            # ("text/uri-list", 0, 2),
         ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
+        # view.drag_source_set(
+        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        # )
 
-        view.connect("drag-data-get", self.__drag_data_get)
-        view.connect("child-activated", self.__child_activated)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
+        # view.connect("drag-data-get", self.__drag_data_get)
+        # view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(
@@ -302,9 +315,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.pack_start(prefs, False, True, 0)
-        self.pack_start(Align(search, left=6, top=0), False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        search.prepend(prefs)
+        self.prepend(Align(search, left=6, top=0))
+        self.prepend(sw)
 
         self.__update_filter()
         model_filter.connect(
@@ -356,7 +369,6 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__cover_cancel.cancel()
 
         self.view.bind_model(None, lambda _: None)
-        self.__model_filter.destroy()
         self.__model_filter = None
 
         if not CoverGrid.instances():
@@ -399,9 +411,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         menu = SongsMenu(self.__library, songs, items=[[button]])
         menu.show_all()
-        popup_menu_at_widget(
-            menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
-        )
+        popup_menu_at_widget(menu, widget, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
     def __refresh_cover(self, menuitem, view):
         for child in self.view.get_selected_children():

@@ -54,10 +54,10 @@ class AlbumWidget(Gtk.FlowBoxChild):
             ellipsize=Pango.EllipsizeMode.END, justify=Gtk.Justification.CENTER
         )
 
-        box.pack_start(self._image, True, True, 0)
-        box.pack_start(self._label, True, True, 0)
+        box.append(self._image)
+        box.append(self._label)
 
-        eb = Gtk.EventBox()
+        eb = Gtk.Box()
         eb.connect("popup-menu", lambda _: self.emit("songs-menu"))
         eb.connect("button-press-event", self.__rightclick)
         eb.add(box)

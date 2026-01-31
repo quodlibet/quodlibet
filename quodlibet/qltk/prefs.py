@@ -42,9 +42,9 @@ TOP_MARGIN = 3
 
 class PreferencesWindow(UniqueWindow):
     """The tabbed container window for the main preferences GUI.
-    Individual tabs are encapsulated as inner classes inheriting from `VBox`"""
+    Individual tabs are encapsulated as inner classes inheriting from `Box`"""
 
-    class SongList(Gtk.VBox):
+    class SongList(Gtk.Box):
         name = "songlist"
 
         PREDEFINED_TAGS = [
@@ -64,7 +64,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __init__(self):
             def create_behavior_frame():
-                vbox = Gtk.VBox(spacing=12)
+                vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
                 jump_button = CS(
                     _("_Jump to playing song automatically"),
                     "settings",
@@ -98,23 +98,23 @@ class PreferencesWindow(UniqueWindow):
                     app.window.set_sortability()
 
                 always_sortable.connect("notify::active", refresh_browser)
-                vbox.pack_start(jump_button, False, True, 0)
-                vbox.pack_start(always_sortable, False, True, 0)
-                vbox.pack_start(autosort_button, False, True, 0)
+                vbox.prepend(jump_button)
+                vbox.prepend(always_sortable)
+                vbox.prepend(autosort_button)
                 return qltk.Frame(_("Behavior"), child=vbox)
 
             def create_visible_columns_widgets():
                 buttons = {}
-                vbox = Gtk.VBox(spacing=12)
+                vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
                 grid = Gtk.FlowBox(column_spacing=24)
                 for _i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                     buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
                     grid.add(buttons[k])
-                vbox.pack_start(grid, False, True, 0)
+                vbox.prepend(grid)
                 # Other columns
-                hbox = Gtk.HBox(spacing=12)
+                hbox = Gtk.Box(spacing=12)
                 l = Gtk.Label(label=_("_Others:"), use_underline=True)
-                hbox.pack_start(l, False, True, 0)
+                hbox.append(l)
                 self.others = others = UndoEntry()
                 others.set_sensitive(False)
                 # Stock edit doesn't have ellipsis chars.
@@ -125,12 +125,12 @@ class PreferencesWindow(UniqueWindow):
                 )
                 l.set_mnemonic_widget(edit_button)
                 l.set_use_underline(True)
-                hbox.pack_start(others, True, True, 0)
-                vbox.pack_start(hbox, False, True, 0)
-                b = Gtk.HButtonBox()
+                hbox.prepend(others)
+                vbox.prepend(hbox)
+                b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.pack_start(edit_button, True, True, 0)
-                vbox.pack_start(b, True, True, 0)
+                b.prepend(edit_button)
+                vbox.prepend(b)
                 return qltk.Frame(_("Visible Columns"), child=vbox), buttons
 
             def create_columns_prefs_frame():
@@ -148,11 +148,11 @@ class PreferencesWindow(UniqueWindow):
                 def pack_with_label(vb: Gtk.Box, widget: Gtk.Widget, text: str):
                     hb = Gtk.Box(spacing=12)
                     label = Gtk.Label(label=text, use_underline=True)
-                    hb.pack_start(label, False, False, 0)
-                    hb.pack_end(widget, False, False, 0)
-                    vb.pack_start(hb, False, False, 0)
+                    hb.append(label)
+                    hb.append(widget)
+                    vb.append(hb)
 
-                vb = Gtk.VBox(spacing=12)
+                vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
                 pack_with_label(vb, tiv, _("Title includes _version"))
                 pack_with_label(vb, aip, _("Album includes _disc subtitle"))
                 pack_with_label(vb, aio, _("Artist includes all _people"))
@@ -170,27 +170,33 @@ class PreferencesWindow(UniqueWindow):
                 apply.connect("clicked", self.__apply, buttons)
                 # Apply on destroy, else config gets mangled
                 self.connect("destroy", self.__apply, buttons)
-                b = Gtk.HButtonBox()
+                b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.pack_start(apply, True, True, 0)
+                b.prepend(apply)
                 return b
 
-            super().__init__(spacing=12)
-            # Store ordered columns
+            super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             self._columns = []
             self.set_border_width(12)
             self.title = _("Song List")
             visible_columns_frame, buttons = create_visible_columns_widgets()
-            self.pack_start(create_behavior_frame(), False, True, TOP_MARGIN)
-            self.pack_start(visible_columns_frame, False, True, MARGIN)
-            self.pack_start(create_columns_prefs_frame(), False, True, MARGIN)
-            self.pack_start(create_update_columns_button(), False, False, 0)
+
+            behavior = create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.prepend(behavior)
+
+            visible_columns_frame.set_margin_top(MARGIN)
+            self.prepend(visible_columns_frame)
+
+            columns_prefs = create_columns_prefs_frame()
+            columns_prefs.set_margin_top(MARGIN)
+            self.prepend(columns_prefs)
+
+            self.prepend(create_update_columns_button())
 
             # Run it now
             self.__update(buttons, self._toggle_data, get_columns())
 
-            for child in self.get_children():
-                child.show_all()
 
         def __update(self, buttons, toggle_data, columns):
             """Updates all widgets based on the passed column list"""
@@ -269,12 +275,12 @@ class PreferencesWindow(UniqueWindow):
             m.connect("destroy", __closed)
             m.show()
 
-    class Browsers(Gtk.VBox):
+    class Browsers(Gtk.Box):
         name = "browser"
 
         def __init__(self):
             def create_display_frame():
-                vbox = Gtk.VBox(spacing=MARGIN)
+                vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
                 model = Gtk.ListStore(str, str)
 
                 def on_changed(combo):
@@ -300,17 +306,17 @@ class PreferencesWindow(UniqueWindow):
                 index = sorted(DurationFormat.values).index(DURATION.format)
                 duration.set_active(index)
                 duration.connect("changed", on_changed)
-                hbox = Gtk.HBox(spacing=MARGIN)
+                hbox = Gtk.Box(spacing=MARGIN)
                 label = Gtk.Label(label=_("Duration totals") + ":", use_underline=True)
                 label.set_mnemonic_widget(duration)
-                hbox.pack_start(label, False, True, 0)
-                hbox.pack_start(duration, False, True, 0)
+                hbox.prepend(label)
+                hbox.append(duration)
 
-                vbox.pack_start(hbox, False, True, 0)
+                vbox.append(hbox)
                 return qltk.Frame(_("Display"), child=vbox)
 
             def create_search_frame():
-                vb = Gtk.VBox(spacing=MARGIN)
+                vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
                 l = Gtk.Label(label=_("_Global filter:"))
                 l.set_use_underline(True)
                 e = ValidatingEntry(Query.validator)
@@ -318,15 +324,21 @@ class PreferencesWindow(UniqueWindow):
                 e.connect("changed", self._entry, "background", "browsers")
                 e.set_tooltip_text(_("Apply this query in addition to all others"))
                 l.set_mnemonic_widget(e)
-                vb.pack_start(hbox_for(l, e), False, True, 0)
+                vb.append(hbox_for(l, e))
                 # Translators: The heading of the preference group, no action
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 
-            super().__init__(spacing=MARGIN)
+            super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
             self.set_border_width(MARGIN)
             self.title = _("Browsers")
-            self.pack_start(create_search_frame(), False, True, TOP_MARGIN)
-            self.pack_start(create_display_frame(), False, True, MARGIN)
+
+            search_frame = create_search_frame()
+            search_frame.set_margin_top(TOP_MARGIN)
+            self.append(search_frame)
+
+            display_frame = create_display_frame()
+            display_frame.set_margin_top(MARGIN)
+            self.append(display_frame)
 
             # Ratings
             c1 = CS(
@@ -350,13 +362,14 @@ class PreferencesWindow(UniqueWindow):
                 ),
             )
 
-            vbox = Gtk.VBox(spacing=MARGIN)
-            vbox.pack_start(c1, False, True, 0)
-            vbox.pack_start(c2, False, True, 0)
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
+            vbox.prepend(c1)
+            vbox.prepend(c2)
             f = qltk.Frame(_("Ratings"), child=vbox)
-            self.pack_start(f, False, True, MARGIN)
+            f.set_margin_top(MARGIN)
+            self.prepend(f)
 
-            vb = Gtk.VBox(spacing=MARGIN)
+            vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
 
             # Filename choice algorithm config
             sw = CS(
@@ -369,7 +382,7 @@ class PreferencesWindow(UniqueWindow):
                     "(where available) over other sources"
                 ),
             )
-            vb.pack_start(sw, False, True, 0)
+            vb.append(sw)
 
             allowed_image_filename_tooltip = _(
                 "Only allow these filenames. "
@@ -383,7 +396,7 @@ class PreferencesWindow(UniqueWindow):
                 populate=True,
                 tooltip=_("Restrict album art to the specified filenames."),
             )
-            vb.pack_start(sw, False, True, 0)
+            vb.append(sw)
 
             entry = UndoEntry()
             entry.set_tooltip_text(allowed_image_filename_tooltip)
@@ -395,14 +408,13 @@ class PreferencesWindow(UniqueWindow):
             self.__activated_force_filename(sw, None, entry)
             hb = Gtk.Box()
             entry.set_size_request(250, -1)
-            hb.pack_start(entry, False, True, 12)
-            vb.pack_start(hb, False, False, 0)
+            hb.append(entry)
+            vb.append(hb)
 
             f = qltk.Frame(_("Album Art"), child=vb)
-            self.pack_start(f, False, True, MARGIN)
+            f.set_margin_top(MARGIN)
+            self.append(f)
 
-            for child in self.get_children():
-                child.show_all()
 
         def __changed_text(self, entry, name):
             config.set("albumart", name, entry.get_text())
@@ -413,7 +425,7 @@ class PreferencesWindow(UniqueWindow):
         def _entry(self, entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
-    class Player(Gtk.VBox):
+    class Player(Gtk.Box):
         name = "playback"
 
         def _gain_scale_for(self, adj: Gtk.Adjustment) -> Gtk.Scale:
@@ -433,13 +445,16 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Playback")
 
-            self.pack_start(self.create_behavior_frame(), False, True, TOP_MARGIN)
+            behavior = self.create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.append(behavior)
 
             # player backend
             if app.player and hasattr(app.player, "PlayerPreferences"):
                 player_prefs = app.player.PlayerPreferences()
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
-                self.pack_start(f, False, True, MARGIN)
+                f.set_margin_top(MARGIN)
+                self.append(f)
 
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
             adj = Gtk.Adjustment.new(fallback_gain, -12.0, 6.0, 0.5, 1, 0.0)
@@ -454,7 +469,8 @@ class PreferencesWindow(UniqueWindow):
 
             fb_label = Gtk.Label(label=_("_Fall-back gain:"))
             fb_label.set_use_underline(True)
-            fb_label.set_alignment(0, 0.5)
+            fb_label.set_xalign(0)
+            fb_label.set_yalign(0.5)
             fb_label.set_mnemonic_widget(fb_scale)
 
             pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
@@ -470,7 +486,8 @@ class PreferencesWindow(UniqueWindow):
 
             pre_label = Gtk.Label(label=_("_Pre-amp gain:"))
             pre_label.set_use_underline(True)
-            pre_label.set_alignment(0, 0.5)
+            pre_label.set_xalign(0)
+            pre_label.set_yalign(0.5)
             pre_label.set_mnemonic_widget(pre_scale)
 
             widgets = [pre_label, pre_scale, fb_label, fb_scale]
@@ -485,7 +502,7 @@ class PreferencesWindow(UniqueWindow):
 
             # packing
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            vb.pack_start(enable_rg, False, False, 0)
+            vb.append(enable_rg)
 
             grid = Gtk.Grid(column_spacing=6, row_spacing=3)
             grid.attach(fb_label, 0, 0, 1, 1)
@@ -493,16 +510,15 @@ class PreferencesWindow(UniqueWindow):
             grid.attach(pre_label, 0, 1, 1, 1)
             grid.attach(pre_scale, 1, 1, 1, 1)
             hb = Gtk.Box()
-            hb.pack_start(grid, True, True, 12)
-            vb.pack_start(hb, False, True, 0)
+            hb.append(grid)
+            vb.append(hb)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
-            self.pack_start(f, False, True, MARGIN)
+            f.set_margin_top(MARGIN)
+            self.prepend(f)
 
-            for child in self.get_children():
-                child.show_all()
 
         def create_behavior_frame(self):
-            vbox = Gtk.VBox()
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             continue_play = CS(
                 _("_Continue playback on startup"),
                 "player",
@@ -513,7 +529,7 @@ class PreferencesWindow(UniqueWindow):
                     "start playing on next startup"
                 ),
             )
-            vbox.pack_start(continue_play, False, False, 0)
+            vbox.append(continue_play)
             return qltk.Frame(_("Behavior"), child=vbox)
 
         def __activated_gain(self, activator, state, widgets):
@@ -527,19 +543,20 @@ class PreferencesWindow(UniqueWindow):
             config.set(section, name, str(adj.get_value()))
             app.player.reset_replaygain()
 
-    class Tagging(Gtk.VBox):
+    class Tagging(Gtk.Box):
         name = "tagging"
 
         def ratings_vbox(self):
-            """Returns a new VBox containing all ratings widgets"""
-            vb = Gtk.VBox(spacing=12)
+            """Returns a new Box containing all ratings widgets"""
+            vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
             # Default Rating
             model = Gtk.ListStore(float)
             default_combo = Gtk.ComboBox(model=model)
             default_lab = Gtk.Label(label=_("_Default rating:"))
             default_lab.set_use_underline(True)
-            default_lab.set_alignment(0, 0.5)
+            default_lab.set_xalign(0)
+            default_lab.set_yalign(0.5)
 
             def draw_rating(column, cell, model, it, data):
                 num = model[it][0]
@@ -620,7 +637,7 @@ class PreferencesWindow(UniqueWindow):
             grid.add(scale_combo)
             grid.attach(default_align, 0, 1, 1, 1)
             grid.attach(default_combo, 1, 1, 1, 1)
-            vb.pack_start(grid, False, False, 12)
+            vb.prepend(grid)
 
             # Bayesian Factor
             bayesian_factor = config.getfloat("settings", "bayesian_rating_factor", 0.0)
@@ -647,7 +664,7 @@ class PreferencesWindow(UniqueWindow):
             bayes_label.set_mnemonic_widget(bayes_spin)
 
             # Save Ratings
-            vb.pack_start(hbox_for(bayes_label, bayes_spin, False), True, True, 0)
+            vb.append(hbox_for(bayes_label, bayes_spin, False))
             sw = CS(
                 _("Save ratings and play _counts in tags"),
                 "editing",
@@ -658,7 +675,7 @@ class PreferencesWindow(UniqueWindow):
             def update_entry(widget, state, email_entry):
                 email_entry.set_sensitive(widget.get_active())
 
-            vb.pack_start(sw, True, True, 0)
+            vb.append(sw)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
             entry.set_tooltip_text(
@@ -676,13 +693,13 @@ class PreferencesWindow(UniqueWindow):
 
             lab.set_mnemonic_widget(entry)
             lab.set_use_underline(True)
-            vb.pack_start(hbox_for(lab, entry), True, True, 0)
+            vb.append(hbox_for(lab, entry))
 
             return vb
 
         def tag_editing_vbox(self):
-            """Returns a new VBox containing all tag editing widgets"""
-            vbox = Gtk.VBox(spacing=12)
+            """Returns a new Box containing all tag editing widgets"""
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             sw = CS(
                 _("_Auto-save tag changes"),
                 "editing",
@@ -693,7 +710,7 @@ class PreferencesWindow(UniqueWindow):
                     "when editing multiple files"
                 ),
             )
-            vbox.pack_start(sw, False, False, 0)
+            vbox.append(sw)
 
             def revert_split(entry, button, _, section, option):
                 config.reset(section, option)
@@ -716,7 +733,7 @@ class PreferencesWindow(UniqueWindow):
             split_label.set_use_underline(True)
             split_label.set_mnemonic_widget(split_entry)
 
-            vbox.pack_start(hbox_for(split_label, split_entry), False, False, 0)
+            vbox.append(hbox_for(split_label, split_entry))
 
             sub_entry = ClearEntry()
             sub_entry.enable_clear_button()
@@ -737,7 +754,7 @@ class PreferencesWindow(UniqueWindow):
             sub_label.set_use_underline(True)
             sub_label.set_mnemonic_widget(split_entry)
 
-            vbox.pack_start(hbox_for(sub_label, sub_entry), False, False, 0)
+            vbox.append(hbox_for(sub_label, sub_entry))
             return vbox
 
         def __init__(self):
@@ -746,14 +763,14 @@ class PreferencesWindow(UniqueWindow):
             self.title = _("Tags")
             self._songs = []
 
-            f = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
-            self.pack_start(f, False, True, TOP_MARGIN)
+            tag_editing = qltk.Frame(_("Tag Editing"), child=(self.tag_editing_vbox()))
+            tag_editing.set_margin_top(TOP_MARGIN)
+            self.append(tag_editing)
 
-            f = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
-            self.pack_start(f, False, True, MARGIN)
+            ratings = qltk.Frame(_("Ratings"), child=self.ratings_vbox())
+            ratings.set_margin_top(MARGIN)
+            self.append(ratings)
 
-            for child in self.get_children():
-                child.show_all()
 
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
@@ -770,11 +787,11 @@ class PreferencesWindow(UniqueWindow):
                 name=_("Updating for new ratings"),
             )
 
-    class Library(Gtk.VBox):
+    class Library(Gtk.Box):
         name = "library"
 
         def __init__(self):
-            super().__init__(spacing=MARGIN)
+            super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
             self.set_border_width(12)
             self.title = _("Library")
 
@@ -796,21 +813,24 @@ class PreferencesWindow(UniqueWindow):
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             hbox = Gtk.Box()
-            hbox.pack_end(reload_, False, True, 0)
-            hbox.pack_end(refresh, False, True, 12)
-            vb.pack_start(hbox, False, True, 0)
+            hbox.append(reload_)
+            hbox.append(refresh)
+            vb.append(hbox)
 
-            self.pack_start(self.create_behavior_frame(), False, False, TOP_MARGIN)
-            self.pack_start(self.create_scandirs_frame(), False, True, MARGIN)
+            behavior = self.create_behavior_frame()
+            behavior.set_margin_top(TOP_MARGIN)
+            self.append(behavior)
+
+            scandirs = self.create_scandirs_frame()
+            scandirs.set_margin_top(MARGIN)
+            self.append(scandirs)
 
             # during testing
             if app.library is not None:
                 masked = MaskedBox(app.library)
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
-                self.pack_start(f, False, True, 12)
+                self.append(f)
 
-            for child in self.get_children():
-                child.show_all()
 
         def create_behavior_frame(self):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -833,27 +853,27 @@ class PreferencesWindow(UniqueWindow):
                 + "\n"
                 + req_restart,
             )
-            vb.pack_start(watch_lib_sw, False, True, 0)
-            vb.pack_start(scan_at_start_sw, False, True, 0)
+            vb.append(watch_lib_sw)
+            vb.append(scan_at_start_sw)
             return qltk.Frame(_("Behavior"), child=vb)
 
         def create_scandirs_frame(self):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             scan_dirs = ScanBox()
-            vb.pack_start(scan_dirs, True, True, 0)
+            vb.append(scan_dirs)
             return qltk.Frame(_("Scan Directories"), child=vb)
 
-    class Advanced(Gtk.VBox):
+    class Advanced(Gtk.Box):
         name = "advanced"
 
         def __init__(self):
-            super().__init__(spacing=MARGIN)
+            super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
             self.set_border_width(12)
             self.title = _("Advanced")
             scrolledwin = Gtk.ScrolledWindow()
             scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
             scrolledwin.add_with_viewport(AdvancedPreferencesPane())
-            self.pack_start(scrolledwin, True, True, 3)
+            self.append(scrolledwin)
 
     def __init__(self, parent, open_page=None, all_pages=True):
         if self.is_not_unique():
@@ -894,9 +914,9 @@ class PreferencesWindow(UniqueWindow):
 
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", lambda x: x.destroy(), self)
-        button_box = Gtk.HButtonBox()
+        button_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         button_box.set_layout(Gtk.ButtonBoxStyle.END)
-        button_box.pack_start(close, True, True, 0)
+        button_box.append(close)
 
         self.use_header_bar()
         if self.has_close_button():
@@ -905,14 +925,12 @@ class PreferencesWindow(UniqueWindow):
             self.add(notebook)
         else:
             self.set_border_width(12)
-            vbox = Gtk.VBox(spacing=12)
-            vbox.pack_start(notebook, True, True, 0)
-            vbox.pack_start(button_box, False, True, 0)
+            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+            vbox.append(notebook)
+            vbox.append(button_box)
             self.add(vbox)
 
         connect_obj(self, "destroy", PreferencesWindow.__destroy, self)
-
-        self.get_child().show_all()
 
     def set_page(self, name):
         notebook = self.__notebook
@@ -937,6 +955,8 @@ def create_grid(column_spacing: int = 12, row_spacing: int = 6):
 
 def hbox_for(label: Gtk.Label, entry: Gtk.Entry, expand_entry: bool = True) -> Gtk.Box:
     hb = Gtk.Box(spacing=12)
-    hb.pack_start(label, False, False, 0)
-    hb.pack_end(entry, expand_entry, True, 0)
+    hb.prepend(label)
+    if expand_entry:
+        entry.set_hexpand(True)
+    hb.append(entry)
     return hb

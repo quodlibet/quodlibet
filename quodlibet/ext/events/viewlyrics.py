@@ -48,13 +48,15 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect("key-press-event", self.key_press_event_cb)
         add_css(self.textview, "* { padding: 6px; }")
-        vbox = Gtk.VBox()
-        vbox.pack_start(self.textview, True, True, 0)
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
+        vbox.append(self.textview)
         self._edit_button = Button("Edit Lyrics", Icons.EDIT)
-        hbox = Gtk.HBox()
-        hbox.pack_end(self._edit_button, False, False, 3)
-        vbox.pack_start(hbox, False, False, 3)
-        self.scrolled_window.add(vbox)
+        hbox = Gtk.Box()
+        hbox.append(self._edit_button)
+        vbox.append(hbox)
+        self.scrolled_window.set_child(vbox)
         self.textview.show()
 
         self.scrolled_window.show()
@@ -65,14 +67,15 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.plugin_on_song_started(cur)
 
     def create_sidebar(self):
-        vbox = Gtk.VBox(margin=0)
-        vbox.pack_start(self.scrolled_window, True, True, 0)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox.append(self.scrolled_window)
         vbox.show_all()
         return vbox
 
     def disabled(self):
-        self.textview.destroy()
-        self.scrolled_window.destroy()
+        self.textview = None
+        self.scrolled_window.close()
+        self.scrolled_window = None
 
     def _hide_timestamps(self, lyrics: str):
         """Remove timestamps from the lyrics if they are formatted as an .lrc file."""
@@ -170,7 +173,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         return True
 
     def PluginPreferences(self, parent):
-        box = Gtk.HBox()
+        box = Gtk.Box()
         ccb = ConfigCheckButton(
             _("Hide timestamps of .lrc or .elrc formatted lyrics"),
             "plugins",
@@ -180,5 +183,5 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             "plugins", "view_lyrics_hide_timestamps", True
         )
         ccb.set_active(hide_timestamps)
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.append(qltk.Frame(_("Preferences"), child=ccb))
         return box

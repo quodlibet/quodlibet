@@ -321,7 +321,7 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(type(self.main_vbox), Gtk.Frame)
 
     def test_pluginpreferences_success(self):
-        self.assertEqual(type(self.main_vbox), Gtk.VBox)
+        self.assertEqual(type(self.main_vbox), Gtk.Box)
 
         self.assertEqual(len(self.plugin.queries), len(QUERIES))
         assert all(

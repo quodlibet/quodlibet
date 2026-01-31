@@ -140,10 +140,9 @@ class ToggledPlayOrderMenu(Gtk.Box):
         if tooltip:
             toggle.set_tooltip_text(tooltip)
         toggle.set_active(enabled)
-        toggle.show_all()
         qltk.remove_padding(toggle)
         toggle.set_size_request(26, 26)
-        self.pack_start(toggle, True, True, 0)
+        self.append(toggle)
 
         def forward_signal(*args):
             if not self.__inhibit:
@@ -155,10 +154,9 @@ class ToggledPlayOrderMenu(Gtk.Box):
         from quodlibet.qltk.menubutton import MenuButton
 
         arrow = MenuButton(arrow=True, down=arrow_down)
-        arrow.show_all()
         arrow.set_size_request(20, 26)
         qltk.remove_padding(arrow)
-        self.pack_start(arrow, True, True, 0)
+        self.prepend(arrow)
         self._menu_button = arrow
         self.__current = current_order
         self.__orders = orders
@@ -223,7 +221,15 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if item.get_active():
                 self.current = order
 
-        menu = Gtk.Menu()
+        # GTK4: Use Popover with Box instead of PopoverMenu (which needs MenuModel)
+        menu = Gtk.Popover()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        box.set_margin_start(6)
+        box.set_margin_end(6)
+        box.set_margin_top(6)
+        box.set_margin_bottom(6)
+        menu.set_child(box)
+
         group = None
         prev_priority = None
 
@@ -232,19 +238,18 @@ class ToggledPlayOrderMenu(Gtk.Box):
 
         for order in ui_sorted(self.__orders):
             if prev_priority and order.priority > prev_priority:
-                menu.append(SeparatorMenuItem())
+                box.append(SeparatorMenuItem())
             prev_priority = order.priority
             group = RadioMenuItem(
                 label=order.accelerated_name, use_underline=True, group=group
             )
             group.set_active(order == self.__current)
             group.connect("toggled", toggled_cb, order)
-            menu.append(group)
-        menu.show_all()
+            box.append(group)
         self._menu_button.set_menu(menu)
 
 
-class PlayOrderWidget(Gtk.HBox):
+class PlayOrderWidget(Gtk.Box):
     """A combined play order selection widget.
     Whenever something changes the 'changed' signal gets emitted.
     """
@@ -293,8 +298,8 @@ class PlayOrderWidget(Gtk.HBox):
         self._repeat_orders.connect("updated", self.__repeat_widget.set_orders)
 
         self.__compose_order()
-        self.pack_start(self.__shuffle_widget, False, True, 0)
-        self.pack_start(self.__repeat_widget, False, True, 0)
+        self.append(self.__shuffle_widget)
+        self.append(self.__repeat_widget)
         self.__inhibit = False
 
     @property

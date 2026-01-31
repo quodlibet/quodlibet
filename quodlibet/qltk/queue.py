@@ -31,9 +31,9 @@ from quodlibet.util import (
     print_exc,
     DeferredSignal,
 )
-from quodlibet.qltk import Icons, gtk_version, add_css
+from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
+from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
@@ -60,16 +60,15 @@ class PlaybackStatusIcon(Gtk.Box):
 
     def _set(self, name):
         if name not in self._icons:
-            image = SymbolicIconImage(name, Gtk.IconSize.MENU)
+            image = SymbolicIconImage(name, Gtk.IconSize.LARGE)
             self._icons[name] = image
-            image.show()
         else:
             image = self._icons[name]
 
-        children = self.get_children()
-        if children:
-            self.remove(children[0])
-        self.add(image)
+        child = self.get_first_child()
+        if child:
+            self.remove(child)
+        self.append(image)
 
     def play(self):
         self._set("media-playback-start")
@@ -81,85 +80,94 @@ class PlaybackStatusIcon(Gtk.Box):
         self._set("media-playback-pause")
 
 
-class ExpandBoxHack(Gtk.HBox):
+class ExpandBoxHack(Gtk.Box):
     def do_get_preferred_width(self):
         # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
-        # set_label_fill() no longer works since 3.20. Fake a natural size
+        # set_label_fill() no longer works since GTK 3.20. Fake a natural size
         # which is larger than the expander can be to force the parent to
         # allocate to us the whole space.
-        min_, nat = Gtk.HBox.do_get_preferred_width(self)
-        if gtk_version > (3, 19):
-            # if we get too large gtk calcs will overflow..
-            nat = max(nat, 2**16)
+        min_, nat = Gtk.Box.do_get_preferred_width(self)
+        # GTK4: if we get too large gtk calcs will overflow..
+        nat = max(nat, 2**16)
         return (min_, nat)
 
 
 class QueueExpander(Gtk.Expander):
     def __init__(self, library, player):
-        super().__init__(spacing=3)
+        super().__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
+        sw.set_property("has-frame", True)
         save_interval_secs = config.getint("autosave", "queue_interval")
         self.queue = PlayQueue(library, player, save_interval_secs)
-        self.queue.props.expand = True
-        sw.add(self.queue)
+        self.queue.props.vexpand = True
+        sw.set_child(self.queue)
 
         add_css(self, ".ql-expanded title { margin-bottom: 5px; }")
 
         outer = ExpandBoxHack()
 
-        left = Gtk.HBox(spacing=12)
+        left = Gtk.Box(spacing=12)
 
-        hb2 = Gtk.HBox(spacing=3)
+        hb2 = Gtk.Box(spacing=3)
         state_icon = PlaybackStatusIcon()
         state_icon.stop()
-        state_icon.show()
-        hb2.pack_start(state_icon, True, True, 0)
+        hb2.append(state_icon)
         name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
         name_label.set_size_request(-1, 24)
-        hb2.pack_start(name_label, True, True, 0)
-        left.pack_start(hb2, False, True, 0)
+        hb2.append(name_label)
+        left.append(hb2)
 
-        menu = Gtk.Menu()
+        # GTK4: Use Popover instead of PopoverMenu (which requires MenuModel)
+        menu = Gtk.Popover()
+        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        menu_box.set_margin_start(6)
+        menu_box.set_margin_end(6)
+        menu_box.set_margin_top(6)
+        menu_box.set_margin_bottom(6)
+        menu.set_child(menu_box)
 
         self.count_label = count_label = Gtk.Label()
         self.count_label.set_property("ellipsize", Pango.EllipsizeMode.END)
         self.count_label.set_width_chars(10)
         self.count_label.get_style_context().add_class("dim-label")
-        left.pack_start(count_label, False, True, 0)
+        left.append(count_label)
 
-        outer.pack_start(left, True, True, 0)
-
-        self.set_label_fill(True)
+        outer.append(left)
 
         clear_item = SmallImageButton(
-            image=SymbolicIconImage(Icons.USER_TRASH, Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
+            image=SymbolicIconImage(Icons.USER_TRASH, Gtk.IconSize.NORMAL),
             tooltip_text=_("Clear Queue"),
         )
         clear_item.connect("clicked", self.__clear_queue)
-        outer.pack_start(clear_item, False, False, 3)
+        clear_item.set_margin_start(3)
+        outer.append(clear_item)
 
         toggle = SmallImageToggleButton(
-            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN, Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN, Gtk.IconSize.NORMAL),
             tooltip_text=_("Disable queue - the queue will be ignored when playing"),
         )
         disabled = config.getboolean("memory", "queue_disable", False)
         toggle.props.active = disabled
         self.__queue_disable(disabled)
         toggle.connect("toggled", lambda b: self.__queue_disable(b.props.active))
-        outer.pack_start(toggle, False, False, 3)
+        toggle.set_margin_start(3)
+        outer.append(toggle)
 
-        mode_menu = Gtk.Menu()
+        mode_menu = Gtk.Popover()
+        mode_menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        mode_menu_box.set_margin_start(6)
+        mode_menu_box.set_margin_end(6)
+        mode_menu_box.set_margin_top(6)
+        mode_menu_box.set_margin_bottom(6)
+        mode_menu.set_child(mode_menu_box)
 
         norm_mode_item = RadioMenuItem(
             label=_("Ephemeral"),
             tooltip_text=_("Remove songs from the queue after playing them"),
             group=None,
         )
-        mode_menu.append(norm_mode_item)
+        mode_menu_box.append(norm_mode_item)
         norm_mode_item.set_active(True)
         norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
 
@@ -168,63 +176,49 @@ class QueueExpander(Gtk.Expander):
             tooltip_text=_("Keep songs in the queue after playing them"),
             group=norm_mode_item,
         )
-        mode_menu.append(keep_mode_item)
+        mode_menu_box.append(keep_mode_item)
         keep_mode_item.connect("toggled", lambda b: self.__keep_songs_enable(True))
         keep_mode_item.set_active(
             config.getboolean("memory", "queue_keep_songs", False)
         )
 
         mode_item = MenuItem(_("Mode"), Icons.SYSTEM_RUN)
-        mode_item.set_submenu(mode_menu)
-        menu.append(mode_item)
+        # GTK4: TODO - Implement submenu using Gio.Menu
+        menu_box.append(mode_item)
 
         rand_checkbox = ConfigCheckMenuItem(
             _("_Random"), "memory", "shufflequeue", populate=True
         )
         rand_checkbox.connect("toggled", self.__queue_shuffle)
         self.set_shuffled(rand_checkbox.get_active())
-        menu.append(rand_checkbox)
+        menu_box.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
             _("Stop at End"), "memory", "queue_stop_at_end", populate=True
         )
-        menu.append(stop_checkbox)
+        menu_box.append(stop_checkbox)
 
         button = SmallMenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
         )
-        button.set_relief(Gtk.ReliefStyle.NORMAL)
-        button.show_all()
-        button.hide()
-        button.set_no_show_all(True)
-        menu.show_all()
+        button.set_visible(False)
         button.set_menu(menu)
-
-        outer.pack_start(button, False, False, 3)
+        button.set_margin_start(3)
+        outer.append(button)
 
         close_button = SmallImageButton(
-            image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
+            image=SymbolicIconImage("window-close", Gtk.IconSize.NORMAL),
         )
 
         close_button.connect("clicked", lambda *x: self.hide())
-
-        outer.pack_start(close_button, False, False, 6)
+        close_button.set_margin_start(6)
+        outer.append(close_button)
 
         self.set_label_widget(outer)
-        self.add(sw)
-        self.connect("notify::expanded", self.__expand, button)
+        self.set_child(sw)
         self.connect("notify::expanded", self.__expand, button)
 
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect("drag-motion", self.__motion)
-        self.connect("drag-data-received", self.__drag_data_received)
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
 
         self.queue.model.connect_after(
             "row-inserted", DeferredSignal(self.__check_expand), count_label
@@ -260,9 +254,6 @@ class QueueExpander(Gtk.Expander):
 
         self.set_expanded(config.getboolean("memory", "queue_expanded"))
         self.notify("expanded")
-
-        for child in self.get_children():
-            child.show_all()
 
     @property
     def model(self):
@@ -411,7 +402,11 @@ class PlayQueue(SongList):
 
         connect_after_destroy(player, "song-started", reset_activated)
 
-        self.connect("popup-menu", self.__popup, library)
+        # For right-click context menu
+        click_controller = Gtk.GestureClick()
+        click_controller.set_button(3)  # Right mouse button
+        click_controller.connect("pressed", self.__popup)
+        self.add_controller(click_controller)
         self.enable_drop()
 
         def write(*args, **kwargs):
@@ -427,7 +422,9 @@ class PlayQueue(SongList):
         connect_after_destroy(self.model, "row-deleted", write)
         self.__fill(library)
 
-        self.connect("key-press-event", self.__delete_key_pressed)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__delete_key_pressed)
+        self.add_controller(key_controller)
 
     def __destroy(self, widget):
         self._write(widget, self.model, force=True)
@@ -521,8 +518,7 @@ class PlayQueue(SongList):
         qltk.add_fake_accel(remove, "Delete")
         remove.connect("activate", self.__remove)
         menu.prepend(remove)
-        menu.show_all()
-        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, *args):
         self.remove_selection()

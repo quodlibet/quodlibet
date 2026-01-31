@@ -207,13 +207,18 @@ def init_test_environ():
     os.environ["GTK_THEME"] = "Adwaita"
 
     if pyvirtualdisplay is not None:
-        _VDISPLAY = pyvirtualdisplay.Display()
-        _VDISPLAY.start()
+        if shutil.which("Xvfb") is None:
+            _VDISPLAY = None
+        else:
+            _VDISPLAY = pyvirtualdisplay.Display()
+            _VDISPLAY.start()
 
     _BUS_INFO = None
     if os.name != "nt" and sys.platform != "darwin":
-        _BUS_INFO = dbus_launch_user()
-        os.environ.update(_BUS_INFO)
+        # Only launch a new dbus-daemon if there isn't one already
+        if "DBUS_SESSION_BUS_ADDRESS" not in os.environ:
+            _BUS_INFO = dbus_launch_user()
+            os.environ.update(_BUS_INFO)
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
@@ -306,7 +311,10 @@ def run_gtk_loop():
     """Exhausts the GTK main loop of any events"""
 
     # Import late as various version / init checks fail otherwise
-    from gi.repository import Gtk
+    from gi.repository import GLib
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    # GTK4: events_pending() and main_iteration() removed
+    # Use GLib.MainContext to process pending events
+    context = GLib.MainContext.default()
+    while context.pending():
+        context.iteration(False)

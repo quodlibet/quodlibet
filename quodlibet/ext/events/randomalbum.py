@@ -70,49 +70,49 @@ class RandomAlbum(EventPlugin):
                 w.set_sensitive(self.use_weights)
             config.set("plugins", "randomalbum_use_weights", str(int(self.use_weights)))
 
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         table = Gtk.Table(n_rows=len(self.keys) + 1, n_columns=3)
         table.set_border_width(3)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         spin = Gtk.SpinButton(
             adjustment=Gtk.Adjustment.new(self.delay, 0, 3600, 1, 10, 0)
         )
         spin.connect("value-changed", delay_changed_cb)
-        hbox.pack_start(spin, False, True, 0)
+        hbox.append(spin)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
-        hbox.pack_start(lbl, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox.prepend(lbl)
+        vbox.append(hbox)
 
         frame = Gtk.Frame(label=_("Weights"))
 
         check = Gtk.CheckButton(label=_("Play some albums more than others"))
-        vbox.pack_start(check, False, True, 0)
+        vbox.append(check)
         # Toggle both frame and contained table; frame doesn't always work?
         check.connect("toggled", toggled_cb, [frame, table])
         check.set_active(self.use_weights)
         toggled_cb(check, [frame, table])
 
         frame.add(table)
-        vbox.pack_start(frame, True, True, 0)
+        vbox.append(frame)
 
         # Less label
         less_lbl = Gtk.Label()
         arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT, shadow_type=Gtk.ShadowType.OUT)
         less_lbl.set_markup(util.italic(_("avoid")))
         less_lbl.set_alignment(0, 0)
-        hb = Gtk.HBox(spacing=0)
-        hb.pack_start(arr, False, True, 0)
-        hb.pack_start(less_lbl, True, True, 0)
+        hb = Gtk.Box(spacing=0)
+        hb.append(arr)
+        hb.append(less_lbl)
         table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()
         arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT, shadow_type=Gtk.ShadowType.OUT)
         more_lbl.set_markup(util.italic(_("prefer")))
         more_lbl.set_alignment(1, 0)
-        hb = Gtk.HBox(spacing=0)
-        hb.pack_end(arr, False, True, 0)
-        hb.pack_end(more_lbl, True, True, 0)
+        hb = Gtk.Box(spacing=0)
+        hb.append(arr)
+        hb.append(more_lbl)
         table.attach(hb, 2, 3, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
 
         for idx, (key, text, _func) in enumerate(self.keys):
@@ -129,7 +129,7 @@ class RandomAlbum(EventPlugin):
                 ypadding=3,
             )
             adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_increment=0.1)
-            hscale = Gtk.HScale(adjustment=adj)
+            hscale = Gtk.Scale(orientation=Gtk.Orientation.Horizontal, adjustment=adj)
             hscale.set_value(self.weights[key])
             hscale.set_draw_value(False)
             hscale.set_show_fill_level(False)

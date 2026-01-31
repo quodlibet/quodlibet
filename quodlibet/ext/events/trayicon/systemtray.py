@@ -156,7 +156,6 @@ class SystemTray(BaseIndicator):
         """
 
         if self.__menu:
-            self.__menu.destroy()
             self.__menu = None
         if self.__emb_sig:
             GLib.source_remove(self.__emb_sig)
@@ -200,9 +199,7 @@ class SystemTray(BaseIndicator):
         if not self._icon:
             return
 
-        self.__popup_menu(
-            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
-        )
+        self.__popup_menu(self._icon, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):
@@ -337,7 +334,6 @@ class SystemTray(BaseIndicator):
         """Returns True if current action should only hide the menu"""
 
         if sys.platform in ("win32", "darwin") and self.__menu:
-            self.__menu.destroy()
             self.__menu = None
             return True
         return None

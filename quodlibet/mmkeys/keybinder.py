@@ -10,6 +10,17 @@ from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 
 import gi
 
+# GTK4: Keybinder 3.0 is incompatible with GTK4
+try:
+    from gi.repository import Gtk
+    gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version())
+    if gtk_version[0] >= 4:
+        raise MMKeysImportError("Keybinder 3.0 is not compatible with GTK4")
+except MMKeysImportError:
+    raise
+except Exception:
+    pass
+
 try:
     gi.require_version("Keybinder", "3.0")
 except ValueError as e:

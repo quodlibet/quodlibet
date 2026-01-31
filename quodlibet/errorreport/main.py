@@ -101,7 +101,7 @@ def run_error_dialogs(exc_info, sentry_error):
     while 1:
         response = dialog.run()
         if response == ErrorDialog.RESPONSE_RESTART:
-            dialog.destroy()
+            dialog.close()
             app.restart()
         elif response == ErrorDialog.RESPONSE_SUBMIT:
             dialog.hide()
@@ -115,14 +115,14 @@ def run_error_dialogs(exc_info, sentry_error):
                     sentry_error.send(timeout_seconds)
                 except SentryError:
                     print_exc()
-                submit_dialog.destroy()
-                dialog.destroy()
+                submit_dialog.close()
+                dialog.close()
             else:
-                submit_dialog.destroy()
+                submit_dialog.close()
                 dialog.show()
                 continue
         else:
-            dialog.destroy()
+            dialog.close()
         break
 
 
