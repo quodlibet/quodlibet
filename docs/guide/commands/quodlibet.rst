@@ -140,6 +140,9 @@ OPTIONS
 --set-browser=BrowserName
     Set the current browser
 
+--set-panes=<PanesConfig>
+    Set panes for current browser (config for each pane should be separated by \t)
+
 --show-window
     Show main window
 
