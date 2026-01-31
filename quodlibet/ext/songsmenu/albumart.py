@@ -699,11 +699,11 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.add(hpaned)
 
-        self.show_all()
-
         left_vbox.pack_start(self.progress, False, True, 0)
 
         self.connect("destroy", self.__save_config)
+
+        self.show_all()
 
         song = songs[0]
         text = SEARCH_PATTERN.format(song)
