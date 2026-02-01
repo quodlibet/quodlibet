@@ -143,7 +143,7 @@ class EventPluginHandler(PluginHandler):
                     print_e(f"Error during {method_name} on {type(plugin)}")
                     errorhook()
 
-        if event not in ["removed", "changed"] and args:
+        if event not in ["removed", "changed", "ab-seek-points-changed"] and args:
             songs = args[0]
             if not isinstance(songs, set | list):
                 songs = [songs]

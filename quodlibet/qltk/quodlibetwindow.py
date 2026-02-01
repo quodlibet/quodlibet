@@ -49,6 +49,7 @@ from quodlibet.qltk.pluginwin import PluginWindow
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
+from quodlibet.qltk.abrepeatwidget import ABRepeatWidget
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
 from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
@@ -387,6 +388,8 @@ class StatusBarBox(Gtk.HBox):
     def __init__(self, play_order, queue):
         super().__init__(spacing=6)
         self.pack_start(play_order, False, True, 0)
+        abrepeat_widget = ABRepeatWidget()
+        self.pack_start(abrepeat_widget, False, True, 0)
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
         queue_button = QueueButton()

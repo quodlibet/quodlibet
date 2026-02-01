@@ -352,8 +352,22 @@ class WaveformScale(Gtk.EventBox):
 
         self.mouse_position = -1
         self._last_mouse_position = -1
-        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK)
-        self._seeking = False
+        self._ab_points = (None, None)
+        self._player.connect("song-started", lambda p, s: self._update_ab_points(p))
+        self._player.connect("notify::song", lambda p, pspec: self._update_ab_points(p))
+        self._player.connect(
+            "ab-seek-points-changed", lambda p, a, b: self._update_ab_points(p)
+        )
+
+    def _update_ab_points(self, player):
+        if not player.song:
+            self._ab_points = (None, None)
+            self.queue_draw()
+            return
+
+        seekpoint_a, seekpoint_b = player.get_ab_points()
+        self._ab_points = (seekpoint_a, seekpoint_b)
+        self.queue_draw()
 
     @property
     def width(self):
@@ -555,6 +569,31 @@ class WaveformScale(Gtk.EventBox):
             )
         else:
             self.draw_placeholder(cr, width, height, self.remaining_color(context))
+
+        # Draw A and B points
+        a_point, b_point = self._ab_points
+        if a_point is not None or b_point is not None:
+            cr.save()
+            cr.set_source_rgba(0.5, 0.5, 0.5, 0.8)  # Grey color for the lines
+            cr.set_line_width(2)
+
+            length = self._player.info("~#length")
+            if length == 0:
+                cr.restore()
+                return
+
+            if a_point is not None:
+                x_a = (a_point / length) * width
+                cr.move_to(x_a, 0)
+                cr.line_to(x_a, height)
+                cr.stroke()
+
+            if b_point is not None:
+                x_b = (b_point / length) * width
+                cr.move_to(x_b, 0)
+                cr.line_to(x_b, height)
+                cr.stroke()
+            cr.restore()
 
     @classmethod
     @lru_cache
