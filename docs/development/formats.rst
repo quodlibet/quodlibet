@@ -129,8 +129,12 @@ is a string representation of a floating point number between 0.0 and 1.0,
 inclusive. This format is chosen so the application may decide what 
 precision it offers to the user, and how this information is presented. If 
 no value is present, the rating should be assumed to be 0.5.
+Starting from version 4.8, the de-facto standard for representing and 
+interpreting ratings in Vorbis comments uses a 0–100 integer scale, 
+ensuring consistent reading and writing of rating values across applications.
 
 Example: ``rating:quodlibet@sacredchao.net=0.67``
+         ``rating=67``
 
 **playcount**
 
