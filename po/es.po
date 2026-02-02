@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-12-29 20:00+0000\n"
+"PO-Revision-Date: 2026-01-12 08:28+0000\n"
 "Last-Translator: Juan M Sevilla <jumase@disroot.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -3000,11 +3000,10 @@ msgid "Synchronized Lyrics"
 msgstr "Letra en sincronía"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
-#, fuzzy
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
-"Muestra letras sincronizadas a partir de archivos .lrc con el mismo nombre "
-"(o uno similar) que cada pista."
+"Muestra la letra sincronizada si está incrustada o a partir de archivos de "
+"letra (lrc)."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
@@ -3449,11 +3448,11 @@ msgstr "Quita la voz principal del audio."
 
 #: quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
-msgstr ""
+msgstr "Mezcla monofónica"
 
 #: quodlibet/ext/gstreamer/mono.py:17
 msgid "Downmixes audio channels to mono."
-msgstr ""
+msgstr "Combina los canales de audio en una salida mono."
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
@@ -3528,9 +3527,8 @@ msgid "Export to Sonos Playlist"
 msgstr "Exportar a lista de Sonos"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "Exporta una lista copiando archivos en una carpeta."
+msgstr "Exporta una lista a Sonos por pistas coincidentes."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:256
 msgid "Error finding Sonos device(s)"
@@ -3543,12 +3541,12 @@ msgstr "Error de búsqueda de Sonos. Compruebe la configuración"
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Fallo al eliminar la lista existente de Sonos %s:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:288
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Exportar a lista %(playlist)r (%(total)d pistas)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3650,9 +3648,8 @@ msgid "Prefer _less played"
 msgstr "Preferir _menos reproducidas"
 
 #: quodlibet/ext/playorder/playcounteq.py:78
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "Preferir menos reproducidas"
+msgstr "Priorizar las pistas menos reproducidas"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -3676,13 +3673,12 @@ msgid "Queue only"
 msgstr "Solo en cola"
 
 #: quodlibet/ext/playorder/queue.py:32
-#, fuzzy
 msgid "_Queue only"
-msgstr "Solo en cola"
+msgstr "Solo en _cola"
 
 #: quodlibet/ext/playorder/queue.py:37
 msgid "Automatically start playing double-clicked songs"
-msgstr "Iniciar a reproducir automáticamente las canciones pulsadas dos veces"
+msgstr "Reproducir automáticamente las canciones pulsadas dos veces"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:17
 msgid "Reverse"
@@ -3695,14 +3691,13 @@ msgstr ""
 "canciones."
 
 #: quodlibet/ext/playorder/reverse.py:18
-#, fuzzy
 msgid "Re_verse"
-msgstr "Invertido"
+msgstr "In_vertido"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:99
 msgid "Shuffle by Grouping"
-msgstr ""
+msgstr "Aleatorizar por Grupos"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:34
 msgid ""
@@ -3712,14 +3707,19 @@ msgid ""
 "This is useful for shuffling multi-movement classical pieces, making sure "
 "all movements play in order before shuffling to the next piece."
 msgstr ""
+"Añade un modo aleatorio que agrupa las canciones con una etiqueta en común —"
+"análogo a álbumes aleatorios.\n"
+"\n"
+"Útil para aleatorizar obras clásicas con varios movimientos, asegurándose de "
+"que todos ellos se reproducen en orden antes de pasar a la siguiente obra."
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:41
 msgid "Shuffle by grouping"
-msgstr ""
+msgstr "Aleatorizar por grupos"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:42
 msgid "Shuffle by _grouping"
-msgstr ""
+msgstr "Aleatorizar por _grupos"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:100
 msgid "Waiting to start new group…"
@@ -3755,7 +3755,7 @@ msgstr "Demora:"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:177
 msgid "Time delay in seconds before starting next group"
-msgstr ""
+msgstr "Demora en segundos antes de comenzar con el siguiente grupo"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:194
 msgid "Reset to defaults"
