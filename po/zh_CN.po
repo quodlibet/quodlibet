@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-01-06 06:01+0000\n"
+"PO-Revision-Date: 2026-01-27 06:33+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1097,7 +1097,7 @@ msgstr "将文件或查询结果加入队列"
 
 #: quodlibet/cli.py:175
 msgid "Enqueue comma-separated files"
-msgstr "将CSV文件内容加入队列"
+msgstr "将逗号分隔的文件加入队列"
 
 #: quodlibet/cli.py:176 quodlibet/util/tags.py:156
 msgid "filename"
