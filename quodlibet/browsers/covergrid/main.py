@@ -47,6 +47,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 from quodlibet.util import connect_obj
 from quodlibet.qltk import popup_menu_at_widget
+from quodlibet.browsers.collection.prefs import get_headers
 
 
 class PreferencesButton(AlbumPreferencesButton):
@@ -210,7 +211,16 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     def toggle_item_all(cls):
         show = config.getboolean("browsers", "covergrid_all", True)
         for covergrid in cls.instances():
-            covergrid.__model_filter.props.include_item_all = show
+            collection_mode = (
+                covergrid._collection_art_enabled
+                and covergrid._view_mode == "collections"
+            )
+            if collection_mode:
+                # In collections view, refresh to show/hide "All Collections"
+                covergrid._load_collections_view()
+            else:
+                # In albums view, use normal behavior
+                covergrid.__model_filter.props.include_item_all = show
 
     @classmethod
     def toggle_wide(cls):
@@ -231,6 +241,24 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     def __init__(self, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
+        # Get grouping key from Album Collection preferences
+        try:
+            headers = get_headers()
+            self._grouping_key = headers[0][0] if headers else "album_grouping_key"
+        except Exception:
+            # Fallback if collection headers aren't configured
+            self._grouping_key = "album_grouping_key"
+
+        # Check if collection art is enabled
+        self._collection_art_enabled = config.getboolean(
+            "browsers", "covergrid_collection_art", False
+        )
+
+        # Add state tracking for hierarchical navigation
+        self._view_mode = "albums"  # Default to albums view
+        self._current_collection = None
+        self._music_folder = self._detect_music_folder(library)
+
         self.songcontainer = qltk.paned.ConfigRVPaned("browsers", "covergrid_pos", 0.4)
         if config.getboolean("browsers", "covergrid_wide", False):
             self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
@@ -245,6 +273,27 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             include_item_all=config.getboolean("browsers", "covergrid_all", True),
             child_model=model_sort,
         )
+
+        # Add navigation toolbar (always add it, control element visibility)
+        self._nav_box = nav_box = Gtk.HBox(spacing=6)
+        nav_box.set_border_width(6)
+
+        self._back_button = Gtk.Button()
+        self._back_button.set_image(
+            Gtk.Image.new_from_icon_name("go-previous", Gtk.IconSize.BUTTON)
+        )
+        self._back_button.set_label("Back to Collections")
+        self._back_button.set_no_show_all(True)  # Don't show by default
+        self._back_button.connect("clicked", self._on_back_clicked)
+        nav_box.pack_start(self._back_button, False, False, 0)
+
+        self._breadcrumb = Gtk.Label()
+        self._breadcrumb.set_halign(Gtk.Align.START)
+        self._breadcrumb.set_valign(Gtk.Align.CENTER)
+        nav_box.pack_start(self._breadcrumb, True, True, 0)
+
+        # Always add nav_box, but control what's visible in it
+        self.pack_start(nav_box, False, False, 0)
 
         def create_album_widget(model):
             item_padding = config.getint("browsers", "item_padding", 6)
@@ -318,10 +367,255 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         if app.cover_manager:
             connect_destroy(app.cover_manager, "cover-changed", self.__cover_changed)
 
-        # show all before binding the model, so a label in a flowbox child will
-        # stay hidden if so configured by the "browsers.album_text" property.
-        self.show_all()
-        view.bind_model(model_filter, create_album_widget)
+        # Initialize based on collection art setting
+        if self._collection_art_enabled:
+            self.show_all()
+            self._load_collections_view()
+        else:
+            # Hide navigation elements when collection art is disabled
+            self._back_button.hide()
+            self._breadcrumb.set_text("")  # Clear breadcrumb text
+            # show all before binding the model, so a label in a flowbox child will
+            # stay hidden if so configured by the "browsers.album_text" property.
+            self.show_all()
+            view.bind_model(model_filter, create_album_widget)
+
+    # Helper methods for hierarchical navigation
+    def _detect_music_folder(self, library):
+        """Get collection covers directory from config or detect music folder"""
+        # First check if user has set a collection covers directory
+        collection_dir = config.get("browsers", "covergrid_collection_dir", "")
+        if collection_dir:
+            # If the path itself is "Collection_covers", use its parent
+            if os.path.basename(collection_dir) == "Collection_covers":
+                return os.path.dirname(collection_dir)
+            # Otherwise assume collection_dir IS the music folder
+            return collection_dir
+
+        # Fall back to auto-detection
+        if not library:
+            return os.path.expanduser("~/Music")
+
+        dirs = {}
+        for song in list(library)[:100]:
+            dirname = song.get("~dirname", "")
+            if dirname:
+                dirname = dirname.replace("/", os.sep)
+                parts = dirname.split(os.sep)
+                if len(parts) >= 2:
+                    base = os.sep.join(parts[:-1])
+                    dirs[base] = dirs.get(base, 0) + 1
+
+        if dirs:
+            return max(dirs, key=dirs.get)
+        return os.path.expanduser("~/Music")
+
+    def _get_collections(self):
+        """Get all unique grouping key values, plus 'No Collection'"""
+        collections = set()
+        has_uncollected = False
+
+        for song in self.__library:
+            # Use list() to handle multi-value tags like ~people
+            values = song.list(self._grouping_key)
+            if values:
+                for value in values:
+                    collections.add(value)
+            else:
+                has_uncollected = True
+
+        result = sorted(collections)
+
+        # Add "No Collection" at the end if there are uncollected albums
+        if has_uncollected:
+            result.append("No Collection")
+
+        return result
+
+    def _load_collections_view(self):
+        """Switch to collections view"""
+        from .models import CollectionListItem
+
+        self._view_mode = "collections"
+        self._current_collection = None
+        self._back_button.hide()
+        self._breadcrumb.set_markup("<b>Collections</b>")
+
+        # Unbind current model first
+        self.view.bind_model(None, lambda x: None)
+
+        collections = self._get_collections()
+
+        collection_items = []
+
+        # Get collection covers directory from config or default
+        collection_dir = config.get("browsers", "covergrid_collection_dir", "")
+        if collection_dir:
+            collection_covers_dir = collection_dir
+        else:
+            collection_covers_dir = os.path.join(
+                self._music_folder, "Collection_covers"
+            )
+
+        # Add "All Collections" item if show_all is enabled
+        if config.getboolean("browsers", "covergrid_all", True):
+            all_item = CollectionListItem("All Collections")
+            # Override label to show "All Collections"
+            all_item._label = util.bold(_("All Collections"))
+            all_item._cover = None  # Use blank cover
+            all_item.notify("label")
+            all_item.notify("cover")
+            collection_items.append(all_item)
+
+        for collection_name in collections:
+            item = CollectionListItem(collection_name)
+
+            # Handle "No Collection" specially
+            if collection_name == "No Collection":
+                # Use default blank cover (don't set cover path)
+                item.format_label()
+                # Override label to show "No Collection"
+                item._label = util.bold("No Collection")
+                item.notify("label")
+            else:
+                # Regular collection
+                cover_path = os.path.join(
+                    collection_covers_dir, f"{collection_name}.jpg"
+                )
+                if os.path.exists(cover_path):
+                    item.set_cover_path(cover_path)
+
+                item.format_label()
+
+            collection_items.append(item)
+
+        # Create a list model with all collection items
+        self._collection_model = Gio.ListStore.new(CollectionListItem)
+        for item in collection_items:
+            self._collection_model.append(item)
+
+        # Create widget factory function
+        def create_collection_widget(item):
+            text_visible = config.getboolean("browsers", "album_text", True)
+            cover_size = _get_cover_size()
+            widget = AlbumWidget(
+                item,
+                display_pattern=self.display_pattern,
+                cover_size=cover_size,
+                padding=config.getint("browsers", "item_padding", 6),
+                text_visible=text_visible,
+                cancelable=self.__cover_cancel,
+            )
+            widget._collection_name = item.collection_name
+            return widget
+
+        # Bind model to view
+        self.view.bind_model(self._collection_model, create_collection_widget)
+
+    def _load_albums_view(self, collection_name):
+        """Switch to albums view for a specific collection"""
+        self._view_mode = "albums"
+        self._current_collection = collection_name
+        self._back_button.show()
+
+        # Update breadcrumb
+        if collection_name == "All Collections":
+            self._breadcrumb.set_markup("<b>All Collections</b>")
+        elif collection_name == "No Collection":
+            self._breadcrumb.set_markup("<b>No Collection</b>")
+        else:
+            self._breadcrumb.set_markup(f"<b>Collection {collection_name}</b>")
+
+        # Filter albums by collection
+        if collection_name == "All Collections":
+            # For "All Collections", just remove the filter entirely - much faster!
+            self.__model_filter.props.filter = None
+        else:
+
+            def collection_filter(album):
+                if album is None:
+                    return False
+
+                if collection_name == "No Collection":
+                    # Show albums where NO song has grouping key
+                    for song in album.songs:
+                        if song.list(self._grouping_key):
+                            return False
+                    return True
+                # Show albums where at least one song has this collection
+                for song in album.songs:
+                    if collection_name in song.list(self._grouping_key):
+                        return True
+                return False
+
+            self.__model_filter.props.filter = collection_filter
+
+        def create_album_widget(model):
+            text_visible = config.getboolean("browsers", "album_text", True)
+            cover_size = _get_cover_size()
+            widget = AlbumWidget(
+                model,
+                display_pattern=self.display_pattern,
+                cover_size=cover_size,
+                padding=config.getint("browsers", "item_padding", 6),
+                text_visible=text_visible,
+                cancelable=self.__cover_cancel,
+            )
+            widget.connect("songs-menu", self.__popup)
+            return widget
+
+        self.view.bind_model(self.__model_filter, create_album_widget)
+
+    def _on_back_clicked(self, button):
+        """Handle back button click"""
+        self._load_collections_view()
+        self.songs_selected([])
+
+    def refresh_view(self):
+        """Refresh the view when settings change"""
+        # Update collection art setting
+        was_enabled = self._collection_art_enabled
+        self._collection_art_enabled = config.getboolean(
+            "browsers", "covergrid_collection_art", False
+        )
+
+        # Update music folder in case collection dir changed
+        self._music_folder = self._detect_music_folder(self.__library)
+
+        # Handle enabling/disabling collection art
+        if self._collection_art_enabled and not was_enabled:
+            # Just enabled - show nav elements and switch to collections
+            self._breadcrumb.show()
+            self._load_collections_view()
+        elif not self._collection_art_enabled and was_enabled:
+            # Just disabled - hide nav elements and switch to normal albums
+            self._view_mode = "albums"
+            self._current_collection = None
+            self._back_button.hide()
+            self._breadcrumb.set_text("")
+            self.__model_filter.props.filter = None
+
+            def create_album_widget(model):
+                text_visible = config.getboolean("browsers", "album_text", True)
+                cover_size = _get_cover_size()
+                widget = AlbumWidget(
+                    model,
+                    display_pattern=self.display_pattern,
+                    cover_size=cover_size,
+                    padding=config.getint("browsers", "item_padding", 6),
+                    text_visible=text_visible,
+                    cancelable=self.__cover_cancel,
+                )
+                widget.connect("songs-menu", self.__popup)
+                return widget
+
+            self.view.bind_model(self.__model_filter, create_album_widget)
+        elif self._collection_art_enabled:
+            # Still enabled - just refresh current view
+            if self._view_mode == "albums" and self._current_collection:
+                self._load_albums_view(self._current_collection)
+            else:
+                self._load_collections_view()
 
     def __update_songs(self, select_default=True):
         songs = self.__get_selected_songs(sort=False)
@@ -446,6 +740,12 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             sel.set_uris([song("~uri") for song in songs])
 
     def __child_activated(self, view, child):
+        # Handle collection navigation
+        if self._collection_art_enabled and self._view_mode == "collections":
+            if hasattr(child, "_collection_name"):
+                self._load_albums_view(child._collection_name)
+                return
+
         self.songs_activated()
 
     def active_filter(self, song):
