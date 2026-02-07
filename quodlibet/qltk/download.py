@@ -99,6 +99,69 @@ class DownloadProgress(GObject.Object):
                 f.write(result)
             self.success(song)
             print_d(f"Downloaded to {path} successfully!")
+            # -------------------- Podcast tagging (MP3 / ID3) --------------------
+            try:
+                from mutagen.mp3 import MP3
+                from mutagen.easyid3 import EasyID3
+                from mutagen.id3 import ID3, ID3NoHeaderError, APIC
+                import urllib.request
+            except Exception as e:
+                print_w(f"Mutagen not available, skipping tagging: {e}")
+            else:
+                try:
+                    if str(path).lower().endswith(".mp3"):
+                        print_d("Tagging downloaded podcast episode (MP3/ID3)")
+
+                        try:
+                            audio = MP3(path, ID3=EasyID3)
+                        except ID3NoHeaderError:
+                            audio = MP3(path)
+                            audio.add_tags()
+
+                        # Basic textual tags
+                        if song.get("title"):
+                            audio["title"] = [song["title"]]
+                        if song.get("artist"):
+                            audio["artist"] = [song["artist"]]
+                        if song.get("album"):
+                            audio["album"] = [song["album"]]
+                        if song.get("date"):
+                            audio["date"] = [song["date"]]
+
+                        # Store podcast description in TIT3 ("version"),
+                        # matching iTunes behaviour for podcast episodes
+                        if song.get("description"):
+                            audio["version"] = [song["description"]]
+
+                        if song.get("website"):
+                            audio["website"] = [song["website"]]
+
+                        audio.save()
+
+                        # Embed podcast artwork if available
+                        artwork_url = song.get("artwork_url")
+                        if artwork_url:
+                            print_d(f"Downloading podcast cover from {artwork_url}")
+                            with urllib.request.urlopen(artwork_url) as response:
+                                image_data = response.read()
+
+                            id3 = ID3(path)
+                            id3.add(
+                                APIC(
+                                    encoding=3,
+                                    mime="image/jpeg",
+                                    type=3,
+                                    desc="Cover",
+                                    data=image_data,
+                                )
+                            )
+                            id3.save(v2_version=3)
+
+                        print_d("Podcast tagging completed")
+
+                except Exception as e:
+                    print_w(f"Podcast tagging failed: {e}")
+            # -------------- End of MP3 Tagging --------------------------
         except Exception as e:
             print_e(f"Failed download ({e})")
             self.failure(song)
