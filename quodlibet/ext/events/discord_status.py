@@ -2,6 +2,7 @@
 #
 # Copyright (c) 2022 Aditi K <105543244+teeleafs@users.noreply.github.com>
 #               2025 W. Connor Yates <self@wcyates.xyz>
+#               2026 Tobias Klausmann <klausman@schwarzvogel.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@ try:
         ActivityType,
         StatusDisplayType,
     )
+    from pypresence.exceptions import PipeClosed as discord_PipeClosed
 except ImportError as err:
     from quodlibet.plugins import MissingModulePluginError
 
@@ -138,7 +140,7 @@ class DiscordStatusMessage(EventPlugin):
                 large_image=QL_LOGO_IMAGE_URL,
                 large_text=app.name,
             )
-        except InvalidID:
+        except (InvalidID, discord_PipeClosed):
             # XXX Discord was closed?
             self.discordrp = None
 
