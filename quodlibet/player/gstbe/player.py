@@ -508,15 +508,18 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._ext_vol_element.connect("notify::volume", ext_volume_notify)
 
         self._ext_mute_element = None
-        if (
-            hasattr(sink_element.props, "mute")
-            and sink_element.get_factory().get_name() != "directsoundsink"
-        ):
-            # directsoundsink has a mute property but it doesn't work
-            # https://bugzilla.gnome.org/show_bug.cgi?id=755106
+        if hasattr(sink_element.props, "mute"):
             self._ext_mute_element = sink_element
 
             def mute_notify(*args):
+                # directsoundsink has a mute property but it doesn't work properly
+                # https://bugzilla.gnome.org/show_bug.cgi?id=755106
+                # un-muting doesn't take effect until we set the volume again
+                if (
+                    not self.props.mute
+                    and sink_element.get_factory().get_name() == "directsoundsink"
+                ):
+                    self.props.volume = self.props.volume
                 # gets called from a thread
                 GLib.idle_add(self.notify, "mute")
 
