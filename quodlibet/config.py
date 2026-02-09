@@ -42,6 +42,8 @@ INITIAL: dict[str, dict[str, str]] = {
         "gst_buffer": "3",
         "gst_device": "",
         "gst_disable_gapless": "false",
+        # Use WASAPI exclusive mode on Windows
+        "gst_exclusive_mode": "false",
         # Use Jack sink (via Gstreamer) if available
         "gst_use_jack": "false",
         # Usually true is good here, but if you have patchbay configured maybe not...

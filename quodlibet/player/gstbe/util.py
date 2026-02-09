@@ -42,6 +42,8 @@ class AudioSinks(Enum):
 
     WASAPI = "wasapisink"
 
+    WASAPI2 = "wasapi2sink"
+
 
 def pulse_is_running():
     """Returns whether pulseaudio is running"""
@@ -127,7 +129,7 @@ def find_audio_sink() -> tuple[Gst.Element, str]:
             print_d("Using JACK output via Gstreamer")
             return [AudioSinks.JACK]
         if is_windows():
-            return [AudioSinks.DIRECTSOUND]
+            return [AudioSinks.WASAPI2, AudioSinks.DIRECTSOUND]
         if is_linux() and pulse_is_running():
             return [AudioSinks.PULSE]
         return [

@@ -66,7 +66,7 @@ class TGStreamerSink(TestCase):
         obj, name = gstreamer_sink("")
         assert obj
         if os.name == "nt":
-            self.assertEqual(name, "directsoundsink")
+            self.assertEqual(name, "wasapi2sink")
         else:
             self.assertEqual(name, find_audio_sink()[1])
 
