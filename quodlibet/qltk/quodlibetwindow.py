@@ -330,6 +330,7 @@ class TopBar(Gtk.Box):
 
     def set_seekbar_widget(self, widget):
         from quodlibet.qltk import get_children
+
         children = get_children(self._pattern_box)
         if len(children) > 1:
             self._pattern_box.remove(children[-1])
@@ -902,6 +903,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 self.keyval = keyval
                 self.keycode = keycode
                 self.state = state
+
             def get_state(self):
                 return self.state
 

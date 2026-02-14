@@ -219,11 +219,11 @@ def menu_popup(menu, shell, item, func, *args):
         parent = menu.get_parent()
         if parent is None:
             print("Warning: PopoverMenu has no parent, cannot popup")
-            return
+            return None
         root = parent.get_root()
         if root is None:
             print("Warning: PopoverMenu parent not in window, cannot popup")
-            return
+            return None
         # Ensure menu box is set as child before showing (for append compat)
         if hasattr(menu, "_menu_box") and menu.get_child() is None:
             menu.set_child(menu._menu_box)

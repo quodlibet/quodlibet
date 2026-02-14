@@ -352,9 +352,7 @@ class ToggleAction(Gio.SimpleAction):
         self.icon_name = kwargs.pop("icon_name", None)
         name = kwargs.pop("name", None)
         super().__init__(
-            name=name,
-            parameter_type=None,
-            state=GLib.Variant.new_boolean(False)
+            name=name, parameter_type=None, state=GLib.Variant.new_boolean(False)
         )
 
     def get_active(self):

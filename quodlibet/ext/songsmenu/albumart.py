@@ -22,7 +22,7 @@ from io import BytesIO
 from typing import Any
 from urllib.parse import urlencode
 
-from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
+from gi.repository import Gtk, Pango, GLib, GdkPixbuf
 
 from quodlibet import _
 from quodlibet import util, qltk, app

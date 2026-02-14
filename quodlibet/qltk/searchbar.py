@@ -98,7 +98,6 @@ class SearchBarBox(Gtk.Box):
             key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0, lambda *x: entry.mnemonic_activate(True))
 
-
     def set_enabled(self, enabled=True):
         self._entry.set_sensitive(enabled)
 
@@ -234,7 +233,6 @@ class LimitSearchBarBox(SearchBarBox):
             self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
             self.append(self.__weight)
-
 
         def __changed(self, *args):
             self.emit("changed")

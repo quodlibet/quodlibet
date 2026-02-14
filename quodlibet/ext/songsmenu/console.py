@@ -24,7 +24,7 @@ import re
 import traceback
 from itertools import takewhile
 
-from gi.repository import Gtk, Pango, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib
 
 from quodlibet import _, app, ngettext
 from quodlibet import const

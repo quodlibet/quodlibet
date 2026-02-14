@@ -11,11 +11,9 @@ import math
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
-from quodlibet import _, config
-from quodlibet.qltk import is_accel, add_fake_accel
+from quodlibet import config
+from quodlibet.qltk import is_accel
 from quodlibet.qltk.color import mix
-from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.qltk import Icons
 
 
 class EditableUndo:
@@ -262,7 +260,6 @@ class ValidatingEntryMixin(Gtk.Widget):
             color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
         # GTK4: override_color removed, use CSS provider instead
-        pass
         if color and self.get_property("sensitive"):
             css = f"* {{ color: rgba({int(color.red*255)}, {int(color.green*255)}, {int(color.blue*255)}, {color.alpha}); }}"
             from quodlibet.qltk import add_css

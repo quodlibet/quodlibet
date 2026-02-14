@@ -12,7 +12,7 @@ import threading
 import time
 from urllib.request import urlopen, Request
 
-from gi.repository import Gtk, GLib, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango
 import feedparser
 
 import quodlibet

@@ -13,7 +13,6 @@ from tests import run_gtk_loop
 FORMAT_HEADERS = (b"\x89PNG", b"\xff\xd8\xff", b"GIF")
 
 gi.require_version("Soup", "3.0")
-from gi.repository import Gtk, GLib
 
 from dataclasses import dataclass, field
 from time import time, sleep

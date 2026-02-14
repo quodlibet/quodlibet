@@ -369,7 +369,6 @@ def run(window, before_quit=None):
             toplevel.hide()
 
         # GTK4: window.close() calls removed - cleaned up automatically
-        pass
         for window in Window.windows:
             pass
 

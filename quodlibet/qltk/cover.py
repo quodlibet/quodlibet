@@ -297,7 +297,6 @@ class CoverImage(Gtk.Box):
         # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
             # GTK4: self.destroy() removed - __current_bci cleaned up automatically
-            pass
             if albumfile:
                 if self._scale:
                     self.__show_cover(self.__song, self._scale)

@@ -12,7 +12,6 @@ try:
 except ImportError:
     dbus = None
 
-from gi.repository import Gtk, GLib
 from senf import fsnative
 
 from tests import skipUnless, run_gtk_loop

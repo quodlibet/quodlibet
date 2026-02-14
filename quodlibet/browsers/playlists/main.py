@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, GLib, Pango, Gdk
+from gi.repository import Gtk, GLib, Pango
 
 import quodlibet
 from quodlibet import _
@@ -37,7 +37,6 @@ from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.urllib import urlopen
 from .util import (
     parse_m3u,
     parse_pls,

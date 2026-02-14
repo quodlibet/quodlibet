@@ -7,7 +7,6 @@ from random import Random
 from quodlibet.qltk.queue import QueueModel
 from tests import TestCase, run_gtk_loop
 
-from gi.repository import Gtk, GLib
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux

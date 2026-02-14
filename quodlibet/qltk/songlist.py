@@ -647,7 +647,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
             # GTK4: destroy() removed - l cleaned up automatically
-            pass
             if not width:
                 return False
             precision = config.RATINGS.precision
@@ -677,6 +676,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                 self.keyval = keyval
                 self.keycode = keycode
                 self.state = state
+
             def get_state(self):
                 return self.state
 

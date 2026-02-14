@@ -287,7 +287,7 @@ def _init_gtk():
 
         def _box_reorder_child(self, child, position):
             # GTK4: No direct reorder - remove and re-insert at position
-            print_d(f"GTK4: Box.reorder_child() using remove/insert workaround")
+            print_d("GTK4: Box.reorder_child() using remove/insert workaround")
             self.remove(child)
             # GTK4 doesn't have insert_child_after with position number
             # This is a simplified implementation
@@ -434,11 +434,13 @@ def _init_gtk():
 
     # GTK4: Grid.add() removed - use attach() instead
     if not hasattr(Gtk.Grid, "add"):
+
         def _grid_add(self, child):
             # GTK3 Grid.add appends to row 0, incrementing column
             col = getattr(self, "_add_column", 0)
             self.attach(child, col, 0, 1, 1)
             self._add_column = col + 1
+
         Gtk.Grid.add = _grid_add
 
     # GTK4: ScrolledWindow.add_with_viewport() removed
@@ -544,6 +546,7 @@ def _init_gtk():
 
     # GTK4 compatibility: Window type hints removed
     if not hasattr(Gtk.Window, "set_type_hint"):
+
         def _set_type_hint(self, hint):
             self._gtk4_type_hint = hint
 
@@ -669,7 +672,7 @@ def _init_gtk():
                 if path not in self._widgets:
                     # Create a Button-like widget with menu item methods
                     widget = Gtk.Box()
-                    widget.get_children = lambda: []
+                    widget.get_children = list
                     # Add menu item compatibility methods
                     widget._image = Gtk.Image()
                     widget.get_image = lambda: widget._image
@@ -704,11 +707,9 @@ def _init_gtk():
 
         def connect(self, *args, **kwargs):
             """Dummy connect - does nothing in GTK4"""
-            pass
 
         def disconnect(self, *args, **kwargs):
             """Dummy disconnect - does nothing in GTK4"""
-            pass
 
     Gtk.AccelGroup = AccelGroup
 
@@ -734,7 +735,6 @@ def _init_gtk():
             In GTK4, accelerators are handled via GtkApplication.set_accels_for_action().
             This no-op allows old code to run without crashing.
             """
-            pass
 
         Gtk.Widget.add_accelerator = _widget_add_accelerator
 
@@ -948,7 +948,6 @@ def _init_gtk():
 
             def set_tooltip_markup(self, markup):
                 """GTK4: tooltip markup not supported in stub"""
-                pass
 
             def set_visible(self, visible):
                 pass
@@ -1061,10 +1060,10 @@ def _init_gtk():
         # Silently fail if not properly set up to avoid crashes
         if self.get_parent() is None:
             print_d("PopoverMenu.popup() called without parent, ignoring")
-            return
+            return None
         if self.get_root() is None:
             print_d("PopoverMenu.popup() called before parented to window, ignoring")
-            return
+            return None
         # Ensure child is set if we have a menu box
         if hasattr(self, "_menu_box") and self.get_child() is None:
             self.set_child(self._menu_box)

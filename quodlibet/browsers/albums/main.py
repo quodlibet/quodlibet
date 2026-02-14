@@ -14,7 +14,7 @@
 import os
 
 import cairo
-from gi.repository import Gtk, Pango, Gdk, GLib, Gio
+from gi.repository import Gtk, Pango, GLib, Gio
 
 import quodlibet
 from quodlibet import _

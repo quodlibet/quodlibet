@@ -70,6 +70,7 @@ class Volume(Gtk.VolumeButton):
         else:
             self.props.icons = self._orig_icon_list
 
+
 class VolumeMenu(Gtk.PopoverMenu):
     __modes = (
         ("auto", _("Auto_matic"), None),
@@ -224,8 +225,8 @@ class PlayControls(Gtk.Box):
         self._toggle_id = play.connect("toggled", self.__playpause, player)
         # GTK4: Use EventControllerScroll instead of scroll-event signal
         scroll_controller = Gtk.EventControllerScroll.new(
-            Gtk.EventControllerScrollFlags.VERTICAL |
-            Gtk.EventControllerScrollFlags.HORIZONTAL
+            Gtk.EventControllerScrollFlags.VERTICAL
+            | Gtk.EventControllerScrollFlags.HORIZONTAL
         )
         scroll_controller.connect("scroll", self.__scroll, player)
         play.add_controller(scroll_controller)

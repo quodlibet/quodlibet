@@ -306,7 +306,6 @@ class PersistentWindowMixin:
         else:
             self.unmaximize()
 
-
     def __restore_size(self):
         print_d("Restore size")
         value = config.get("memory", self.__conf("size"), "")
@@ -329,7 +328,6 @@ class PersistentWindowMixin:
 
     def __parent_configure_notify(self, *args):
         """GTK4: Parent position changes - no-op since positioning not saved"""
-        pass
 
     def __window_state_notify(self, window, pspec):
         """GTK4: Handle notify::maximized/fullscreened instead of window-state-event"""

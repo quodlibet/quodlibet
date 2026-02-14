@@ -7,7 +7,6 @@
 
 import time
 
-from gi.repository import Gtk, GLib
 
 try:
     from gi.repository import Gst

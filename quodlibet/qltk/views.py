@@ -703,10 +703,12 @@ class BaseView(Gtk.TreeView):
                 self.keyval = keyval
                 self.keycode = keycode
                 self.state = state
+
             def get_state(self):
                 return self.state
 
         event = KeyEvent(keyval, keycode, state)
+
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
@@ -1037,9 +1039,7 @@ class MultiDragTreeView(BaseView):
         # GTK4: get modifier state from gesture
         event = gesture.get_last_event(gesture.get_current_sequence())
         state = event.get_modifier_state() if event else 0
-        mod_active = state & (
-            get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK
-        )
+        mod_active = state & (get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK)
 
         if is_selected:
             self.__pending_action = (path, col, mod_active)
@@ -1154,7 +1154,7 @@ class RCMTreeView(BaseView):
         x, y = self.get_window().get_origin()[1:]
         x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
 
-        # GTK4: Don't call realize() - causes crashes, PopoverMenus don't use this anyway
+        # GTK4: Don't call realize() - crashes, PopoverMenus don't use this anyway
         # menu.realize()
         ma = menu.get_allocation()
         menu_y = rect.height + y

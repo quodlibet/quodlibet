@@ -16,7 +16,7 @@ import errno
 import io
 from pathlib import Path
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk
 
 from quodlibet.util.i18n import GlibTranslations
 from senf import fsnative
@@ -272,7 +272,7 @@ def temp_filename(*args, as_path=False, **kwargs):
             do_stuff(filename)
     """
 
-    from tests import mkstemp, run_gtk_loop
+    from tests import mkstemp
 
     try:
         del kwargs["as_path"]
@@ -293,7 +293,7 @@ def temp_filename(*args, as_path=False, **kwargs):
 def get_temp_copy(path):
     """Returns a copy of the file with the same extension"""
 
-    from tests import mkstemp, run_gtk_loop
+    from tests import mkstemp
 
     ext = os.path.splitext(path)[-1]
     fd, filename = mkstemp(suffix=ext)

@@ -197,7 +197,6 @@ class PreferencesWindow(UniqueWindow):
             # Run it now
             self.__update(buttons, self._toggle_data, get_columns())
 
-
         def __update(self, buttons, toggle_data, columns):
             """Updates all widgets based on the passed column list"""
             self._columns = columns
@@ -415,7 +414,6 @@ class PreferencesWindow(UniqueWindow):
             f.set_margin_top(MARGIN)
             self.append(f)
 
-
         def __changed_text(self, entry, name):
             config.set("albumart", name, entry.get_text())
 
@@ -515,7 +513,6 @@ class PreferencesWindow(UniqueWindow):
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
             f.set_margin_top(MARGIN)
             self.prepend(f)
-
 
         def create_behavior_frame(self):
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -771,7 +768,6 @@ class PreferencesWindow(UniqueWindow):
             ratings.set_margin_top(MARGIN)
             self.append(ratings)
 
-
         def __changed(self, entry, section, name):
             config.set(section, name, entry.get_text())
 
@@ -830,7 +826,6 @@ class PreferencesWindow(UniqueWindow):
                 masked = MaskedBox(app.library)
                 f = qltk.Frame(_("Hidden Songs"), child=masked)
                 self.append(f)
-
 
         def create_behavior_frame(self):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)

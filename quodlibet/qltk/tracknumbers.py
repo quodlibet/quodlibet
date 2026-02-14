@@ -139,7 +139,6 @@ class TrackNumbers(Gtk.Box):
             revert,
         )
 
-
     def __row_edited(self, render, path, new, model, preview, save):
         path = Gtk.TreePath.new_from_string(path)
         row = model[path]

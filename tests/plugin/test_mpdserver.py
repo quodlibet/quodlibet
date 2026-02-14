@@ -10,7 +10,6 @@ import os
 import socket
 
 from senf import fsnative
-from gi.repository import Gtk, GLib
 
 from quodlibet.formats import AudioFile
 from quodlibet import app

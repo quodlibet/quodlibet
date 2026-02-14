@@ -16,7 +16,7 @@ from quodlibet.qltk.chooser import choose_folders, _get_chooser, _run_chooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import MenuItem, Button
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons
 from quodlibet.util.path import unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
 from quodlibet.util import connect_obj, copool

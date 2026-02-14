@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib
+from gi.repository import GLib
 import re
 import time
 from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, ReplayGainPipeline

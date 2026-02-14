@@ -11,8 +11,6 @@ import pytest as pytest
 
 from tests import TestCase, run_gtk_loop
 
-from gi.repository import Gtk
-
 from quodlibet.util.thread import (
     call_async,
     call_async_background,
