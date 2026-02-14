@@ -246,7 +246,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         hbox = Gtk.Box(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL))
+        prefs.add(SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL))
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
