@@ -199,7 +199,7 @@ class QueueExpander(Gtk.Expander):
         menu_box.append(stop_checkbox)
 
         button = SmallMenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.NORMAL), arrow=True
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_visible(False)
         button.set_menu(menu)

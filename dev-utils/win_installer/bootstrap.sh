@@ -37,7 +37,7 @@ function main {
         "${MINGW_PACKAGE_PREFIX}"-python-coverage \
         "${MINGW_PACKAGE_PREFIX}"-python-mutagen
 
-    pip install --user -U feedparser musicbrainzngs
+    pip install --break-system-packages --user -U feedparser musicbrainzngs
 }
 
 main

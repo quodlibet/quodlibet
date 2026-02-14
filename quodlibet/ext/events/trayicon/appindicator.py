@@ -11,10 +11,19 @@ import gi
 
 try:
     gi.require_version("AppIndicator3", "0.1")
-except ValueError as e:
-    raise ImportError(f"Can't load ({e}). Install gir*-appindicator3* package?") from e
+except ValueError:
+    try:
+        gi.require_version("AyatanaAppIndicator3", "0.1")
+    except ValueError as e:
+        raise ImportError(
+            f"Can't load AppIndicator3 or AyatanaAppIndicator3 ({e}). "
+            "Install gir*-appindicator3* package?"
+        ) from e
+    from gi.repository import AyatanaAppIndicator3 as AppIndicator3
+else:
+    from gi.repository import AppIndicator3
 
-from gi.repository import AppIndicator3, Gdk
+from gi.repository import Gdk
 
 import quodlibet
 from quodlibet import _

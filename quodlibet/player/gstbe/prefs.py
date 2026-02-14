@@ -15,7 +15,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton, ConfigSwitch
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
 from quodlibet.qltk import Icons
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, is_windows
 
 
 class GstPlayerPreferences(Gtk.Box):
@@ -109,10 +109,24 @@ class GstPlayerPreferences(Gtk.Box):
         # Buffer
         hb = self._create_buffer_box(buffer_label, scale)
         self.append(hb)
-
         self.append(gapless_button)
-        self.append(jack_button)
-        self.append(jack_connect)
+        if not is_windows():
+            self.append(jack_button)
+            self.append(jack_connect)
+
+        exclusive_button = ConfigSwitch(
+            _("Exclusive Mode"),
+            "player",
+            "gst_exclusive_mode",
+            populate=True,
+            tooltip=_(
+                "Enable exclusive audio access. "
+                "Other applications won't be able to use audio while active."
+            ),
+        )
+        if is_windows():
+            # atm this is a wasapi2sink-only feature, so only makes sense on Windows
+            self.pack_start(exclusive_button, False, False, 0)
 
         if debug:
 

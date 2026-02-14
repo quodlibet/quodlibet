@@ -119,7 +119,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         menu.show_all()
 
         menu_button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.LARGE),
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.LARGE),
             arrow=True,
             down=False,
         )

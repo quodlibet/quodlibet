@@ -283,7 +283,7 @@ msgstr "_Použiť"
 #: quodlibet/qltk/delete.py:139 quodlibet/qltk/edittags.py:334
 #: quodlibet/qltk/_editutils.py:40 quodlibet/qltk/getstring.py:33
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
-#: quodlibet/qltk/msg.py:74 quodlibet/qltk/msg.py:116 quodlibet/qltk/msg.py:131
+#: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
 msgid "_Cancel"
@@ -537,32 +537,32 @@ msgstr "_Pridať stanicu…"
 msgid "_Update Stations"
 msgstr "_Aktualizovať stanice"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "Nenašli sa žiadne stanice"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Na %s sa nenašla žiadna internetová rozhlasová stanica."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "Niet čo pridať"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "Všetky stanice na zozname sú už v knižnici."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "Pridať do obľúbených"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "Odstrániť z obľúbených"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -571,6 +571,7 @@ msgstr[1] "%(count)d stanice"
 msgstr[2] "%(count)d staníc"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:65
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:43
 msgid "Paned Browser"
 msgstr "Panelový prehliadač"
 
@@ -898,11 +899,11 @@ msgstr "Zadajte kód…"
 msgid "Log in to %s"
 msgstr "Prihlásiť sa do %s"
 
-#: quodlibet/browsers/soundcloud/util.py:94
+#: quodlibet/browsers/soundcloud/util.py:103
 msgid "Soundcloud authorisation"
 msgstr "Soundcloud overenie"
 
-#: quodlibet/browsers/soundcloud/util.py:95
+#: quodlibet/browsers/soundcloud/util.py:104
 msgid "Enter Soundcloud auth code:"
 msgstr "Vložiť overovací kód pre Soundcloud:"
 
@@ -1392,7 +1393,7 @@ msgid "_Fill:"
 msgstr "_Vyplniť:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "Farby"
 
@@ -1817,7 +1818,7 @@ msgstr "Názov zoznam nastavení pre uloženie:"
 #: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
-#: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:73
+#: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:70
 #: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
@@ -2985,31 +2986,30 @@ msgstr[0] "preskočil {count} predtým synchronizovaný súbor"
 msgstr[1] "preskočili {count} predtým synchronizované súbory"
 msgstr[2] "preskočilo {count} predtým synchronizovaných súborov"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "Synchronizované texty piesní"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "Zobrazuje synchronizované texty piesní z .lrc súboru, ktorý má rovnaký názov "
 "ako stopa."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "Text:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "Pozadie:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "Písmo"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "Veľkosť (px):"
 
@@ -5674,16 +5674,16 @@ msgstr "Použitie"
 msgid "Revert to default"
 msgstr "Obnoviť predvolené"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 #, fuzzy
 msgid "Filename patterns for lyric files"
 msgstr "_Vzor názvu súborov:"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr ""
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 msgid "I know what I'm doing!"
 msgstr "Viem, čo robím!"
 
@@ -6397,32 +6397,32 @@ msgstr ""
 msgid "Right side order:"
 msgstr "Poradie na pravej strane:"
 
-#: quodlibet/qltk/msg.py:59
+#: quodlibet/qltk/msg.py:56
 msgid "Discard tag changes?"
 msgstr "Zahodiť zmeny v tagoch?"
 
-#: quodlibet/qltk/msg.py:61
+#: quodlibet/qltk/msg.py:58
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr ""
 "Tagy boli zmenéné ale nie uložené. Uložiť tieto súbory, alebo zahodiť zmeny?"
 
-#: quodlibet/qltk/msg.py:75 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "_Obrátiť"
 
-#: quodlibet/qltk/msg.py:125
+#: quodlibet/qltk/msg.py:122
 msgid "File exists"
 msgstr "Súbor existuje"
 
-#: quodlibet/qltk/msg.py:127
+#: quodlibet/qltk/msg.py:124
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "Nahradiť %(file-name)s?"
 
-#: quodlibet/qltk/msg.py:133
+#: quodlibet/qltk/msg.py:130
 msgid "_Replace File"
 msgstr "_Nahradiť súbor"
 
@@ -7679,30 +7679,30 @@ msgstr "Zoznamy prehrávania musia mať názov"
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Zoznam prehrávania s názvom %(name)s už jestvuje v %(path)s"
 
-#: quodlibet/util/cover/built_in.py:34
+#: quodlibet/util/cover/built_in.py:35
 msgid "Embedded album covers"
 msgstr "Vložené obaly albumov"
 
-#: quodlibet/util/cover/built_in.py:35
+#: quodlibet/util/cover/built_in.py:36
 msgid "Uses covers embedded into audio files."
 msgstr "Používa obaly vložené do zvukových súborov."
 
-#: quodlibet/util/cover/built_in.py:58
+#: quodlibet/util/cover/built_in.py:63
 msgid "Filesystem cover"
 msgstr "Obal zo súborového systému"
 
-#: quodlibet/util/cover/built_in.py:60
+#: quodlibet/util/cover/built_in.py:65
 msgid ""
 "Uses commonly named images found in common directories alongside the song."
 msgstr ""
 "Používa bežne pomenované obrázky nachádzajúce sa v bežných priečinkoch pri "
 "skladbách."
 
-#: quodlibet/util/cover/manager.py:236
+#: quodlibet/util/cover/manager.py:237
 msgid "Cover Art"
 msgstr "Obrázky obalov"
 
-#: quodlibet/util/cover/manager.py:236
+#: quodlibet/util/cover/manager.py:237
 msgid "Querying album art providers"
 msgstr "Prehľadávanie poskytovateľov obrázkov albumov"
 
@@ -8237,6 +8237,11 @@ msgstr ""
 "Podporované formáty súborov zahŕňajú Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
 "MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
+#, fuzzy
+msgid "Tag editing interface"
+msgstr "Editácia tagov"
+
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
@@ -8248,6 +8253,16 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
+#, fuzzy
+msgid "Album list view"
+msgstr "Zoznam albumov"
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
+#, fuzzy
+msgid "Track list"
+msgstr "Zoznam stôp"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "

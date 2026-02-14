@@ -73,7 +73,7 @@ class PatternLexer(Scanner):
         Scanner.__init__(
             self,
             [
-                (r"([^<>|\\]|\\.)+", self.text),
+                (r"(?:[^<>|\\]|\\.)+", self.text),
                 (r"\|\||[<>|]", self.table),
             ],
         )

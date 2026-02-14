@@ -37,7 +37,7 @@ class CoverSourcePlugin(GObject.Object):
         "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
         "search-complete": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
-    PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
+    PLUGIN_ICON = Icons.FOLDER_DOWNLOAD
 
     @property
     def name(self):

@@ -48,11 +48,11 @@ dev = [
   "coverage[toml]>=7.2.1,<8",
   "mypy>=1.14.1,<1.19",
   "flaky>=3.7.0,<4",
-  "types-docutils>=0.21.0,<0.22",
+  "types-docutils>=0.22.0,<0.23",
   "types-certifi>=2021.10.8.3,<2022",
   "types-requests>=2.28.11.15,<3",
   "pyvirtualdisplay~=3.0 ; sys_platform == 'linux'",
-  "setuptools>=78.1.1,<81",
+  "setuptools>=78.1.1,<82",
   "packaging>=24.2",
   "ruff==0.7.3 ; sys_platform == 'linux'",
 ]

@@ -44,18 +44,17 @@ class RedirectImportHook:
             return self
         return None
 
-    def load_module(self, name):
-        mod = None
-        if name in sys.modules:
-            mod = sys.modules[name]
-        loadname = self._name + "." + name
+    def create_module(self, spec):
+        loadname = f"{self._name}.{spec.name}"
         if loadname in sys.modules:
-            mod = sys.modules[loadname]
-        if mod is None:
-            mod = importlib.import_module(loadname)
-        sys.modules[name] = mod
-        sys.modules[loadname] = mod
-        return mod
+            return sys.modules[loadname]
+        return importlib.import_module(loadname)
+
+    def exec_module(self, module):
+        name = module.__name__
+        loadname = f"{self._name}.{name}"
+        sys.modules[name] = module
+        sys.modules[loadname] = module
 
 
 def install_redirect_import_hook():

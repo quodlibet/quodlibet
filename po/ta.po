@@ -280,7 +280,7 @@ msgstr "_Aplay"
 #: quodlibet/qltk/delete.py:139 quodlibet/qltk/edittags.py:334
 #: quodlibet/qltk/_editutils.py:40 quodlibet/qltk/getstring.py:33
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
-#: quodlibet/qltk/msg.py:74 quodlibet/qltk/msg.py:116 quodlibet/qltk/msg.py:131
+#: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
 msgid "_Cancel"
@@ -533,32 +533,32 @@ msgstr "_ADD நிலையம்…"
 msgid "_Update Stations"
 msgstr "_வாத நிலையங்கள்"
 
-#: quodlibet/browsers/iradio.py:859
+#: quodlibet/browsers/iradio.py:860
 msgid "No stations found"
 msgstr "நிலையங்கள் எதுவும் கிடைக்கவில்லை"
 
-#: quodlibet/browsers/iradio.py:860
+#: quodlibet/browsers/iradio.py:861
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "இணைய வானொலி நிலையங்கள் எதுவும் %s இல் காணப்படவில்லை."
 
-#: quodlibet/browsers/iradio.py:873
+#: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
 msgstr "சேர்க்க எதுவும் இல்லை"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
 msgstr "பட்டியலிடப்பட்ட அனைத்து நிலையங்களும் ஏற்கனவே உங்கள் நூலகத்தில் உள்ளன."
 
-#: quodlibet/browsers/iradio.py:897
+#: quodlibet/browsers/iradio.py:898
 msgid "Add to Favorites"
 msgstr "பிடித்தவைகளில் சேர்க்கவும்"
 
-#: quodlibet/browsers/iradio.py:901
+#: quodlibet/browsers/iradio.py:902
 msgid "Remove from Favorites"
 msgstr "பிடித்தவைகளிலிருந்து அகற்று"
 
-#: quodlibet/browsers/iradio.py:1006
+#: quodlibet/browsers/iradio.py:1007
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -566,6 +566,7 @@ msgstr[0] "%(count)d நிலையம்"
 msgstr[1] "%(count)d நிலையங்கள்"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:65
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:43
 msgid "Paned Browser"
 msgstr "பான் உலாவி"
 
@@ -888,11 +889,11 @@ msgstr "குறியீட்டை உள்ளிடவும்…"
 msgid "Log in to %s"
 msgstr "%s இல் உள்நுழைக"
 
-#: quodlibet/browsers/soundcloud/util.py:94
+#: quodlibet/browsers/soundcloud/util.py:103
 msgid "Soundcloud authorisation"
 msgstr "சவுண்ட்க்ளூட் ஏற்பு"
 
-#: quodlibet/browsers/soundcloud/util.py:95
+#: quodlibet/browsers/soundcloud/util.py:104
 msgid "Enter Soundcloud auth code:"
 msgstr "சவுண்ட்க்ளூட் அங்கீகார குறியீட்டை உள்ளிடவும்:"
 
@@ -1377,7 +1378,7 @@ msgid "_Fill:"
 msgstr "_ ஃபில்:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
-#: quodlibet/ext/events/synchronizedlyrics.py:65
+#: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
 msgstr "நிறங்கள்"
 
@@ -1804,7 +1805,7 @@ msgstr "சேமிப்பதற்கான முன்னமைக்க�
 #: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
-#: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:73
+#: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:70
 #: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
@@ -2955,31 +2956,30 @@ msgid_plural "skipped {count} files synchronized previously"
 msgstr[0] "{count} கோப்பு முன்பு ஒத்திசைக்கப்பட்டது"
 msgstr[1] "{count} கோப்புகள் முன்பு ஒத்திசைக்கப்பட்டன"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:28
+#: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
 msgstr "ஒத்திசைக்கப்பட்ட பாடல்"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:30
-msgid ""
-"Shows synchronized lyrics from an .lrc file with same name as the track (or "
-"similar)."
+#: quodlibet/ext/events/synchronizedlyrics.py:29
+#, fuzzy
+msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
 "தடத்தின் (அல்லது ஒத்த) அதே பெயருடன் .lrc கோப்பிலிருந்து ஒத்திசைக்கப்பட்ட பாடல்களைக் "
 "காட்டுகிறது."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:68
+#: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
 msgstr "உரை:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:78
+#: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
 msgstr "பின்னணி:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:89
+#: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
 msgstr "எழுத்துரு"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:92
+#: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
 msgstr "அளவு (பிஎக்ச்):"
 
@@ -5629,16 +5629,16 @@ msgstr "பயன்பாடு"
 msgid "Revert to default"
 msgstr "இயல்புநிலைக்கு திரும்பவும்"
 
-#: quodlibet/qltk/advanced_prefs.py:296
+#: quodlibet/qltk/advanced_prefs.py:297
 #, fuzzy
 msgid "Filename patterns for lyric files"
 msgstr "கோப்பு பெயர் முறை:"
 
-#: quodlibet/qltk/advanced_prefs.py:302
+#: quodlibet/qltk/advanced_prefs.py:303
 msgid "Directory strings or patterns for lyric files"
 msgstr ""
 
-#: quodlibet/qltk/advanced_prefs.py:341
+#: quodlibet/qltk/advanced_prefs.py:342
 msgid "I know what I'm doing!"
 msgstr "நான் என்ன செய்கிறேன் என்று எனக்குத் தெரியும்!"
 
@@ -6342,11 +6342,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr "வலது பக்க வரிசை:"
 
-#: quodlibet/qltk/msg.py:59
+#: quodlibet/qltk/msg.py:56
 msgid "Discard tag changes?"
 msgstr "குறிச்சொல் மாற்றங்களை நிராகரிக்கவா?"
 
-#: quodlibet/qltk/msg.py:61
+#: quodlibet/qltk/msg.py:58
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6354,21 +6354,21 @@ msgstr ""
 "குறிச்சொற்கள் மாற்றப்பட்டுள்ளன, ஆனால் சேமிக்கப்படவில்லை. இந்த கோப்புகளைச் சேமிக்கவும், அல்லது "
 "மாற்றங்களை மாற்றவும் நிராகரிக்கவும்?"
 
-#: quodlibet/qltk/msg.py:75 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "_ திரும்பவும்"
 
-#: quodlibet/qltk/msg.py:125
+#: quodlibet/qltk/msg.py:122
 msgid "File exists"
 msgstr "கோப்பு உள்ளது"
 
-#: quodlibet/qltk/msg.py:127
+#: quodlibet/qltk/msg.py:124
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "%(file-name)s மாற்றவும்?"
 
-#: quodlibet/qltk/msg.py:133
+#: quodlibet/qltk/msg.py:130
 msgid "_Replace File"
 msgstr "_ மறுசீரமைப்பு கோப்பு"
 
@@ -7618,30 +7618,30 @@ msgstr "பிளேலிச்ட்களுக்கு ஒரு பெய�
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "%(name)sற பெயரில் ஒரு பிளேலிச்ட் ஏற்கனவே %(path)s உள்ளது"
 
-#: quodlibet/util/cover/built_in.py:34
+#: quodlibet/util/cover/built_in.py:35
 msgid "Embedded album covers"
 msgstr "உட்பொதிக்கப்பட்ட ஆல்பம் கவர்கள்"
 
-#: quodlibet/util/cover/built_in.py:35
+#: quodlibet/util/cover/built_in.py:36
 msgid "Uses covers embedded into audio files."
 msgstr "ஆடியோ கோப்புகளில் பதிக்கப்பட்ட அட்டைகளைப் பயன்படுத்துகிறது."
 
-#: quodlibet/util/cover/built_in.py:58
+#: quodlibet/util/cover/built_in.py:63
 msgid "Filesystem cover"
 msgstr "கோப்பு முறைமை கவர்"
 
-#: quodlibet/util/cover/built_in.py:60
+#: quodlibet/util/cover/built_in.py:65
 msgid ""
 "Uses commonly named images found in common directories alongside the song."
 msgstr ""
 "பாடலுடன் பொதுவான கோப்பகங்களில் காணப்படும் பொதுவாக பெயரிடப்பட்ட படங்களைப் "
 "பயன்படுத்துகிறது."
 
-#: quodlibet/util/cover/manager.py:236
+#: quodlibet/util/cover/manager.py:237
 msgid "Cover Art"
 msgstr "கவர் கலை"
 
-#: quodlibet/util/cover/manager.py:236
+#: quodlibet/util/cover/manager.py:237
 msgid "Querying album art providers"
 msgstr "ஆல்பம் கலை வழங்குநர்களை வினவுகிறது"
 
@@ -8171,6 +8171,11 @@ msgstr ""
 "உதவி கோப்பு வடிவங்களில் OGG VORBIS/OPUS/SPEEX/FLAC, MP3, FLAC, MOD/XM/IT, "
 "Musepack, WAVPACK, MPEG-4 AAC, குரங்குகள் ஆடியோ, WMA, SPC, MIDI ஆகியவை அடங்கும்."
 
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:33
+#, fuzzy
+msgid "Tag editing interface"
+msgstr "குறிச்சொல் திருத்துதல்"
+
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
@@ -8181,6 +8186,16 @@ msgstr ""
 "குவாட் லிபெட் ஒரு இசை மேலாண்மை திட்டம். இது உங்கள் ஆடியோ நூலகத்தைக் காண பல்வேறு வழிகளை "
 "வழங்குகிறது, அத்துடன் இணைய வானொலி மற்றும் ஆடியோ ஊட்டங்களுக்கான ஆதரவையும் வழங்குகிறது. "
 "இது மிகவும் நெகிழ்வான மேனிலை தரவு டேக் திருத்துதல் மற்றும் தேடல் திறன்களைக் கொண்டுள்ளது."
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
+#, fuzzy
+msgid "Album list view"
+msgstr "ஆல்பம் பட்டியல்"
+
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
+#, fuzzy
+msgid "Track list"
+msgstr "ட்ராக் பட்டியல்"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "

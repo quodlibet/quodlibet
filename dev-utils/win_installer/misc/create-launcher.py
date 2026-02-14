@@ -39,9 +39,9 @@ def get_build_args():
         os.path.dirname(sys.executable), python_name + "-config")
 
     cflags = subprocess.check_output(
-        ["sh", python_config, "--cflags"]).strip()
+        [sys.executable, python_config, "--cflags"]).strip()
     libs = subprocess.check_output(
-        ["sh", python_config, "--libs"]).strip()
+        [sys.executable, python_config, "--libs"]).strip()
 
     cflags = os.fsdecode(cflags)
     libs = os.fsdecode(libs)
@@ -69,14 +69,34 @@ def get_launcher_code(entry_point):
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     PWSTR lpCmdLine, int nCmdShow)
 {
+    PyStatus status;
+    PyConfig config;
     int result;
 
-    Py_NoUserSiteDirectory = 1;
-    Py_IgnoreEnvironmentFlag = 1;
-    Py_DontWriteBytecodeFlag = 1;
-    Py_Initialize();
-    PySys_SetArgvEx(__argc, __wargv, 0);
+    PyConfig_InitPythonConfig(&config);
+
+    config.user_site_directory = 0;
+    config.use_environment = 0;
+    config.write_bytecode = 0;
+    config.safe_path = 1;
+
+    status = PyConfig_SetArgv(&config, __argc, __wargv);
+    if (PyStatus_Exception(status)) {
+        PyConfig_Clear(&config);
+        Py_ExitStatusException(status);
+        return 1;
+    }
+
+    status = Py_InitializeFromConfig(&config);
+    if (PyStatus_Exception(status)) {
+        PyConfig_Clear(&config);
+        Py_ExitStatusException(status);
+        return 1;
+    }
+    PyConfig_Clear(&config);
+
     result = PyRun_SimpleString("%s");
+
     Py_Finalize();
     return result;
 }

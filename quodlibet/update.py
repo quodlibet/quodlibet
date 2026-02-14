@@ -86,7 +86,10 @@ def fetch_versions(build_type, timeout=5.0):
 class UpdateDialog(Dialog):
     def __init__(self, parent):
         super().__init__(
-            title=_("Checking for Updates"), use_header_bar=True, modal=True
+            title=_("Checking for Updates"),
+            use_header_bar=True,
+            modal=True,
+            resizable=False,
         )
 
         self.set_default_size(380, 110)
