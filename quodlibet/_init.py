@@ -256,7 +256,7 @@ def _init_gtk():
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # PyGObject doesn't fail anymore when init fails, so do it ourselves
+    # PyGObject doesn't fail any more when init fails, so do it ourselves
     initialized, sys.argv[:] = Gtk.init_check(sys.argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")
