@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-01-07 15:01+0000\n"
+"PO-Revision-Date: 2026-02-11 08:49+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1277,7 +1277,7 @@ msgstr "日本語のテキストをローマ字化する(_J)"
 
 #: quodlibet/ext/editing/kakasi.py:67
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "「Kanji Kana Simple Inverter」(KAKASI) が見つかりませんでした。"
+msgstr "「Kanji Kana Simple Inverter」(kakasi) が見つかりませんでした。"
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -5483,15 +5483,16 @@ msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "「jackaudiosink」に自動接続するように指示します"
 
 #: quodlibet/player/gstbe/prefs.py:114
-#, fuzzy
 msgid "Exclusive Mode"
-msgstr "ワイドモード"
+msgstr "排他的モード"
 
 #: quodlibet/player/gstbe/prefs.py:119
 msgid ""
 "Enable exclusive audio access. Other applications won't be able to use audio "
 "while active."
 msgstr ""
+"排他的オーディオアクセスを有効にします。アクティブな間は他のアプリケーション"
+"がオーディオを使用できなくなります。"
 
 #: quodlibet/player/gstbe/util.py:153
 #, python-format
