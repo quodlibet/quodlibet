@@ -167,7 +167,7 @@ msgstr "Albumweergave"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Sluiten"
 
@@ -285,7 +285,7 @@ msgstr "Toep_assen"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "Ann_uleren"
 
@@ -1647,29 +1647,29 @@ msgstr "Slaapliedje"
 msgid "Fades out and pauses your music."
 msgstr "Vervaagt en pauzeert je muziek."
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "Discord-statusbericht"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "Discord-statusbericht"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Past je Discord-statusbericht aan naar waar je naar luistert."
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 msgid "(Paused)"
 msgstr "(Gepauzeerd)"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "Statusregel 1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "Statusregel 2"
 
@@ -5566,12 +5566,12 @@ msgstr "Automatisch verbinden met JACK-uitvoerapparaten"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "Verbind automatisch met `jackaudiosink`"
 
-#: quodlibet/player/gstbe/prefs.py:114
+#: quodlibet/player/gstbe/prefs.py:116
 #, fuzzy
 msgid "Exclusive Mode"
 msgstr "Brede modus"
 
-#: quodlibet/player/gstbe/prefs.py:119
+#: quodlibet/player/gstbe/prefs.py:121
 msgid ""
 "Enable exclusive audio access. Other applications won't be able to use audio "
 "while active."
@@ -7647,16 +7647,16 @@ msgstr "%(current)s van %(all)s"
 msgid "Checking for Updates"
 msgstr "Bezig met controleren op updates"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "Verbinding mislukt"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "Je beschikt al over de nieuwste versie (%(version)s)"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

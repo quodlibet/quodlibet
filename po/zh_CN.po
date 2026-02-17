@@ -161,7 +161,7 @@ msgstr "专辑显示"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "关闭(_C)"
 
@@ -278,7 +278,7 @@ msgstr "应用(_A)"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -1607,29 +1607,29 @@ msgstr "摇篮曲"
 msgid "Fades out and pauses your music."
 msgstr "淡出并暂停播放音乐。"
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "Discord 状态消息"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "Dscord 状态消息"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "根据您当前正在收听的内容更改 Discord 状态消息。"
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 msgid "(Paused)"
 msgstr "(已暂停)"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "状态行 #1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "状态行 #2"
 
@@ -5364,11 +5364,11 @@ msgstr "自动连接到 JACK 输出设备"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "告诉 `jackaudiosink` 自动连接"
 
-#: quodlibet/player/gstbe/prefs.py:114
+#: quodlibet/player/gstbe/prefs.py:116
 msgid "Exclusive Mode"
 msgstr "独占模式"
 
-#: quodlibet/player/gstbe/prefs.py:119
+#: quodlibet/player/gstbe/prefs.py:121
 msgid ""
 "Enable exclusive audio access. Other applications won't be able to use audio "
 "while active."
@@ -7353,16 +7353,16 @@ msgstr "%(all)s 中的 %(current)s"
 msgid "Checking for Updates"
 msgstr "检查更新"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "连接失败"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "您已经在使用最新的版本 %(version)s"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"
