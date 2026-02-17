@@ -96,8 +96,7 @@
                 gtk4
                 gtksourceview5
                 kakasi
-                keybinder3
-                libappindicator
+                # keybinder3 and libappindicator are GTK3-only
                 libmodplug
                 libnotify
                 librsvg

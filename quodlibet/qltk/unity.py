@@ -16,18 +16,8 @@ from quodlibet import _
 from quodlibet.util import gi_require_versions
 
 
-is_unity = True
-try:
-    gi.require_version("Dbusmenu", "0.4")
-    from gi.repository import Dbusmenu
-except (ValueError, ImportError):
-    is_unity = False
-
-try:
-    gi_require_versions("Unity", ["7.0", "6.0", "5.0"])
-    from gi.repository import Unity
-except (ValueError, ImportError):
-    is_unity = False
+# Dbusmenu/Unity are GTK3-only and conflict with GTK4's type system
+is_unity = False
 
 
 def init(desktop_id, player):

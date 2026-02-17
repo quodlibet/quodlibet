@@ -365,14 +365,11 @@ def run(window, before_quit=None):
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
 
-        for toplevel in Gtk.Window.list_toplevels():
-            toplevel.hide()
+        # GTK4: list_toplevels() removed, hide tracked windows instead
+        for win in Window.windows:
+            win.set_visible(False)
 
-        # GTK4: window.close() calls removed - cleaned up automatically
-        for window in Window.windows:
-            pass
-
-        Gtk.main_quit()
+        loop.quit()
 
         print_d("Quit GTK: done.")
 
@@ -382,8 +379,8 @@ def run(window, before_quit=None):
         _main_setup_osx(window)
 
     if not window.show_maybe():
-        # if we don't show a window, startup isn't completed, so call manually
-        Gdk.notify_startup_complete()
+        # GTK4: notify_startup_complete() removed, handled automatically
+        pass
 
     from quodlibet.errorreport import faulthandling
 
@@ -398,13 +395,13 @@ def run(window, before_quit=None):
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
+    loop = GLib.MainLoop()
     if "QUODLIBET_START_PERF" in os.environ:
-        loop = GLib.MainLoop()
-        window.connect("draw", lambda *args: loop.quit())
+        # GTK4: "draw" signal removed, use "map" to detect first show
+        window.connect("map", lambda *args: loop.quit())
         loop.run()
         sys.exit()
     else:
-        loop = GLib.MainLoop()
         loop.run()
 
     print_d("Main loop done.")
