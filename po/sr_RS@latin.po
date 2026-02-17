@@ -3080,7 +3080,7 @@ msgstr "Menjaj traku izbora"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Menja traku izbora koristeći alt dugme (vidljiva/nevidljiva)."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5496,11 +5496,11 @@ msgstr "Punjenje memorije"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Ne mogu stvoriti GStreamer pipeline"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "Nije pronađen ni jedan GStreamer element za obradu formata"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format zapisa: %(format-description)s"
@@ -5562,12 +5562,23 @@ msgstr ""
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:114
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Širok režim"
+
+#: quodlibet/player/gstbe/prefs.py:119
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nema nađenog GStreamer audio sink"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "Nevažeća GStreamer izlazna pipeline"
 

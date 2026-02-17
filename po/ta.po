@@ -3069,7 +3069,7 @@ msgstr "பட்டியல் பட்டியை மாற்றவும�
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "மாற்று விசையை அழுத்துவதன் மூலம் பட்டியல் பட்டியை மாற்றவும்."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5460,11 +5460,11 @@ msgstr "இடையக"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "சிச்ட்ரீமர் பைப்லைனை (%s) உருவாக்க முடியவில்லை"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "மீடியா வடிவமைப்பைக் கையாள சிச்ட்ரீமர் உறுப்பு எதுவும் கிடைக்கவில்லை"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "ஊடக வடிவம்: %(format-description)s"
@@ -5525,12 +5525,23 @@ msgstr "சாக் வெளியீட்டு சாதனங்களு�
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "தானாக இணைப்பதற்கு `சாகாடியோசிங்க்` சொல்கிறது"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:114
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "பரந்த பயன்முறை"
+
+#: quodlibet/player/gstbe/prefs.py:119
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "சிச்ட்ரீமர் ஆடியோ மடு எதுவும் கிடைக்கவில்லை. முயற்சித்தேன்: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "தவறான சிச்ட்ரீமர் வெளியீட்டு குழாய்"
 

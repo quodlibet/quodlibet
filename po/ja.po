@@ -2942,8 +2942,8 @@ msgstr "同期歌詞"
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
-"埋め込み歌詞または歌詞ファイル (lrc) から、再生時間に同期する歌詞を表示します"
-"。"
+"埋め込み歌詞または歌詞ファイル (lrc) から、再生時間に同期する歌詞を表示しま"
+"す。"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
@@ -3045,7 +3045,7 @@ msgstr "トグルメニューバー"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Altキーを押すとメニューバー表示をトグルします。"
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5416,11 +5416,11 @@ msgstr "バッファリング中"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "GStreamer パイプラインを作成できません (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "メディア形式を処理する GStreamer エレメントが見つかりません"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "メディア形式: %(format-description)s"
@@ -5482,12 +5482,23 @@ msgstr "JACK出力デバイスに自動接続する"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "「jackaudiosink」に自動接続するように指示します"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:114
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "ワイドモード"
+
+#: quodlibet/player/gstbe/prefs.py:119
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "GStreamer オーディオシンクが見つかりません。試行した設定: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "不正な Gstreamer 出力パイプライン"
 

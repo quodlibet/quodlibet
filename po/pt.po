@@ -3105,7 +3105,7 @@ msgstr "Alternar barra de menu"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Exibe/esconde a barra de menu com a tecla Alt."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5559,13 +5559,13 @@ msgstr "Preenchimento do buffer"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Não foi possível criar a fila de processamento do GStreamer"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Não foi encontrado um elemento de GStreamer capaz de lidar com este formato "
 "de mídia"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formato de mídia: %(format-description)s"
@@ -5628,12 +5628,23 @@ msgstr ""
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:114
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Modo largo"
+
+#: quodlibet/player/gstbe/prefs.py:119
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nenhum consumidor de áudio do GStreamer foi encontrado"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "A fila de processamento de saída do GStreamer é inválida"
 

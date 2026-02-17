@@ -3107,7 +3107,7 @@ msgstr "Activa/desactiva la barra de menú"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Activa/desactiva la barra de menú amb la tecla Alt."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5519,12 +5519,12 @@ msgstr "S'està carregant"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "No s'ha pogut crear la canonada del GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "No s'ha trobat cap element del GStreamer per a gestionar el format multimèdia"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format multimèdia: %(format-description)s"
@@ -5586,12 +5586,23 @@ msgstr "Connecta automàticament els dispositius de sortida del JACK"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "Indica a «jackaudiosink» que es connecti automàticament"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:114
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Mode ample"
+
+#: quodlibet/player/gstbe/prefs.py:119
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "No s'ha trobat cap receptor d'àudio del GStreamer. S'ha provat: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "La canonada de sortida del GStreamer no és vàlida"
 
