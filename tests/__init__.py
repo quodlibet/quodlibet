@@ -210,6 +210,8 @@ def init_test_environ():
         if shutil.which("Xvfb") is None:
             _VDISPLAY = None
         else:
+            # GTK4 defaults to Wayland, but Xvfb only provides X11
+            os.environ["GDK_BACKEND"] = "x11"
             _VDISPLAY = pyvirtualdisplay.Display()
             _VDISPLAY.start()
 

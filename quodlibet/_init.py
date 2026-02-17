@@ -244,7 +244,7 @@ def _init_gtk():
         from gi.repository import GdkX11
 
         GdkX11  # noqa
-    except (ValueError, ImportError):
+    except (ValueError, ImportError, AssertionError):
         pass
 
     gi.require_version("Gtk", "4.0")
@@ -1070,6 +1070,186 @@ def _init_gtk():
         return _orig_popover_popup(self)
 
     Gtk.PopoverMenu.popup = _popover_menu_popup_compat
+
+    # GTK4: ScrolledWindow.add() → set_child()
+    if not hasattr(Gtk.ScrolledWindow, "add"):
+        Gtk.ScrolledWindow.add = lambda self, child: self.set_child(child)
+
+    # GTK4: ScrolledWindow.remove() → set_child(None)
+    if not hasattr(Gtk.ScrolledWindow, "remove"):
+        Gtk.ScrolledWindow.remove = lambda self, child: self.set_child(None)
+
+    # GTK4: Window.remove() → set_child(None)
+    if not hasattr(Gtk.Window, "remove"):
+        Gtk.Window.remove = lambda self, child: self.set_child(None)
+
+    # GTK4: Expander.add() → set_child()
+    if not hasattr(Gtk.Expander, "add"):
+        Gtk.Expander.add = lambda self, child: self.set_child(child)
+
+    # GTK4: Expander.remove() → set_child(None)
+    if not hasattr(Gtk.Expander, "remove"):
+        Gtk.Expander.remove = lambda self, child: self.set_child(None)
+
+    # GTK4: Paned.remove() compatibility
+    if not hasattr(Gtk.Paned, "remove"):
+
+        def _paned_remove(self, child):
+            if self.get_start_child() == child:
+                self.set_start_child(None)
+            elif self.get_end_child() == child:
+                self.set_end_child(None)
+
+        Gtk.Paned.remove = _paned_remove
+
+    # GTK4: Button.always_show_image property removed (images always shown)
+    # Wrap __init__ to strip the property before GObject sees it
+    _orig_button_init = Gtk.Button.__init__
+
+    def _button_init_compat(self, *args, **kwargs):
+        kwargs.pop("always_show_image", None)
+        return _orig_button_init(self, *args, **kwargs)
+
+    Gtk.Button.__init__ = _button_init_compat
+
+    # GTK4: Label.set_line_wrap() → set_wrap()
+    if not hasattr(Gtk.Label, "set_line_wrap"):
+        Gtk.Label.set_line_wrap = lambda self, wrap: self.set_wrap(wrap)
+
+    # GTK4: Label.set_line_wrap_mode() → set_wrap_mode()
+    if not hasattr(Gtk.Label, "set_line_wrap_mode"):
+        Gtk.Label.set_line_wrap_mode = lambda self, mode: self.set_wrap_mode(mode)
+
+    # GTK4: Label.get_line_wrap() → get_wrap()
+    if not hasattr(Gtk.Label, "get_line_wrap"):
+        Gtk.Label.get_line_wrap = lambda self: self.get_wrap()
+
+    # GTK4: Label.set_alignment() → set_xalign()/set_yalign()
+    if not hasattr(Gtk.Label, "set_alignment"):
+
+        def _label_set_alignment(self, xalign, yalign):
+            self.set_xalign(xalign)
+            self.set_yalign(yalign)
+
+        Gtk.Label.set_alignment = _label_set_alignment
+
+    # GTK4: TreeViewColumn.pack_start/pack_end renamed to prepend/append
+    # but GTK4 TreeViewColumn doesn't have prepend, and the signature changed
+    if not hasattr(Gtk.TreeViewColumn, "prepend"):
+        # In GTK4 TreeViewColumn, use pack_start as the replacement
+        # pack_start(cell, expand) is still the right API in GTK4 for TreeViewColumn
+        pass
+
+    # Actually, GTK4 TreeViewColumn still has pack_start/pack_end but not prepend
+    # The test code calls column.prepend(renderer, expand) which is a GTK3 CellLayout method
+    if not hasattr(Gtk.TreeViewColumn, "prepend"):
+
+        def _treeviewcolumn_prepend(self, cell, expand=True):
+            self.pack_start(cell, expand)
+
+        Gtk.TreeViewColumn.prepend = _treeviewcolumn_prepend
+
+    # GTK4: ComboBoxText.prepend() signature changed - it takes (id, text) in GTK4
+    # but old code calls prepend(text) like a CellLayout. Add prepend_text if missing.
+    if not hasattr(Gtk.ComboBoxText, "prepend_text"):
+        Gtk.ComboBoxText.prepend_text = lambda self, text: self.prepend(None, text)
+
+    # GTK4: Gtk.events_pending() removed - use GLib.MainContext
+    if not hasattr(Gtk, "events_pending"):
+
+        def _events_pending():
+            return GLib.MainContext.default().pending()
+
+        Gtk.events_pending = _events_pending
+
+    # GTK4: Gtk.main_iteration() removed - use GLib.MainContext
+    if not hasattr(Gtk, "main_iteration"):
+
+        def _main_iteration():
+            return GLib.MainContext.default().iteration(False)
+
+        Gtk.main_iteration = _main_iteration
+
+    if not hasattr(Gtk, "main_iteration_do"):
+
+        def _main_iteration_do(blocking):
+            return GLib.MainContext.default().iteration(blocking)
+
+        Gtk.main_iteration_do = _main_iteration_do
+
+    # GTK4: SeparatorMenuItem removed - use Separator
+    if not hasattr(Gtk, "SeparatorMenuItem"):
+
+        class SeparatorMenuItem(Gtk.Separator):
+            def __init__(self):
+                super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+
+        Gtk.SeparatorMenuItem = SeparatorMenuItem
+
+    # GTK4: EventBox removed - all widgets can receive events
+    if not hasattr(Gtk, "EventBox"):
+
+        class EventBox(Gtk.Box):
+            """GTK4: EventBox removed, use Box as container instead."""
+
+            def __init__(self):
+                super().__init__()
+
+            def add(self, child):
+                self.append(child)
+
+        Gtk.EventBox = EventBox
+
+    # GTK4: CellRendererText.set_margin_start doesn't exist - it's a Widget method
+    # CellRenderer is not a widget in GTK4, margins don't apply the same way
+
+    # GTK4: Button.clicked() removed - use activate() or emit("clicked")
+    if not hasattr(Gtk.Button, "clicked"):
+        Gtk.Button.clicked = lambda self: self.emit("clicked")
+
+    # GTK4: TextBuffer.begin/end_not_undoable_action removed
+    if not hasattr(Gtk.TextBuffer, "begin_not_undoable_action"):
+        Gtk.TextBuffer.begin_not_undoable_action = lambda self: None
+    if not hasattr(Gtk.TextBuffer, "end_not_undoable_action"):
+        Gtk.TextBuffer.end_not_undoable_action = lambda self: None
+
+    # GTK4: FileChooserNative.set_local_only removed (always local in GTK4)
+    if not hasattr(Gtk.FileChooserNative, "set_local_only"):
+        Gtk.FileChooserNative.set_local_only = lambda self, local: None
+
+    # GTK4: PopoverMenu.attach_to_widget removed
+    if not hasattr(Gtk.PopoverMenu, "attach_to_widget"):
+
+        def _popover_attach_to_widget(self, widget, detacher=None):
+            if self.get_parent() is not None:
+                self.unparent()
+            self.set_parent(widget)
+
+        Gtk.PopoverMenu.attach_to_widget = _popover_attach_to_widget
+
+    # GTK4: PopoverMenu.get_children() compatibility
+    if not hasattr(Gtk.PopoverMenu, "get_children"):
+
+        def _popover_get_children(self):
+            if hasattr(self, "_menu_box"):
+                from quodlibet.qltk import get_children
+                return get_children(self._menu_box)
+            child = self.get_child()
+            if child is None:
+                return []
+            from quodlibet.qltk import get_children
+            return get_children(child)
+
+        Gtk.PopoverMenu.get_children = _popover_get_children
+
+    # GTK4: Gdk.Event.new() removed
+    if not hasattr(Gdk.Event, "new"):
+
+        class _FakeEvent:
+            def __init__(self, event_type=None):
+                self.type = event_type
+
+        Gdk.Event.new = staticmethod(lambda event_type: _FakeEvent(event_type))
 
     # GTK4: Table removed - wrap Grid to provide Table API
     class Table(Gtk.Grid):
