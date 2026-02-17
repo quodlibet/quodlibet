@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-01-07 15:01+0000\n"
+"PO-Revision-Date: 2026-02-10 15:07+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5609,15 +5609,16 @@ msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "Demande à `jackaudiosink` de se connecter automatiquement"
 
 #: quodlibet/player/gstbe/prefs.py:114
-#, fuzzy
 msgid "Exclusive Mode"
-msgstr "Mode étendu"
+msgstr "Mode Exclusif"
 
 #: quodlibet/player/gstbe/prefs.py:119
 msgid ""
 "Enable exclusive audio access. Other applications won't be able to use audio "
 "while active."
 msgstr ""
+"Active l'accès audio exclusif. Les autres applications ne pourront pas "
+"utiliser l'audio tant que ce mode est actif."
 
 #: quodlibet/player/gstbe/util.py:153
 #, python-format
