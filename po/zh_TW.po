@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-01-30 04:01+0000\n"
+"PO-Revision-Date: 2026-02-11 08:49+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -5368,15 +5368,14 @@ msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "告之 `jackaudiosink` 至自動連接"
 
 #: quodlibet/player/gstbe/prefs.py:114
-#, fuzzy
 msgid "Exclusive Mode"
-msgstr "寬幅模式"
+msgstr "獨用模式"
 
 #: quodlibet/player/gstbe/prefs.py:119
 msgid ""
 "Enable exclusive audio access. Other applications won't be able to use audio "
 "while active."
-msgstr ""
+msgstr "啟用獨用音訊存取。其他應用程式在作用時將無法使用音訊。"
 
 #: quodlibet/player/gstbe/util.py:153
 #, python-format
