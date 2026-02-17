@@ -32,17 +32,17 @@ class AckError:
 
 
 class Permissions:
-    PERMISSION_NONE = 0
-    PERMISSION_READ = 1
-    PERMISSION_ADD = 2
-    PERMISSION_CONTROL = 4
-    PERMISSION_ADMIN = 8
-    PERMISSION_ALL = (
-        PERMISSION_NONE
-        | PERMISSION_READ
-        | PERMISSION_ADD
-        | PERMISSION_CONTROL
-        | PERMISSION_ADMIN
+    NONE = 0
+    READ = 1
+    ADD = 2
+    CONTROL = 4
+    ADMIN = 8
+    ALL = (
+        NONE
+        | READ
+        | ADD
+        | CONTROL
+        | ADMIN
     )
 
 
@@ -140,9 +140,9 @@ class MPDService:
         self._options = app.player_options
 
         if not self._config.config_get("password"):
-            self.default_permission = Permissions.PERMISSION_ALL
+            self.default_permission = Permissions.ALL
         else:
-            self.default_permission = Permissions.PERMISSION_NONE
+            self.default_permission = Permissions.NONE
 
         def options_changed(*args):
             self.emit_changed("options")
@@ -483,7 +483,7 @@ class MPDConnection(BaseTCPConnection):
 
     def authenticate(self, password):
         if password == self.service._config.config_get("password"):
-            self.permission = Permissions.PERMISSION_ALL
+            self.permission = Permissions.ALL
         else:
             self.permission = self.service.default_permission
             raise MPDRequestError("Password incorrect", AckError.PASSWORD)
@@ -594,7 +594,7 @@ class MPDConnection(BaseTCPConnection):
     _commands: dict[str, tuple[Callable, bool, int]] = {}
 
     @classmethod
-    def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):
+    def Command(cls, name, permission=Permissions.ADMIN, ack=True):
         def wrap(func):
             assert name not in cls._commands, name
             cls._commands[name] = (func, ack, permission)
@@ -650,12 +650,12 @@ def _cmd_idle(conn, service, args):
     service.register_idle(conn, args)
 
 
-@MPDConnection.Command("ping", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("ping", Permissions.NONE)
 def _cmd_ping(conn, service, args):
     return
 
 
-@MPDConnection.Command("password", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("password", Permissions.NONE)
 def _cmd_password(conn, service, args):
     _verify_length(args, 1)
     conn.authenticate(args[0])
@@ -666,34 +666,34 @@ def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
-@MPDConnection.Command("close", ack=False, permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("close", Permissions.NONE, ack=False)
 def _cmd_close(conn, service, args):
     conn.close()
 
 
-@MPDConnection.Command("play")
+@MPDConnection.Command("play", Permissions.CONTROL)
 def _cmd_play(conn, service, args):
     service.play()
 
 
-@MPDConnection.Command("listplaylists")
+@MPDConnection.Command("listplaylists", Permissions.READ)
 def _cmd_listplaylists(conn, service, args):
     pass
 
 
-@MPDConnection.Command("list")
+@MPDConnection.Command("list", Permissions.READ)
 def _cmd_list(conn, service, args):
     pass
 
 
-@MPDConnection.Command("playid")
+@MPDConnection.Command("playid", Permissions.CONTROL)
 def _cmd_playid(conn, service, args):
     _verify_length(args, 1)
     songid = _parse_int(args[0])
     service.playid(songid)
 
 
-@MPDConnection.Command("pause")
+@MPDConnection.Command("pause", Permissions.CONTROL)
 def _cmd_pause(conn, service, args):
     value = None
     if args:
@@ -702,77 +702,77 @@ def _cmd_pause(conn, service, args):
     service.pause(value)
 
 
-@MPDConnection.Command("stop")
+@MPDConnection.Command("stop", Permissions.CONTROL)
 def _cmd_stop(conn, service, args):
     service.stop()
 
 
-@MPDConnection.Command("next")
+@MPDConnection.Command("next", Permissions.CONTROL)
 def _cmd_next(conn, service, args):
     service.next()
 
 
-@MPDConnection.Command("previous")
+@MPDConnection.Command("previous", Permissions.CONTROL)
 def _cmd_previous(conn, service, args):
     service.previous()
 
 
-@MPDConnection.Command("repeat")
+@MPDConnection.Command("repeat", Permissions.CONTROL)
 def _cmd_repeat(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.repeat(value)
 
 
-@MPDConnection.Command("random")
+@MPDConnection.Command("random", Permissions.CONTROL)
 def _cmd_random(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.random(value)
 
 
-@MPDConnection.Command("single")
+@MPDConnection.Command("single", Permissions.CONTROL)
 def _cmd_single(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.single(value)
 
 
-@MPDConnection.Command("setvol")
+@MPDConnection.Command("setvol", Permissions.CONTROL)
 def _cmd_setvol(conn, service, args):
     _verify_length(args, 1)
     value = _parse_int(args[0])
     service.setvol(value)
 
 
-@MPDConnection.Command("status")
+@MPDConnection.Command("status", Permissions.READ)
 def _cmd_status(conn, service, args):
     status = service.status()
     for k, v in status:
         conn.write_line(f"{k}: {v}")
 
 
-@MPDConnection.Command("stats")
+@MPDConnection.Command("stats", Permissions.READ)
 def _cmd_stats(conn, service, args):
     status = service.stats()
     for k, v in status:
         conn.write_line(f"{k}: {v}")
 
 
-@MPDConnection.Command("currentsong")
+@MPDConnection.Command("currentsong", Permissions.READ)
 def _cmd_currentsong(conn, service, args):
     stats = service.currentsong()
     if stats is not None:
         conn.write_line(stats)
 
 
-@MPDConnection.Command("count")
+@MPDConnection.Command("count", Permissions.READ)
 def _cmd_count(conn, service, args):
     conn.write_line("songs: 0")
     conn.write_line("playtime: 0")
 
 
-@MPDConnection.Command("plchanges")
+@MPDConnection.Command("plchanges", Permissions.READ)
 def _cmd_plchanges(conn, service, args):
     _verify_length(args, 1)
     version = _parse_int(args[0])
@@ -781,7 +781,7 @@ def _cmd_plchanges(conn, service, args):
         conn.write_line(changes)
 
 
-@MPDConnection.Command("plchangesposid")
+@MPDConnection.Command("plchangesposid", Permissions.READ)
 def _cmd_plchangesposid(conn, service, args):
     _verify_length(args, 1)
     version = _parse_int(args[0])
@@ -790,12 +790,12 @@ def _cmd_plchangesposid(conn, service, args):
         conn.write_line(changes)
 
 
-@MPDConnection.Command("listallinfo")
+@MPDConnection.Command("listallinfo", Permissions.READ)
 def _cmd_listallinfo(*args):
     _cmd_currentsong(*args)
 
 
-@MPDConnection.Command("seek")
+@MPDConnection.Command("seek", Permissions.CONTROL)
 def _cmd_seek(conn, service, args):
     _verify_length(args, 2)
     songpos = _parse_int(args[0])
@@ -803,7 +803,7 @@ def _cmd_seek(conn, service, args):
     service.seek(songpos, time_)
 
 
-@MPDConnection.Command("seekid")
+@MPDConnection.Command("seekid", Permissions.CONTROL)
 def _cmd_seekid(conn, service, args):
     _verify_length(args, 2)
     songid = _parse_int(args[0])
@@ -811,7 +811,7 @@ def _cmd_seekid(conn, service, args):
     service.seekid(songid, time_)
 
 
-@MPDConnection.Command("seekcur")
+@MPDConnection.Command("seekcur", Permissions.CONTROL)
 def _cmd_seekcur(conn, service, args):
     _verify_length(args, 1)
 
@@ -828,31 +828,31 @@ def _cmd_seekcur(conn, service, args):
     service.seekcur(time_, relative)
 
 
-@MPDConnection.Command("outputs")
+@MPDConnection.Command("outputs", Permissions.READ)
 def _cmd_outputs(conn, service, args):
     conn.write_line("outputid: 0")
     conn.write_line("outputname: dummy")
     conn.write_line("outputenabled: 1")
 
 
-@MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("commands", Permissions.NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
         conn.write_line(f"command: {name!s}")
 
 
-@MPDConnection.Command("tagtypes")
+@MPDConnection.Command("tagtypes", Permissions.READ)
 def _cmd_tagtypes(conn, service, args):
     for mpd_key, _ql_key in TAG_MAPPING:
         conn.write_line(mpd_key)
 
 
-@MPDConnection.Command("lsinfo")
+@MPDConnection.Command("lsinfo", Permissions.READ)
 def _cmd_lsinfo(conn, service, args):
     _verify_length(args, 1)
 
 
-@MPDConnection.Command("playlistinfo")
+@MPDConnection.Command("playlistinfo", Permissions.READ)
 def _cmd_playlistinfo(conn, service, args):
     if args:
         _verify_length(args, 1)
@@ -864,7 +864,7 @@ def _cmd_playlistinfo(conn, service, args):
         conn.write_line(result)
 
 
-@MPDConnection.Command("playlistid")
+@MPDConnection.Command("playlistid", Permissions.READ)
 def _cmd_playlistid(conn, service, args):
     if args:
         songid = _parse_int(args[0])
