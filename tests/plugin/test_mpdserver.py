@@ -16,7 +16,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import app
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
-from tests import skipIf, run_gtk_loop
+from tests import skipIf, run_gtk_loop, get_data_path
 
 
 @skipIf(os.name == "nt", "mpd server not supported under Windows")
@@ -105,6 +105,7 @@ class TMPDCommands(PluginTestCase):
         config.quit()
 
     def test_currentsong_length(self):
+        assert app.player is not None
         app.player.go_to(
             AudioFile(
                 {
@@ -115,14 +116,33 @@ class TMPDCommands(PluginTestCase):
         )
 
         response = self._cmd(b"currentsong\n")
+        assert response is not None
         assert b"Time: 12\n" in response
 
     def test_tagtypes(self):
         response = self._cmd(b"tagtypes\n")
+        assert response is not None
         assert b"Time\n" not in response
 
     def test_commands(self):
-        skip = ["close", "idle", "noidle"]
+        skip = [
+            "add",
+            "addid",
+            "close",
+            "delete",
+            "idle",
+            "list",
+            "listplaylists",
+            "lsinfo",
+            "noidle",
+            "password",
+            "playid",
+            "plchanges",
+            "plchangesposid",
+            "seek",
+            "seekcur",
+            "seekid",
+        ]
         cmds = [c for c in self.conn.list_commands() if c not in skip]
         for cmd in cmds:
             self._cmd(cmd.encode("ascii") + b"\n")
@@ -135,3 +155,41 @@ class TMPDCommands(PluginTestCase):
     def test_idle_close(self):
         for cmd in ["idle", "noidle", "close"]:
             self._cmd(cmd.encode("ascii") + b"\n")
+
+    def test_queue_add_list_delete(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f"add {filename}\n".encode("utf-8"))
+        assert response is not None
+        assert b"OK\n" in response
+
+        response = self._cmd(b"playlist\n")
+        assert response is not None
+        assert f"file: {filename}".encode("utf-8") in response
+
+        response = self._cmd(b"delete 0\n")
+        assert response is not None
+        assert b"OK\n" in response
+
+        response = self._cmd(b"playlist\n")
+        assert response is not None
+        assert f"file: {filename}".encode("utf-8") not in response
+
+    def test_queue_addid_and_plchanges(self):
+        filename = get_data_path("silence-44-s.mp3")
+
+        status = self._cmd(b"status\n")
+        assert status is not None
+        before = None
+        for line in status.splitlines():
+            if line.startswith(b"playlist:"):
+                before = int(line.split(b":", 1)[1].strip())
+                break
+        assert before is not None
+
+        response = self._cmd(f"addid {filename}\n".encode("utf-8"))
+        assert response is not None
+        assert b"Id:" in response
+
+        response = self._cmd(f"plchanges {before}\n".encode("utf-8"))
+        assert response is not None
+        assert f"file: {filename}".encode("utf-8") in response
