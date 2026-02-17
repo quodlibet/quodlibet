@@ -1,4 +1,5 @@
-# Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
+# Copyright 2014-2026 Christoph Reiter <reiter.christoph@gmail.com>
+# Copyright 2026 Felicián Németh <felician.nemeth@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,6 +15,7 @@ from senf import bytes2fsn, fsn2bytes
 from quodlibet import const
 from quodlibet.util import print_d, print_w
 from .tcpserver import BaseTCPServer, BaseTCPConnection
+from .filtering import MPDSearchConverter, MPDFilterError
 
 
 class AckError:
@@ -37,13 +39,7 @@ class Permissions:
     ADD = 2
     CONTROL = 4
     ADMIN = 8
-    ALL = (
-        NONE
-        | READ
-        | ADD
-        | CONTROL
-        | ADMIN
-    )
+    ALL = NONE | READ | ADD | CONTROL | ADMIN
 
 
 TAG_MAPPING = [
@@ -127,7 +123,7 @@ def parse_command(line):
 class MPDService:
     """This is the actual shared MPD service which the clients talk to"""
 
-    version = (0, 17, 0)
+    version = (0, 25, 0)
 
     def __init__(self, app, config):
         self._app = app
@@ -440,6 +436,15 @@ class MPDService:
         parts.append(f"Id: {self._get_id(song):d}")
         return "\n".join(parts)
 
+    def _format_library_song(self, song):
+        parts = []
+        parts.append(f"file: {song('~filename')}")
+        tag_info = format_tags(song)
+        if tag_info:
+            parts.append(tag_info)
+        parts.append(f"Time: {int(song('~#length') or 0):d}")
+        return "\n".join(parts)
+
     def queue_song_by_pos(self, songpos):
         songs = self.queue_songs()
         if songpos < 0 or songpos >= len(songs):
@@ -489,6 +494,9 @@ class MPDService:
         for offset, song in enumerate(songs):
             self._queue_model.insert(position + offset, row=[song])
 
+    def search_library(self, ql_query_text):
+        return self._app.library.query(ql_query_text)
+
     def playlistinfo(self, start=None, end=None):
         if start is not None and start > 1:
             return None
@@ -533,6 +541,111 @@ class MPDRequestError(Exception):
         self.msg = msg
         self.code = code
         self.index = index
+
+
+def _mpd_filter_error(e: MPDFilterError) -> MPDRequestError:
+    if e.args and e.args[0] == "Wrong arg count":
+        return MPDRequestError("Wrong arg count")
+    return MPDRequestError("invalid arg")
+
+
+def _parse_search_options(filter_expr, remaining):
+    # MPD uses a parenthesized filter expression followed by key/value options.
+    if not (filter_expr.startswith("(") and filter_expr.endswith(")")):
+        raise MPDFilterError("invalid arg")
+
+    # Store parsed values; keys are always present even if None.
+    options = {"range": None, "position": None, "sort": None}
+
+    if len(remaining) % 2:
+        raise MPDFilterError("invalid arg")
+
+    for idx in range(0, len(remaining), 2):
+        key = remaining[idx]
+        value = remaining[idx + 1]
+        if key == "window":
+            options["range"] = _parse_window(value)  # type: ignore[assignment]
+            continue
+        if key == "sort":
+            options["sort"] = _parse_sort(value)  # type: ignore[assignment]
+            continue
+        if key == "position":
+            options["position"] = _parse_position(value)  # type: ignore[assignment]
+            continue
+        raise MPDFilterError("invalid arg")
+
+    return options
+
+
+def _parse_window(arg):
+    try:
+        start, end = _parse_range(arg)
+    except MPDRequestError as e:
+        raise MPDRequestError("invalid arg") from e
+    if start < 0 or end < 0:
+        raise MPDRequestError("invalid arg")
+    return start, end
+
+
+def _parse_position(arg):
+    try:
+        return _parse_int(arg)
+    except MPDRequestError as e:
+        raise MPDRequestError("invalid arg") from e
+
+
+def _parse_sort(arg):
+    if not arg:
+        raise MPDFilterError("invalid arg")
+    if arg.startswith("-"):
+        tag = arg[1:]
+        if not tag:
+            raise MPDFilterError("invalid arg")
+        return tag, "desc"
+    return arg, "asc"
+
+
+def _prepare_search(args):
+    converter = MPDSearchConverter()
+    if _is_legacy_search_args(args, converter.TAG_MAP):
+        options = {"range": None, "position": None, "sort": None}
+        return converter.legacy_to_query(args), options
+
+    if not args:
+        raise MPDFilterError("Wrong arg count")
+
+    filter_expr = args[0]
+    options = _parse_search_options(filter_expr, args[1:])
+    query_text = converter.to_query(filter_expr)
+    return query_text, options
+
+
+def _is_legacy_search_args(args, tag_map):
+    if not args or len(args) % 2:
+        return False
+    for index in range(0, len(args), 2):
+        if args[index].lower() not in tag_map:
+            return False
+    return True
+
+
+def _apply_window_position(songs, window_range):
+    if window_range is not None:
+        start, end = window_range
+        songs = songs[start:end]
+    return songs
+
+
+def _run_search(service, args):
+    try:
+        query_text, options = _prepare_search(args)
+    except MPDFilterError as e:
+        raise _mpd_filter_error(e) from e
+
+    songs = service.search_library(query_text)
+    if options["position"] is not None:
+        _parse_position(options["position"])
+    return _apply_window_position(songs, options["range"])
 
 
 class MPDConnection(BaseTCPConnection):
@@ -986,6 +1099,28 @@ def _cmd_tagtypes(conn, service, args):
 @MPDConnection.Command("lsinfo", Permissions.READ)
 def _cmd_lsinfo(conn, service, args):
     _verify_length(args, 1)
+
+
+@MPDConnection.Command("search", Permissions.READ)
+def _cmd_search(conn, service, args):
+    songs = _run_search(service, args)
+    for song in songs:
+        conn.write_line(service._format_library_song(song))
+
+
+@MPDConnection.Command("searchadd", Permissions.ADD)
+def _cmd_searchadd(conn, service, args):
+    songs = _run_search(service, args)
+    if songs:
+        service.queue_insert(songs)
+
+
+@MPDConnection.Command("searchcount", Permissions.READ)
+def _cmd_searchcount(conn, service, args):
+    songs = _run_search(service, args)
+    playtime = sum(int(song("~#length") or 0) for song in songs)
+    conn.write_line(f"songs: {len(songs):d}")
+    conn.write_line(f"playtime: {playtime:d}")
 
 
 @MPDConnection.Command("playlistinfo", Permissions.READ)

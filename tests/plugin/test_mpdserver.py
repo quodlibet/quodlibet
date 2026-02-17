@@ -70,6 +70,11 @@ class TMPDCommands(PluginTestCase):
         config.init()
         init_fake_app()
 
+        filename = get_data_path("silence-44-s.mp3")
+        song = AudioFile({"~filename": fsnative(filename)})
+        song.sanitize()
+        app.library.add([song])
+
         MPDServerPlugin = self.mod.MPDServerPlugin
         MPDConnection = self.mod.main.MPDConnection
         MPDService = self.mod.main.MPDService
@@ -139,6 +144,9 @@ class TMPDCommands(PluginTestCase):
             "playid",
             "plchanges",
             "plchangesposid",
+            "search",
+            "searchadd",
+            "searchcount",
             "seek",
             "seekcur",
             "seekid",
@@ -158,13 +166,13 @@ class TMPDCommands(PluginTestCase):
 
     def test_queue_add_list_delete(self):
         filename = get_data_path("silence-44-s.mp3")
-        response = self._cmd(f"add {filename}\n".encode("utf-8"))
+        response = self._cmd(f"add {filename}\n".encode())
         assert response is not None
         assert b"OK\n" in response
 
         response = self._cmd(b"playlist\n")
         assert response is not None
-        assert f"file: {filename}".encode("utf-8") in response
+        assert f"file: {filename}".encode() in response
 
         response = self._cmd(b"delete 0\n")
         assert response is not None
@@ -172,7 +180,7 @@ class TMPDCommands(PluginTestCase):
 
         response = self._cmd(b"playlist\n")
         assert response is not None
-        assert f"file: {filename}".encode("utf-8") not in response
+        assert f"file: {filename}".encode() not in response
 
     def test_queue_addid_and_plchanges(self):
         filename = get_data_path("silence-44-s.mp3")
@@ -186,10 +194,178 @@ class TMPDCommands(PluginTestCase):
                 break
         assert before is not None
 
-        response = self._cmd(f"addid {filename}\n".encode("utf-8"))
+        response = self._cmd(f"addid {filename}\n".encode())
         assert response is not None
         assert b"Id:" in response
 
-        response = self._cmd(f"plchanges {before}\n".encode("utf-8"))
+        response = self._cmd(f"plchanges {before}\n".encode())
         assert response is not None
-        assert f"file: {filename}".encode("utf-8") in response
+        assert f"file: {filename}".encode() in response
+
+    def test_search_and_searchcount(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f"search file {filename}\n".encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+        response = self._cmd(f"searchcount file {filename}\n".encode())
+        assert response is not None
+        assert b"songs: 1" in response
+
+    def test_searchadd(self):
+        filename = get_data_path("silence-44-s.mp3")
+
+        response = self._cmd(f"searchadd file {filename}\n".encode())
+        assert response is not None
+        assert b"OK\n" in response
+
+        response = self._cmd(b"playlist\n")
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_invalid_args(self):
+        response = self._cmd(b"search artist\n")
+        assert response is not None
+        assert b"ACK" in response
+
+    def test_search_any(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f"search any {filename}\n".encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_expression(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f'search "(file contains \\"{filename}\\")"\n'.encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_and_expression(self):
+        filename = get_data_path("silence-44-s.mp3")
+        mpd_query = '((file contains \\"silence-44-s\\") AND (file contains \\"mp3\\"))'
+        response = self._cmd(f'search "{mpd_query}"\n'.encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_single_quotes(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f"search \"(file contains '{filename}')\"\n".encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_escaped_quotes(self):
+        song = AudioFile(
+            {
+                "~filename": fsnative("/dev/null"),
+                "artist": "foo'bar\"",
+            }
+        )
+        song.sanitize()
+        app.library.add([song])
+
+        response = self._cmd(b'search "(artist == \\"foo\\\'bar\\\\\\"\\")"\n')
+        assert response is not None
+        assert b"Artist: foo'bar\"" in response
+
+    def test_search_filter_parentheses_in_value(self):
+        song = AudioFile(
+            {
+                "~filename": fsnative("/dev/null"),
+                "artist": "foo (bar) baz",
+            }
+        )
+        song.sanitize()
+        app.library.add([song])
+
+        response = self._cmd(b'search "(artist == \\"foo (bar) baz\\")"\n')
+        assert response is not None
+        assert b"Artist: foo (bar) baz" in response
+
+    def test_search_window(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(
+            f'search "(file contains \\"{filename}\\")" window 0:1\n'.encode()
+        )
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_starts_with(self):
+        filename = get_data_path("silence-44-s.mp3")
+        prefix = os.path.dirname(filename)
+        response = self._cmd(f'search "(file starts_with \\"{prefix}\\")"\n'.encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_eq_ci_fallback(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(f'search "(file eq_ci \\"{filename}\\")"\n'.encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_regex_fallback(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(b'search "(file =~ "silence-44-s\\.mp3$")"\n')
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_not_contains(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(b'search "(file !contains \\"nope\\")"\n')
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_base(self):
+        filename = get_data_path("silence-44-s.mp3")
+        base = os.path.dirname(filename)
+        response = self._cmd(f'search "(base \\"{base}\\")"\n'.encode())
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_added_since(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(b'search "(added-since \\"0\\")"\n')
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_modified_since(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(b'search "(modified-since \\"0\\")"\n')
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_sort_parsing(self):
+        filename = get_data_path("silence-44-s.mp3")
+
+        response = self._cmd(
+            b'search "(file contains \\"silence-44-s\\")" sort artist\n'
+        )
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+        response = self._cmd(
+            b'search "(file contains \\"silence-44-s\\")" sort -artist\n'
+        )
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_filter_sort_invalid(self):
+        response = self._cmd(b'search "(file contains \\"silence-44-s\\")" sort -\n')
+        assert response is not None
+        assert b"ACK" in response
+
+    def test_search_position(self):
+        filename = get_data_path("silence-44-s.mp3")
+        response = self._cmd(
+            f'search "(file contains \\"{filename}\\")" position 0\n'.encode()
+        )
+        assert response is not None
+        assert f"file: {filename}".encode() in response
+
+    def test_search_window_term_in_filter(self):
+        response = self._cmd(b'search "(album contains window)"\n')
+        assert response is not None
+
+    def test_search_requires_parentheses(self):
+        response = self._cmd(b"search album contains foo\n")
+        assert response is not None
+        assert b"ACK" in response
