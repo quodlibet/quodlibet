@@ -40,31 +40,45 @@ class ConfirmRateMultipleDialog(qltk.Message):
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 
-class RatingsMenuItem(Gtk.Widget):
+class RatingsMenuItem(Gtk.Button):
     def __init__(self, songs, library, label=_("_Rating")):  # noqa
-        super().__init__(label=label, use_underline=True)
+        super().__init__(use_underline=True)
+        self.add_css_class("flat")
         self._songs = songs
-        image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.NORMAL)
-        image.show()
-        self.set_image(image)
+        # GTK4: Use Box for icon + label in button
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        icon = Gtk.Image.new_from_icon_name(Icons.FAVORITE)
+        box.append(icon)
+        box.append(Gtk.Label(label=label, use_underline=True))
+        self.set_child(box)
 
+        # GTK4: Buttons don't have submenus; use popover with Box
         submenu = Gtk.PopoverMenu()
-        self.set_submenu(submenu)
+        submenu.set_parent(self)
+        self._submenu = submenu
+        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        submenu.set_child(menu_box)
+
         self._rating_menu_items = []
         for i in RATINGS.all:
             text = f"{i:0.2f}\t{format_rating(i)}"
-            itm = Gtk.CheckMenuItem(label=text)
+            itm = Gtk.CheckButton(label=text)
             itm.rating = i
-            submenu.append(itm)
+            menu_box.append(itm)
             handler = itm.connect("toggled", self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
-        reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
-        reset.connect("activate", self._on_rating_remove, library)
+
+        menu_box.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
+
+        reset = Gtk.Button(label=_("_Remove Rating"), use_underline=True)
+        reset.add_css_class("flat")
+        reset.connect("clicked", self._on_rating_remove, library)
+        menu_box.append(reset)
+
         self._select_ratings()
 
-        submenu.append(SeparatorMenuItem())
-        submenu.append(reset)
-        submenu.show_all()
+        # Connect button to show popover
+        self.connect("clicked", lambda w: self._submenu.popup())
 
     def set_songs(self, songs):
         """Set a new set of songs affected by the rating menu"""

@@ -13,7 +13,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
     raise PluginNotSupportedError
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gdk, Gtk, GdkPixbuf
 from senf import fsn2uri
 
 import dbus
@@ -679,8 +679,22 @@ class Icon(
         self.implement_interface("org.gnome.UPnP.MediaItem1", MediaItem.IFACE)
 
         # load into a pixbuf
-        theme = Gtk.IconTheme.get_default()
-        pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
+        # GTK4: IconTheme.get_default() → get_for_display()
+        # GTK4: load_icon() → lookup_icon() + load via file
+        display = Gdk.Display.get_default()
+        theme = Gtk.IconTheme.get_for_display(display)
+        icon_paintable = theme.lookup_icon(
+            Icons.QUODLIBET, None, Icon.SIZE, 1,
+            Gtk.TextDirection.NONE, Gtk.IconLookupFlags.FORCE_REGULAR
+        )
+        icon_file = icon_paintable.get_file()
+        if icon_file:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_file.get_path())
+        else:
+            # Fallback: create empty pixbuf
+            pixbuf = GdkPixbuf.Pixbuf.new(
+                GdkPixbuf.Colorspace.RGB, True, 8, Icon.SIZE, Icon.SIZE
+            )
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(

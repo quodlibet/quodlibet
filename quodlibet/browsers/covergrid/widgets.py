@@ -60,9 +60,10 @@ class AlbumWidget(Gtk.FlowBoxChild):
         eb = Gtk.Box()
         eb.connect("popup-menu", lambda _: self.emit("songs-menu"))
         eb.connect("button-press-event", self.__rightclick)
-        eb.add(box)
+        eb.append(box)
 
-        self.add(eb)
+        # GTK4: FlowBoxChild uses set_child instead of add
+        self.set_child(eb)
 
         # show all before binding "visible" so the label will stay hidden if so
         # configured by the "text_visible" property.

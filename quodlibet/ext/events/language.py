@@ -49,7 +49,8 @@ class LanguagePreference(EventPlugin):
 
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
-        combo.prepend(render, True)
+        # GTK4: CellLayout uses pack_start, not prepend
+        combo.pack_start(render, True)
         combo.set_cell_data_func(render, cell_func)
 
         def on_combo_changed(combo):

@@ -240,11 +240,8 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         grid_add(0, 0, update_lbl)
         grid_add(1, 0, update_combobox)
         for box in strategy_boxes:
-            # show_all will be called on the plugin preference interface, so
-            # without the following that would result in overlapping text
-            box.show_all()
-            box.props.no_show_all = True
-
+            # GTK4: no_show_all removed, show_all is a no-op
+            # Visibility controlled by show_only_current_box()
             grid_add(1, 1, box)
 
         show_only_current_box()

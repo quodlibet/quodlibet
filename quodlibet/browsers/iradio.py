@@ -492,9 +492,8 @@ class QuestionBar(Gtk.InfoBar):
             label=_("Would you like to load a list of popular radio stations?")
         )
         label.set_line_wrap(True)
-        label.show()
-        content = self.get_content_area()
-        content.add(label)
+        # GTK4: InfoBar uses add_child() instead of get_content_area().add()
+        self.add_child(label)
 
         self.add_button(_("_Load Stations"), self.RESPONSE_LOAD)
         self.set_show_close_button(True)
@@ -679,9 +678,8 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         pane.set_start_child(vb)
 
-        pane.set_resize_start_child(resize=False)
-
-        pane.set_shrink_start_child(shrink=False)
+        pane.set_resize_start_child(False)
+        pane.set_shrink_start_child(False)
         pane.show_all()
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
@@ -696,9 +694,8 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         pane.set_end_child(songbox)
 
-        pane.set_resize_end_child(resize=True)
-
-        pane.set_shrink_end_child(shrink=False)
+        pane.set_resize_end_child(True)
+        pane.set_shrink_end_child(False)
         self.append(pane)
         self.show()
 

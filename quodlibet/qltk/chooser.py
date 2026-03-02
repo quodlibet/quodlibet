@@ -8,7 +8,7 @@
 import os
 import contextlib
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gio, Gtk, GLib
 from senf import fsnative, path2fsn, fsn2bytes, bytes2fsn
 
 from quodlibet import _
@@ -75,15 +75,17 @@ def _run_chooser(parent, chooser):
         List[fsnative]
     """
 
-    chooser.set_current_folder(get_current_dir())
+    # GTK4: set_current_folder takes Gio.File instead of string
+    chooser.set_current_folder(Gio.File.new_for_path(get_current_dir()))
     chooser.set_transient_for(get_top_parent(parent))
 
     if _response is not None:
+        # For testing - use injected response
         response = _response
-        # GTK4: Use GLib.MainContext instead of Gtk.events_pending()
-    context = GLib.MainContext.default()
-    while context.pending():
-        context.iteration(False)
+        # Process any pending events
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
     else:
         response = chooser.run()
 
@@ -259,7 +261,8 @@ def choose_target_folder(parent, title, action_title, name_suggestion=None):
 
     chooser = _get_chooser(action_title, _("_Cancel"))
     chooser.set_title(title)
-    chooser.set_action(Gtk.FileChooserAction.CREATE_FOLDER)
+    # GTK4: CREATE_FOLDER removed - use SELECT_FOLDER with set_current_name
+    chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
     chooser.set_local_only(True)
     if name_suggestion is not None:
         chooser.set_current_name(name_suggestion)

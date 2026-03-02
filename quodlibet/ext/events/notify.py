@@ -167,32 +167,34 @@ class PreferencesWidget(Gtk.Box):
         radio_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         display_box.append(radio_box)
 
-        only_user_radio = Gtk.CheckButton(
-            label=_("Only on <i>_manual</i> song changes"), use_underline=True
+        only_user_radio = Gtk.CheckButton()
+        label = Gtk.Label(
+            label=_("Only on <i>_manual</i> song changes"),
+            use_underline=True, use_markup=True
         )
-        only_user_radio.get_child().set_use_markup(True)
+        only_user_radio.set_child(label)
         only_user_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "user"
         )
         radio_box.append(only_user_radio)
 
-        only_auto_radio = Gtk.CheckButton(
-            group=only_user_radio,
+        only_auto_radio = Gtk.CheckButton(group=only_user_radio)
+        label = Gtk.Label(
             label=_("Only on <i>_automatic</i> song changes"),
-            use_underline=True,
+            use_underline=True, use_markup=True
         )
-        only_auto_radio.get_child().set_use_markup(True)
+        only_auto_radio.set_child(label)
         only_auto_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "auto"
         )
         radio_box.append(only_auto_radio)
 
-        all_radio = Gtk.CheckButton(
-            group=only_user_radio,
+        all_radio = Gtk.CheckButton(group=only_user_radio)
+        label = Gtk.Label(
             label=_("On <i>a_ll</i> song changes"),
-            use_underline=True,
+            use_underline=True, use_markup=True
         )
-        all_radio.get_child().set_use_markup(True)
+        all_radio.set_child(label)
         all_radio.connect(
             "toggled", self.on_radiobutton_toggled, "show_notifications", "all"
         )

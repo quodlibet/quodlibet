@@ -2,8 +2,8 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-01-03
-**Status**: 🟢 Application Running Successfully - All startup crashes fixed
+**Last Updated**: 2026-01-31
+**Status**: 🟢 Application Running Successfully - Core migration complete
 
 > ⚠️ **Note**: This file tracks the GTK4 migration progress and should be **deleted** once the migration is complete and merged to main.
 
@@ -12,27 +12,35 @@ GTK4 Migration Status
 Quick Summary
 -------------
 
-The GTK4 migration is approximately **75% complete**. Core infrastructure changes are done, and **the application now runs without crashes**! Test suite progress: 30 plugin tests passing.
+The GTK4 migration is approximately **90% complete**. Core infrastructure is fully migrated. **The application runs without crashes**.
+
+**Main remaining work**: Drag-and-Drop (DnD) reimplementation (37 TODO markers, all DnD-related across 15 files).
 
 **✅ Completed Systems:**
 - ✅ Event handling and time management
 - ✅ Menu system basics (widgets)
-- ✅ Container widget API updates
-- ✅ RadioAction signal registration (FIXED 2026-01-02)
-- ✅ PopoverMenu parenting system (FIXED 2026-01-03)
-- ✅ Event signal compatibility wrapper (FIXED 2026-01-03)
-- ✅ Paned widget API migration (FIXED 2026-01-03)
-- ✅ Widget property deprecations (FIXED 2026-01-03)
-- ✅ Box packing compatibility layer (FIXED 2026-01-03)
-- ✅ Dialog and Window API updates (FIXED 2026-01-03 Session 2)
-- ✅ Table/Grid compatibility (FIXED 2026-01-03 Session 2)
-- ✅ ToggleAction state management (FIXED 2026-01-03 Session 2)
+- ✅ Container widget API updates (HBox/VBox → Box)
+- ✅ RadioAction signal registration
+- ✅ PopoverMenu parenting system
+- ✅ Event signal compatibility wrapper
+- ✅ Paned widget API migration
+- ✅ Widget property deprecations
+- ✅ Box packing compatibility layer
+- ✅ Dialog and Window API updates
+- ✅ Table/Grid compatibility
+- ✅ ToggleAction state management
+- ✅ HeaderBar API migration (2026-01-24)
+- ✅ Key event migration (key-press-event → EventControllerKey) (2026-01-24)
+- ✅ IconTheme API updates (2026-01-24)
+- ✅ get_children() migration (uses qltk.get_children helper)
+- ✅ Stock icons removed
+- ✅ Frame/ScrolledWindow API (.add → .set_child)
+- ✅ WaitLoadWindow fixes (2026-01-30)
+- ✅ Queue expander layout (2026-01-31)
 
 **⚠️ Remaining Work:**
-- ⚠️ Menu system (UIManager migration remaining)
-- ⚠️ Box packing (compatibility done, proper migration ongoing)
-- ❌ Drag-and-Drop (disabled, needs complete rewrite)
-- ❌ UIManager migration to Gio.Menu
+- ❌ Drag-and-Drop (disabled, needs complete rewrite) - **37 TODO markers**
+- ✅ pack_start/pack_end for Box: **Complete** (remaining 35 uses are TreeViewColumn/ComboBox - correct GTK4 API)
 
 **Recent progress (2026-01-02)**:
 - ✅ Fixed critical RadioAction "changed" signal registration
@@ -1144,49 +1152,47 @@ grep -r "\.add_action_with_accel\|Gtk\.UIManager\|Gtk\.Action\b" quodlibet/
 Statistics
 ----------
 
-### Files Modified (Updated 2026-01-03 Session 2)
-- **Direct changes**: 24 files
-- **DnD commented**: 12 files
-- **Gtk.get_current_event_time**: 27 files
-- **Startup crash fixes (2026-01-03)**: 8 files
-  - quodlibet/_init.py (major compatibility system)
-  - quodlibet/qltk/__init__.py (menu popup fixes)
-  - quodlibet/qltk/views.py (menu popup fixes)
-  - quodlibet/qltk/controls.py (PopoverMenu show crash)
-  - quodlibet/qltk/info.py (widget property updates)
-  - quodlibet/qltk/cover.py (get_child fix)
-  - quodlibet/qltk/quodlibetwindow.py (Paned API updates)
-  - quodlibet/qltk/x.py (HighlightToggleButton fix)
-  - quodlibet/qltk/notif.py (widget property updates)
-- **Test suite fixes (2026-01-03 Session 2)**: 12 files
-  - quodlibet/_init.py (Table.set_col_spacing)
-  - quodlibet/qltk/window.py (show_now, present)
-  - quodlibet/qltk/notif.py (task_controller parent)
-  - quodlibet/qltk/data_editors.py (multiple fixes)
-  - quodlibet/qltk/x.py (ToggleAction state)
-  - quodlibet/plugins/gui.py (MenuItemPlugin.set_submenu)
-  - quodlibet/ext/songsmenu/cover_download.py (multiple fixes)
-  - quodlibet/ext/songsmenu/custom_commands.py (PopoverMenu)
-  - quodlibet/browsers/paned/main.py (get_children)
-- **Total affected**: ~72+ files
+### Current State (2026-03-01)
+- **Test suite**: 4354 passing, 271 failing (~94% pass rate)
+- **TODO GTK4 markers**: 40 (DnD-related across 15 files)
+- **Box.pack_start/pack_end uses**: 0 (fully migrated - remaining uses are TreeViewColumn/ComboBox API)
+- **Gtk.HBox/VBox uses**: 0 (fully migrated)
+- **Gtk.Stock uses**: 0 (fully migrated)
+- **Direct get_children() calls**: 1 (helper function itself)
 
-### Lines Changed (Session 2 additions)
-- **Additions**: ~550 lines (+100 this session)
-- **Deletions**: ~280 lines (+30 this session)
-- **Net**: +270 lines
-- **Comments removed**: Migration comments cleaned up per user feedback
-- **Compatibility shims**: ~140 lines in _init.py (+20 this session)
+### Session Fixes (2026-03-01)
+- CellRenderer margin fix (use xpad/ypad, not set_margin_*)
+- TreeView model keyword argument (GTK4 requirement)
+- Button label keyword argument (GTK4 requirement)
+- IconTheme API (get_for_display, lookup_icon)
+- CheckButton markup (use Label child)
+- Table.set_border_width compatibility
+- NativeDialog.run() compatibility shim
+- FileChooser API updates (Gio.File, CREATE_FOLDER removal)
+- RatingsMenuItem rewrite for GTK4
+- Various import fixes and enum corrections
 
-### Test Progress
-- **Plugin tests passing**: 30 (up from 16)
-- **Test pass rate**: Approximately 83% of core tests
-- **Remaining failures**: Primarily event controller migration needed
+### Songlist DnD Implementation (2026-01-31)
+Implemented GTK4 DnD for `qltk/songlist.py`:
+- `SongListDnDMixin` rewritten with `Gtk.DragSource` and `Gtk.DropTarget`
+- Uses `Gdk.FileList` for file transfer (standard format)
+- Drag source: prepare, begin, end callbacks
+- Drop target: accept, motion, leave, drop callbacks
+- Supports row-based and browser-based drop modes
+- Note: Drag icons skipped (cairo→Paintable conversion needed)
 
-### TODO Markers Added
-- **Total**: 35+
-- **Critical**: 1 (was 3, fixed 2 more on 2026-01-03 Session 2)
-- **High Priority**: 10
-- **Medium/Low**: 22+
+### Recent Commits (since 2026-01-03)
+30 commits including:
+- GTK4: Fix queue expander layout and cleanup
+- GTK4: Fix play controls and menu sizing
+- GTK4: Remove show_all() calls and fix WaitLoadWindow
+- GTK4: Migrate get_children() and fix compatibility issues
+- GTK4: Fix Frame and widget drawing APIs
+- GTK4: Fix window and widget API compatibility
+- GTK4: Fix event handler signatures
+- GTK4: Migrate key-press-event to native EventControllerKey
+- GTK4: Fix HeaderBar API for GTK4
+- And many more...
 
 ### Major Systems Fixed
 - ✅ PopoverMenu parenting system (2026-01-03)
@@ -1243,31 +1249,140 @@ Quick Reference: Common Conversions
 Next Actions (Prioritised)
 --------------------------
 
-### ✅ Immediate (Completed 2026-01-03)
-1. ✅ **Fix RadioAction signal** → Implemented (2026-01-02)
-2. ✅ **Test main window display** → Application runs successfully
-3. ✅ **Fix all startup crashes** → No more crashes on startup!
+### Current Focus
+The main remaining work is **Drag-and-Drop reimplementation**. This is a significant effort affecting 12 files across browsers, queue, songlist, and plugins.
 
-### Week 1
-4. **Restore keyboard accelerators** → Add to application
-5. **Fix get_children() calls** → Replace with helper
-6. **Complete Box packing migration** → Systematic file-by-file
+### Immediate (pick one per session)
+1. **Migrate one pack_start/pack_end file** → Proper margin-based layout
+2. **Implement DnD for queue** → Core user feature
+3. **Implement DnD for songlist** → Essential for playlist management
 
-### Week 2-3
-7. **Implement GTK4 DnD for queue** → Core functionality
-8. **Implement GTK4 DnD for playlists** → User-facing feature
-9. **Test and fix browser DnD** → All browser types
-
-### Month 1
-10. **UIManager → Gio.Menu migration** → Menu bar
-11. **Fix submenus** → Proper Gio.Menu implementation
-12. **Deprecate container migrations** → HBox/VBox/Table/Alignment
+### Medium Priority
+4. **Browser DnD** → All browser types (12 files)
+5. **Album art DnD** → Plugin functionality
+6. **VolumeMenu EventController** → Minor UI improvement
 
 ### Before Merge
-13. **Comprehensive testing** → All features
-14. **Plugin compatibility** → Test external plugins
-15. **Delete this file** → Clean up tracking document
-16. **Update main documentation** → Note GTK4 requirement
+7. **Comprehensive testing** → All features
+8. **Plugin compatibility** → Test external plugins
+9. **Delete this file** → Clean up tracking document
+10. **Update main documentation** → Note GTK4 requirement
+
+### Resumption Pattern
+See CLAUDE.md section "GTK4 Migration Quick Start" for efficient session startup.
+
+---
+
+## DnD Implementation Plan (Songlist)
+
+**File**: `quodlibet/qltk/songlist.py` - `SongListDnDMixin` class
+
+### Current State
+- Partially started: `setup_drop()` creates controllers but doesn't attach them
+- Old GTK3 callbacks remain (`__drag_motion`, `__drag_data_get`, `__drag_data_received`)
+- Uses deprecated APIs: `Gtk.drag_get_source_widget()`, `Gdk.drag_status()`, `Gtk.drag_finish()`
+
+### GTK4 DnD Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Drag Source (dragging songs OUT)                            │
+├─────────────────────────────────────────────────────────────┤
+│ controller = Gtk.DragSource()                               │
+│ controller.connect("prepare", on_prepare)  # return content │
+│ controller.connect("drag-begin", on_begin) # set icon       │
+│ controller.connect("drag-end", on_end)     # cleanup        │
+│ widget.add_controller(controller)                           │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│ Drop Target (dropping songs IN)                             │
+├─────────────────────────────────────────────────────────────┤
+│ controller = Gtk.DropTarget.new(types, actions)             │
+│ controller.connect("accept", on_accept)    # can we accept? │
+│ controller.connect("motion", on_motion)    # highlight row  │
+│ controller.connect("drop", on_drop)        # handle drop    │
+│ controller.connect("leave", on_leave)      # unhighlight    │
+│ widget.add_controller(controller)                           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Implementation Steps
+
+**Step 1: Drag Source** (simpler, do first)
+```python
+def setup_drag_source(self):
+    source = Gtk.DragSource()
+    source.set_actions(Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+    source.connect("prepare", self._on_drag_prepare)
+    source.connect("drag-begin", self._on_drag_begin)
+    source.connect("drag-end", self._on_drag_end)
+    self.add_controller(source)
+
+def _on_drag_prepare(self, source, x, y):
+    model, paths = self.get_selection().get_selected_rows()
+    songs = [model[path][0] for path in paths]
+    # Store songs for transfer
+    self._drag_songs = songs
+    # Return content provider with URIs
+    uris = [song("~uri") for song in songs]
+    return Gdk.ContentProvider.new_for_value(GLib.Variant('as', uris))
+
+def _on_drag_begin(self, source, drag):
+    # Set drag icon (use existing create_multi_row_drag_icon)
+    model, paths = self.get_selection().get_selected_rows()
+    # Check if COPY or MOVE based on modifier keys
+    # ...
+```
+
+**Step 2: Drop Target** (more complex)
+```python
+def setup_drop_target(self, library):
+    target = Gtk.DropTarget.new(GLib.VariantType.new('as'),
+                                 Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+    target.connect("accept", self._on_drop_accept)
+    target.connect("motion", self._on_drop_motion)
+    target.connect("drop", self._on_drop)
+    target.connect("leave", self._on_drop_leave)
+    self.add_controller(target)
+    self._library = library
+
+def _on_drop_motion(self, target, x, y):
+    # Highlight drop position
+    if self._drop_by_row:
+        self.set_drag_dest(x, y)
+    return Gdk.DragAction.COPY
+
+def _on_drop(self, target, value, x, y):
+    # Handle the actual drop
+    uris = value.get_strv()
+    # Convert URIs to songs, add to model at position
+    # ...
+    return True
+```
+
+### Key Differences from GTK3
+
+| GTK3 | GTK4 |
+|------|------|
+| `drag_dest_set()` | `DropTarget` controller |
+| `drag_source_set()` | `DragSource` controller |
+| `SelectionData` | `GLib.Variant` or `Gdk.ContentProvider` |
+| `drag-data-get` signal | `prepare` signal returns content |
+| `drag-data-received` signal | `drop` signal |
+| `Gtk.drag_finish()` | Return `True`/`False` from `drop` |
+| `ctx.get_selected_action()` | `target.get_actions()` |
+
+### Testing Approach
+1. Test drag source first - drag songs to external app (file manager)
+2. Test drop target - drop files from file manager
+3. Test internal drag - drag songs within songlist (MOVE)
+4. Test cross-widget - drag from browser to queue
+
+### Reference
+- Working DragSource example: `qltk/views.py:920`
+- GTK4 DnD docs: https://docs.gtk.org/gtk4/drag-and-drop.html
+- Drop.read_async: https://docs.gtk.org/gdk4/method.Drop.read_async.html
 
 ---
 

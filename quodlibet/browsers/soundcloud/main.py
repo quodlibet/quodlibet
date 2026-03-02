@@ -133,9 +133,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
         pane.set_start_child(vbox)
 
-        pane.set_resize_start_child(resize=False)
-
-        pane.set_shrink_start_child(shrink=False)
+        pane.set_resize_start_child(False)
+        pane.set_shrink_start_child(False)
         self._songs_box = songs_box = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL, spacing=6
         )
@@ -145,9 +144,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
         pane.set_end_child(songs_box)
 
-        pane.set_resize_end_child(resize=True)
-
-        pane.set_shrink_end_child(shrink=False)
+        pane.set_resize_end_child(True)
+        pane.set_shrink_end_child(False)
         self.append(pane)
         self.show()
 

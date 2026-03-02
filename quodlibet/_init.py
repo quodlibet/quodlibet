@@ -277,6 +277,10 @@ def _init_gtk():
         # GTK4: Widgets no longer have GdkWindows, they use surfaces
         # Return None as a compatibility shim
         Gtk.Widget.get_window = lambda self: None
+    if not hasattr(Gtk.Widget, "freeze_child_notify"):
+        # GTK4: freeze/thaw_child_notify removed - no-op
+        Gtk.Widget.freeze_child_notify = lambda self: None
+        Gtk.Widget.thaw_child_notify = lambda self: None
 
     # GTK4: add_events removed - event system redesigned with controllers
     if not hasattr(Gtk.Widget, "add_events"):
@@ -1010,6 +1014,30 @@ def _init_gtk():
 
         Gtk.Dialog.run = _dialog_run_compat
 
+    # GTK4: NativeDialog.run() also removed
+    if not hasattr(Gtk.NativeDialog, "run"):
+
+        def _native_dialog_run_compat(self):
+            print_d("GTK4: NativeDialog.run() called - using compatibility blocking mode")
+            import gi.repository.GLib as GLib
+
+            response = [None]
+
+            def on_response(dialog, response_id):
+                response[0] = response_id
+
+            handler_id = self.connect("response", on_response)
+            self.show()
+
+            context = GLib.MainContext.default()
+            while response[0] is None:
+                context.iteration(True)
+
+            self.disconnect(handler_id)
+            return response[0]
+
+        Gtk.NativeDialog.run = _native_dialog_run_compat
+
     # GTK4: set_border_width removed - use margins instead
     if not hasattr(Gtk.Frame, "set_border_width"):
 
@@ -1108,9 +1136,22 @@ def _init_gtk():
 
     def _button_init_compat(self, *args, **kwargs):
         kwargs.pop("always_show_image", None)
-        return _orig_button_init(self, *args, **kwargs)
+        # GTK4: Button requires label= as keyword argument
+        if args and "label" not in kwargs:
+            kwargs["label"] = args[0]
+            args = args[1:]
+        return _orig_button_init(self, **kwargs)
 
     Gtk.Button.__init__ = _button_init_compat
+
+    # GTK4: Label.no_show_all property removed
+    _orig_label_init = Gtk.Label.__init__
+
+    def _label_init_compat(self, *args, **kwargs):
+        kwargs.pop("no_show_all", None)
+        return _orig_label_init(self, *args, **kwargs)
+
+    Gtk.Label.__init__ = _label_init_compat
 
     # GTK4: Label.set_line_wrap() → set_wrap()
     if not hasattr(Gtk.Label, "set_line_wrap"):
@@ -1311,6 +1352,13 @@ def _init_gtk():
         def set_col_spacing(self, column, spacing):
             # Grid doesn't support per-column spacing, use uniform spacing
             self.set_column_spacing(spacing)
+
+        def set_border_width(self, width):
+            # GTK4: Widget doesn't have border_width, use margins
+            self.set_margin_start(width)
+            self.set_margin_end(width)
+            self.set_margin_top(width)
+            self.set_margin_bottom(width)
 
     Gtk.Table = Table
 

@@ -646,7 +646,11 @@ class BaseView(Gtk.TreeView):
     }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        # GTK4: TreeView requires model= as keyword argument
+        if args and "model" not in kwargs:
+            kwargs["model"] = args[0]
+            args = args[1:]
+        super().__init__(**kwargs)
         event_controller = Gtk.EventControllerKey()
         event_controller.connect("key-pressed", self.__key_pressed)
         self.add_controller(event_controller)

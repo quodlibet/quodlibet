@@ -129,7 +129,7 @@ class RandomAlbum(EventPlugin):
                 ypadding=3,
             )
             adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_increment=0.1)
-            hscale = Gtk.Scale(orientation=Gtk.Orientation.Horizontal, adjustment=adj)
+            hscale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=adj)
             hscale.set_value(self.weights[key])
             hscale.set_draw_value(False)
             hscale.set_show_fill_level(False)

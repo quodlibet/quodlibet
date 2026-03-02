@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gio, Gtk, Pango
+from gi.repository import GLib, Gio, Gtk, Pango
 
 from quodlibet import config, print_d
 from quodlibet import util

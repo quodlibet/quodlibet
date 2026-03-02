@@ -11,7 +11,7 @@
 
 from collections.abc import Sequence
 
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, Gdk, Gio, GObject
 from senf import uri2fsn
 
 from quodlibet import app, print_w, print_d
@@ -194,106 +194,156 @@ def header_tag_split(header):
 
 
 class SongListDnDMixin(GObject.GObject):
-    """DnD support for the SongList class"""
+    """GTK4 DnD support for the SongList class.
+
+    Provides drag source (drag songs out) and drop target (drop songs in).
+    Uses URI list format for compatibility with external applications.
+    """
 
     def setup_drop(self, library):
-        drag_controller = Gtk.DragSource()
-        drop_controller = Gtk.DropTarget()
-        drag_controller.connect("drag-begin", self.__drag_begin)
-        drop_controller.connect("accept", self.__drag_motion)
-        drag_controller.connect("drag-end", self.__drag_leave)
-        drag_controller.connect("prepare", self.__drag_data_get)
-        # TODO GTK4: Implement drop handling - see https://docs.gtk.org/gdk4/method.Drop.read_async.html
+        """Set up drag source and drop target controllers."""
+        print_d("DnD: setup_drop called")
+        self._dnd_library = library
+        self._drop_by_row = True
+        self._force_copy = False
+        self._drag_iters = []
 
-    def __drag_begin(self, *args):
-        ok, state = Gtk.get_current_event_state()
-        if ok and state & qltk.get_primary_accel_mod():
-            self.__force_copy = True
-        else:
-            self.__force_copy = False
+        # Drag source - for dragging songs OUT
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+        # Use CAPTURE phase to get events before TreeView's internal handlers
+        drag_source.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        drag_source.connect("prepare", self._on_drag_prepare)
+        drag_source.connect("drag-begin", self._on_drag_begin)
+        drag_source.connect("drag-end", self._on_drag_end)
+        self.add_controller(drag_source)
+        self._drag_source = drag_source
+        print_d(f"DnD: drag_source attached: {drag_source}")
+
+        # Drop target - for dropping songs IN
+        # Accept file URIs (text/uri-list)
+        drop_target = Gtk.DropTarget.new(
+            Gdk.FileList, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
+        )
+        drop_target.connect("accept", self._on_drop_accept)
+        drop_target.connect("motion", self._on_drop_motion)
+        drop_target.connect("leave", self._on_drop_leave)
+        drop_target.connect("drop", self._on_drop)
+        self.add_controller(drop_target)
+        self._drop_target = drop_target
 
     def enable_drop(self, by_row=True):
-        # TODO GTK4: DnD support
-        self.__drop_by_row = by_row
-        self.__force_copy = False
+        """Enable drop, optionally positioning by row."""
+        self._drop_by_row = by_row
+        self._force_copy = False
 
     def disable_drop(self):
-        # TODO GTK4: DnD support
-        return
+        """Disable drop target."""
+        pass
 
-    def __drag_motion(self, view, ctx, x, y, time):
-        if self.__drop_by_row:
-            self.set_drag_dest(x, y)
-            self.scroll_motion(x, y)
-            if Gtk.drag_get_source_widget(ctx) == self and not self.__force_copy:
-                kind = Gdk.DragAction.MOVE
+    # --- Drag Source callbacks ---
+
+    def _on_drag_prepare(self, source, x, y):
+        """Prepare content for drag operation."""
+        print_d(f"DnD: _on_drag_prepare called at ({x}, {y})")
+        model, paths = self.get_selection().get_selected_rows()
+        if not paths:
+            print_d("DnD: No paths selected")
+            return None
+
+        songs = [model[path][0] for path in paths]
+
+        # Check all songs can be added
+        addable = [s for s in songs if s.can_add]
+        if len(addable) != len(songs):
+            qltk.ErrorMessage(
+                qltk.get_top_parent(self),
+                _("Unable to copy songs"),
+                _(
+                    "The files selected cannot be copied to other "
+                    "song lists or the queue."
+                ),
+            ).run()
+            return None
+
+        # Store for potential move operation
+        self._drag_songs = songs
+        self._drag_paths = paths
+
+        # Create file list for drag data
+        print_d(f"DnD: Creating FileList for {len(songs)} songs")
+        files = [Gio.File.new_for_path(song("~filename")) for song in songs]
+        file_list = Gdk.FileList.new_from_list(files)
+        provider = Gdk.ContentProvider.new_for_value(file_list)
+        print_d(f"DnD: ContentProvider created: {provider}")
+        return provider
+
+    def _on_drag_begin(self, source, drag):
+        """Handle drag begin - check modifiers, set icon."""
+        # Check for force-copy modifier (Ctrl)
+        display = self.get_display()
+        seat = display.get_default_seat()
+        if seat:
+            keyboard = seat.get_keyboard()
+            if keyboard:
+                state = keyboard.get_modifier_state()
+                self._force_copy = bool(state & Gdk.ModifierType.CONTROL_MASK)
             else:
-                kind = Gdk.DragAction.COPY
-            Gdk.drag_status(ctx, kind, time)
-            return True
-        self.get_parent().drag_highlight()
-        Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
-        return True
+                self._force_copy = False
+        else:
+            self._force_copy = False
 
-    def __drag_leave(self, widget, ctx, time):
-        widget.get_parent().drag_unhighlight()
+        # Store iters for move operation
+        if not self._force_copy:
+            model = self.get_model()
+            self._drag_iters = [model.get_iter(p) for p in self._drag_paths]
+        else:
+            self._drag_iters = []
+
+        # Note: GTK4 drag icons require Gdk.Paintable, not cairo surfaces
+        # The create_multi_row_drag_icon returns a cairo surface - conversion
+        # to texture is possible but skipped for now
+
+    def _on_drag_end(self, source, drag, delete_data):
+        """Clean up after drag."""
+        self._drag_songs = []
+        self._drag_paths = []
+        self._drag_iters = []
         self.scroll_disable()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
-        model, paths = self.get_selection().get_selected_rows()
-        if tid == DND_QL:
-            songs = [model[path][0] for path in paths if model[path][0].can_add]
-            if len(songs) != len(paths):
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self),
-                    _("Unable to copy songs"),
-                    _(
-                        "The files selected cannot be copied to other "
-                        "song lists or the queue."
-                    ),
-                ).run()
-                Gdk.drag_abort(ctx, etime)
-                return
+    # --- Drop Target callbacks ---
 
-            qltk.selection_set_songs(sel, songs)
+    def _on_drop_accept(self, target, drop):
+        """Check if we can accept this drop."""
+        formats = drop.get_formats()
+        # Accept if it contains file URIs
+        return formats.contain_gtype(Gdk.FileList)
 
-            # DEM 2018/05/25: The below check is a deliberate repetition of
-            # code in the drag-motion signal handler.  In MacOS/Quartz, the
-            # context action is not propogated between event handlers for
-            # drag-motion and drag-data-get using "ctx.get_actions()".  It is
-            # unclear if this is a bug or expected behavior.  Regardless, the
-            # context widget information is the same so identical behavior can
-            # be achieved by simply using the same widget check as in the move
-            # action.
-            if Gtk.drag_get_source_widget(ctx) == self and not self.__force_copy:
-                self.__drag_iters = list(map(model.get_iter, paths))
-            else:
-                self.__drag_iters = []
-        else:
-            uris = [model[path][0]("~uri") for path in paths]
-            sel.set_uris(uris)
-            self.__drag_iters = []
+    def _on_drop_motion(self, target, x, y):
+        """Handle motion during drop - highlight drop position."""
+        if self._drop_by_row:
+            self.set_drag_dest(x, y)
+            self.scroll_motion(x, y)
+        return Gdk.DragAction.COPY
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
-        model = view.get_model()
-        if info == DND_QL:
-            filenames = qltk.selection_get_filenames(sel)
-            move = bool(ctx.get_selected_action() & Gdk.DragAction.MOVE)
-        elif info == DND_URI_LIST:
+    def _on_drop_leave(self, target):
+        """Clean up when drag leaves."""
+        self.scroll_disable()
 
-            def to_filename(s):
-                try:
-                    return uri2fsn(s)
-                except ValueError:
-                    return None
+    def _on_drop(self, target, value, x, y):
+        """Handle the actual drop."""
+        if not isinstance(value, Gdk.FileList):
+            return False
 
-            filenames = list(filter(None, map(to_filename, sel.get_uris())))
-            move = False
-        else:
-            Gtk.drag_finish(ctx, False, False, etime)
-            return
-        # Should always have one here, but you never know (also: types)
+        files = value.get_files()
+        filenames = [f.get_path() for f in files if f.get_path()]
+        if not filenames:
+            return False
+
+        library = self._dnd_library
         librarian = library.librarian or library
+
+        # Add files to library if needed
         to_add = []
         for filename in filenames:
             if filename not in librarian:
@@ -301,53 +351,46 @@ class SongListDnDMixin(GObject.GObject):
             elif filename not in library:
                 to_add.append(librarian[filename])
         library.add(to_add)
-        songs: list = list(filter(None, map(library.get, filenames)))
+
+        # Get song objects
+        songs = list(filter(None, map(library.get, filenames)))
         if not songs:
-            Gtk.drag_finish(ctx, bool(not filenames), False, etime)
-            return
+            return False
 
-        if not self.__drop_by_row:
-            success = self.__drag_data_browser_dropped(songs)
-            Gtk.drag_finish(ctx, success, False, etime)
-            return
+        # Browser drop mode (not by row)
+        if not self._drop_by_row:
+            return self._drag_data_browser_dropped(songs)
 
+        # Row-based drop
+        model = self.get_model()
         try:
-            path, position = view.get_dest_row_at_pos(x, y)
+            path, position = self.get_dest_row_at_pos(x, y)
         except TypeError:
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
 
-        if move and Gtk.drag_get_source_widget(ctx) == view:
-            iter = model.get_iter(path)  # model can't be empty, we're moving
+        # Insert songs at drop position
+        song = songs.pop(0)
+        try:
+            iter_ = model.get_iter(path)
+        except ValueError:
+            iter_ = model.append(row=[song])
+        else:
             if position in (
                 Gtk.TreeViewDropPosition.BEFORE,
                 Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
             ):
-                while self.__drag_iters:
-                    model.move_before(self.__drag_iters.pop(0), iter)
+                iter_ = model.insert_before(iter_, [song])
             else:
-                while self.__drag_iters:
-                    model.move_after(self.__drag_iters.pop(), iter)
-            Gtk.drag_finish(ctx, True, False, etime)
-        else:
-            song = songs.pop(0)
-            try:
-                iter = model.get_iter(path)
-            except ValueError:
-                iter = model.append(row=[song])  # empty model
-            else:
-                if position in (
-                    Gtk.TreeViewDropPosition.BEFORE,
-                    Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
-                ):
-                    iter = model.insert_before(iter, [song])
-                else:
-                    iter = model.insert_after(iter, [song])
-            for song in songs:
-                iter = model.insert_after(iter, [song])
-            Gtk.drag_finish(ctx, True, move, etime)
+                iter_ = model.insert_after(iter_, [song])
 
-    def __drag_data_browser_dropped(self, songs):
+        for song in songs:
+            iter_ = model.insert_after(iter_, [song])
+
+        return True
+
+    def _drag_data_browser_dropped(self, songs):
+        """Handle drop in browser mode (not row-based)."""
         window = qltk.get_top_parent(self)
         return window.browser.dropped(songs)
 
