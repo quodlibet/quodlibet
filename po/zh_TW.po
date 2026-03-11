@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-01-30 04:01+0000\n"
+"PO-Revision-Date: 2026-02-11 08:49+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -161,7 +161,7 @@ msgstr "專輯顯示"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "關閉(_C)"
 
@@ -278,7 +278,7 @@ msgstr "套用(_A)"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "取消(_C)"
 
@@ -1607,29 +1607,29 @@ msgstr "催眠曲"
 msgid "Fades out and pauses your music."
 msgstr "漸漸淡出音響並暫止音樂。"
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "放棄狀態訊息"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "放棄狀態訊息"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "變更您的放棄狀態訊息，根據您目前所收聽的。"
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 msgid "(Paused)"
 msgstr "(已暫停)"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "狀態行列 #1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "狀態行列 #2"
 
@@ -2976,7 +2976,7 @@ msgstr "切換功能表"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "按壓 Alt 鍵來切換功能表。"
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5304,11 +5304,11 @@ msgstr "緩衝"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "無法建立 GStreamer pipeline (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "找無 GStreamer 元件來處理媒體格式"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "媒體檔案格式： %(format-description)s"
@@ -5367,12 +5367,22 @@ msgstr "自動連接至 JACK 輸出裝置"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "告之 `jackaudiosink` 至自動連接"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+msgid "Exclusive Mode"
+msgstr "獨用模式"
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr "啟用獨用音訊存取。其他應用程式在作用時將無法使用音訊。"
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "沒有找到 GStreamer 音訊。已經嘗試： %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "無效的 GStreamer 輸出管道"
 
@@ -7343,16 +7353,16 @@ msgstr "%(all)s 之 %(current)s"
 msgid "Checking for Updates"
 msgstr "檢查更新"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "連線失敗"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "您目前使用是最新版本 %(version)s"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

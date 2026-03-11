@@ -183,7 +183,7 @@ msgstr "Afişare albume"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr ""
 
@@ -304,7 +304,7 @@ msgstr ""
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr ""
 
@@ -1698,33 +1698,33 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 #, fuzzy
 msgid "Discord status message"
 msgstr "Anulaţi modificarea etichetelor?"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Anulaţi modificarea etichetelor?"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 #, fuzzy
 msgid "(Paused)"
 msgstr "Redare"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 #, fuzzy
 msgid "Status Line #1"
 msgstr "şablon"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 #, fuzzy
 msgid "Status Line #2"
 msgstr "şablon"
@@ -3110,7 +3110,7 @@ msgstr ""
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5523,11 +5523,11 @@ msgstr ""
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr ""
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr ""
@@ -5584,12 +5584,22 @@ msgstr ""
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+msgid "Exclusive Mode"
+msgstr ""
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nici s-a găsit nici o staţie"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr ""
 
@@ -7736,17 +7746,17 @@ msgstr "Mut %d/%d."
 msgid "Checking for Updates"
 msgstr "Se verifică punctele de montare"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 #, fuzzy
 msgid "Connection failed"
 msgstr "locaţie"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr ""
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

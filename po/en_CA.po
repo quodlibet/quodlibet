@@ -168,7 +168,7 @@ msgstr "Album Display"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Close"
 
@@ -286,7 +286,7 @@ msgstr "_Apply"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "_Cancel"
 
@@ -1642,15 +1642,15 @@ msgstr "Lullaby"
 msgid "Fades out and pauses your music."
 msgstr "Fades out and pauses your music."
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "Discord status message"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "Discord Status Message"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
@@ -1658,16 +1658,16 @@ msgstr ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 #, fuzzy
 msgid "(Paused)"
 msgstr "Paused"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "Status Line #1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "Status Line #2"
 
@@ -3066,7 +3066,7 @@ msgstr "Toggle Menu Bar"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Toggle the menu bar by pressing the Alt key."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5449,11 +5449,11 @@ msgstr "Buffering"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Could not create GStreamer pipeline (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "No GStreamer element found to handle media format"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Media format: %(format-description)s"
@@ -5515,12 +5515,23 @@ msgstr "Auto-connect to JACK output devices"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "Tells `jackaudiosink` to auto-connect"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Wide Mode"
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "No GStreamer audio sink found. Tried: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "Invalid GStreamer output pipeline"
 
@@ -7563,16 +7574,16 @@ msgstr "%(current)s of %(all)s"
 msgid "Checking for Updates"
 msgstr "Checking for Updates"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "Connection failed"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "You are already using the newest version %(version)s"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

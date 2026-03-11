@@ -169,7 +169,7 @@ msgstr "Visualização do álbum"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Fechar"
 
@@ -287,7 +287,7 @@ msgstr "_Aplicar"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -1662,36 +1662,36 @@ msgstr ""
 
 # Tentei seguir as traduções do próprio Gajim.
 # Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 #, fuzzy
 msgid "Discord status message"
 msgstr "Status do Gajim"
 
 # Tentei seguir as traduções do próprio Gajim.
 # Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 #, fuzzy
 msgid "Discord Status Message"
 msgstr "Status do Gajim"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 #, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Altera a mensagem de estado do Gajim conforme o que escuta."
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 #, fuzzy
 msgid "(Paused)"
 msgstr "Pausado:"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Status"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Status"
@@ -3105,7 +3105,7 @@ msgstr "Alternar barra de menu"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Exibe/esconde a barra de menu com a tecla Alt."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5559,13 +5559,13 @@ msgstr "Preenchimento do buffer"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Não foi possível criar a fila de processamento do GStreamer"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "Não foi encontrado um elemento de GStreamer capaz de lidar com este formato "
 "de mídia"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formato de mídia: %(format-description)s"
@@ -5628,12 +5628,23 @@ msgstr ""
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Modo largo"
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nenhum consumidor de áudio do GStreamer foi encontrado"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "A fila de processamento de saída do GStreamer é inválida"
 
@@ -7716,16 +7727,16 @@ msgstr "%(current)s de %(all)s"
 msgid "Checking for Updates"
 msgstr "Verificação por atualizações"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "Falha na conexão"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "Você já está usando a versão mais recente (%(version)s)"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"
