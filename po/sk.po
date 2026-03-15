@@ -166,7 +166,7 @@ msgstr "Zobrazenie albumov"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Zavrieť"
 
@@ -285,7 +285,7 @@ msgstr "_Použiť"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "_Zrušiť"
 
@@ -1656,30 +1656,30 @@ msgstr "Uspávanka"
 msgid "Fades out and pauses your music."
 msgstr "Stlmí a pozastaví prehrávanie."
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "Discord stavová správa"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "Discord Stavová Správa"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "Zmení stavovú správu Discord podľa toho, čo práve počúvate."
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 #, fuzzy
 msgid "(Paused)"
 msgstr "Pozastavené"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "Stavová Línia #1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "Stavová Línia #2"
 
@@ -3101,7 +3101,7 @@ msgstr "Prepnúť panel ponuky"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Prepnúť panel ponuky stlačením klávesy Alt."
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5503,11 +5503,11 @@ msgstr "Ukladanie do vyrovnávacej pamäte"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nepodarilo sa vytvoriť zreťazenie systému GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "Nenašiel sa žiadny prvok GStreamera na spracovanie tohto formátu"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formát: %(format-description)s"
@@ -5569,12 +5569,23 @@ msgstr "Automaticky sa pripojiť k výstupným zariadeniam JACK"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "Zaisťuje, že sa „jackaudiosink“ automaticky pripojí"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+#, fuzzy
+msgid "Exclusive Mode"
+msgstr "Široké rozloženie"
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nenašiel sa žiaden zvukový vývod GStreamera. Vyskúšali sa: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "Neplatné výstupné zreťazenie systému GStreamer"
 
@@ -7642,16 +7653,16 @@ msgstr "%(current)s z %(all)s"
 msgid "Checking for Updates"
 msgstr "Vyhľadávajú sa aktualizácie"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "Pripájanie zlyhalo"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "Už používate najnovšiu verziu %(version)s"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

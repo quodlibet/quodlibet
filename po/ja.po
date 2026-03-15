@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-01-07 15:01+0000\n"
+"PO-Revision-Date: 2026-02-11 08:49+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -161,7 +161,7 @@ msgstr "アルバムの表示"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
+#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
 msgid "_Close"
 msgstr "閉じる(_C)"
 
@@ -278,7 +278,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:82
 #: quodlibet/qltk/msg.py:71 quodlibet/qltk/msg.py:113 quodlibet/qltk/msg.py:128
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
-#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
+#: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
@@ -1277,7 +1277,7 @@ msgstr "日本語のテキストをローマ字化する(_J)"
 
 #: quodlibet/ext/editing/kakasi.py:67
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "「Kanji Kana Simple Inverter」(KAKASI) が見つかりませんでした。"
+msgstr "「Kanji Kana Simple Inverter」(kakasi) が見つかりませんでした。"
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1630,29 +1630,29 @@ msgstr "ララバイ"
 msgid "Fades out and pauses your music."
 msgstr "音楽をフェードアウトして一時停止します。"
 
-#: quodlibet/ext/events/discord_status.py:76
+#: quodlibet/ext/events/discord_status.py:78
 msgid "Discord status message"
 msgstr "Discordステータスメッセージ"
 
-#: quodlibet/ext/events/discord_status.py:77
+#: quodlibet/ext/events/discord_status.py:79
 msgid "Discord Status Message"
 msgstr "Discordステータスメッセージ"
 
-#: quodlibet/ext/events/discord_status.py:79
+#: quodlibet/ext/events/discord_status.py:81
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr "現在聴いている曲に従って、Discord のステータスメッセージを変更します。"
 
-#: quodlibet/ext/events/discord_status.py:202
+#: quodlibet/ext/events/discord_status.py:204
 msgid "(Paused)"
 msgstr "(一時停止)"
 
-#: quodlibet/ext/events/discord_status.py:309
+#: quodlibet/ext/events/discord_status.py:311
 msgid "Status Line #1"
 msgstr "ステータスライン#1"
 
-#: quodlibet/ext/events/discord_status.py:321
+#: quodlibet/ext/events/discord_status.py:323
 msgid "Status Line #2"
 msgstr "ステータスライン#2"
 
@@ -2942,8 +2942,8 @@ msgstr "同期歌詞"
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
-"埋め込み歌詞または歌詞ファイル (lrc) から、再生時間に同期する歌詞を表示します"
-"。"
+"埋め込み歌詞または歌詞ファイル (lrc) から、再生時間に同期する歌詞を表示しま"
+"す。"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
@@ -3045,7 +3045,7 @@ msgstr "トグルメニューバー"
 msgid "Toggle the menu bar by pressing the Alt key."
 msgstr "Altキーを押すとメニューバー表示をトグルします。"
 
-#: quodlibet/ext/events/trayicon/appindicator.py:74
+#: quodlibet/ext/events/trayicon/appindicator.py:83
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
@@ -5416,11 +5416,11 @@ msgstr "バッファリング中"
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "GStreamer パイプラインを作成できません (%s)"
 
-#: quodlibet/player/gstbe/player.py:690
+#: quodlibet/player/gstbe/player.py:705
 msgid "No GStreamer element found to handle media format"
 msgstr "メディア形式を処理する GStreamer エレメントが見つかりません"
 
-#: quodlibet/player/gstbe/player.py:691
+#: quodlibet/player/gstbe/player.py:706
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "メディア形式: %(format-description)s"
@@ -5482,12 +5482,24 @@ msgstr "JACK出力デバイスに自動接続する"
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr "「jackaudiosink」に自動接続するように指示します"
 
-#: quodlibet/player/gstbe/util.py:151
+#: quodlibet/player/gstbe/prefs.py:116
+msgid "Exclusive Mode"
+msgstr "排他的モード"
+
+#: quodlibet/player/gstbe/prefs.py:121
+msgid ""
+"Enable exclusive audio access. Other applications won't be able to use audio "
+"while active."
+msgstr ""
+"排他的オーディオアクセスを有効にします。アクティブな間は他のアプリケーション"
+"がオーディオを使用できなくなります。"
+
+#: quodlibet/player/gstbe/util.py:153
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "GStreamer オーディオシンクが見つかりません。試行した設定: %s"
 
-#: quodlibet/player/gstbe/util.py:170
+#: quodlibet/player/gstbe/util.py:172
 msgid "Invalid GStreamer output pipeline"
 msgstr "不正な Gstreamer 出力パイプライン"
 
@@ -7506,16 +7518,16 @@ msgstr "%(current)s / %(all)s"
 msgid "Checking for Updates"
 msgstr "アップデートの確認中"
 
-#: quodlibet/update.py:124
+#: quodlibet/update.py:127
 msgid "Connection failed"
 msgstr "接続に失敗しました"
 
-#: quodlibet/update.py:133
+#: quodlibet/update.py:136
 #, python-format
 msgid "You are already using the newest version %(version)s"
 msgstr "既に最新バージョン %(version)s を使用しています"
 
-#: quodlibet/update.py:138
+#: quodlibet/update.py:141
 #, python-format
 msgid ""
 "A new version %(new-version)s is available\n"

@@ -24,6 +24,7 @@ from quodlibet.qltk import (
     get_primary_accel_mod,
 )
 from quodlibet.qltk.image import get_surface_extents
+from quodlibet.util import is_windows
 
 from .util import GSignals
 
@@ -116,6 +117,12 @@ class TreeViewHints(Gtk.Window):
             style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
+
+        if is_windows():
+            # See issues #4259, #4365
+            leave_notify_cb = self.__motion
+        else:
+            leave_notify_cb = self.__undisplay
 
         motion_controller = Gtk.EventControllerMotion()
         scroll_controller = Gtk.EventControllerScroll()

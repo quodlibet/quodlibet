@@ -1,7 +1,7 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
-#                        2013-25 Nick Boultbee
+#                        2013-26 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,11 +31,13 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
-        self.scrolled_window = Gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
-        )
-        self.adjustment = self.scrolled_window.get_vadjustment()
+        self.scrolled_window = sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.NONE)
+        # Create an overlay container
+        self.overlay = overlay = Gtk.Overlay()
+
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.adjustment = sw.get_vadjustment()
 
         self.textview = Gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
@@ -47,19 +49,16 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect("key-press-event", self.key_press_event_cb)
-        add_css(self.textview, "* { padding: 6px; }")
-        vbox = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL,
-        )
-        vbox.append(self.textview)
-        self._edit_button = Button("Edit Lyrics", Icons.EDIT)
-        hbox = Gtk.Box()
-        hbox.append(self._edit_button)
-        vbox.append(hbox)
-        self.scrolled_window.set_child(vbox)
-        self.textview.show()
+        add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
+        overlay.add(sw)
+        self._edit_button = Button(None, Icons.EDIT)
+        self._edit_button.set_tooltip_text(_("Edit Lyrics"))
+        vbox = Gtk.Box(margin=6)
+        vbox.append(self._edit_button)
+        vbox.set_valign(Gtk.Align.END)
+        vbox.set_halign(Gtk.Align.END)
 
-        self.scrolled_window.show()
+        sw.show()
         self._sig = None
         cur = app.player.info
         if cur is not None:
