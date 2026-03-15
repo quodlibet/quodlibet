@@ -71,8 +71,12 @@ NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
 
 class InstanceTracker:
     """A mixin for GObjects to return a list of all alive objects
-    of a given type. Note that it must be used with a GObject or
-    something with a connect method and destroy signal."""
+    of a given type.
+
+    In GTK4, the GtkWidget::destroy signal was removed. Classes that inherit
+    from both InstanceTracker and Window must call _deregister_instance() in
+    their destroy() override (Window does this automatically).
+    """
 
     __kinds: dict[type, list[object]] = {}
 
@@ -81,7 +85,18 @@ class InstanceTracker:
         if klass is None:
             klass = type(self)
         self.__kinds.setdefault(klass, []).append(self)
-        self.connect("destroy", self.__kinds[klass].remove)
+
+    def _deregister_instance(self):
+        """Remove this object from all instance tracking lists.
+
+        Must be called explicitly in destroy() since GTK4 no longer emits
+        the GtkWidget::destroy signal.
+        """
+        for instances in list(self.__kinds.values()):
+            try:
+                instances.remove(self)
+            except ValueError:
+                pass
 
     @classmethod
     def instances(cls):

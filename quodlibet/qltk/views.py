@@ -23,7 +23,6 @@ from quodlibet.qltk import (
     menu_popup,
     get_primary_accel_mod,
 )
-from quodlibet.qltk.image import get_surface_extents
 from quodlibet.util import is_windows
 
 from .util import GSignals
@@ -127,17 +126,17 @@ class TreeViewHints(Gtk.Window):
         motion_controller = Gtk.EventControllerMotion()
         scroll_controller = Gtk.EventControllerScroll()
         key_controller = Gtk.EventControllerKey()
+        # Store only handlers connected to view (not to self's controllers)
         self.__handlers[view] = [
-            motion_controller.connect("motion", self.__motion),
-            motion_controller.connect("leave", self.__motion),
-            scroll_controller.connect("scroll", self.__undisplay),
-            key_controller.connect("key-pressed", self.__undisplay),
             view.connect("unmap", self.__undisplay),
-            view.connect("destroy", self.disconnect_view),
         ]
         self.add_controller(motion_controller)
         self.add_controller(scroll_controller)
         self.add_controller(key_controller)
+        motion_controller.connect("motion", self.__motion)
+        motion_controller.connect("leave", self.__motion)
+        scroll_controller.connect("scroll", self.__undisplay)
+        key_controller.connect("key-pressed", self.__undisplay)
 
     def disconnect_view(self, view):
         try:
@@ -156,8 +155,8 @@ class TreeViewHints(Gtk.Window):
             self.__hide_id = None
             self.hide()
 
-        Gtk.StyleContext.remove_provider_for_screen(
-            Gdk.Screen.get_default(), self._style_provider
+        Gtk.StyleContext.remove_provider_for_display(
+            Gdk.Display.get_default(), self._style_provider
         )
 
     def __motion(self, view, event):
@@ -679,12 +678,9 @@ class BaseView(Gtk.TreeView):
                 self.emit("selection-changed", selection)
             self._sel_should_ignore = False
 
-        id_ = self.get_selection().connect("changed", on_selection_changed)
-
-        def on_destroy(self):
-            self.get_selection().disconnect(id_)
-
-        self.connect("destroy", on_destroy)
+        self._sel_change_handler = self.get_selection().connect(
+            "changed", on_selection_changed
+        )
 
         def on_row_activated(*args):
             self._sel_ignore_next = True
@@ -699,6 +695,15 @@ class BaseView(Gtk.TreeView):
         controller = Gtk.GestureClick()
         controller.connect("released", on_button_release_event)
         self.add_controller(controller)
+
+    def destroy(self):
+        # GTK4: Disconnect selection handler explicitly (was done via "destroy" signal in GTK3)
+        if hasattr(self, "_sel_change_handler"):
+            try:
+                self.get_selection().disconnect(self._sel_change_handler)
+            except Exception:
+                pass
+        # GTK4: Widgets don't need explicit destroy(); lifecycle managed by GObject ref counting
 
     def do_key_press_event(self, event):
         if is_accel(event, "space", "KP_Space"):
@@ -863,7 +868,8 @@ class BaseView(Gtk.TreeView):
         if dest_row is None:
             rows = len(self.get_model())
             if not rows:
-                (self.get_parent() or self).drag_highlight()
+                # TODO GTK4: drag_highlight() removed; DnD highlighting via CSS or drop controllers
+                pass
             else:
                 self.set_drag_dest_row(
                     Gtk.TreePath(rows - 1), Gtk.TreeViewDropPosition.AFTER
@@ -936,82 +942,26 @@ class DragIconTreeView(BaseView):
         controller.connect("drag-begin", self.__begin)
         self.add_controller(controller)
 
-    def __begin(self, view, drag_ctx):
-        model, paths = view.get_selection().get_selected_rows()
-        surface = self.create_multi_row_drag_icon(paths, max_rows=3)
-        if surface is not None:
-            Gtk.drag_set_icon_surface(drag_ctx, surface)
+    def __begin(self, drag_source, drag):
+        model, paths = self.get_selection().get_selected_rows()
+        paintable = self.create_multi_row_drag_icon(paths, max_rows=3)
+        if paintable is not None:
+            # TODO GTK4: set proper drag icon hotspot
+            Gtk.DragIcon.set_from_paintable(drag, paintable, 0, 0)
 
     def create_multi_row_drag_icon(self, paths, max_rows):
         """Similar to create_row_drag_icon() but creates a drag icon
         for multiple paths or None.
 
-        The resulting surface will draw max_rows rows and point out
-        if there are more rows selected.
+        GTK4: Returns a Gdk.Paintable. Multi-row composite icon is a
+        TODO GTK4 - currently returns icon for the first row only.
         """
 
         if not paths:
             return None
 
-        if len(paths) == 1:
-            return self.create_row_drag_icon(paths[0])
-
-        # create_row_drag_icon can return None
-        icons = [self.create_row_drag_icon(p) for p in paths[:max_rows]]
-        icons = [i for i in icons if i is not None]
-        if not icons:
-            return None
-
-        sizes = [get_surface_extents(s) for s in icons]
-        if None in sizes:
-            return None
-        width = max([s[2] for s in sizes])
-        height = sum([s[3] for s in sizes])
-
-        # this is the border width we see in the gtk provided surface, not
-        # much we can do besides hardcoding it here
-        bw = 1
-
-        layout = None
-        if len(paths) > max_rows:
-            more = _("and %d more…") % (len(paths) - max_rows)
-            more = util.italic(more)
-            layout = self.create_pango_layout("")
-            layout.set_markup(more)
-            layout.set_alignment(Pango.Alignment.CENTER)
-            layout.set_width(Pango.SCALE * (width - 2 * bw))
-            lw, lh = layout.get_pixel_size()
-            height += lh
-            height += 6  # padding
-
-        surface = icons[0].create_similar(cairo.CONTENT_COLOR_ALPHA, width, height)
-        ctx = cairo.Context(surface)
-
-        # render background
-        style_ctx = self.get_style_context()
-        Gtk.render_background(style_ctx, ctx, 0, 0, width, height)
-
-        # render rows
-        count_y = 0
-        for icon, (x, y, icon_width, icon_height) in zip(icons, sizes, strict=False):
-            ctx.save()
-            ctx.set_source_surface(icon, -x, count_y + -y)
-            ctx.rectangle(bw, count_y + bw, icon_width - 2 * bw, icon_height - 2 * bw)
-            ctx.clip()
-            ctx.paint()
-            ctx.restore()
-            count_y += icon_height
-
-        if layout:
-            Gtk.render_layout(style_ctx, ctx, bw, count_y, layout)
-
-        # render border
-        Gtk.render_line(style_ctx, ctx, 0, 0, 0, height - 1)
-        Gtk.render_line(style_ctx, ctx, 0, height - 1, width - 1, height - 1)
-        Gtk.render_line(style_ctx, ctx, width - 1, height - 1, width - 1, 0)
-        Gtk.render_line(style_ctx, ctx, width - 1, 0, 0, 0)
-
-        return surface
+        # TODO GTK4: composite multiple row paintables into a single icon
+        return self.create_row_drag_icon(paths[0])
 
 
 class MultiDragTreeView(BaseView):
@@ -1206,6 +1156,13 @@ class HintedTreeView(BaseView):
             except AttributeError:
                 tvh = HintedTreeView.hints = TreeViewHints()
             tvh.connect_view(self)
+
+    def destroy(self):
+        # GTK4: Clean up TreeViewHints connection explicitly (GTK3 used "destroy" signal)
+        if self.supports_hints() and hasattr(type(self), "hints"):
+            type(self).hints.disconnect_view(self)
+        # GTK4: Widgets don't need explicit destroy(); call BaseView for its cleanup
+        super().destroy()
 
     def set_tooltip_text(self, *args, **kwargs):
         print_e(

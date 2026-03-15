@@ -1018,7 +1018,9 @@ def _init_gtk():
     if not hasattr(Gtk.NativeDialog, "run"):
 
         def _native_dialog_run_compat(self):
-            print_d("GTK4: NativeDialog.run() called - using compatibility blocking mode")
+            print_d(
+                "GTK4: NativeDialog.run() called - using compatibility blocking mode"
+            )
             import gi.repository.GLib as GLib
 
             response = [None]
@@ -1274,11 +1276,13 @@ def _init_gtk():
         def _popover_get_children(self):
             if hasattr(self, "_menu_box"):
                 from quodlibet.qltk import get_children
+
                 return get_children(self._menu_box)
             child = self.get_child()
             if child is None:
                 return []
             from quodlibet.qltk import get_children
+
             return get_children(child)
 
         Gtk.PopoverMenu.get_children = _popover_get_children

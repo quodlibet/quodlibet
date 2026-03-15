@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland, is_accel
 from quodlibet.qltk.x import Button
-from quodlibet.util import DeferredSignal, print_d, print_w
+from quodlibet.util import DeferredSignal, print_d, print_w, InstanceTracker
 from quodlibet.util import connect_obj, connect_destroy
 
 
@@ -107,8 +107,16 @@ class Window(Gtk.Window):
         self.set_destroy_with_parent(True)
         # TODO GTK4: check what we want to do here given removal of positioning in GTK4
         # self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        connect_obj(self, "destroy", type(self).windows.remove, self)
+        # GTK4: "destroy" signal no longer fires on GtkWidget; use override instead
         # self.connect("key-press-event", self._on_key_press)
+
+    def destroy(self):
+        windows = type(self).windows
+        if self in windows:
+            windows.remove(self)
+        if isinstance(self, InstanceTracker):
+            self._deregister_instance()
+        super().destroy()
 
     def _on_key_press(self, widget, event):
         is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG

@@ -155,19 +155,14 @@ class Entry(Gtk.Entry):
         self._max_width_chars = value
         self.queue_resize()
 
-    def do_get_preferred_width(self):
-        minimum, natural = Gtk.Entry.do_get_preferred_width(self)
+    def do_measure(self, orientation, for_size):
+        minimum, natural, min_baseline, nat_baseline = Gtk.Entry.do_measure(
+            self, orientation, for_size
+        )
 
-        if self._max_width_chars >= 0:
-            # based on gtkentry.c
-            style_context = self.get_style_context()
-            style_context.save()
-            style_context.set_state(Gtk.StateFlags.NORMAL)
-            border = style_context.get_border(style_context.get_state())
-            padding = style_context.get_padding(style_context.get_state())
-            style_context.restore()
+        if orientation == Gtk.Orientation.HORIZONTAL and self._max_width_chars >= 0:
+            # Compute natural width based on max_width_chars (based on gtkentry.c)
             pango_context = self.get_pango_context()
-
             metrics = pango_context.get_metrics(
                 pango_context.get_font_description(), pango_context.get_language()
             )
@@ -178,11 +173,10 @@ class Entry(Gtk.Entry):
                 math.ceil(float(max(char_width, digit_width)) / Pango.SCALE)
             )
 
-            space = border.left + border.right + padding.left + padding.right
-            nat_width = self._max_width_chars * char_pixels + space
+            nat_width = self._max_width_chars * char_pixels
             natural = max(nat_width, minimum)
 
-        return (minimum, natural)
+        return (minimum, natural, min_baseline, nat_baseline)
 
 
 class UndoEntry(Entry, EditableUndo):
