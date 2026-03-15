@@ -170,7 +170,8 @@ class PreferencesWidget(Gtk.Box):
         only_user_radio = Gtk.CheckButton()
         label = Gtk.Label(
             label=_("Only on <i>_manual</i> song changes"),
-            use_underline=True, use_markup=True
+            use_underline=True,
+            use_markup=True,
         )
         only_user_radio.set_child(label)
         only_user_radio.connect(
@@ -181,7 +182,8 @@ class PreferencesWidget(Gtk.Box):
         only_auto_radio = Gtk.CheckButton(group=only_user_radio)
         label = Gtk.Label(
             label=_("Only on <i>_automatic</i> song changes"),
-            use_underline=True, use_markup=True
+            use_underline=True,
+            use_markup=True,
         )
         only_auto_radio.set_child(label)
         only_auto_radio.connect(
@@ -191,8 +193,7 @@ class PreferencesWidget(Gtk.Box):
 
         all_radio = Gtk.CheckButton(group=only_user_radio)
         label = Gtk.Label(
-            label=_("On <i>a_ll</i> song changes"),
-            use_underline=True, use_markup=True
+            label=_("On <i>a_ll</i> song changes"), use_underline=True, use_markup=True
         )
         all_radio.set_child(label)
         all_radio.connect(

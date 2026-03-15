@@ -684,8 +684,12 @@ class Icon(
         display = Gdk.Display.get_default()
         theme = Gtk.IconTheme.get_for_display(display)
         icon_paintable = theme.lookup_icon(
-            Icons.QUODLIBET, None, Icon.SIZE, 1,
-            Gtk.TextDirection.NONE, Gtk.IconLookupFlags.FORCE_REGULAR
+            Icons.QUODLIBET,
+            None,
+            Icon.SIZE,
+            1,
+            Gtk.TextDirection.NONE,
+            Gtk.IconLookupFlags.FORCE_REGULAR,
         )
         icon_file = icon_paintable.get_file()
         if icon_file:
