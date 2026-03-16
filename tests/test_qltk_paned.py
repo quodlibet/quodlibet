@@ -40,8 +40,8 @@ class TRPaned:
 
     def test_visible_pre_setup_children(self):
         p = self.Kind()
-        p.pack1(Gtk.Button())
-        p.pack2(Gtk.Button())
+        p.set_start_child(Gtk.Button())
+        p.set_end_child(Gtk.Button())
         p.set_relative(0.75)
         self.assertAlmostEqual(p.get_relative(), 0.75)
         with visible(p, width=200, height=200) as p:
@@ -57,13 +57,17 @@ class TRPaned:
     def test_min_size_child(self):
         p = self.Kind()
         p.set_size_request(200, 200)
-        p.pack1(Gtk.Label(), True, False)
+        p.set_start_child(Gtk.Label())
+        p.set_resize_start_child(True)
+        p.set_shrink_start_child(True)
         b2 = Gtk.Button()
         b2.set_size_request(50, 50)
-        p.pack2(b2, True, False)
+        p.set_end_child(b2)
+        p.set_resize_end_child(True)
+        p.set_shrink_end_child(True)
         p.set_relative(0.5)
         with visible(p) as p:
-            self.assertEqual(p.get_position(), 100)
+            self.assertAlmostEqual(p.get_relative(), 0.5, 1)
 
 
 class RHPaned(TestCase, TRPaned):
@@ -85,8 +89,8 @@ class TConfigRPaned(TestCase):
         assert config.get("memory", "foobar", None) is None
 
         p = ConfigRVPaned("memory", "foobar", 0.75)
-        p.pack1(Gtk.Button())
-        p.pack2(Gtk.Button())
+        p.set_start_child(Gtk.Button())
+        p.set_end_child(Gtk.Button())
 
         with visible(p, width=200, height=200) as p:
             self.assertAlmostEqual(p.get_relative(), 0.75, 2)
@@ -108,33 +112,33 @@ class TMultiRPaned:
         p.set_widgets([])
         paned = p.get_paned()
         self.assertIsNotNone(paned)
-        self.assertIsNone(paned.get_child1())
-        self.assertIsNone(paned.get_child2())
+        self.assertIsNone(paned.get_start_child())
+        self.assertIsNone(paned.get_end_child())
 
         # 1 widget
         sw = Gtk.ScrolledWindow()
         p.set_widgets([sw])
         paned = p.get_paned()
-        children = [paned.get_child1(), paned.get_child2()]
+        children = [paned.get_start_child(), paned.get_end_child()]
         self.assertIn(sw, children)
 
         # 2 widgets
         sws = [Gtk.ScrolledWindow() for _ in range(2)]
         p.set_widgets(sws)
         paned = p.get_paned()
-        self.assertIs(sws[0], paned.get_child1())
-        self.assertIs(sws[1], paned.get_child2())
+        self.assertIs(sws[0], paned.get_start_child())
+        self.assertIs(sws[1], paned.get_end_child())
 
         # 3 wigets
         sws = [Gtk.ScrolledWindow() for _ in range(3)]
         p.set_widgets(sws)
 
         root_paned = p.get_paned()
-        self.assertIs(sws[0], root_paned.get_child1())
+        self.assertIs(sws[0], root_paned.get_start_child())
 
-        sub_paned = root_paned.get_child2()
-        self.assertIs(sws[1], sub_paned.get_child1())
-        self.assertIs(sws[2], sub_paned.get_child2())
+        sub_paned = root_paned.get_end_child()
+        self.assertIs(sws[1], sub_paned.get_start_child())
+        self.assertIs(sws[2], sub_paned.get_end_child())
 
     def test_make_pane_widths_equal(self):
         p = self.Kind()

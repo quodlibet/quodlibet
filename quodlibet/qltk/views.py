@@ -1325,15 +1325,16 @@ class TreeViewColumnButton(TreeViewColumn):
         button = widget.get_ancestor(Gtk.Button)
         if button:
             controller = Gtk.GestureClick()
-            controller.connect("pressed", self.button_press_event)
+            controller.set_button(0)
+            controller.connect("pressed", self.__on_button_pressed)
             button.add_controller(controller)
-            button.connect("popup-menu", self.popup_menu)
+            button.connect("popup-menu", self.__on_popup_menu)
 
-    def button_press_event(self, widget, event):
-        # TODO GTK4: fix
-        return self.get_controller().emit("button-press-event", event)
+    def __on_button_pressed(self, gesture, n_press, x, y):
+        event = gesture.get_last_event(None)
+        return self.emit("button-press-event", event)
 
-    def popup_menu(self, widget):
+    def __on_popup_menu(self, widget):
         return self.emit("popup-menu")
 
 

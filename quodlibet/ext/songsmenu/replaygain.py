@@ -640,7 +640,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         set_active(cls.config_get("process_if", UpdateMode.ALWAYS))
         renderer = Gtk.CellRendererText()
         combo.connect("changed", process_option_changed)
-        combo.prepend(renderer, True)
+        combo.pack_start(renderer, True)
         combo.add_attribute(renderer, "markup", 0)
 
         rows.append((_("_Process albums:"), combo))

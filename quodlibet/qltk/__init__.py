@@ -105,10 +105,10 @@ def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     background color.
     """
 
-    # GTK4: StateFlags.LINK always available
+    # GTK4: get_color() takes no args, uses current state
     context.save()
     context.set_state(Gtk.StateFlags.LINK)
-    color = context.get_color(context.get_state())
+    color = context.get_color()
     context.restore()
     return color
 
@@ -171,15 +171,12 @@ def get_top_parent(widget):
 
 
 def get_menu_item_top_parent(widget):
-    """Returns the toplevel for a menu item or None if the menu
-    and none of its parents isn't attached to a widget
+    """Returns the toplevel for a menu item or None.
+
+    In GTK4, menus are model-based so we just walk up the widget tree
+    to find the toplevel window.
     """
 
-    while isinstance(widget, Gtk.MenuItem):
-        menu = widget.get_parent()
-        if not menu:
-            return None
-        widget = menu.get_attach_widget()
     return get_top_parent(widget)
 
 

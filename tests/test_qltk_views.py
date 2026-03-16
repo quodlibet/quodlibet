@@ -32,7 +32,7 @@ def _fill_view(view):
     model = Gtk.ListStore(str)
     column = Gtk.TreeViewColumn("foo")
     title = Gtk.CellRendererText()
-    column.prepend(title, True)
+    column.pack_start(title, True)
     column.add_attribute(title, "text", 0)
     view.append_column(column)
     for _x in range(100):
@@ -173,7 +173,9 @@ class TBaseView(TestCase):
         column = self.c.get_columns()[0]
         assert column.get_sort_indicator()
 
-    @pytest.mark.skip(reason="TODO GTK4: deprecated DnD TreeView APIs (set_drag_dest_row) crash on realize; needs DnD rewrite")
+    @pytest.mark.skip(
+        reason="TODO GTK4: deprecated DnD TreeView APIs (set_drag_dest_row) crash on realize; needs DnD rewrite"
+    )
     def test_set_drag_dest(self):
         x, y = self.c.convert_bin_window_to_widget_coords(0, 0)
 

@@ -1176,27 +1176,6 @@ def _init_gtk():
 
         Gtk.Label.set_alignment = _label_set_alignment
 
-    # GTK4: TreeViewColumn.pack_start/pack_end renamed to prepend/append
-    # but GTK4 TreeViewColumn doesn't have prepend, and the signature changed
-    if not hasattr(Gtk.TreeViewColumn, "prepend"):
-        # In GTK4 TreeViewColumn, use pack_start as the replacement
-        # pack_start(cell, expand) is still the right API in GTK4 for TreeViewColumn
-        pass
-
-    # Actually, GTK4 TreeViewColumn still has pack_start/pack_end but not prepend
-    # The test code calls column.prepend(renderer, expand) which is a GTK3 CellLayout method
-    if not hasattr(Gtk.TreeViewColumn, "prepend"):
-
-        def _treeviewcolumn_prepend(self, cell, expand=True):
-            self.pack_start(cell, expand)
-
-        Gtk.TreeViewColumn.prepend = _treeviewcolumn_prepend
-
-    # GTK4: ComboBoxText.prepend() signature changed - it takes (id, text) in GTK4
-    # but old code calls prepend(text) like a CellLayout. Add prepend_text if missing.
-    if not hasattr(Gtk.ComboBoxText, "prepend_text"):
-        Gtk.ComboBoxText.prepend_text = lambda self, text: self.prepend(None, text)
-
     # GTK4: Gtk.events_pending() removed - use GLib.MainContext
     if not hasattr(Gtk, "events_pending"):
 
@@ -1293,6 +1272,8 @@ def _init_gtk():
         class _FakeEvent:
             def __init__(self, event_type=None):
                 self.type = event_type
+                self.keyval = 0
+                self.state = Gdk.ModifierType(0)
 
         Gdk.Event.new = staticmethod(lambda event_type: _FakeEvent(event_type))
 

@@ -44,18 +44,21 @@ class RPaned(Paned):
         if self.ORIENTATION is not None:
             kwargs["orientation"] = self.ORIENTATION
         super().__init__(*args, **kwargs)
-        # before first alloc: save value in relative and set on the first alloc
-        # after the first alloc: use the normal properties
         self.__alloced = False
         self.__relative = None
-        # GTK4: Use signal instead of overriding do_size_allocate
-        self.connect("map", self.__on_first_map)
 
     def _get_max(self):
-        alloc = self.get_allocation()
         if self.get_orientation() == Gtk.Orientation.HORIZONTAL:
-            return alloc.width
-        return alloc.height
+            return self.get_width()
+        return self.get_height()
+
+    def do_size_allocate(self, width, height, baseline):
+        if not self.__alloced and self.__relative is not None:
+            max_pos = width if self.get_orientation() == Gtk.Orientation.HORIZONTAL else height
+            if max_pos > 0:
+                self.set_position(int(round(self.__relative * max_pos)))
+        self.__alloced = True
+        Gtk.Paned.do_size_allocate(self, width, height, baseline)
 
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""
@@ -65,7 +68,8 @@ class RPaned(Paned):
 
         if self.__alloced:
             max_pos = self._get_max()
-            self.set_position(int(round(v * max_pos)))
+            if max_pos > 0:
+                self.set_position(int(round(v * max_pos)))
         else:
             self.__relative = v
 
@@ -73,23 +77,16 @@ class RPaned(Paned):
         """Return the relative position of the separator, [0..1]."""
 
         if self.__alloced:
-            rel = float(self.get_position()) / self._get_max()
-            if 0 <= rel <= 1:
-                return rel
+            max_pos = self._get_max()
+            if max_pos > 0:
+                rel = float(self.get_position()) / max_pos
+                if 0 <= rel <= 1:
+                    return rel
 
         if self.__relative is not None:
             return self.__relative
 
-        # before first alloc and set_relative not called
         return 0.5
-
-    def __on_first_map(self, widget):
-        """Set the relative position on first map (GTK4 replacement for do_size_allocate)"""
-        if not self.__alloced and self.__relative is not None:
-            self.set_relative(self.__relative)
-        self.__alloced = True
-        # Disconnect after first use
-        self.disconnect_by_func(self.__on_first_map)
 
 
 class RHPaned(RPaned):
@@ -201,7 +198,8 @@ class MultiRPaned:
             pass
 
     def show_all(self):
-        self._root_paned.show_all()
+        # GTK4: widgets are visible by default
+        self._root_paned.set_visible(True)
 
     def _get_paneds(self):
         """Get all internal paneds in a flat, ordered list."""

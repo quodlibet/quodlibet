@@ -52,7 +52,7 @@ class ComboBoxEntry(Gtk.ComboBox):
     def _fill_model(self, choices: dict[str, str]):
         self.clear()
         render = Gtk.CellRendererText()
-        self.prepend(render, True)
+        self.pack_start(render, True)
         self.add_attribute(render, "text", 1)
 
         model = self.get_model()

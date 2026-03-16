@@ -129,7 +129,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
 
         cell = Gtk.CellRendererText()
         cell.props.ellipsize = Pango.EllipsizeMode.END
-        self.prepend(cell, True)
+        self.pack_start(cell, True)
         self.add_attribute(cell, "text", 0)
 
         def combo_sep(model, iter_, data):
@@ -172,7 +172,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
 
         cell = Gtk.CellRendererText()
         cell.props.ellipsize = Pango.EllipsizeMode.END
-        self.prepend(cell, True)
+        self.pack_start(cell, True)
         self.add_attribute(cell, "text", 0)
 
         def combo_sep(model, iter_, data):
@@ -213,11 +213,7 @@ class PluginListView(HintedTreeView):
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
-        # GTK4: set_padding() removed, use margins
-        render.set_margin_start(6)
-        render.set_margin_end(6)
-        render.set_margin_top(3)
-        render.set_margin_bottom(3)
+        render.set_padding(6, 3)
 
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -233,17 +229,13 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererPixbuf()
-        # GTK4: set_padding() removed, use margins
-        render.set_margin_start(1)
-        render.set_margin_end(1)
-        render.set_margin_top(1)
-        render.set_margin_bottom(1)
+        render.set_padding(1, 1)
 
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             icon = plugin.icon or Icons.SYSTEM_RUN
             render.set_property("icon-name", icon)
-            render.set_property("stock-size", Gtk.IconSize.LARGE_TOOLBAR)
+            render.set_property("icon-size", Gtk.IconSize.LARGE)
 
         column = Gtk.TreeViewColumn("image", render)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -253,11 +245,7 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.set_property("xalign", 0.0)
-        # GTK4: set_padding() removed, use margins
-        render.set_margin_start(6)
-        render.set_margin_end(6)
-        render.set_margin_top(6)
-        render.set_margin_bottom(6)
+        render.set_padding(6, 6)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
@@ -376,11 +364,13 @@ class PluginPreferencesContainer(Gtk.Box):
                         b = Button(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
                         connect_obj(b, "clicked", Gtk.Window.show, prefs)
                         connect_obj(b, "destroy", Gtk.Window.destroy, prefs)
-                        frame.add(b)
-                        frame.get_child().set_border_width(6)
+                        b.set_margin_start(6)
+                        b.set_margin_end(6)
+                        b.set_margin_top(6)
+                        b.set_margin_bottom(6)
+                        frame.set_child(b)
                     else:
-                        frame.add(prefs)
-                    frame.show_all()
+                        frame.set_child(prefs)
 
 
 class PluginWindow(UniqueWindow, PersistentWindowMixin):

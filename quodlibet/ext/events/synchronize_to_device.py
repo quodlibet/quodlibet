@@ -415,7 +415,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if sort:
             tvc.set_sort_column_id(sort)
         tvc.set_cell_data_func(render, cdf)
-        tvc.prepend(render, True)
+        tvc.pack_start(render, True)
         self.renders[tvc] = render
         return tvc
 

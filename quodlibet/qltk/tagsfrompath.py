@@ -233,7 +233,7 @@ class TagsFromPath(Gtk.Box):
 
         render = Gtk.CellRendererText()
         col = TreeViewColumn(title=_("File"))
-        col.prepend(render, True)
+        col.pack_start(render, True)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         def cell_data_file(column, cell, model, iter_, data):

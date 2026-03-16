@@ -430,9 +430,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         if can_filter("album"):
             menu_items.append(Filter("album"))
 
-        menu = browser.menu(songs, library, items=[menu_items])
-        menu.show_all()
-        return menu
+        return browser.menu(songs, library, items=[menu_items])
 
     def __init__(
         self,
@@ -686,10 +684,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
             song = view.get_model()[path][0]
             l = Gtk.Label()
-            l.show()
             l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
-            # GTK4: destroy() removed - l cleaned up automatically
             if not width:
                 return False
             precision = config.RATINGS.precision
@@ -711,51 +707,51 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         librarian.changed(songs)
 
     def __key_press(self, controller, keyval, keycode, state, librarian, player):
-        # GTK4: EventControllerKey.key-pressed has different signature
-        # Create event-like object for compatibility
-        class KeyEvent:
-            def __init__(self, keyval, keycode, state):
-                self.type = Gdk.EventType.KEY_PRESS
-                self.keyval = keyval
-                self.keycode = keycode
-                self.state = state
+        default_mod = Gtk.accelerator_get_default_mod_mask()
+        masked_state = state & default_mod
 
-            def get_state(self):
-                return self.state
+        if not keyval & ~0xFF:
+            keyval = ord(chr(keyval).lower())
 
-        event = KeyEvent(keyval, keycode, state)
-        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        def matches(*accels):
+            for accel in accels:
+                accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
+                if accel_keyval == keyval and accel_mod == masked_state:
+                    return True
+            return False
+
+        if matches("<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
-        if qltk.is_accel(event, "<Primary>F"):
+        if matches("<Primary>F"):
             self.emit("start-interactive-search")
             return True
-        if qltk.is_accel(event, "<Primary>Delete"):
+        if matches("<Primary>Delete"):
             songs = self.get_selected_songs()
             if songs:
                 trash_songs(self, songs, librarian)
             return True
-        if qltk.is_accel(event, "<alt>Return"):
+        if matches("<alt>Return"):
             songs = self.get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        if qltk.is_accel(event, "<Primary>I"):
+        if matches("<Primary>I"):
             songs = self.get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        if qltk.is_accel(event, "space", "KP_Space") and player is not None:
+        if matches("space", "KP_Space") and player is not None:
             player.paused = not player.paused
             return True
-        if qltk.is_accel(event, "F2"):
+        if matches("F2"):
             songs = self.get_selected_songs()
             if len(songs) > 1:
                 print_d("Can't edit more than one")
             elif songs:
-                path, col = songlist.get_cursor()
+                path, col = self.get_cursor()
                 song = self.get_first_selected_song()
                 cls = type(col).__name__
                 if col.can_edit:
@@ -1182,14 +1178,15 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             def column_clicked(column, *args):
                 if not self._sortable:
                     return
-                # if ctrl is held during the sort click, append a sort key
-                # or change order if already sorted
                 ctrl_held = False
-                event = Gtk.get_current_event()
-                if event:
-                    ok, state = event.get_state()
-                    if ok and state & qltk.get_primary_accel_mod():
-                        ctrl_held = True
+                display = self.get_display()
+                if display:
+                    seat = display.get_default_seat()
+                    if seat:
+                        keyboard = seat.get_keyboard()
+                        if keyboard:
+                            mod_state = keyboard.get_modifier_state()
+                            ctrl_held = bool(mod_state & qltk.get_primary_accel_mod())
 
                 self.toggle_column_sort(column, replace=not ctrl_held)
 
@@ -1206,15 +1203,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.handler_unblock(self.__csig)
 
     def _menu(self, column: SongListColumn) -> Gtk.PopoverMenu:
-        menu = Gtk.PopoverMenu()
-
-        def selection_done_cb(menu):
-            # GTK4: destroy() removed - menu cleaned up automatically
-            pass
-
-        menu.connect("selection-done", selection_done_cb)
-
         current_set = set(SongList.headers)
+        action_group = Gio.SimpleActionGroup()
 
         def tag_title(tag: str):
             if "<" in tag:
@@ -1222,28 +1212,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return util.tag(tag)
 
         current = [(tag_title(c), c) for c in SongList.headers]
-
-        def add_header_toggle(
-            menu: Gtk.PopoverMenu,
-            header: str,
-            tag: str,
-            active: bool,
-            column: SongListColumn = column,
-        ):
-            item = Gtk.CheckMenuItem(label=header)
-            item.tag = tag
-            item.set_active(active)
-            item.connect("activate", self.__toggle_header_item, column)
-            item.show()
-            item.set_tooltip_text(tag)
-            menu.append(item)
-
-        for header, tag in current:
-            add_header_toggle(menu, header, tag, True)
-
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
 
         trackinfo = """title genre comment ~title~version ~#track
             ~#playcount ~#skipcount ~rating ~#length ~playlists
@@ -1263,59 +1231,113 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo], []
         )
 
+        menu_model = Gio.Menu()
+
+        current_section = Gio.Menu()
+        for _header, tag in current:
+            action_name = "toggle-header." + tag.replace("~", "_").replace("#", "n")
+            action = Gio.SimpleAction.new_stateful(
+                action_name, None, GLib.Variant.new_boolean(True)
+            )
+
+            def on_toggle_header(action, param, tag=tag):
+                active = action.get_state().get_boolean()
+                action.set_state(GLib.Variant.new_boolean(not active))
+                headers = SongList.headers[:]
+                if not active:
+                    try:
+                        headers.insert(self.get_columns().index(column), tag)
+                    except ValueError:
+                        headers.append(tag)
+                else:
+                    try:
+                        headers.remove(tag)
+                    except ValueError:
+                        pass
+                SongList.set_all_column_headers(headers)
+                SongList.headers = headers
+
+            action.connect("activate", on_toggle_header)
+            action_group.add_action(action)
+            item = Gio.MenuItem.new(tag_title(tag), "menu." + action_name)
+            current_section.append_item(item)
+        menu_model.append_section(None, current_section)
+
+        groups_section = Gio.Menu()
         for name, group in [
-            (_("All _Headers"), all_headers),
-            (_("_Track Headers"), trackinfo),
-            (_("_Album Headers"), albuminfo),
-            (_("_People Headers"), peopleinfo),
-            (_("_Date Headers"), dateinfo),
-            (_("_File Headers"), fileinfo),
-            (_("_Production Headers"), copyinfo),
+            (_("All Headers"), all_headers),
+            (_("Track Headers"), trackinfo),
+            (_("Album Headers"), albuminfo),
+            (_("People Headers"), peopleinfo),
+            (_("Date Headers"), dateinfo),
+            (_("File Headers"), fileinfo),
+            (_("Production Headers"), copyinfo),
         ]:
-            item = Gtk.MenuItem(label=name, use_underline=True)
-            item.show()
-            menu.append(item)
-            submenu = Gtk.PopoverMenu()
-            item.set_submenu(submenu)
+            submenu_model = Gio.Menu()
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
-                add_header_toggle(submenu, header, tag, tag in current_set)
+                action_name = (
+                    "toggle-sub." + tag.replace("~", "_").replace("#", "n")
+                )
+                active = tag in current_set
+                action = Gio.SimpleAction.new_stateful(
+                    action_name, None, GLib.Variant.new_boolean(active)
+                )
 
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
+                def on_toggle_sub(action, param, tag=tag):
+                    active = action.get_state().get_boolean()
+                    action.set_state(GLib.Variant.new_boolean(not active))
+                    headers = SongList.headers[:]
+                    if not active:
+                        try:
+                            headers.insert(self.get_columns().index(column), tag)
+                        except ValueError:
+                            headers.append(tag)
+                    else:
+                        try:
+                            headers.remove(tag)
+                        except ValueError:
+                            pass
+                    SongList.set_all_column_headers(headers)
+                    SongList.headers = headers
 
-        custom = Gtk.MenuItem(label=_("_Customize Headers…"), use_underline=True)
-        custom.show()
-        custom.connect("activate", self.__add_custom_column)
-        menu.append(custom)
+                action.connect("activate", on_toggle_sub)
+                action_group.add_action(action)
+                submenu_item = Gio.MenuItem.new(header, "menu." + action_name)
+                submenu_model.append_item(submenu_item)
+            groups_section.append_submenu(name, submenu_model)
+        menu_model.append_section(None, groups_section)
 
-        item = Gtk.CheckMenuItem(label=_("_Expand Column"), use_underline=True)
-        item.set_active(column.get_expand())
-        item.set_sensitive(column.get_resizable())
+        customize_section = Gio.Menu()
+        customize_action = Gio.SimpleAction.new("customize-headers", None)
+        customize_action.connect("activate", lambda a, p: self.__add_custom_column(a))
+        action_group.add_action(customize_action)
+        customize_section.append(_("Customize Headers…"), "menu.customize-headers")
+        menu_model.append_section(None, customize_section)
 
-        def set_expand_cb(item, column):
-            do_expand = item.get_active()
+        expand_section = Gio.Menu()
+        expand_action = Gio.SimpleAction.new_stateful(
+            "expand-column", None, GLib.Variant.new_boolean(column.get_expand())
+        )
+        expand_action.set_enabled(column.get_resizable())
+
+        def on_expand_column(action, param):
+            do_expand = not action.get_state().get_boolean()
+            action.set_state(GLib.Variant.new_boolean(do_expand))
             if not do_expand:
-                # in case we unexpand, get the current width and set it
-                # so the column doesn't give up all its space
-                # to the left over expanded columns
                 column.set_fixed_width(column.get_width())
             else:
-                # in case we expand this seems to trigger a re-distribution
-                # between all expanded columns
                 column.set_fixed_width(-1)
             column.set_expand(do_expand)
             self.columns_autosize()
 
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
+        expand_action.connect("activate", on_expand_column)
+        action_group.add_action(expand_action)
+        expand_section.append(_("Expand Column"), "menu.expand-column")
+        menu_model.append_section(None, expand_section)
 
-        item.connect("activate", set_expand_cb, column)
-        item.show()
-        menu.append(item)
-
-        return menu
+        popover = Gtk.PopoverMenu.new_from_model(menu_model)
+        popover.insert_action_group("menu", action_group)
+        return popover
 
     def __toggle_header_item(self, item, column):
         headers = SongList.headers[:]
