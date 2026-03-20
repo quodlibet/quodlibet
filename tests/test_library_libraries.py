@@ -44,7 +44,7 @@ class AlbumSong(AudioFile):
 
     def __init__(self, num, album=None):
         super().__init__()
-        self["~filename"] = fsnative("file_%d.mp3" % (num + 1))
+        self["~filename"] = "file_%d.mp3" % (num + 1)
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
         if album is None:

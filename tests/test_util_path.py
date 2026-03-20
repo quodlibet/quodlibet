@@ -37,15 +37,15 @@ def test_uri2gsturi():
 class Tishidden(TestCase):
     @skipIf(is_win, "unix-like hidden")
     def test_leading_dot(self):
-        assert is_hidden(fsnative("."))
-        assert is_hidden(fsnative("foo/.bar"))
+        assert is_hidden(".")
+        assert is_hidden("foo/.bar")
 
     def test_normal_names_not_hidden(self):
-        assert not is_hidden(fsnative("foo"))
-        assert not is_hidden(fsnative(".foo/bar"))
+        assert not is_hidden("foo")
+        assert not is_hidden(".foo/bar")
 
     def test_multiple_dots(self):
-        assert not is_hidden(fsnative("...and Justice For All.flac"))
+        assert not is_hidden("...and Justice For All.flac")
 
 
 class Turi(TestCase):
@@ -53,11 +53,11 @@ class Turi(TestCase):
         if os.name != "nt":
             path = uri2fsn("file:///home/piman/cr%21azy")
             assert isinstance(path, fsnative)
-            self.assertEqual(path, fsnative("/home/piman/cr!azy"))
+            self.assertEqual(path, "/home/piman/cr!azy")
         else:
             path = uri2fsn("file:///C:/foo")
             assert isinstance(path, fsnative)
-            self.assertEqual(path, fsnative("C:\\foo"))
+            self.assertEqual(path, "C:\\foo")
 
     def test_uri2fsn_invalid(self):
         self.assertRaises(ValueError, uri2fsn, "http://example.com")
@@ -70,10 +70,10 @@ class Turi(TestCase):
 
     def test_fsn2uri(self):
         if os.name != "nt":
-            uri = fsn2uri(fsnative("/öäü.txt"))
+            uri = fsn2uri("/öäü.txt")
             self.assertEqual(uri, "file:///%C3%B6%C3%A4%C3%BC.txt")
         else:
-            uri = fsn2uri(fsnative("C:\\öäü.txt"))
+            uri = fsn2uri("C:\\öäü.txt")
             self.assertEqual(uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
             self.assertEqual(fsn2uri("C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
 
@@ -84,9 +84,9 @@ class Turi(TestCase):
             paths = ["/öäü.txt", "/a/foo/bar", "/a/b/foo/bar"]
 
         for source in paths:
-            path = uri2fsn(fsn2uri(fsnative(source)))
+            path = uri2fsn(fsn2uri(source))
             assert isinstance(path, fsnative)
-            self.assertEqual(path, fsnative(source))
+            self.assertEqual(path, source)
 
     def test_win_unc_path(self):
         if os.name == "nt":
@@ -124,19 +124,19 @@ class Tlimit_path(TestCase):
             path = limit_path(path)
             self.assertEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
 
-        path = fsnative("foo%s.ext" % ("x" * 300))
+        path = "foo%s.ext" % ("x" * 300)
         new = limit_path(path, ellipsis=False)
         assert isinstance(new, fsnative)
         self.assertEqual(len(new), 255)
-        assert new.endswith(fsnative("xx.ext"))
+        assert new.endswith("xx.ext")
 
         new = limit_path(path)
         assert isinstance(new, fsnative)
         self.assertEqual(len(new), 255)
-        assert new.endswith(fsnative("...ext"))
+        assert new.endswith("...ext")
 
-        assert isinstance(limit_path(fsnative()), fsnative)
-        self.assertEqual(limit_path(fsnative()), fsnative())
+        assert isinstance(limit_path(""), fsnative)
+        self.assertEqual(limit_path(""), "")
 
 
 class Tiscommand(TestCase):

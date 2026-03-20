@@ -7,7 +7,6 @@ from tests import TestCase
 
 import os
 
-from senf import fsnative
 
 from quodlibet.util.tagsfrompath import TagsFromPattern
 
@@ -64,9 +63,7 @@ class TTagsFromPattern(TestCase):
 
     def test_nongreedy(self):
         pat = TagsFromPattern("<artist> - <title>")
-        dic = pat.match_path(
-            fsnative("Prefuse 73 - The End of Biters - International.ogg")
-        )
+        dic = pat.match_path("Prefuse 73 - The End of Biters - International.ogg")
         self.assertEqual(dic["artist"], "Prefuse 73")
         self.assertEqual(dic["title"], "The End of Biters - International")
 
@@ -143,14 +140,14 @@ class TTagsFromPattern(TestCase):
     def test_disctrack(self):
         pat = TagsFromPattern("<discnumber><tracknumber>. <title>")
         self.assertEqual(
-            pat.match_path(fsnative("101. T1.ogg")),
+            pat.match_path("101. T1.ogg"),
             {"discnumber": "1", "tracknumber": "01", "title": "T1"},
         )
         self.assertEqual(
-            pat.match_path(fsnative("1318. T18.ogg")),
+            pat.match_path("1318. T18.ogg"),
             {"discnumber": "13", "tracknumber": "18", "title": "T18"},
         )
         self.assertEqual(
-            pat.match_path(fsnative("24. T4.ogg")),
+            pat.match_path("24. T4.ogg"),
             {"discnumber": "2", "tracknumber": "4", "title": "T4"},
         )

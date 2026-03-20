@@ -10,28 +10,27 @@ from quodlibet.browsers.tracks import TrackList
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.qltk.songlist import SongList
-from senf import fsnative
 from tests import TestCase, run_gtk_loop
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [
-    AudioFile({"title": "one", "artist": "piman", "~filename": fsnative("/dev/null")}),
+    AudioFile({"title": "one", "artist": "piman", "~filename": "/dev/null"}),
     AudioFile(
         {
             "title": "two",
             "artist": "mu",
             "~#length": 234,
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
         }
     ),
-    AudioFile({"title": "three", "artist": "boris", "~filename": fsnative("/bin/ls")}),
+    AudioFile({"title": "three", "artist": "boris", "~filename": "/bin/ls"}),
     AudioFile(
         {
             "title": "four",
             "artist": "random",
             "album": "don't stop",
             "labelid": "65432-1",
-            "~filename": fsnative("/dev/random"),
+            "~filename": "/dev/random",
         }
     ),
     AudioFile(
@@ -40,7 +39,7 @@ SONGS = [
             "artist": "shell",
             "album": "don't stop",
             "labelid": "12345-6",
-            "~filename": fsnative("/tmp/five € and £!"),
+            "~filename": "/tmp/five € and £!",
         }
     ),
 ]

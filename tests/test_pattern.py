@@ -417,7 +417,7 @@ class TFileFromPattern(_TFileFromPattern):
         self.assertEqual(pat.format(self.e), "0007. Title7.mp3")
 
     def test_ext_case_preservation(self):
-        x = AudioFile({"~filename": fsnative("/tmp/Xx.Flac"), "title": "Xx"})
+        x = AudioFile({"~filename": "/tmp/Xx.Flac", "title": "Xx"})
         # If pattern has a particular ext, preserve case of ext
         p1 = self._create("<~basename>")
         self.assertEqual(p1.format(x), "Xx.Flac")

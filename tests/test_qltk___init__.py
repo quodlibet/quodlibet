@@ -6,7 +6,7 @@
 from tests import TestCase
 
 from gi.repository import Gtk, Gdk
-from senf import fsnative, fsn2bytes
+from senf import fsn2bytes
 
 from quodlibet.formats import AudioFile
 from quodlibet import qltk
@@ -134,9 +134,9 @@ class TQltk(TestCase):
 class Tselection_data(TestCase):
     def test_selection_set_songs(self):
         song = AudioFile()
-        song["~filename"] = fsnative("foo")
+        song["~filename"] = "foo"
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
-        assert sel.data == fsn2bytes(fsnative("foo"), "utf-8")
+        assert sel.data == fsn2bytes("foo", "utf-8")
 
-        assert qltk.selection_get_filenames(sel) == [fsnative("foo")]
+        assert qltk.selection_get_filenames(sel) == ["foo"]

@@ -37,16 +37,12 @@ class TCommands(TCommandBase):
         self.assertEqual(self._send("print-query-text"), "foo\n")
 
     def test_print_playing_elapsed(self):
-        app.player.info = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")}
-        )
+        app.player.info = AudioFile({"album": "foo", "~filename": "/dev/null"})
         app.player.seek(123 * 1000)
         assert self._send("print-playing <album~~elapsed>") == "foo - 2:03\n"
 
     def test_print_playing_elapsed_numeric(self):
-        app.player.info = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")}
-        )
+        app.player.info = AudioFile({"album": "foo", "~filename": "/dev/null"})
         app.player.seek(234.56 * 1000)
         assert self._send("print-playing <~#elapsed>") == "234.56\n"
 
@@ -114,9 +110,7 @@ class TCommands(TCommandBase):
         self.assertEqual(app.window.playlist.q.get(), songs)
 
     def test_rating(self):
-        app.player.song = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")}
-        )
+        app.player.song = AudioFile({"album": "foo", "~filename": "/dev/null"})
         self._send("rating +")
         self.assertAlmostEqual(app.player.song["~#rating"], 0.75)
         self._send("rating 0.4")

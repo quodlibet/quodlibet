@@ -39,7 +39,7 @@ from .helper import temp_filename
 
 bar_1_1 = AudioFile(
     {
-        "~filename": fsnative("/fakepath/1"),
+        "~filename": "/fakepath/1",
         "title": "A song",
         "discnumber": "1/2",
         "tracknumber": "1/3",
@@ -49,7 +49,7 @@ bar_1_1 = AudioFile(
 )
 bar_1_2 = AudioFile(
     {
-        "~filename": fsnative("/fakepath/2"),
+        "~filename": "/fakepath/2",
         "title": "Perhaps another",
         "titlesort": "Titles don't sort",
         "discnumber": "1",
@@ -64,7 +64,7 @@ bar_1_2 = AudioFile(
 )
 bar_2_1 = AudioFile(
     {
-        "~filename": fsnative("/does not/exist"),
+        "~filename": "/does not/exist",
         "title": "more songs",
         "discnumber": "2/2",
         "tracknumber": "1",
@@ -120,7 +120,7 @@ class TAudioFile(TestCase):
     def test_tag_strs(self):
         for t in format_types:
             i = AudioFile.__new__(t)
-            i["~filename"] = fsnative("foo")
+            i["~filename"] = "foo"
             for tag in TAGS.values():
                 name = tag.name
                 # brute force
@@ -136,7 +136,7 @@ class TAudioFile(TestCase):
                 ]
                 for name in variants:
                     if name in FILESYSTEM_TAGS:
-                        assert isinstance(i(name, fsnative()), fsnative)
+                        assert isinstance(i(name, ""), fsnative)
                     else:
                         assert isinstance(i(name), str)
 
@@ -154,7 +154,7 @@ class TAudioFile(TestCase):
         assert "album" in self.quux.realkeys()
 
     def test_iterrealitems(self):
-        af = AudioFile({"~filename": fsnative("foo"), "album": "Quuxly"})
+        af = AudioFile({"~filename": "foo", "album": "Quuxly"})
         assert list(af.iterrealitems()) == [("album", "Quuxly")]
 
     def test_language(self):
@@ -257,7 +257,7 @@ class TAudioFile(TestCase):
         for key in bar_1_1.realkeys():
             self.assertEqual(bar_1_1.list(key), [bar_1_1(key)])
 
-        af = AudioFile({"~filename": fsnative("foo")})
+        af = AudioFile({"~filename": "foo"})
         self.assertEqual(af.list("artist"), [])
         self.assertEqual(af.list("title"), [af("title")])
         self.assertEqual(af.list("not a key"), [])
@@ -277,7 +277,7 @@ class TAudioFile(TestCase):
         self.assertEqual(bar_1_1.list_sort("title"), [("A song", "A song")])
         self.assertEqual(bar_1_1.list_sort("artist"), [("Foo", "Foo")])
 
-        af = AudioFile({"~filename": fsnative("foo")})
+        af = AudioFile({"~filename": "foo"})
         self.assertEqual(af.list_sort("artist"), [])
         self.assertEqual(af.list_sort("title"), [(af("title"), af("title"))])
         self.assertEqual(af.list_sort("not a key"), [])
@@ -438,7 +438,7 @@ class TAudioFile(TestCase):
     def test_rename_to_existing(self):
         self.quux.rename(self.quux("~filename"))
         if os.name != "nt":
-            self.assertRaises(ValueError, self.quux.rename, fsnative("/dev/null"))
+            self.assertRaises(ValueError, self.quux.rename, "/dev/null")
 
         with temp_filename() as new_file:
             with self.assertRaises(ValueError):
@@ -458,7 +458,7 @@ class TAudioFile(TestCase):
 
     def test_mountpoint(self):
         song = AudioFile()
-        song["~filename"] = fsnative("filename")
+        song["~filename"] = "filename"
         song.sanitize()
         assert isinstance(song["~mountpoint"], fsnative)
         assert isinstance(song.comma("~mointpoint"), str)
@@ -469,9 +469,7 @@ class TAudioFile(TestCase):
         q.sanitize()
         b.pop("~filename")
         self.assertRaises(ValueError, b.sanitize)
-        n = AudioFile(
-            {"artist": "foo\0bar", "title": "baz\0", "~filename": fsnative("whatever")}
-        )
+        n = AudioFile({"artist": "foo\0bar", "title": "baz\0", "~filename": "whatever"})
         n.sanitize()
         self.assertEqual(n["artist"], "foo\nbar")
         self.assertEqual(n["title"], "baz")
@@ -761,7 +759,7 @@ class TAudioFile(TestCase):
         ]
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
-            afile.sanitize(fsnative("/dir/fn"))
+            afile.sanitize("/dir/fn")
             self.assertEqual(afile.album_key, expected)
 
     def test_eq_ne(self):
@@ -879,7 +877,7 @@ class TAudioFile(TestCase):
     def test_reload_fail(self):
         audio = MusicFile(get_data_path("silence-44-s.mp3"))
         audio["title"] = "foo"
-        audio.sanitize(fsnative("/dev/null"))
+        audio.sanitize("/dev/null")
         self.assertRaises(AudioFileError, audio.reload)
         self.assertEqual(audio["title"], "foo")
 
@@ -924,7 +922,7 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", 4), "4")
         self.assertEqual(decode_value("~#foo", "bar"), "bar")
         assert isinstance(decode_value("~#foo", "bar"), str)
-        path = fsnative("/foobar")
+        path = "/foobar"
         self.assertEqual(decode_value("~filename", path), fsn2text(path))
 
     def test_path(self):
@@ -1045,7 +1043,7 @@ class Treplay_gain(TestCase):
 class TAudioFileLyrics(TestCase):
     def test_lyrics_path(self):
         song = AudioFile()
-        song["~filename"] = fsnative("filename")
+        song["~filename"] = "filename"
         assert isinstance(song.lyrics_path, Path)
         song["title"] = "Title"
         song["artist"] = "Artist"

@@ -9,7 +9,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk, Pango, GLib, Gio
-from senf import fsnative, fsn2text
+from senf import fsn2text
 
 from quodlibet.util.string.date import format_date
 from quodlibet import _, print_d
@@ -314,7 +314,7 @@ class FSColumn(WideTextColumn):
 
     def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
-        return values[0] if values else fsnative("")
+        return values[0] if values else ""
 
     def _apply_value(self, model, iter_, cell, value):
         cell.set_property("text", fsn2text(unexpand(value)))

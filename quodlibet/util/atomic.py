@@ -63,8 +63,8 @@ def atomic_save(filename, mode):
     fileobj = NamedTemporaryFile(
         mode=mode,
         dir=dir_,
-        prefix=basename + fsnative("_"),
-        suffix=fsnative(".tmp"),
+        prefix=basename + "_",
+        suffix=".tmp",
         delete=False,
     )
 

@@ -237,7 +237,7 @@ class PatternFormatter:
     class Dummy(dict):
         def __call__(self, key, *args):
             if key in FILESYSTEM_TAGS:
-                return fsnative("_")
+                return "_"
             if key[:2] == "~#" and "~" not in key[2:]:
                 return 0
             return "_"

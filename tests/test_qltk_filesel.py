@@ -81,8 +81,8 @@ class TDirectoryTree(TestCase):
             assert selected[0].startswith(path)
 
     def test_bad_go_to(self):
-        newpath = fsnative("/woooooo/bar/fun/broken")
-        dirlist = DirectoryTree(fsnative("/"), folders=self.ROOTS)
+        newpath = "/woooooo/bar/fun/broken"
+        dirlist = DirectoryTree("/", folders=self.ROOTS)
         dirlist.go_to(newpath)
         dirlist.destroy()
 

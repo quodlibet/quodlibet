@@ -117,7 +117,7 @@ class Tunexpand(TestCase):
             self.assertEqual(path, "~")
 
     def test_only_profile_case(self):
-        assert isinstance(unexpand(os.path.expanduser(fsnative("~"))), fsnative)
+        assert isinstance(unexpand(os.path.expanduser("~")), fsnative)
 
     def test_base_trailing(self):
         path = unexpand(self.d + os.path.sep)
@@ -710,9 +710,9 @@ class TNormalizePath(TestCase):
     def test_types(self):
         from quodlibet.util.path import normalize_path
 
-        assert isinstance(normalize_path(fsnative("foo"), False), fsnative)
         assert isinstance(normalize_path("foo", False), fsnative)
-        assert isinstance(normalize_path(fsnative("foo"), True), fsnative)
+        assert isinstance(normalize_path("foo", False), fsnative)
+        assert isinstance(normalize_path("foo", True), fsnative)
         assert isinstance(normalize_path("foo", True), fsnative)
 
     def test_canonicalise(self):
@@ -801,9 +801,9 @@ class Tload_library(TestCase):
 
 class Tstrip_win32_incompat_from_path(TestCase):
     def test_types(self):
-        v = strip_win32_incompat_from_path(fsnative(""))
+        v = strip_win32_incompat_from_path("")
         assert isinstance(v, fsnative)
-        v = strip_win32_incompat_from_path(fsnative("foo"))
+        v = strip_win32_incompat_from_path("foo")
         assert isinstance(v, fsnative)
 
         v = strip_win32_incompat_from_path("")
@@ -822,7 +822,7 @@ class Tstrip_win32_incompat_from_path(TestCase):
 
 class TPathHandling(TestCase):
     def test_main(self):
-        v = fsnative("foo")
+        v = "foo"
         assert isinstance(v, fsnative)
 
         v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")

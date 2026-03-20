@@ -66,5 +66,5 @@ class Tchooser(TestCase):
         assert isinstance(path, fsnative)
 
     def test_set_current_dir(self):
-        set_current_dir(fsnative("."))
+        set_current_dir(".")
         assert get_current_dir() == os.getcwd()

@@ -193,7 +193,7 @@ def unexpand(filename):
         fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and fsnative("%USERPROFILE%")) or fsnative("~")
+    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
     home = os.path.normcase(get_home_dir()).rstrip(os.path.sep)
     norm = os.path.normcase(filename)
     if norm == home:
@@ -325,11 +325,11 @@ def get_temp_cover_file(data: bytes, mime: str | None = None) -> Any:
         if mime:
             mime = mime.lower()
             if "png" in mime:
-                suffix = fsnative(".png")
+                suffix = ".png"
             elif "jpg" in mime or "jpeg" in mime:
-                suffix = fsnative(".jpg")
+                suffix = ".jpg"
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = NamedTemporaryFile(prefix=fsnative("cover-"), suffix=suffix)
+        fn = NamedTemporaryFile(prefix="cover-", suffix=suffix)
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
@@ -428,7 +428,7 @@ def limit_path(path, ellipsis=True):
 
         if len(p) > limit:
             if ellipsis:
-                p = p[: limit - 2] + fsnative("..")
+                p = p[: limit - 2] + ".."
             else:
                 p = p[:limit]
         parts[i] = p

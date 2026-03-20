@@ -719,7 +719,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if "~" in key or key == "title":
             if key in FILESYSTEM_TAGS:
-                v = fsn2text(self(key, fsnative()))
+                v = fsn2text(self(key, ""))
             else:
                 v = self(key, "")
         else:
@@ -919,11 +919,11 @@ class AudioFile(dict, ImageContainer, HasKey):
                 head, tail = os.path.split(head)
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
-                head = head or fsnative("/")
+                head = head or "/"
                 if ismount(head):
                     self["~mountpoint"] = head
         else:
-            self["~mountpoint"] = fsnative("/")
+            self["~mountpoint"] = "/"
 
         # Fill in necessary values.
         self.setdefault("~#added", int(time.time()))

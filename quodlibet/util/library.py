@@ -82,9 +82,9 @@ def set_scan_dirs(dirs):
     assert all(isinstance(d, fsnative) for d in dirs)
 
     if is_windows():
-        joined = fsnative(":").join(dirs)
+        joined = ":".join(dirs)
     else:
-        joined = join_escape(dirs, fsnative(":"))
+        joined = join_escape(dirs, ":")
     config.setbytes("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 

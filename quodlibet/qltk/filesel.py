@@ -225,7 +225,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             niter = model.append(None, [path])
             if path is not None:
                 assert isinstance(path, fsnative)
-                model.append(niter, [fsnative("dummy")])
+                model.append(niter, ["dummy"])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect("test-expand-row", DirectoryTree.__expanded, model)
@@ -283,7 +283,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         # Find the top level row which has the largest common
         # path with the path we want to go to
         roots = {p: i for (i, p) in model.iterrows(None)}
-        head, tail = path_to_go, fsnative("")
+        head, tail = path_to_go, ""
         to_find = []
         while head and head not in roots:
             new_head, tail = os.path.split(head)
