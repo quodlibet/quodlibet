@@ -21,14 +21,13 @@ from quodlibet.util import fver, cached_func, is_main_thread
 from quodlibet.util.dprint import format_exception, print_exc, print_e
 from quodlibet.qltk import gtk_version, pygobject_version, get_backend_name
 
-from .sentrywrapper import Sentry, SentryError
+from .minisentry import Sentry, SentryError
 from .ui import ErrorDialog, find_active_window, SubmitErrorDialog
 from .faulthandling import FaultHandlerCrash
 from .logdump import dump_to_disk
 
 SENTRY_DSN = (
-    "514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
-    "0d15f73b978d143b5e84030a1ddf9a73//:sptth"
+    "514241/oi.yrtnes.su.tsegni.10866o@0d15f73b978d143b5e84030a1ddf9a73//:sptth"
 )[::-1]
 
 

@@ -14,8 +14,8 @@ import importlib.util
 class RedirectImportHook:
     """Import hook which loads packages as sub packages.
 
-    e.g. "import raven" will import "quodlibet.packages.raven" even
-    if raven uses absolute imports internally.
+    e.g. "import senf" will import "quodlibet.packages.senf" even
+    if senf uses absolute imports internally.
     """
 
     def __init__(self, name, packages):
@@ -60,5 +60,5 @@ class RedirectImportHook:
 def install_redirect_import_hook():
     """Install the import hook, does not import anything"""
 
-    import_hook = RedirectImportHook("quodlibet.packages", ["senf", "raven"])
+    import_hook = RedirectImportHook("quodlibet.packages", ["senf"])
     sys.meta_path.insert(0, import_hook)
