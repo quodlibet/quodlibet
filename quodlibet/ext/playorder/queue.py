@@ -24,8 +24,9 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ICON = Icons.VIEW_LIST
     PLUGIN_DESC = _(
         "Limits playing of songs to the queue.\n\n"
-        "Select this play order in the main window, "
-        "then double-clicking any song will enqueue it "
+        "Select this play order in the shuffle settings " 
+        "of the main window and enable shuffle mode. "
+        "Double-clicking any song will enqueue it "
         "instead of playing."
     )
     display_name = _("Queue only")
