@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-02-11 08:49+0000\n"
+"PO-Revision-Date: 2026-03-16 05:50+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -47,7 +47,7 @@ msgstr "原版日期(_O)"
 #: quodlibet/browsers/albums/main.py:231
 #: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:57
 msgid "_Genre"
-msgstr "風格(_G)"
+msgstr "曲風(_G)"
 
 #: quodlibet/browsers/albums/main.py:232
 #: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:61
@@ -113,7 +113,7 @@ msgstr "專輯中沒有曲目"
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
-msgstr[0] "%d 音軌"
+msgstr[0] "%d 曲目"
 
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
@@ -722,11 +722,11 @@ msgstr "所選的播放清單的全部資資訊將被刪除，且無法復原。
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] "擴增 \"{pl_name}\" 用 {num} 個外加音軌？"
+msgstr[0] "擴增 \"{pl_name}\" 用 {num} 個外加曲目？"
 
 #: quodlibet/browsers/playlists/util.py:64
 msgid "_Add Tracks"
-msgstr "增加音軌(_A)"
+msgstr "增加曲目(_A)"
 
 #: quodlibet/browsers/playlists/util.py:75
 #: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
@@ -819,11 +819,11 @@ msgstr "允許多重查詢(_A)"
 
 #: quodlibet/browsers/tracks.py:54 quodlibet/qltk/information.py:417
 msgid "Track List"
-msgstr "音軌清單"
+msgstr "曲目清單"
 
 #: quodlibet/browsers/tracks.py:55
 msgid "_Track List"
-msgstr "音軌清單(_T)"
+msgstr "曲目清單(_T)"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
@@ -844,7 +844,7 @@ msgstr "搜尋"
 
 #: quodlibet/browsers/soundcloud/main.py:81
 msgid "My tracks"
-msgstr "我的音軌"
+msgstr "我的曲目"
 
 #: quodlibet/browsers/soundcloud/main.py:152
 #, python-format
@@ -1202,7 +1202,7 @@ msgstr "目錄"
 
 #: quodlibet/exfalso.py:46
 msgid "Audio metadata editor"
-msgstr "音檔標籤編輯器"
+msgstr "音檔詮釋資料編輯器"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
@@ -2118,11 +2118,11 @@ msgstr "顯示通知"
 
 #: quodlibet/ext/events/notify.py:168
 msgid "Only on <i>_manual</i> song changes"
-msgstr "僅於 <i>手動</i> 曲目變更時(_M)"
+msgstr "僅於 <i>手動</i> 變更曲目時(_M)"
 
 #: quodlibet/ext/events/notify.py:178
 msgid "Only on <i>_automatic</i> song changes"
-msgstr "僅於 <i>自動</i> 曲目變更時(_A)"
+msgstr "僅於 <i>自動</i> 變更曲目時(_A)"
 
 #: quodlibet/ext/events/notify.py:189
 msgid "On <i>a_ll</i> song changes"
@@ -2412,8 +2412,8 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
-"商店 Seekoints A 及/或 B 的音軌。當音軌播放時，跳到時間 A，然後在時間 B 停"
-"止。\n"
+"商店 Seekoints A 及/或 B 的曲目。當曲目播放時，跳到時間 A，然後在時間 B 停止"
+"。\n"
 "\n"
 "ℹ 請注意，變更以下點的名稱並不會更新實際的書籤名稱，它只會變改外掛在決定是否"
 "尋找的書籤名稱。"
@@ -2426,7 +2426,7 @@ msgstr "書籤名稱 用於 point A"
 msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
-msgstr "用於當音軌啟動時，書籤名稱進行檢查，如果找到，播放器尋找該時間戳"
+msgstr "用於當曲目啟動時，書籤名稱進行檢查，如果找到，播放器尋找該時間戳記"
 
 #: quodlibet/ext/events/seekpoints.py:128
 msgid "Bookmark name for point B"
@@ -2438,7 +2438,7 @@ msgid ""
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
 "書籤名稱在曲目播放過程中使用每個刻度（如果存在）。如果目前位置超過時間戳記，"
-"即尋找至音軌末端。"
+"即尋找至曲目末端。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2784,7 +2784,7 @@ msgstr "無法進行同步"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1022
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
-msgstr "依照<b> Status 狀態 </b>進行排序時，無法啟動同步。"
+msgstr "當依照 <b>狀態</b> 進行排序時，無法啟動同步。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1026
 msgid "Starting song synchronization"
@@ -3611,41 +3611,41 @@ msgstr "重設至預設"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr "跳過不喜歡的音軌"
+msgstr "跳過不喜歡的曲目"
 
 #: quodlibet/ext/playorder/skip_disliked.py:27
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
 msgstr ""
-"增添依照順序播放的播放順序(隨機)模式，但是跳過音軌是低於(或等於)所給定閾值的"
+"增添依照順序播放的播放順序(隨機)模式，但是跳過曲目是低於(或等於)所給定閾值的"
 "評分的。"
 
 #: quodlibet/ext/playorder/skip_disliked.py:31
 msgid "Skip disliked tracks"
-msgstr "跳過不喜歡的音軌"
+msgstr "跳過不喜歡的曲目"
 
 #: quodlibet/ext/playorder/skip_disliked.py:32
 msgid "Skip _disliked tracks"
-msgstr "跳過不喜歡的音軌(_D)"
+msgstr "跳過不喜歡的曲目(_D)"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
-msgstr "重複每個音軌"
+msgstr "重複每個曲目"
 
 #: quodlibet/ext/playorder/track_repeat.py:31
 msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
-msgstr "增添隨機播放模式依序播放音軌，但重複每個音軌道的次數。"
+msgstr "增添隨機播放模式依序播放曲目，但重複每個曲目的次數。"
 
 #: quodlibet/ext/playorder/track_repeat.py:34
 msgid "Repeat each track"
-msgstr "重複每個音軌"
+msgstr "重複每個曲目"
 
 #: quodlibet/ext/playorder/track_repeat.py:35
 msgid "Repeat _each track"
-msgstr "重複每個音軌(_E)"
+msgstr "重複每個曲目(_E)"
 
 #: quodlibet/ext/playorder/track_repeat.py:54
 msgid "Number of times to play each song:"
@@ -3953,7 +3953,7 @@ msgstr "碟片"
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:621
 #: quodlibet/qltk/tracknumbers.py:90
 msgid "Track"
-msgstr "音軌"
+msgstr "曲目"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:140
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:432
@@ -4330,7 +4330,7 @@ msgstr "內嵌(_E)"
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] "選取圖片要內嵌至 %d 音軌"
+msgstr[0] "選取圖片要內嵌至 %d 曲目"
 
 #: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Remove all Images"
@@ -4378,7 +4378,7 @@ msgstr "聲學指紋查詢"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:32
 msgid "Looks up song metadata through acoustic fingerprinting."
-msgstr "經由聲學指紋查詢曲目元資料。"
+msgstr "經由聲學指紋查詢曲目詮釋資料。"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:52
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:39
@@ -4469,8 +4469,8 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
-"曲目需要 <i><b>musicbrainz_trackid</b></i>，或 <i><b>artist</b></i> / "
-"<i><b>title</b></i> / <i><b>album</b></i> 標籤來完成提交。"
+"曲目需要 <i><b>musicbrainz_trackid</b></i>，或 <i><b>artist</b></i> / <i><b>"
+"title</b></i> / <i><b>專輯</b></i> 標籤來完成提交。"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Fingerprints:"
@@ -4608,16 +4608,16 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
-"術語「追蹤使用者資料」包括所選曲目所在的播放清單以及以下元資料：\n"
+"術語「追蹤使用者資料」包括所選曲目所在的播放清單以及以下詮釋資料：\n"
 "\n"
 "%s\n"
 "\n"
 "請注意，您選擇匯出的任何內容都會被匯入。如果您匯出了檔案詞條(沒有副檔名的檔案"
 "名稱)，那麼在匯入時，所選的檔案將會重新命名。\n"
 "\n"
-"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。音道的順序和數量可以不相"
-"同。該外掛將匯出的資料與新的音軌，即使曲目名稱僅略有不同。自動符合匹配並非永"
-"遠正確，因此最好不要降低太多相似度值。"
+"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。曲目的順序和數量可以不相同"
+"。該外掛將匯出的資料與新的曲目，即使曲目名稱僅略有不同。自動符合匹配並非永遠"
+"正確，因此最好不要降低太多相似度值。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:231
 msgid "User interaction on import"
@@ -4625,7 +4625,7 @@ msgstr "匯入時使用者交互動作"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:235
 msgid "Require confirmation if number of tracks differs"
-msgstr "如果音軌數目有所差異，則需要確認"
+msgstr "如果曲目數目有所差異，則需要確認"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:242
 msgid "Require confirmation if number of albums differs"
@@ -4635,11 +4635,11 @@ msgstr "如果專輯數量有所差異，則需要確認"
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
-msgstr "低於百分比，使用者將必須手動檢查並選擇與哪個音軌道進行符合比對。"
+msgstr "低於百分比，使用者將必須手動檢查並選擇與哪個曲目進行符合比對。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:282
 msgid "Track similarity:"
-msgstr "音軌類似："
+msgstr "曲目相似度："
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:290
 msgid "Album similarity:"
@@ -4674,7 +4674,7 @@ msgstr "碟片"
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:431
 #: quodlibet/qltk/information.py:361
 msgid "Tracks"
-msgstr "音軌"
+msgstr "曲目"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:433
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:623
@@ -4721,7 +4721,7 @@ msgstr "檔案名稱"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:631
 msgid "Match Tracks"
-msgstr "符合音軌"
+msgstr "符合曲目"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:86
 msgid "Updating chart list."
@@ -4818,7 +4818,7 @@ msgstr "播放增益分析"
 #: quodlibet/ext/songsmenu/replaygain.py:400
 msgctxt "track/title"
 msgid "Track"
-msgstr "音軌"
+msgstr "曲目"
 
 #: quodlibet/ext/songsmenu/replaygain.py:414
 msgid "Progress"
@@ -4892,11 +4892,11 @@ msgstr "拆分光碟編號。"
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr "切分流派"
+msgstr "切分曲風"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
 msgid "Split a single genre tag into multiple tags."
-msgstr "切分單一流派標籤成多重標籤。"
+msgstr "切分單一曲風標籤成多重標籤。"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5224,7 +5224,7 @@ msgstr "檔案"
 
 #: quodlibet/operon/commands.py:799
 msgid "Fill tracknumbers for all files"
-msgstr "全部檔案填入音軌編號"
+msgstr "全部檔案填入曲目編號"
 
 #: quodlibet/operon/commands.py:817
 msgid "Print tags based on the given pattern"
@@ -5269,11 +5269,11 @@ msgstr "偏好較高評分(_H)"
 
 #: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
-msgstr "重覆這首音軌"
+msgstr "重覆這首曲目"
 
 #: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
-msgstr "重覆這首音軌(_T)"
+msgstr "重覆這首曲目(_T)"
 
 #: quodlibet/order/repeat.py:60
 msgid "Repeat all"
@@ -5349,7 +5349,7 @@ msgstr "停用無縫播放(_G)"
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
 "GStreamer versions"
-msgstr "停用無間隙播放可以避免某些 GStreamer 版本的音軌變更問題"
+msgstr "停用無間隙播放可以避免某些 GStreamer 版本的曲目變更問題"
 
 #: quodlibet/player/gstbe/prefs.py:83
 msgid "Use JACK for playback if available"
@@ -5582,7 +5582,7 @@ msgstr "自動(_M)"
 
 #: quodlibet/qltk/controls.py:119
 msgid "_Track Mode"
-msgstr "音軌模式(_T)"
+msgstr "曲目模式(_T)"
 
 #: quodlibet/qltk/controls.py:120
 msgid "_Album Mode"
@@ -5958,7 +5958,7 @@ msgstr "碟片 %s"
 #: quodlibet/qltk/info.py:39 quodlibet/qltk/information.py:148
 #, python-format
 msgid "Track %s"
-msgstr "音軌 %s"
+msgstr "曲目 %s"
 
 #: quodlibet/qltk/info.py:107
 msgid "Current _Song"
@@ -6076,7 +6076,7 @@ msgstr[0] "%d 已經選取"
 
 #: quodlibet/qltk/information.py:410
 msgid "Track unavailable"
-msgstr "無效的音軌"
+msgstr "曲目無可使用"
 
 #: quodlibet/qltk/information.py:477 quodlibet/qltk/information.py:557
 #, python-format
@@ -6281,7 +6281,7 @@ msgstr "碟片(_D)"
 
 #: quodlibet/qltk/prefs.py:52
 msgid "_Track"
-msgstr "音軌(_T)"
+msgstr "曲目(_T)"
 
 #: quodlibet/qltk/prefs.py:53
 msgid "Grou_ping"
@@ -6959,16 +6959,16 @@ msgstr "移動(_M)"
 msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
-msgstr "移動掃描根(而不是檔案)，全部所包含的音軌進行遷移元資料。"
+msgstr "移動掃描根(而不是檔案)，全部所包含的曲目進行遷移詮釋資料。"
 
 #: quodlibet/qltk/scanbox.py:126
 msgid "Remove {dir!r} and all its tracks?"
-msgstr "移除 {dir!r} 及其全部音軌？"
+msgstr "移除 {dir!r} 及其全部曲目？"
 
 #: quodlibet/qltk/scanbox.py:128
 #, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "移除 {n} 音樂庫路徑及其音軌？"
+msgstr "移除 {n} 音樂庫路徑及其曲目？"
 
 #: quodlibet/qltk/scanbox.py:130
 msgid "Remove library path?"
@@ -7000,7 +7000,7 @@ msgid ""
 "The audio files themselves are not moved by this.\n"
 "Nonetheless, a backup is recommended (including the Quod Libet 'songs' file)."
 msgstr ""
-"此將移動 QL 元資料：\n"
+"此將移動 QL 詮釋資料：\n"
 "\n"
 "{old!r} → {new!r}\n"
 "\n"
@@ -7144,7 +7144,7 @@ msgstr "全部檔頭(_H)"
 
 #: quodlibet/qltk/songlist.py:1222
 msgid "_Track Headers"
-msgstr "音軌檔頭(_T)"
+msgstr "曲目檔頭(_T)"
 
 #: quodlibet/qltk/songlist.py:1223
 msgid "_Album Headers"
@@ -7177,12 +7177,12 @@ msgstr "擴展欄位(_E)"
 #: quodlibet/qltk/songsmenu.py:44
 #, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "移除音軌： \"%(title)s\" 來自音樂庫？"
+msgstr "移除曲目： \"%(title)s\" 來自音樂庫？"
 
 #: quodlibet/qltk/songsmenu.py:48
 #, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "從音樂庫中移除 %(count)d 音軌？"
+msgstr "從音樂庫中移除 %(count)d 曲目？"
 
 #: quodlibet/qltk/songsmenu.py:51
 msgid "Remove from Library"
@@ -7308,7 +7308,7 @@ msgstr "編輯顯示"
 
 #: quodlibet/qltk/tracknumbers.py:37
 msgid "Track Numbers"
-msgstr "音軌編號"
+msgstr "曲目編號"
 
 #: quodlibet/qltk/tracknumbers.py:40
 msgid "Start fro_m:"
@@ -7316,7 +7316,7 @@ msgstr "起始編號(_M)："
 
 #: quodlibet/qltk/tracknumbers.py:48
 msgid "_Total tracks:"
-msgstr "音軌總數(_T)："
+msgstr "曲目總數(_T)："
 
 #: quodlibet/qltk/unity.py:51
 msgid "Play/Pause"
@@ -7565,15 +7565,15 @@ msgstr "專輯"
 
 #: quodlibet/util/tags.py:86
 msgid "arranger"
-msgstr "編排者"
+msgstr "編曲者"
 
 #: quodlibet/util/tags.py:86
 msgid "arrangers"
-msgstr "編排者"
+msgstr "編曲者"
 
 #: quodlibet/util/tags.py:86
 msgid "arrangement"
-msgstr "編排者"
+msgstr "編曲"
 
 #: quodlibet/util/tags.py:88
 msgid "author"
@@ -7630,11 +7630,11 @@ msgstr "描述"
 
 #: quodlibet/util/tags.py:97
 msgid "genre"
-msgstr "風格"
+msgstr "曲風"
 
 #: quodlibet/util/tags.py:97
 msgid "genres"
-msgstr "風格"
+msgstr "曲風"
 
 #: quodlibet/util/tags.py:98
 msgid "grouping"
@@ -7646,7 +7646,7 @@ msgstr "語言"
 
 #: quodlibet/util/tags.py:100
 msgid "license"
-msgstr "許可"
+msgstr "授權"
 
 #: quodlibet/util/tags.py:102
 msgid "lyricist"
@@ -7671,7 +7671,7 @@ msgstr "演出者"
 
 #: quodlibet/util/tags.py:105
 msgid "performance"
-msgstr "演出者"
+msgstr "演出"
 
 #: quodlibet/util/tags.py:106
 msgid "producer"
@@ -7716,7 +7716,7 @@ msgstr "碟片"
 
 #: quodlibet/util/tags.py:117 quodlibet/util/tags.py:152
 msgid "track"
-msgstr "音軌"
+msgstr "曲目"
 
 #: quodlibet/util/tags.py:118
 msgid "label ID"
@@ -7752,11 +7752,11 @@ msgstr "起始音鍵"
 #. musicbrainz_releastrackid instead.
 #: quodlibet/util/tags.py:131
 msgid "MusicBrainz recording ID"
-msgstr "MusicBrainz 錄製音軌 ID"
+msgstr "MusicBrainz 錄製 ID"
 
 #: quodlibet/util/tags.py:132
 msgid "MusicBrainz release track ID"
-msgstr "MusicBrainz 發行音軌 ID"
+msgstr "MusicBrainz 發行曲目 ID"
 
 #: quodlibet/util/tags.py:133
 msgid "MusicBrainz release ID"
@@ -7793,11 +7793,11 @@ msgstr "MusicBrainz 發行分類 ID"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:142
 msgid "track gain"
-msgstr "音軌增益"
+msgstr "曲目增益"
 
 #: quodlibet/util/tags.py:143
 msgid "track peak"
-msgstr "音軌高峰值"
+msgstr "曲目高峰值"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:145
@@ -7818,7 +7818,7 @@ msgstr "碟片"
 
 #: quodlibet/util/tags.py:153
 msgid "tracks"
-msgstr "音軌"
+msgstr "曲目"
 
 #: quodlibet/util/tags.py:154
 msgid "last started"
@@ -7941,7 +7941,7 @@ msgid ""
 "capabilities."
 msgstr ""
 "Quod Libet 是一套音樂管理工具程式，提供多種不同方式來呈現音樂庫，以及支援網路"
-"廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
+"廣播及音檔播送。擁有極為彈性操作的詮釋資料編輯及搜尋能力。"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:35
 msgid "Album list view"
@@ -7949,7 +7949,7 @@ msgstr "專輯清單檢視"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:39
 msgid "Track list"
-msgstr "音軌清單"
+msgstr "曲目清單"
 
 #~ msgid ""
 #~ "The album art image file(s) to use when available (supports wildcards). "
