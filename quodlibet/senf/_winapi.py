@@ -8,22 +8,9 @@ import ctypes
 if sys.platform == "win32":
     from ctypes import WinDLL, CDLL, wintypes
 
-    shell32 = WinDLL("shell32")
     kernel32 = WinDLL("kernel32")
     shlwapi = WinDLL("shlwapi")
     msvcrt = CDLL("msvcrt")
-
-    GetCommandLineW = kernel32.GetCommandLineW
-    GetCommandLineW.argtypes = []
-    GetCommandLineW.restype = wintypes.LPCWSTR
-
-    CommandLineToArgvW = shell32.CommandLineToArgvW
-    CommandLineToArgvW.argtypes = [wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
-    CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
-
-    LocalFree = kernel32.LocalFree
-    LocalFree.argtypes = [wintypes.HLOCAL]
-    LocalFree.restype = wintypes.HLOCAL
 
     # https://msdn.microsoft.com/en-us/library/windows/desktop/aa383751.aspx
     LPCTSTR = ctypes.c_wchar_p
@@ -76,22 +63,6 @@ if sys.platform == "win32":
     UrlCreateFromPathW = shlwapi.UrlCreateFromPathW
     UrlCreateFromPathW.argtypes = [PCTSTR, PTSTR, ctypes.POINTER(DWORD), DWORD]
     UrlCreateFromPathW.restype = ctypes.HRESULT
-
-    SetEnvironmentVariableW = kernel32.SetEnvironmentVariableW
-    SetEnvironmentVariableW.argtypes = [LPCTSTR, LPCTSTR]
-    SetEnvironmentVariableW.restype = wintypes.BOOL
-
-    GetEnvironmentVariableW = kernel32.GetEnvironmentVariableW
-    GetEnvironmentVariableW.argtypes = [LPCTSTR, LPTSTR, DWORD]
-    GetEnvironmentVariableW.restype = DWORD
-
-    GetEnvironmentStringsW = kernel32.GetEnvironmentStringsW
-    GetEnvironmentStringsW.argtypes = []
-    GetEnvironmentStringsW.restype = ctypes.c_void_p
-
-    FreeEnvironmentStringsW = kernel32.FreeEnvironmentStringsW
-    FreeEnvironmentStringsW.argtypes = [ctypes.c_void_p]
-    FreeEnvironmentStringsW.restype = ctypes.c_bool
 
     GetStdHandle = kernel32.GetStdHandle
     GetStdHandle.argtypes = [DWORD]
