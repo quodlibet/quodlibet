@@ -38,8 +38,14 @@ repository = "https://github.com/quodlibet/quodlibet"
 documentation = "https://quodlibet.readthedocs.io/"
 
 [project.scripts]
-# Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
+# `poetry run quodlibet` just runs the app (with no CLI args)
+operon = "quodlibet.operon:main"
+quodlibet-cmd = "quodlibet.main:main"
+exfalso-cmd = "quodlibet.exfalso:main"
+
+[project.gui-scripts]
 quodlibet = "quodlibet.main:main"
+exfalso = "quodlibet.exfalso:main"
 
 [dependency-groups]
 dev = [
