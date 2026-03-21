@@ -6,13 +6,14 @@ import sys
 import os
 import ctypes
 import re
+from typing import Any, TYPE_CHECKING
 
-from ._fsnative import _encoding, is_win, is_unix, bytes2fsn
+from ._fsnative import _encoding, is_unix, bytes2fsn, fsnative
 from ._winansi import AnsiState, ansi_split
 from . import _winapi as winapi
 
 
-def print_(*objects, **kwargs):
+def _print_(*objects, **kwargs):
     """print_(*objects, sep=None, end=None, file=None, flush=False)
 
     Args:
@@ -43,10 +44,16 @@ def print_(*objects, **kwargs):
     file = file if file is not None else sys.stdout
     flush = bool(kwargs.get("flush", False))
 
-    if is_win:
+    if sys.platform == "win32":
         _print_windows(objects, sep, end, file, flush)
     else:
         _print_unix(objects, sep, end, file, flush)
+
+
+if TYPE_CHECKING:
+    print_ = print
+else:
+    print_ = _print_
 
 
 def _print_unix(objects, sep, end, file, flush):
@@ -287,7 +294,7 @@ def _readline_windows_fallback():
     # In case reading from the console failed (maybe we get piped data)
     # we assume the input was generated according to the output encoding.
     # Got any better ideas?
-    assert is_win
+    assert sys.platform == "win32"
     cp = winapi.GetConsoleOutputCP()
     data = getattr(sys.stdin, "buffer", sys.stdin).readline().rstrip(b"\r\n")
     return _decode_codepage(cp, data)
@@ -300,12 +307,12 @@ def _readline_default():
 
 
 def _readline():
-    if is_win:
+    if sys.platform == "win32":
         return _readline_windows()
     return _readline_default()
 
 
-def input_(prompt=None):
+def input_(prompt: Any = None) -> fsnative:
     """
     Args:
         prompt (object): Prints the passed object to stdout without
@@ -336,7 +343,7 @@ def _get_file_name_for_handle(handle):
        `text` or `None` if no file name could be retrieved.
     """
 
-    assert is_win
+    assert sys.platform == "win32"
     assert handle != winapi.INVALID_HANDLE_VALUE
 
     size = winapi.FILE_NAME_INFO.FileName.offset + winapi.MAX_PATH * ctypes.sizeof(
@@ -358,7 +365,7 @@ def _get_file_name_for_handle(handle):
     return bytes2fsn(data, "utf-16-le")
 
 
-def supports_ansi_escape_codes(fd):
+def supports_ansi_escape_codes(fd: int) -> bool:
     """Returns whether the output device is capable of interpreting ANSI escape
     codes when :func:`print_` is used.
 
@@ -371,7 +378,7 @@ def supports_ansi_escape_codes(fd):
     if os.isatty(fd):
         return True
 
-    if not is_win:
+    if sys.platform != "win32":
         return False
 
     # Check for cygwin/msys terminal

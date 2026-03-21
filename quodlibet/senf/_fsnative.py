@@ -6,7 +6,7 @@ import os
 import sys
 import ctypes
 import codecs
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, TypeAlias, Union, Any
 
 from . import _winapi as winapi
 from urllib.parse import urlparse, quote, unquote, urlunparse
@@ -14,6 +14,8 @@ from urllib.parse import urlparse, quote, unquote, urlunparse
 is_win = os.name == "nt"
 is_unix = not is_win
 is_darwin = sys.platform == "darwin"
+
+_pathlike = Union[str, bytes, "os.PathLike[Any]"]
 
 
 def _normalize_codec(codec, _cache={}):
@@ -181,7 +183,7 @@ def _typecheck_fsnative(path):
     return True
 
 
-def _fsn2native(path):
+def _fsn2native(path: fsnative) -> Union[str, bytes]:
     """
     Args:
         path (fsnative)
@@ -201,9 +203,11 @@ def _fsn2native(path):
             "path needs to be %s, not %s" % (str.__name__, type(path).__name__)
         )
 
+    res: Union[str, bytes]
+
     if is_unix:
         try:
-            path = path.encode(_encoding, "surrogateescape")
+            res = path.encode(_encoding, "surrogateescape")
         except UnicodeEncodeError:
             # This look more like ValueError, but raising only one error
             # makes things simpler... also one could say str + surrogates
@@ -214,13 +218,14 @@ def _fsn2native(path):
                 "path from Unicode use text2fsn()"
             )
 
-        if b"\x00" in path:
+        if b"\x00" in res:
             raise TypeError("fsnative can't contain nulls")
     else:
+        res = path
         if "\x00" in path:
             raise TypeError("fsnative can't contain nulls")
 
-    return path
+    return res
 
 
 def _get_encoding():
@@ -241,7 +246,7 @@ def _get_encoding():
 _encoding = _get_encoding()
 
 
-def path2fsn(path):
+def path2fsn(path: _pathlike) -> fsnative:
     """
     Args:
         path (pathlike): The path to convert
@@ -254,7 +259,7 @@ def path2fsn(path):
     Returns a `fsnative` path for a `pathlike`.
     """
 
-    path = getattr(os, "fspath", lambda x: x)(path)
+    path = os.fspath(path)
     if isinstance(path, bytes):
         if b"\x00" in path:
             raise ValueError("embedded null")
@@ -277,7 +282,7 @@ def path2fsn(path):
     return path
 
 
-def fsn2text(path, strict=False):
+def fsn2text(path: fsnative, strict: bool = False) -> str:
     """
     Args:
         path (fsnative): The path to convert
@@ -300,16 +305,18 @@ def fsn2text(path, strict=False):
     Encoding with a Unicode encoding will always succeed with the result.
     """
 
-    path = _fsn2native(path)
+    native = _fsn2native(path)
 
     errors = "strict" if strict else "replace"
 
     if is_win:
-        return path.encode("utf-16-le", "surrogatepass").decode("utf-16-le", errors)
-    return path.decode(_encoding, errors)
+        assert isinstance(native, str)
+        return native.encode("utf-16-le", "surrogatepass").decode("utf-16-le", errors)
+    assert isinstance(native, bytes)
+    return native.decode(_encoding, errors)
 
 
-def text2fsn(text):
+def text2fsn(text: str) -> fsnative:
     """
     Args:
         text (text): The text to convert
@@ -326,7 +333,7 @@ def text2fsn(text):
     return fsnative(text)
 
 
-def fsn2bytes(path, encoding="utf-8"):
+def fsn2bytes(path: fsnative, encoding="utf-8") -> bytes:
     """
     Args:
         path (fsnative): The path to convert
@@ -348,14 +355,15 @@ def fsn2bytes(path, encoding="utf-8"):
     <https://simonsapin.github.io/wtf-8/>`__.
     """
 
-    path = _fsn2native(path)
+    native = _fsn2native(path)
 
     if is_win:
         if encoding is None:
             raise ValueError("invalid encoding %r" % encoding)
 
+        assert isinstance(native, str)
         try:
-            return path.encode(encoding)
+            return native.encode(encoding)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
         except UnicodeEncodeError:
@@ -363,13 +371,14 @@ def fsn2bytes(path, encoding="utf-8"):
             # merge surrogate codepoints
             if _normalize_codec(encoding).startswith("utf-16"):
                 # fast path, utf-16 merges anyway
-                return path.encode(encoding, "surrogatepass")
-            return _merge_surrogates(path).encode(encoding, "surrogatepass")
+                return native.encode(encoding, "surrogatepass")
+            return _merge_surrogates(native).encode(encoding, "surrogatepass")
     else:
-        return path
+        assert isinstance(native, bytes)
+        return native
 
 
-def bytes2fsn(data, encoding="utf-8"):
+def bytes2fsn(data: bytes, encoding="utf-8") -> fsnative:
     """
     Args:
         data (bytes): The data to convert
@@ -407,7 +416,7 @@ def bytes2fsn(data, encoding="utf-8"):
     return data.decode(_encoding, "surrogateescape")
 
 
-def uri2fsn(uri):
+def uri2fsn(uri: str) -> fsnative:
     """
     Args:
         uri (`text` or :obj:`python:str`): A file URI
@@ -459,7 +468,7 @@ def uri2fsn(uri):
     return path
 
 
-def fsn2uri(path):
+def fsn2uri(path: fsnative) -> str:
     """
     Args:
         path (fsnative): The path to convert to an URI
@@ -475,19 +484,19 @@ def fsn2uri(path):
     percent encoded.
     """
 
-    path = _fsn2native(path)
+    native = _fsn2native(path)
 
     def _quote_path(path):
         # RFC 2396
         path = quote(path, "/:@&=+$,")
         return path
 
-    if is_win:
+    if sys.platform == "win32":
         buf = ctypes.create_unicode_buffer(winapi.INTERNET_MAX_URL_LENGTH)
         length = winapi.DWORD(winapi.INTERNET_MAX_URL_LENGTH)
         flags = 0
         try:
-            winapi.UrlCreateFromPathW(path, buf, ctypes.byref(length), flags)
+            winapi.UrlCreateFromPathW(native, buf, ctypes.byref(length), flags)
         except OSError as e:
             raise ValueError(e)
         uri = buf[: length.value]
@@ -501,4 +510,4 @@ def fsn2uri(path):
 
         return _quote_path(uri.encode("utf-8", "surrogatepass"))
 
-    return "file://" + _quote_path(path)
+    return "file://" + _quote_path(native)
