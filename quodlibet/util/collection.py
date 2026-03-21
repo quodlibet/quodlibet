@@ -14,16 +14,6 @@ import random
 from typing import Any
 from urllib.parse import quote
 
-from quodlibet.senf import (
-    fsnative,
-    fsn2bytes,
-    bytes2fsn,
-    path2fsn,
-    _fsnative,
-    uri2fsn,
-    fsn2uri,
-)
-
 from quodlibet import ngettext, _
 from quodlibet import util
 from quodlibet import config
@@ -42,6 +32,7 @@ try:
 except ImportError:
     import collections as abc  # type: ignore
 
+from quodlibet.senf import bytes2fsn, fsn2bytes, fsn2uri, fsnative, path2fsn, uri2fsn
 from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w
@@ -571,8 +562,8 @@ class FileBackedPlaylist(Playlist):
 
     def __init__(
         self,
-        dir_: _fsnative,
-        filename: _fsnative,
+        dir_: fsnative,
+        filename: fsnative,
         songs_lib=None,
         pl_lib=None,
         validate: bool = False,
@@ -594,7 +585,7 @@ class FileBackedPlaylist(Playlist):
                 self.write()
 
     @classmethod
-    def name_for(cls, filename: _fsnative) -> str:
+    def name_for(cls, filename: fsnative) -> str:
         return unescape_filename(filename)
 
     @classmethod
@@ -618,7 +609,7 @@ class FileBackedPlaylist(Playlist):
                     self._list.append(line)
 
     @classmethod
-    def new(cls, dir_: _fsnative, base: str | None = None, songs_lib=None, pl_lib=None):
+    def new(cls, dir_: fsnative, base: str | None = None, songs_lib=None, pl_lib=None):
         base = base or _("New Playlist")
         assert isinstance(dir_, fsnative)
 
@@ -779,7 +770,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         return path2fsn(f"{limit_path(name)}.{cls.EXT}")
 
     @classmethod
-    def name_for(cls, file_path: _fsnative) -> str:
+    def name_for(cls, file_path: fsnative) -> str:
         filename, ext = splitext(unescape_filename(file_path))
         if not ext or ext.lower() != f".{cls.EXT}":
             raise TypeError(f"XSPFs should end in '{cls.EXT}', not {ext}")

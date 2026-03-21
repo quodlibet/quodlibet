@@ -19,15 +19,7 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from quodlibet.senf import (
-    fsnative,
-    bytes2fsn,
-    fsn2bytes,
-    fsn2text,
-    path2fsn,
-    uri2fsn,
-    _fsnative,
-)
+from quodlibet.senf import bytes2fsn, fsn2bytes, fsn2text, fsnative, path2fsn, uri2fsn
 
 from . import windows
 from .environment import is_windows
@@ -135,7 +127,7 @@ def escape_filename(s: str, safe: bytes = b""):
     return bytes2fsn(quoted.encode("ascii"), "utf-8")
 
 
-def unescape_filename(filename: _fsnative) -> str:
+def unescape_filename(filename: fsnative) -> str:
     """Unescape a string in a manner suitable for a filename.
 
     Args:
@@ -452,7 +444,7 @@ def get_home_dir():
     return os.path.expanduser("~")
 
 
-def is_hidden(path: _fsnative) -> bool:
+def is_hidden(path: fsnative) -> bool:
     """Returns if a directory / file is considered hidden by the platform.
 
     Hidden meaning the user should normally not be exposed to those files when
