@@ -17,7 +17,6 @@ import pytest
 from quodlibet import senf
 from quodlibet.senf import (
     fsnative,
-    getcwd,
     uri2fsn,
     fsn2uri,
     path2fsn,
@@ -26,14 +25,11 @@ from quodlibet.senf import (
     bytes2fsn,
     print_,
     input_,
-    expanduser,
     text2fsn,
-    expandvars,
     supports_ansi_escape_codes,
     fsn2norm,
 )
 from quodlibet.senf._winansi import ansi_parse, ansi_split
-from quodlibet.senf._stdlib import _get_userdir
 from quodlibet.senf._fsnative import _encoding, is_unix, _surrogatepass, _get_encoding
 from quodlibet.senf._print import _encode_codepage, _decode_codepage
 from quodlibet.senf import _winapi as winapi
@@ -146,96 +142,6 @@ def test__get_encoding():
         codecs.lookup(_get_encoding())
     finally:
         sys.getfilesystemencoding = orig
-
-
-def _get_real_userdir():
-    # Tries to return the real userdir of the current user
-    # ignore potentially replaced env vars
-    with preserve_environ():
-        os.environ.pop("HOME", None)
-        userdir = _get_userdir()
-    return userdir or _get_userdir()
-
-
-def test_getuserdir():
-    # type: () -> None
-
-    userdir = _get_real_userdir()
-    assert isinstance(userdir, fsnative)
-
-    with pytest.raises(TypeError):
-        _get_userdir(notfsnative("foo"))
-
-    if sys.platform == "win32":
-        otherdir = _get_userdir("foo")
-        assert otherdir == os.path.join(os.path.dirname(userdir), "foo")
-    else:
-        user = os.path.basename(userdir)
-        assert userdir == _get_userdir(user)
-
-    if sys.platform != "win32":
-        with preserve_environ():
-            os.environ["HOME"] = "bla"
-            assert _get_userdir() == "bla"
-
-    with preserve_environ():
-        os.environ.pop("HOME", None)
-        if sys.platform != "win32":
-            assert _get_userdir()
-        else:
-            os.environ["USERPROFILE"] = "uprof"
-            assert _get_userdir() == "uprof"
-
-    with preserve_environ():
-        os.environ.pop("HOME", None)
-        os.environ.pop("USERPROFILE", None)
-        if sys.platform == "win32":
-            os.environ["HOMEPATH"] = "hpath"
-            os.environ["HOMEDRIVE"] = "C:\\"
-            assert _get_userdir() == os.path.join("C:", os.sep, "hpath")
-            assert _get_userdir("bla") == os.path.join("C:", os.sep, "bla")
-
-    with preserve_environ():
-        os.environ.pop("HOME", None)
-        os.environ.pop("USERPROFILE", None)
-        os.environ.pop("HOMEPATH", None)
-        if sys.platform == "win32":
-            assert _get_userdir() is None
-
-
-def test_expanduser_simple():
-    # type: () -> None
-
-    home = _get_userdir()
-    assert expanduser("~") == home
-    assert isinstance(expanduser("~"), fsnative)
-    assert expanduser(os.path.join("~", "a", "b")) == os.path.join(home, "a", "b")
-    assert expanduser(os.sep + "~") == os.sep + "~"
-    if os.altsep is not None:
-        assert expanduser("~" + os.altsep) == home + os.altsep
-
-
-def test_expanduser_user():
-    # type: () -> None
-
-    home = _get_real_userdir()
-    user = os.path.basename(home)
-
-    assert expanduser("~" + user) == home
-    assert expanduser(os.path.join("~" + user, "foo")) == os.path.join(home, "foo")
-
-    if os.altsep is not None:
-        assert expanduser("~" + os.altsep + "foo") == home + os.altsep + "foo"
-
-        assert (
-            expanduser("~" + user + os.altsep + "a" + os.sep)
-            == home + os.altsep + "a" + os.sep
-        )
-
-    if sys.platform == "win32":
-        assert expanduser(os.path.join("~nope", "foo")) == os.path.join(
-            os.path.dirname(home), "nope", "foo"
-        )
 
 
 def test_ansi_matching():
@@ -745,12 +651,6 @@ def test_bytes2fsn():
     assert bytes2fsn(b"foo", "utf-8") == bytes2fsn(b"foo")
 
 
-def test_getcwd():
-    # type: () -> None
-
-    assert isinstance(getcwd(), fsnative)
-
-
 def test_uri2fsn():
     # type: () -> None
 
@@ -860,60 +760,6 @@ def test_uri_roundtrip():
         assert uri2fsn(fsn2uri(fsnative("/foo"))) == "/foo"
         assert uri2fsn(fsn2uri(path)) == path
         assert isinstance(uri2fsn(fsn2uri(path)), fsnative)
-
-
-def test_expandvars():
-    # type: () -> None
-
-    with preserve_environ():
-        os.environ["foo"] = "bar"
-        os.environ["nope b"] = "xxx"
-        os.environ["f/oo"] = "bar"
-        os.environ.pop("nope", "")
-
-        assert expandvars("$foo") == "bar"
-        assert expandvars("$nope b") == "$nope b"
-        assert expandvars("/$foo/") == "/bar/"
-        assert expandvars("$f/oo") == "$f/oo"
-        assert expandvars("$nope") == "$nope"
-        assert expandvars("$foo_") == "$foo_"
-
-        assert expandvars("${f/oo}") == "bar"
-        assert expandvars("${nope b}") == "xxx"
-        assert expandvars("${nope}") == "${nope}"
-        assert isinstance(expandvars("$foo"), fsnative)
-
-    with preserve_environ():
-        if os.name == "nt":
-            os.environ["ö"] = "ä"
-            os.environ.pop("ä", "")
-            assert isinstance(expandvars("$ö"), fsnative)
-            assert expandvars("$ö") == "ä"
-            assert expandvars("${ö}") == "ä"
-            assert expandvars("${ä}") == "${ä}"
-            assert expandvars("$ä") == "$ä"
-
-            assert expandvars("%ö") == "%ö"
-            assert expandvars("ö%") == "ö%"
-            assert expandvars("%ö%") == "ä"
-            assert expandvars("%ä%") == "%ä%"
-
-
-def test_expandvars_case():
-    # type: () -> None
-
-    if not environ_case_sensitive:
-        with preserve_environ():
-            os.environ.pop("foo", None)
-            os.environ["FOO"] = "bar"
-            assert expandvars("$foo") == "bar"
-            os.environ["FOo"] = "baz"
-            assert expandvars("$fOO") == "baz"
-    else:
-        with preserve_environ():
-            os.environ.pop("foo", None)
-            os.environ["FOO"] = "bar"
-            assert expandvars("$foo") == "$foo"
 
 
 def test_python_handling_broken_utf16():

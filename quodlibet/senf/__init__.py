@@ -14,18 +14,11 @@ from ._fsnative import (
     fsn2norm,
 )
 from ._print import print_, input_, supports_ansi_escape_codes
-from ._stdlib import (
-    getcwd,
-    expanduser,
-    expandvars,
-)
 
 
 (
     fsnative,
     print_,
-    getcwd,
-    expandvars,
     path2fsn,
     fsn2text,
     fsn2bytes,
@@ -33,7 +26,6 @@ from ._stdlib import (
     uri2fsn,
     fsn2uri,
     input_,
-    expanduser,
     text2fsn,
     supports_ansi_escape_codes,
     fsn2norm,
