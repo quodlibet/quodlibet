@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-02-12 07:52+0000\n"
-"Last-Translator: Sketch6580 <sketch6580@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-02-28 00:09+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2116,15 +2117,15 @@ msgstr "显示通知"
 
 #: quodlibet/ext/events/notify.py:168
 msgid "Only on <i>_manual</i> song changes"
-msgstr "仅当 <i>手工</i> 切换歌曲时"
+msgstr "仅当 <i>手动(_M)</i> 切换歌曲时"
 
 #: quodlibet/ext/events/notify.py:178
 msgid "Only on <i>_automatic</i> song changes"
-msgstr "仅当 <i>自动</i> 切换歌曲时"
+msgstr "仅当 <i>自动(_A)</i> 切换歌曲时"
 
 #: quodlibet/ext/events/notify.py:189
 msgid "On <i>a_ll</i> song changes"
-msgstr "在<i>所有</i>歌曲切换时"
+msgstr "在<i>所有(_L)</i>歌曲切换模式时"
 
 #: quodlibet/ext/events/notify.py:203
 msgid "Only when the main window is not _focused"
