@@ -17,14 +17,6 @@ import pytest
 from quodlibet import senf
 from quodlibet.senf import (
     fsnative,
-    sep,
-    pathsep,
-    curdir,
-    pardir,
-    altsep,
-    extsep,
-    devnull,
-    defpath,
     getcwd,
     uri2fsn,
     fsn2uri,
@@ -200,8 +192,8 @@ def test_getuserdir():
         if sys.platform == "win32":
             os.environ["HOMEPATH"] = "hpath"
             os.environ["HOMEDRIVE"] = "C:\\"
-            assert _get_userdir() == os.path.join("C:", senf.sep, "hpath")
-            assert _get_userdir("bla") == os.path.join("C:", senf.sep, "bla")
+            assert _get_userdir() == os.path.join("C:", os.sep, "hpath")
+            assert _get_userdir("bla") == os.path.join("C:", os.sep, "bla")
 
     with preserve_environ():
         os.environ.pop("HOME", None)
@@ -218,9 +210,9 @@ def test_expanduser_simple():
     assert expanduser("~") == home
     assert isinstance(expanduser("~"), fsnative)
     assert expanduser(os.path.join("~", "a", "b")) == os.path.join(home, "a", "b")
-    assert expanduser(senf.sep + "~") == senf.sep + "~"
-    if senf.altsep is not None:
-        assert expanduser("~" + senf.altsep) == home + senf.altsep
+    assert expanduser(os.sep + "~") == os.sep + "~"
+    if os.altsep is not None:
+        assert expanduser("~" + os.altsep) == home + os.altsep
 
 
 def test_expanduser_user():
@@ -232,12 +224,12 @@ def test_expanduser_user():
     assert expanduser("~" + user) == home
     assert expanduser(os.path.join("~" + user, "foo")) == os.path.join(home, "foo")
 
-    if senf.altsep is not None:
-        assert expanduser("~" + senf.altsep + "foo") == home + senf.altsep + "foo"
+    if os.altsep is not None:
+        assert expanduser("~" + os.altsep + "foo") == home + os.altsep + "foo"
 
         assert (
-            expanduser("~" + user + senf.altsep + "a" + senf.sep)
-            == home + senf.altsep + "a" + senf.sep
+            expanduser("~" + user + os.altsep + "a" + os.sep)
+            == home + os.altsep + "a" + os.sep
         )
 
     if sys.platform == "win32":
@@ -466,19 +458,6 @@ def test_input_prompt():
         assert isinstance(in_, fsnative)
         assert out.getvalue() == b"bla"
         assert err.getvalue() == b""
-
-
-def test_version():
-    # type: () -> None
-
-    assert isinstance(senf.version, tuple)
-    assert len(senf.version) == 3
-
-
-def test_version_string():
-    # type: () -> None
-
-    assert isinstance(senf.version_string, str)
 
 
 def test_fsnative():
@@ -764,19 +743,6 @@ def test_bytes2fsn():
             bytes2fsn(b"data", object())  # type: ignore
 
     assert bytes2fsn(b"foo", "utf-8") == bytes2fsn(b"foo")
-
-
-def test_constants():
-    # type: () -> None
-
-    assert isinstance(sep, fsnative)
-    assert isinstance(pathsep, fsnative)
-    assert isinstance(curdir, fsnative)
-    assert isinstance(pardir, fsnative)
-    assert altsep is None or isinstance(altsep, fsnative)
-    assert isinstance(extsep, fsnative)
-    assert isinstance(devnull, fsnative)
-    assert isinstance(defpath, fsnative)
 
 
 def test_getcwd():

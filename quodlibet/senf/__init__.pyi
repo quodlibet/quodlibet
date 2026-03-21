@@ -29,24 +29,10 @@ def bytes2fsn(
 def uri2fsn(uri: _uri) -> _fsnative: ...
 def fsn2uri(path: _fsnative) -> str: ...
 def fsn2norm(path: _fsnative) -> _fsnative: ...
-
-sep: _fsnative
-pathsep: _fsnative
-curdir: _fsnative
-pardir: _fsnative
-altsep: _fsnative
-extsep: _fsnative
-devnull: _fsnative
-defpath: _fsnative
-
 def getcwd() -> _fsnative: ...
 def supports_ansi_escape_codes(fd: int) -> bool: ...
 def expandvars(path: _pathlike) -> _fsnative: ...
 def expanduser(path: _pathlike) -> _fsnative: ...
-
-version_string: str
-
-version: tuple[int, int, int]
 
 print_ = print
 

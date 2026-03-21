@@ -8,16 +8,6 @@ import os
 from ._fsnative import path2fsn, fsnative, is_win
 
 
-sep = path2fsn(os.sep)
-pathsep = path2fsn(os.pathsep)
-curdir = path2fsn(os.curdir)
-pardir = path2fsn(os.pardir)
-altsep = path2fsn(os.altsep) if os.altsep is not None else None
-extsep = path2fsn(os.extsep)
-devnull = path2fsn(os.devnull)
-defpath = path2fsn(os.defpath)
-
-
 def getcwd():
     """Like `os.getcwd` but returns a `fsnative` path
 
@@ -78,17 +68,17 @@ def expanduser(path):
 
     if path == "~":
         return _get_userdir()
-    if path.startswith("~" + sep) or (
-        altsep is not None and path.startswith("~" + altsep)
+    if path.startswith("~" + os.sep) or (
+        os.altsep is not None and path.startswith("~" + os.altsep)
     ):
         userdir = _get_userdir()
         if userdir is None:
             return path
         return userdir + path[1:]
     if path.startswith("~"):
-        sep_index = path.find(sep)
-        if altsep is not None:
-            alt_index = path.find(altsep)
+        sep_index = path.find(os.sep)
+        if os.altsep is not None:
+            alt_index = path.find(os.altsep)
             if alt_index != -1 and alt_index < sep_index:
                 sep_index = alt_index
 
