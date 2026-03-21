@@ -76,21 +76,6 @@ def fsn2norm(path):
     if is_win:
         return _merge_surrogates(native)
     return bytes2fsn(native, None)
-    return path
-
-
-def _fsn2legacy(path):
-    """Takes a fsnative path and returns a path that can be put into os.environ
-    or sys.argv. Might result in a mangled path on Python2 + Windows.
-    Can't fail.
-
-    Args:
-        path (fsnative)
-    Returns:
-        str
-    """
-
-    return path
 
 
 def _fsnative(text):

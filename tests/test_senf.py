@@ -26,10 +26,6 @@ from quodlibet.senf import (
     devnull,
     defpath,
     getcwd,
-    environ,
-    getenv,
-    unsetenv,
-    putenv,
     uri2fsn,
     fsn2uri,
     path2fsn,
@@ -43,9 +39,6 @@ from quodlibet.senf import (
     expandvars,
     supports_ansi_escape_codes,
     fsn2norm,
-)
-from quodlibet.senf._environ import (
-    get_windows_env_var,
 )
 from quodlibet.senf._winansi import ansi_parse, ansi_split
 from quodlibet.senf._stdlib import _get_userdir
@@ -102,7 +95,7 @@ class PathLike(_base):
 
 
 @contextlib.contextmanager
-def preserve_environ(environ=environ):
+def preserve_environ(environ=os.environ):
     old = environ.copy()
     if environ is not os.environ:
         with preserve_environ(os.environ):
@@ -167,7 +160,7 @@ def _get_real_userdir():
     # Tries to return the real userdir of the current user
     # ignore potentially replaced env vars
     with preserve_environ():
-        environ.pop("HOME", None)
+        os.environ.pop("HOME", None)
         userdir = _get_userdir()
     return userdir or _get_userdir()
 
@@ -190,30 +183,30 @@ def test_getuserdir():
 
     if sys.platform != "win32":
         with preserve_environ():
-            environ["HOME"] = "bla"
+            os.environ["HOME"] = "bla"
             assert _get_userdir() == "bla"
 
     with preserve_environ():
-        environ.pop("HOME", None)
+        os.environ.pop("HOME", None)
         if sys.platform != "win32":
             assert _get_userdir()
         else:
-            environ["USERPROFILE"] = "uprof"
+            os.environ["USERPROFILE"] = "uprof"
             assert _get_userdir() == "uprof"
 
     with preserve_environ():
-        environ.pop("HOME", None)
-        environ.pop("USERPROFILE", None)
+        os.environ.pop("HOME", None)
+        os.environ.pop("USERPROFILE", None)
         if sys.platform == "win32":
-            environ["HOMEPATH"] = "hpath"
-            environ["HOMEDRIVE"] = "C:\\"
+            os.environ["HOMEPATH"] = "hpath"
+            os.environ["HOMEDRIVE"] = "C:\\"
             assert _get_userdir() == os.path.join("C:", senf.sep, "hpath")
             assert _get_userdir("bla") == os.path.join("C:", senf.sep, "bla")
 
     with preserve_environ():
-        environ.pop("HOME", None)
-        environ.pop("USERPROFILE", None)
-        environ.pop("HOMEPATH", None)
+        os.environ.pop("HOME", None)
+        os.environ.pop("USERPROFILE", None)
+        os.environ.pop("HOMEPATH", None)
         if sys.platform == "win32":
             assert _get_userdir() is None
 
@@ -792,101 +785,6 @@ def test_getcwd():
     assert isinstance(getcwd(), fsnative)
 
 
-def test_environ():
-    # type: () -> None
-
-    for key, value in environ.items():
-        assert isinstance(key, fsnative)
-        assert isinstance(value, fsnative)
-
-    environ[fsnative("foo")] = fsnative("bar")
-    assert getenv(fsnative("foo")) == "bar"
-    assert isinstance(getenv("foo"), fsnative)
-
-    assert environ["foo"] == "bar"
-    assert isinstance(environ["foo"], fsnative)
-
-    del environ["foo"]
-    assert getenv("foo") is None
-    with pytest.raises(KeyError):
-        del environ["foo"]
-
-    try:
-        environ["=="] = "bla"
-    except ValueError:
-        # fails on Windows and on Linux with some Python versions
-        pass
-
-    assert len(environ) == len(environ.keys())
-    repr(environ)
-
-
-def test_environ_case():
-    # type: () -> None
-
-    if not environ_case_sensitive:
-        with preserve_environ():
-            environ.pop("foo", None)
-            environ["FoO"] = "bla"
-            assert environ["foo"] == "bla"
-            for key in ["foo", "FoO"]:
-                assert os.environ[key] == environ[key]
-    else:
-        with preserve_environ():
-            environ["foo"] = "1"
-            environ["FOO"] = "2"
-            assert environ["foo"] != environ["FOO"]
-            for key in ["foo", "FOO"]:
-                assert os.environ[key] == environ[key]
-
-
-@pytest.mark.skipif(os.name != "nt", reason="win only")
-def test_environ_mirror():
-    # type: () -> None
-
-    with preserve_environ():
-        os.environ.pop("BLA", None)
-        environ["BLA"] = "\ud83d"
-        assert "BLA" in os.environ
-        assert os.environ["BLA"] in ("\ud83d", "?")
-        assert get_windows_env_var("BLA") == "\ud83d"
-        del environ["BLA"]
-        assert "BLA" not in os.environ
-        assert getenv("BLA") is None
-
-
-def test_getenv():
-    # type: () -> None
-
-    environ["foo"] = "bar"
-
-    assert getenv("foo") == "bar"
-    del environ["foo"]
-    assert getenv("foo", "quux") == "quux"
-    assert getenv("foo") is None
-
-
-def test_unsetenv():
-    # type: () -> None
-
-    putenv("foo", "bar")
-    # for some reason getenv goes to the cache, which makes it hard to test
-    # things
-    assert getenv("foo") is None
-    unsetenv("foo")
-    unsetenv("foo")
-    assert getenv("foo") is None
-
-
-def test_putenv():
-    # type: () -> None
-
-    try:
-        putenv("==", "bla")
-    except ValueError:
-        pass
-
-
 def test_uri2fsn():
     # type: () -> None
 
@@ -1002,10 +900,10 @@ def test_expandvars():
     # type: () -> None
 
     with preserve_environ():
-        environ["foo"] = "bar"
-        environ["nope b"] = "xxx"
-        environ["f/oo"] = "bar"
-        environ.pop("nope", "")
+        os.environ["foo"] = "bar"
+        os.environ["nope b"] = "xxx"
+        os.environ["f/oo"] = "bar"
+        os.environ.pop("nope", "")
 
         assert expandvars("$foo") == "bar"
         assert expandvars("$nope b") == "$nope b"
@@ -1021,8 +919,8 @@ def test_expandvars():
 
     with preserve_environ():
         if os.name == "nt":
-            environ["ö"] = "ä"
-            environ.pop("ä", "")
+            os.environ["ö"] = "ä"
+            os.environ.pop("ä", "")
             assert isinstance(expandvars("$ö"), fsnative)
             assert expandvars("$ö") == "ä"
             assert expandvars("${ö}") == "ä"
@@ -1040,15 +938,15 @@ def test_expandvars_case():
 
     if not environ_case_sensitive:
         with preserve_environ():
-            environ.pop("foo", None)
-            environ["FOO"] = "bar"
+            os.environ.pop("foo", None)
+            os.environ["FOO"] = "bar"
             assert expandvars("$foo") == "bar"
-            environ["FOo"] = "baz"
+            os.environ["FOo"] = "baz"
             assert expandvars("$fOO") == "baz"
     else:
         with preserve_environ():
-            environ.pop("foo", None)
-            environ["FOO"] = "bar"
+            os.environ.pop("foo", None)
+            os.environ["FOO"] = "bar"
             assert expandvars("$foo") == "$foo"
 
 

@@ -27,17 +27,12 @@ from ._stdlib import (
     expanduser,
     expandvars,
 )
-from ._environ import environ, getenv, unsetenv, putenv
 
 
 (
     fsnative,
     print_,
     getcwd,
-    getenv,
-    unsetenv,
-    putenv,
-    environ,
     expandvars,
     path2fsn,
     fsn2text,

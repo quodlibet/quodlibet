@@ -6,7 +6,6 @@ import re
 import os
 
 from ._fsnative import path2fsn, fsnative, is_win
-from ._environ import environ
 
 
 sep = path2fsn(os.sep)
@@ -36,10 +35,10 @@ def _get_userdir(user=None):
         raise TypeError
 
     if is_win:
-        if "USERPROFILE" in environ:
-            path = environ["USERPROFILE"]
-        elif "HOMEPATH" in environ and "HOMEDRIVE" in environ:
-            path = os.path.join(environ["HOMEDRIVE"], environ["HOMEPATH"])
+        if "USERPROFILE" in os.environ:
+            path = os.environ["USERPROFILE"]
+        elif "HOMEPATH" in os.environ and "HOMEDRIVE" in os.environ:
+            path = os.path.join(os.environ["HOMEDRIVE"], os.environ["HOMEPATH"])
         else:
             return None
 
@@ -51,8 +50,8 @@ def _get_userdir(user=None):
     import pwd
 
     if user is None:
-        if "HOME" in environ:
-            return environ["HOME"]
+        if "HOME" in os.environ:
+            return os.environ["HOME"]
         try:
             return path2fsn(pwd.getpwuid(os.getuid()).pw_dir)
         except KeyError:
@@ -121,7 +120,7 @@ def expandvars(path):
     path = path2fsn(path)
 
     def repl_func(match):
-        return environ.get(match.group(1), match.group(0))
+        return os.environ.get(match.group(1), match.group(0))
 
     path = re.compile(r"\$(\w+)", flags=re.UNICODE).sub(repl_func, path)
     if os.name == "nt":
