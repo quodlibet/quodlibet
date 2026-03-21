@@ -9,7 +9,7 @@ import os
 import contextlib
 
 from gi.repository import Gtk
-from senf import fsnative, path2fsn, fsn2bytes, bytes2fsn
+from quodlibet.senf import fsnative, path2fsn, fsn2bytes, bytes2fsn
 
 from quodlibet import _
 from quodlibet import config

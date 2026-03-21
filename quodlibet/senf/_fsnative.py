@@ -1,24 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import os
 import sys
@@ -50,7 +32,7 @@ def _swap_bytes(data):
     """swaps bytes for 16 bit, leaves remaining trailing bytes alone"""
 
     a, b = data[1::2], data[::2]
-    data = bytearray().join(bytearray(x) for x in zip(a, b))
+    data = bytearray().join(bytearray(x) for x in zip(a, b, strict=False))
     if len(b) > len(a):
         data += b[-1:]
     return bytes(data)
@@ -78,18 +60,14 @@ def _decode_surrogatepass(data, codec):
                 if value.encode("utf-16-le", _surrogatepass) != data:
                     raise
                 return value
-            else:
-                raise
-        else:
             raise
+        raise
 
 
 def _merge_surrogates(text):
     """Returns a copy of the text with all surrogate pairs merged"""
 
-    return _decode_surrogatepass(
-        text.encode("utf-16-le", _surrogatepass),
-        "utf-16-le")
+    return _decode_surrogatepass(text.encode("utf-16-le", _surrogatepass), "utf-16-le")
 
 
 def fsn2norm(path):
@@ -119,10 +97,9 @@ def fsn2norm(path):
 
     if is_win:
         return _merge_surrogates(native)
-    elif PY3:
+    if PY3:
         return bytes2fsn(native, None)
-    else:
-        return path
+    return path
 
 
 def _fsn2legacy(path):
@@ -159,16 +136,15 @@ def _fsnative(text):
             path = text.encode("utf-8", _surrogatepass)
 
         if b"\x00" in path:
-            path = path.replace(b"\x00", fsn2bytes(_fsnative(u"\uFFFD"), None))
+            path = path.replace(b"\x00", fsn2bytes(_fsnative("\ufffd"), None))
 
         if PY3:
             return path.decode(_encoding, "surrogateescape")
         return path
-    else:
-        if u"\x00" in text:
-            text = text.replace(u"\x00", u"\uFFFD")
-        text = fsn2norm(text)
-        return text
+    if "\x00" in text:
+        text = text.replace("\x00", "\ufffd")
+    text = fsn2norm(text)
+    return text
 
 
 def _create_fsnative(type_):
@@ -176,14 +152,13 @@ def _create_fsnative(type_):
     # work
 
     class meta(type):
-
         def __instancecheck__(self, instance):
             return _typecheck_fsnative(instance)
 
         def __subclasscheck__(self, subclass):
             return issubclass(subclass, type_)
 
-    class impl(object):
+    class impl:
         """fsnative(text=u"")
 
         Args:
@@ -222,7 +197,7 @@ def _create_fsnative(type_):
         the `str` only contains ASCII and no NULL.
         """
 
-        def __new__(cls, text=u""):
+        def __new__(cls, text=""):
             return _fsnative(text)
 
     new_type = meta("fsnative", (object,), dict(impl.__dict__))
@@ -246,7 +221,7 @@ def _typecheck_fsnative(path):
         return False
 
     if PY3 or is_win:
-        if u"\x00" in path:
+        if "\x00" in path:
             return False
 
         if is_unix:
@@ -276,8 +251,10 @@ def _fsn2native(path):
     """
 
     if not isinstance(path, fsnative_type):
-        raise TypeError("path needs to be %s, not %s" % (
-            fsnative_type.__name__, type(path).__name__))
+        raise TypeError(
+            "path needs to be %s, not %s"
+            % (fsnative_type.__name__, type(path).__name__)
+        )
 
     if is_unix:
         if PY3:
@@ -290,12 +267,13 @@ def _fsn2native(path):
                 raise TypeError(
                     "path contained Unicode code points not valid in"
                     "the current path encoding. To create a valid "
-                    "path from Unicode use text2fsn()")
+                    "path from Unicode use text2fsn()"
+                )
 
         if b"\x00" in path:
             raise TypeError("fsnative can't contain nulls")
     else:
-        if u"\x00" in path:
+        if "\x00" in path:
             raise TypeError("fsnative can't contain nulls")
 
     return path
@@ -356,7 +334,7 @@ def path2fsn(path):
                 raise ValueError("embedded null")
             path = fsn2norm(path)
         else:
-            if u"\x00" in path:
+            if "\x00" in path:
                 raise ValueError("embedded null")
             path = fsn2norm(path)
 
@@ -394,10 +372,8 @@ def fsn2text(path, strict=False):
     errors = "strict" if strict else "replace"
 
     if is_win:
-        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le",
-                                                               errors)
-    else:
-        return path.decode(_encoding, errors)
+        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le", errors)
+    return path.decode(_encoding, errors)
 
 
 def text2fsn(text):
@@ -496,16 +472,14 @@ def bytes2fsn(data, encoding="utf-8"):
             path = _decode_surrogatepass(data, encoding)
         except LookupError:
             raise ValueError("invalid encoding %r" % encoding)
-        if u"\x00" in path:
+        if "\x00" in path:
             raise ValueError("contains nulls")
         return path
-    else:
-        if b"\x00" in data:
-            raise ValueError("contains nulls")
-        if PY2:
-            return data
-        else:
-            return data.decode(_encoding, "surrogateescape")
+    if b"\x00" in data:
+        raise ValueError("contains nulls")
+    if PY2:
+        return data
+    return data.decode(_encoding, "surrogateescape")
 
 
 def uri2fsn(uri):
@@ -562,17 +536,16 @@ def uri2fsn(uri):
             path += unquote(rest, encoding="utf-8", errors="surrogatepass")
         if PY2:
             path = path.decode("utf-8")
-        if u"\x00" in path:
-            raise ValueError("embedded null")
-        return path
-    else:
-        if PY2:
-            path = unquote(uri)
-        else:
-            path = unquote(uri, encoding=_encoding, errors="surrogateescape")
         if "\x00" in path:
             raise ValueError("embedded null")
         return path
+    if PY2:
+        path = unquote(uri)
+    else:
+        path = unquote(uri, encoding=_encoding, errors="surrogateescape")
+    if "\x00" in path:
+        raise ValueError("embedded null")
+    return path
 
 
 def fsn2uri(path):
@@ -606,9 +579,9 @@ def fsn2uri(path):
         flags = 0
         try:
             winapi.UrlCreateFromPathW(path, buf, ctypes.byref(length), flags)
-        except WindowsError as e:
+        except OSError as e:
             raise ValueError(e)
-        uri = buf[:length.value]
+        uri = buf[: length.value]
         # https://bitbucket.org/pypy/pypy/issues/3133
         uri = _merge_surrogates(uri)
 
@@ -623,5 +596,4 @@ def fsn2uri(path):
 
         return _quote_path(uri.encode("utf-8", _surrogatepass))
 
-    else:
-        return u"file://" + _quote_path(path)
+    return "file://" + _quote_path(path)

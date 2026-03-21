@@ -9,7 +9,7 @@
 
 
 from gi.repository import Gtk, GObject
-from senf import fsn2text
+from quodlibet.senf import fsn2text
 
 from quodlibet import config
 from quodlibet import util

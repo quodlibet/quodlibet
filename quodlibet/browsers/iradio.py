@@ -20,7 +20,7 @@ from urllib.request import urlopen
 
 import re
 from gi.repository import Gtk, GLib, Pango
-from senf import text2fsn
+from quodlibet.senf import text2fsn
 
 from quodlibet.util.dprint import print_d, print_e
 

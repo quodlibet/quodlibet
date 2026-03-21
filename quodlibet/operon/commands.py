@@ -16,7 +16,7 @@ import shutil
 import subprocess
 import tempfile
 
-from senf import fsn2text, text2fsn
+from quodlibet.senf import fsn2text, text2fsn
 
 from quodlibet import _
 from quodlibet import util

@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from tempfile import mkdtemp, mkstemp
 
-from senf import bytes2fsn, fsn2text, fsnative
+from quodlibet.senf import bytes2fsn, fsn2text, fsnative
 
 from quodlibet import app, config
 from quodlibet.formats import (

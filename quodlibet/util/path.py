@@ -19,7 +19,15 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, path2fsn, uri2fsn, _fsnative
+from quodlibet.senf import (
+    fsnative,
+    bytes2fsn,
+    fsn2bytes,
+    fsn2text,
+    path2fsn,
+    uri2fsn,
+    _fsnative,
+)
 
 from . import windows
 from .environment import is_windows

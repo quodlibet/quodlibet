@@ -7,7 +7,7 @@
 
 import os
 
-from senf import fsnative
+from quodlibet.senf import fsnative
 
 from quodlibet import config
 from quodlibet.util.library import (

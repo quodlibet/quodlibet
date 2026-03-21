@@ -19,7 +19,7 @@ from pathlib import Path
 from gi.repository import Gtk, Gdk
 
 from quodlibet.util.i18n import GlibTranslations
-from senf import fsnative
+from quodlibet.senf import fsnative
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import normalize_path

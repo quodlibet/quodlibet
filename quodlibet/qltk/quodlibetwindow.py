@@ -11,7 +11,7 @@
 import os
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
-from senf import uri2fsn, fsnative, path2fsn
+from quodlibet.senf import uri2fsn, fsnative, path2fsn
 
 import quodlibet
 

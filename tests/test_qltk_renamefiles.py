@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject
 
 from tests import TestCase, mkdtemp
 
-from senf import fsnative
+from quodlibet.senf import fsnative
 
 from quodlibet import config
 from quodlibet.formats import AudioFile

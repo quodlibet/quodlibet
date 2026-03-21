@@ -10,7 +10,7 @@ import xml.sax
 from xml.sax.handler import ContentHandler
 
 from gi.repository import Gtk
-from senf import uri2fsn
+from quodlibet.senf import uri2fsn
 
 from quodlibet import _
 from quodlibet import app

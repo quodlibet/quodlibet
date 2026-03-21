@@ -14,7 +14,15 @@ import random
 from typing import Any
 from urllib.parse import quote
 
-from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative, uri2fsn, fsn2uri
+from quodlibet.senf import (
+    fsnative,
+    fsn2bytes,
+    bytes2fsn,
+    path2fsn,
+    _fsnative,
+    uri2fsn,
+    fsn2uri,
+)
 
 from quodlibet import ngettext, _
 from quodlibet import util

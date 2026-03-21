@@ -1,27 +1,10 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import os
 import ctypes
+
 try:
     from collections import abc
 except ImportError:
@@ -97,23 +80,23 @@ def read_windows_environ():
     res = ctypes.cast(res, ctypes.POINTER(ctypes.c_wchar))
 
     done = []
-    current = u""
+    current = ""
     i = 0
     while 1:
         c = res[i]
         i += 1
-        if c == u"\x00":
+        if c == "\x00":
             if not current:
                 break
             done.append(current)
-            current = u""
+            current = ""
             continue
         current += c
 
     dict_ = {}
     for entry in done:
         try:
-            key, value = entry.split(u"=", 1)
+            key, value = entry.split("=", 1)
         except ValueError:
             continue
         key = _norm_key(key)
@@ -144,7 +127,7 @@ class Environ(abc.MutableMapping):
         if is_win and PY2:
             try:
                 env = read_windows_environ()
-            except WindowsError:
+            except OSError:
                 env = {}
         else:
             env = os.environ
@@ -167,7 +150,7 @@ class Environ(abc.MutableMapping):
 
             try:
                 set_windows_env_var(key, value)
-            except WindowsError:
+            except OSError:
                 # py3+win fails for invalid keys. try to do the same
                 raise ValueError
         try:
@@ -181,7 +164,7 @@ class Environ(abc.MutableMapping):
         if is_win and PY2:
             try:
                 del_windows_env_var(key)
-            except WindowsError:
+            except OSError:
                 pass
 
             try:
@@ -236,7 +219,7 @@ def unsetenv(key):
         # python 3 has no unsetenv under Windows -> use our ctypes one as well
         try:
             del_windows_env_var(key)
-        except WindowsError:
+        except OSError:
             pass
     else:
         os.unsetenv(key)
@@ -258,7 +241,7 @@ def putenv(key, value):
     if is_win and PY2:
         try:
             set_windows_env_var(key, value)
-        except WindowsError:
+        except OSError:
             # py3 + win fails here
             raise ValueError
     else:

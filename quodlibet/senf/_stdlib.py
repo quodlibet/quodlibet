@@ -1,24 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import re
 import os
@@ -62,30 +44,27 @@ def _get_userdir(user=None):
         elif "HOMEPATH" in environ and "HOMEDRIVE" in environ:
             path = os.path.join(environ["HOMEDRIVE"], environ["HOMEPATH"])
         else:
-            return
+            return None
 
         path = os.path.normpath(path)
 
         if user is None:
             return path
-        else:
-            return os.path.join(os.path.dirname(path), user)
-    else:
-        import pwd
+        return os.path.join(os.path.dirname(path), user)
+    import pwd
 
-        if user is None:
-            if "HOME" in environ:
-                return environ["HOME"]
-            else:
-                try:
-                    return path2fsn(pwd.getpwuid(os.getuid()).pw_dir)
-                except KeyError:
-                    return
-        else:
-            try:
-                return path2fsn(pwd.getpwnam(user).pw_dir)
-            except KeyError:
-                return
+    if user is None:
+        if "HOME" in environ:
+            return environ["HOME"]
+        try:
+            return path2fsn(pwd.getpwuid(os.getuid()).pw_dir)
+        except KeyError:
+            return None
+    else:
+        try:
+            return path2fsn(pwd.getpwnam(user).pw_dir)
+        except KeyError:
+            return None
 
 
 def expanduser(path):
@@ -103,13 +82,14 @@ def expanduser(path):
 
     if path == "~":
         return _get_userdir()
-    elif path.startswith("~" + sep) or (
-            altsep is not None and path.startswith("~" + altsep)):
+    if path.startswith("~" + sep) or (
+        altsep is not None and path.startswith("~" + altsep)
+    ):
         userdir = _get_userdir()
         if userdir is None:
             return path
         return userdir + path[1:]
-    elif path.startswith("~"):
+    if path.startswith("~"):
         sep_index = path.find(sep)
         if altsep is not None:
             alt_index = path.find(altsep)
@@ -126,10 +106,8 @@ def expanduser(path):
         userdir = _get_userdir(user)
         if userdir is not None:
             return userdir + rest
-        else:
-            return path
-    else:
         return path
+    return path
 
 
 def expandvars(path):

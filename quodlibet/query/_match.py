@@ -22,7 +22,7 @@ from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 from quodlibet.formats._audio import SIZE_TAGS, DURATION_TAGS
 from quodlibet.unisearch import compile
 from quodlibet.util import parse_date
-from senf import fsn2text, fsnative
+from quodlibet.senf import fsn2text, fsnative
 
 T = TypeVar("T")
 

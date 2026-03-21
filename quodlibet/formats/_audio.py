@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any, Generic, TypeVar
 from collections.abc import Iterable
 
-from senf import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
+from quodlibet.senf import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
 
 from quodlibet import _, config, print_d, util
 from quodlibet.util import cached_property, capitalize, iso639

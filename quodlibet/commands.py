@@ -10,7 +10,7 @@
 import json
 import os
 
-from senf import uri2fsn, fsnative, fsn2text, text2fsn
+from quodlibet.senf import uri2fsn, fsnative, fsn2text, text2fsn
 
 from quodlibet.util.string import split_escape
 

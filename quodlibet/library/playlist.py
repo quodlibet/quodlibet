@@ -12,7 +12,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
 from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
 from quodlibet.util.path import is_hidden
-from senf import text2fsn, _fsnative, fsnative
+from quodlibet.senf import text2fsn, _fsnative, fsnative
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""

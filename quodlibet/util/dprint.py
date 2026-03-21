@@ -14,7 +14,13 @@ import re
 import logging
 import errno
 
-from senf import print_, path2fsn, fsn2text, fsnative, supports_ansi_escape_codes
+from quodlibet.senf import (
+    print_,
+    path2fsn,
+    fsn2text,
+    fsnative,
+    supports_ansi_escape_codes,
+)
 
 from quodlibet import const
 from . import logging as ql_logging

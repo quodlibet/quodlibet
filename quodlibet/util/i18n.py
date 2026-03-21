@@ -10,7 +10,7 @@ import sys
 import gettext
 import locale
 
-from senf import path2fsn, fsn2text, text2fsn
+from quodlibet.senf import path2fsn, fsn2text, text2fsn
 
 from quodlibet.util.path import unexpand, xdg_get_system_data_dirs
 from quodlibet.util.dprint import print_d

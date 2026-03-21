@@ -27,7 +27,7 @@ from quodlibet.util.collection import (
     XSPFBackedPlaylist,
     XSPF_NS,
 )
-from senf import uri2fsn
+from quodlibet.senf import uri2fsn
 from tests import TestCase, mkdtemp
 
 config.RATINGS = config.HardCodedRatingsPrefs()

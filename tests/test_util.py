@@ -13,7 +13,7 @@ import time
 import logging
 from pathlib import Path
 
-from senf import fsnative, fsn2bytes, bytes2fsn
+from quodlibet.senf import fsnative, fsn2bytes, bytes2fsn
 
 from quodlibet import _
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat

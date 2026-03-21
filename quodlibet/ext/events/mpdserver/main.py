@@ -9,7 +9,7 @@ import re
 import shlex
 from collections.abc import Callable
 
-from senf import bytes2fsn, fsn2bytes
+from quodlibet.senf import bytes2fsn, fsn2bytes
 
 from quodlibet import const
 from quodlibet.util import print_d, print_w

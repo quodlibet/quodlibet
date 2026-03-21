@@ -1,24 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import sys
 import os
@@ -136,7 +118,7 @@ def _print_windows(objects, sep, end, file, flush):
 
     try:
         fileno = file.fileno()
-    except (EnvironmentError, AttributeError):
+    except (OSError, AttributeError):
         pass
     else:
         if fileno == 1:
@@ -164,7 +146,7 @@ def _print_windows(objects, sep, end, file, flush):
     if not isinstance(end, text_type):
         raise TypeError
 
-    if end == u"\n":
+    if end == "\n":
         end = os.linesep
 
     text = sep.join(parts) + end
@@ -219,7 +201,7 @@ def _readline_windows():
 
     try:
         fileno = sys.stdin.fileno()
-    except (EnvironmentError, AttributeError):
+    except (OSError, AttributeError):
         fileno = -1
 
     # In case stdin is replaced, read from that
@@ -234,16 +216,15 @@ def _readline_windows():
     buf = ctypes.create_string_buffer(buf_size * ctypes.sizeof(winapi.WCHAR))
     read = winapi.DWORD()
 
-    text = u""
+    text = ""
     while True:
-        if winapi.ReadConsoleW(
-                h, buf, buf_size, ctypes.byref(read), None) == 0:
+        if winapi.ReadConsoleW(h, buf, buf_size, ctypes.byref(read), None) == 0:
             if not text:
                 return _readline_windows_fallback()
             raise ctypes.WinError()
-        data = buf[:read.value * ctypes.sizeof(winapi.WCHAR)]
+        data = buf[: read.value * ctypes.sizeof(winapi.WCHAR)]
         text += data.decode("utf-16-le", _surrogatepass)
-        if text.endswith(u"\r\n"):
+        if text.endswith("\r\n"):
             return text[:-2]
 
 
@@ -262,7 +243,7 @@ def _decode_codepage(codepage, data):
     assert isinstance(data, bytes)
 
     if not data:
-        return u""
+        return ""
 
     # get the required buffer length first
     length = winapi.MultiByteToWideChar(codepage, 0, data, len(data), None, 0)
@@ -271,8 +252,7 @@ def _decode_codepage(codepage, data):
 
     # now decode
     buf = ctypes.create_unicode_buffer(length)
-    length = winapi.MultiByteToWideChar(
-        codepage, 0, data, len(data), buf, length)
+    length = winapi.MultiByteToWideChar(codepage, 0, data, len(data), buf, length)
     if length == 0:
         raise ctypes.WinError()
 
@@ -296,19 +276,18 @@ def _encode_codepage(codepage, text):
     if not text:
         return b""
 
-    size = (len(text.encode("utf-16-le", _surrogatepass)) //
-            ctypes.sizeof(winapi.WCHAR))
+    size = len(text.encode("utf-16-le", _surrogatepass)) // ctypes.sizeof(winapi.WCHAR)
 
     # get the required buffer size
-    length = winapi.WideCharToMultiByte(
-        codepage, 0, text, size, None, 0, None, None)
+    length = winapi.WideCharToMultiByte(codepage, 0, text, size, None, 0, None, None)
     if length == 0:
         raise ctypes.WinError()
 
     # decode to the buffer
     buf = ctypes.create_string_buffer(length)
     length = winapi.WideCharToMultiByte(
-        codepage, 0, text, size, buf, length, None, None)
+        codepage, 0, text, size, buf, length, None, None
+    )
     if length == 0:
         raise ctypes.WinError()
     return buf[:length]
@@ -329,15 +308,13 @@ def _readline_default():
     data = getattr(sys.stdin, "buffer", sys.stdin).readline().rstrip(b"\r\n")
     if PY3:
         return data.decode(_encoding, "surrogateescape")
-    else:
-        return data
+    return data
 
 
 def _readline():
     if is_win:
         return _readline_windows()
-    else:
-        return _readline_default()
+    return _readline_default()
 
 
 def input_(prompt=None):
@@ -374,23 +351,22 @@ def _get_file_name_for_handle(handle):
     assert is_win
     assert handle != winapi.INVALID_HANDLE_VALUE
 
-    size = winapi.FILE_NAME_INFO.FileName.offset + \
-        winapi.MAX_PATH * ctypes.sizeof(winapi.WCHAR)
+    size = winapi.FILE_NAME_INFO.FileName.offset + winapi.MAX_PATH * ctypes.sizeof(
+        winapi.WCHAR
+    )
     buf = ctypes.create_string_buffer(size)
 
     if winapi.GetFileInformationByHandleEx is None:
         # Windows XP
         return None
 
-    status = winapi.GetFileInformationByHandleEx(
-        handle, winapi.FileNameInfo, buf, size)
+    status = winapi.GetFileInformationByHandleEx(handle, winapi.FileNameInfo, buf, size)
     if status == 0:
         return None
 
-    name_info = ctypes.cast(
-        buf, ctypes.POINTER(winapi.FILE_NAME_INFO)).contents
+    name_info = ctypes.cast(buf, ctypes.POINTER(winapi.FILE_NAME_INFO)).contents
     offset = winapi.FILE_NAME_INFO.FileName.offset
-    data = buf[offset:offset + name_info.FileNameLength]
+    data = buf[offset : offset + name_info.FileNameLength]
     return bytes2fsn(data, "utf-16-le")
 
 
@@ -420,5 +396,6 @@ def supports_ansi_escape_codes(fd):
 
     file_name = _get_file_name_for_handle(handle)
     match = re.match(
-        "^\\\\(cygwin|msys)-[a-z0-9]+-pty[0-9]+-(from|to)-master$", file_name)
+        "^\\\\(cygwin|msys)-[a-z0-9]+-pty[0-9]+-(from|to)-master$", file_name
+    )
     return match is not None

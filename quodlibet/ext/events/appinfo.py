@@ -9,7 +9,7 @@
 import platform
 
 from gi.repository import Gtk, Pango
-from senf import fsn2uri, fsn2text
+from quodlibet.senf import fsn2uri, fsn2text
 import mutagen
 
 from quodlibet import _

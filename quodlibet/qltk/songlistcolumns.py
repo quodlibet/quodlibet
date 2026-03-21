@@ -9,7 +9,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk, Pango, GLib, Gio
-from senf import fsn2text
+from quodlibet.senf import fsn2text
 
 from quodlibet.util.string.date import format_date
 from quodlibet import _, print_d

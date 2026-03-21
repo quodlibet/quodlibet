@@ -6,7 +6,7 @@
 from tests import TestCase
 
 from gi.repository import Gtk, Gdk
-from senf import fsn2bytes
+from quodlibet.senf import fsn2bytes
 
 from quodlibet.formats import AudioFile
 from quodlibet import qltk

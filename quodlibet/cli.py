@@ -8,7 +8,7 @@
 import json
 import os
 
-from senf import fsn2text, uri2fsn
+from quodlibet.senf import fsn2text, uri2fsn
 
 from quodlibet import C_, _
 from quodlibet.util.dprint import print_, print_e

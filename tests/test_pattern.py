@@ -14,7 +14,7 @@ from quodlibet.pattern import (
     XMLFromMarkupPattern,
     ArbitraryExtensionFileFromPattern,
 )
-from senf import fsnative
+from quodlibet.senf import fsnative
 from tests import TestCase
 
 

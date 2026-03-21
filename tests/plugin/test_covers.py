@@ -23,7 +23,7 @@ import pytest as pytest
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
-from senf import fsnative
+from quodlibet.senf import fsnative
 from tests.plugin import PluginTestCase, plugins
 
 AN_ARTIST = "The Beatles"

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from gi.repository import Gtk
-from senf import path2fsn
+from quodlibet.senf import path2fsn
 
 import quodlibet
 from quodlibet import _, app, print_d, print_e, qltk, util

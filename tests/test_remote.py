@@ -10,7 +10,7 @@ from unittest import mock
 
 import pytest
 from gi.repository import GLib, Gio
-from senf import fsn2bytes, bytes2fsn
+from quodlibet.senf import fsn2bytes, bytes2fsn
 
 from . import TestCase
 from .helper import temp_filename

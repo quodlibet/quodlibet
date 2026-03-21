@@ -19,7 +19,7 @@ from gi.repository import GObject
 from quodlibet.library.base import Library
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.util.dprint import print_d, print_w
-from senf import fsnative
+from quodlibet.senf import fsnative
 
 
 class Librarian(GObject.GObject):

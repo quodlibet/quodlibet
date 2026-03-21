@@ -25,7 +25,7 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet.qltk.songlist import DND_QL
 from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
-from senf import fsn2uri, fsn2bytes
+from quodlibet.senf import fsn2uri, fsn2bytes
 from tests import (
     TestCase,
     get_data_path,

@@ -9,7 +9,7 @@
 import os
 import wave
 
-from senf import fsn2text
+from quodlibet.senf import fsn2text
 
 from ._audio import AudioFile, translate_errors
 
