@@ -6,6 +6,7 @@ import os
 import sys
 import ctypes
 import codecs
+from typing import TYPE_CHECKING, TypeAlias
 
 from . import _winapi as winapi
 from urllib.parse import urlparse, quote, unquote, urlunparse
@@ -105,18 +106,18 @@ def _fsnative(text):
     return text
 
 
-def _create_fsnative(type_):
-    # a bit of magic to make fsnative(u"foo") and isinstance(path, fsnative)
-    # work
+if TYPE_CHECKING:
+    fsnative: TypeAlias = str
+else:
 
-    class meta(type):
+    class _meta(type):
         def __instancecheck__(self, instance):
             return _typecheck_fsnative(instance)
 
         def __subclasscheck__(self, subclass):
-            return issubclass(subclass, type_)
+            return issubclass(subclass, str)
 
-    class impl:
+    class fsnative(str, metaclass=_meta):
         """fsnative(text=u"")
 
         Args:
@@ -139,12 +140,12 @@ def _create_fsnative(type_):
         The real returned type is:
 
         - **Python 2 + Windows:** :obj:`python:unicode`, with ``surrogates``,
-          without ``null``
+            without ``null``
         - **Python 2 + Unix:** :obj:`python:str`, without ``null``
         - **Python 3 + Windows:** :obj:`python3:str`, with ``surrogates``,
-          without ``null``
+            without ``null``
         - **Python 3 + Unix:** :obj:`python3:str`, with ``surrogates``, without
-          ``null``, without code points not encodable with the locale encoding
+            ``null``, without code points not encodable with the locale encoding
 
         Constructing a `fsnative` can't fail.
 
@@ -158,14 +159,6 @@ def _create_fsnative(type_):
         def __new__(cls, text=""):
             return _fsnative(text)
 
-    new_type = meta("fsnative", (object,), dict(impl.__dict__))
-    new_type.__module__ = "senf"
-    return new_type
-
-
-fsnative_type = str
-fsnative = _create_fsnative(fsnative_type)
-
 
 def _typecheck_fsnative(path):
     """
@@ -175,7 +168,7 @@ def _typecheck_fsnative(path):
         bool: if path is a fsnative
     """
 
-    if not isinstance(path, fsnative_type):
+    if not isinstance(path, str):
         return False
 
     if "\x00" in path:
@@ -205,10 +198,9 @@ def _fsn2native(path):
     it can be reused.
     """
 
-    if not isinstance(path, fsnative_type):
+    if not isinstance(path, str):
         raise TypeError(
-            "path needs to be %s, not %s"
-            % (fsnative_type.__name__, type(path).__name__)
+            "path needs to be %s, not %s" % (str.__name__, type(path).__name__)
         )
 
     if is_unix:
@@ -281,8 +273,8 @@ def path2fsn(path):
             raise ValueError("embedded null")
         path = fsn2norm(path)
 
-    if not isinstance(path, fsnative_type):
-        raise TypeError("path needs to be %s", fsnative_type.__name__)
+    if not isinstance(path, str):
+        raise TypeError("path needs to be %s", str.__name__)
 
     return path
 
