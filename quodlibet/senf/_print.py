@@ -7,7 +7,7 @@ import os
 import ctypes
 import re
 
-from ._fsnative import _encoding, is_win, is_unix, _surrogatepass, bytes2fsn
+from ._fsnative import _encoding, is_win, is_unix, bytes2fsn
 from ._winansi import AnsiState, ansi_split
 from . import _winapi as winapi
 
@@ -167,7 +167,7 @@ def _print_windows(objects, sep, end, file, flush):
                     ansi_state.apply(h, part)
                 else:
                     if encoding is not None:
-                        data = part.encode(encoding, _surrogatepass)
+                        data = part.encode(encoding, "surrogatepass")
                     else:
                         data = _encode_codepage(cp, part)
                     os.write(fileno, data)
@@ -178,7 +178,7 @@ def _print_windows(objects, sep, end, file, flush):
         # try writing bytes first, so in case of Python 2 StringIO we get
         # the same type on all platforms
         try:
-            file.write(text.encode("utf-8", _surrogatepass))
+            file.write(text.encode("utf-8", "surrogatepass"))
         except (TypeError, ValueError):
             file.write(text)
 
@@ -213,7 +213,7 @@ def _readline_windows():
                 return _readline_windows_fallback()
             raise ctypes.WinError()
         data = buf[: read.value * ctypes.sizeof(winapi.WCHAR)]
-        text += data.decode("utf-16-le", _surrogatepass)
+        text += data.decode("utf-16-le", "surrogatepass")
         if text.endswith("\r\n"):
             return text[:-2]
 
@@ -266,7 +266,7 @@ def _encode_codepage(codepage, text):
     if not text:
         return b""
 
-    size = len(text.encode("utf-16-le", _surrogatepass)) // ctypes.sizeof(winapi.WCHAR)
+    size = len(text.encode("utf-16-le", "surrogatepass")) // ctypes.sizeof(winapi.WCHAR)
 
     # get the required buffer size
     length = winapi.WideCharToMultiByte(codepage, 0, text, size, None, 0, None, None)

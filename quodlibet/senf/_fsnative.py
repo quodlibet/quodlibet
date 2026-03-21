@@ -15,8 +15,6 @@ is_win = os.name == "nt"
 is_unix = not is_win
 is_darwin = sys.platform == "darwin"
 
-_surrogatepass = "surrogatepass"
-
 
 def _normalize_codec(codec, _cache={}):
     """Raises LookupError"""
@@ -38,7 +36,7 @@ def _decode_surrogatepass(data, codec):
     """
 
     try:
-        return data.decode(codec, _surrogatepass)
+        return data.decode(codec, "surrogatepass")
     except UnicodeDecodeError:
         raise
 
@@ -46,7 +44,7 @@ def _decode_surrogatepass(data, codec):
 def _merge_surrogates(text):
     """Returns a copy of the text with all surrogate pairs merged"""
 
-    return _decode_surrogatepass(text.encode("utf-16-le", _surrogatepass), "utf-16-le")
+    return _decode_surrogatepass(text.encode("utf-16-le", "surrogatepass"), "utf-16-le")
 
 
 def fsn2norm(path):
@@ -92,9 +90,9 @@ def _fsnative(text):
         # a mis-configured environment
         encoding = _encoding
         try:
-            path = text.encode(encoding, _surrogatepass)
+            path = text.encode(encoding, "surrogatepass")
         except UnicodeEncodeError:
-            path = text.encode("utf-8", _surrogatepass)
+            path = text.encode("utf-8", "surrogatepass")
 
         if b"\x00" in path:
             path = path.replace(b"\x00", fsn2bytes(_fsnative("\ufffd"), None))
@@ -307,7 +305,7 @@ def fsn2text(path, strict=False):
     errors = "strict" if strict else "replace"
 
     if is_win:
-        return path.encode("utf-16-le", _surrogatepass).decode("utf-16-le", errors)
+        return path.encode("utf-16-le", "surrogatepass").decode("utf-16-le", errors)
     return path.decode(_encoding, errors)
 
 
@@ -365,8 +363,8 @@ def fsn2bytes(path, encoding="utf-8"):
             # merge surrogate codepoints
             if _normalize_codec(encoding).startswith("utf-16"):
                 # fast path, utf-16 merges anyway
-                return path.encode(encoding, _surrogatepass)
-            return _merge_surrogates(path).encode(encoding, _surrogatepass)
+                return path.encode(encoding, "surrogatepass")
+            return _merge_surrogates(path).encode(encoding, "surrogatepass")
     else:
         return path
 
@@ -501,6 +499,6 @@ def fsn2uri(path):
         # latin-1 maps code points directly to bytes, which is what we want
         uri = unquote(uri, "latin-1")
 
-        return _quote_path(uri.encode("utf-8", _surrogatepass))
+        return _quote_path(uri.encode("utf-8", "surrogatepass"))
 
     return "file://" + _quote_path(path)

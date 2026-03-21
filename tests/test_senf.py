@@ -30,7 +30,7 @@ from quodlibet.senf import (
     fsn2norm,
 )
 from quodlibet.senf._winansi import ansi_parse, ansi_split
-from quodlibet.senf._fsnative import _encoding, is_unix, _surrogatepass, _get_encoding
+from quodlibet.senf._fsnative import _encoding, is_unix, _get_encoding
 from quodlibet.senf._print import _encode_codepage, _decode_codepage
 from quodlibet.senf import _winapi as winapi
 
@@ -785,7 +785,7 @@ def test_python_handling_broken_utf16():
 
             newpath = os.path.join(tmp, os.listdir(tmp)[0])
             if not is_wine:  # this is broken on wine..
-                assert newpath.encode("utf-16-le", _surrogatepass) == faulty
+                assert newpath.encode("utf-16-le", "surrogatepass") == faulty
 
             with open(newpath, "rb") as h:
                 assert h.read() == b"content"
