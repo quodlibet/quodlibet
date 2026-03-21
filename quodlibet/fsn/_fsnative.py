@@ -6,7 +6,7 @@ import os
 import sys
 import ctypes
 import codecs
-from typing import TYPE_CHECKING, TypeAlias, Union, Any
+from typing import TYPE_CHECKING, TypeAlias, Any
 
 from . import _winapi as winapi
 from urllib.parse import urlparse, quote, unquote, urlunparse
@@ -15,10 +15,12 @@ is_win = os.name == "nt"
 is_unix = not is_win
 is_darwin = sys.platform == "darwin"
 
-_pathlike = Union[str, bytes, "os.PathLike[Any]"]
+_pathlike: TypeAlias = "str | bytes | os.PathLike[Any]"
+
+_normalize_codec_cache: dict[str, str] = {}
 
 
-def _normalize_codec(codec, _cache={}):
+def _normalize_codec(codec, _cache=_normalize_codec_cache):
     """Raises LookupError"""
 
     try:
@@ -81,7 +83,7 @@ def fsn2norm(path):
 
 def _fsnative(text):
     if not isinstance(text, str):
-        raise TypeError("%r needs to be a text type (%r)" % (text, str))
+        raise TypeError(f"{text!r} needs to be a text type ({str!r})")
 
     if is_unix:
         # First we go to bytes so we can be sure we have a valid source.
@@ -102,8 +104,7 @@ def _fsnative(text):
         return path.decode(_encoding, "surrogateescape")
     if "\x00" in text:
         text = text.replace("\x00", "\ufffd")
-    text = fsn2norm(text)
-    return text
+    return fsn2norm(text)
 
 
 if TYPE_CHECKING:
@@ -111,10 +112,10 @@ if TYPE_CHECKING:
 else:
 
     class _meta(type):
-        def __instancecheck__(self, instance):
+        def __instancecheck__(cls, instance):
             return _typecheck_fsnative(instance)
 
-        def __subclasscheck__(self, subclass):
+        def __subclasscheck__(cls, subclass):
             return issubclass(subclass, str)
 
     class fsnative(str, metaclass=_meta):
@@ -183,7 +184,7 @@ def _typecheck_fsnative(path):
     return True
 
 
-def _fsn2native(path: fsnative) -> Union[str, bytes]:
+def _fsn2native(path: fsnative) -> str | bytes:
     """
     Args:
         path (fsnative)
@@ -199,11 +200,9 @@ def _fsn2native(path: fsnative) -> Union[str, bytes]:
     """
 
     if not isinstance(path, str):
-        raise TypeError(
-            "path needs to be %s, not %s" % (str.__name__, type(path).__name__)
-        )
+        raise TypeError(f"path needs to be {str.__name__}, not {type(path).__name__}")
 
-    res: Union[str, bytes]
+    res: str | bytes
 
     if is_unix:
         try:
@@ -216,7 +215,7 @@ def _fsn2native(path: fsnative) -> Union[str, bytes]:
                 "path contained Unicode code points not valid in"
                 "the current path encoding. To create a valid "
                 "path from Unicode use text2fsn()"
-            )
+            ) from None
 
         if b"\x00" in res:
             raise TypeError("fsnative can't contain nulls")
@@ -239,8 +238,7 @@ def _get_encoding():
             encoding = "mbcs"
         else:
             encoding = "ascii"
-    encoding = _normalize_codec(encoding)
-    return encoding
+    return _normalize_codec(encoding)
 
 
 _encoding = _get_encoding()
@@ -359,13 +357,13 @@ def fsn2bytes(path: fsnative, encoding="utf-8") -> bytes:
 
     if is_win:
         if encoding is None:
-            raise ValueError("invalid encoding %r" % encoding)
+            raise ValueError(f"invalid encoding {encoding!r}") from None
 
         assert isinstance(native, str)
         try:
             return native.encode(encoding)
         except LookupError:
-            raise ValueError("invalid encoding %r" % encoding)
+            raise ValueError(f"invalid encoding {encoding!r}") from None
         except UnicodeEncodeError:
             # Fallback implementation for text including surrogates
             # merge surrogate codepoints
@@ -403,11 +401,11 @@ def bytes2fsn(data: bytes, encoding="utf-8") -> fsnative:
 
     if is_win:
         if encoding is None:
-            raise ValueError("invalid encoding %r" % encoding)
+            raise ValueError(f"invalid encoding {encoding!r}") from None
         try:
             path = _decode_surrogatepass(data, encoding)
         except LookupError:
-            raise ValueError("invalid encoding %r" % encoding)
+            raise ValueError(f"invalid encoding {encoding!r}") from None
         if "\x00" in path:
             raise ValueError("contains nulls")
         return path
@@ -438,10 +436,10 @@ def uri2fsn(uri: str) -> fsnative:
     parsed_path = parsed.path
 
     if scheme != "file":
-        raise ValueError("Not a file URI: %r" % uri)
+        raise ValueError(f"Not a file URI: {uri!r}")
 
     if not parsed_path:
-        raise ValueError("Invalid file URI: %r" % uri)
+        raise ValueError(f"Invalid file URI: {uri!r}")
 
     uri = urlunparse(parsed)[5:]
     if not parsed_path.startswith("/") and uri.startswith("/"):
@@ -488,8 +486,7 @@ def fsn2uri(path: fsnative) -> str:
 
     def _quote_path(path):
         # RFC 2396
-        path = quote(path, "/:@&=+$,")
-        return path
+        return quote(path, "/:@&=+$,")
 
     if sys.platform == "win32":
         buf = ctypes.create_unicode_buffer(winapi.INTERNET_MAX_URL_LENGTH)
@@ -498,7 +495,7 @@ def fsn2uri(path: fsnative) -> str:
         try:
             winapi.UrlCreateFromPathW(native, buf, ctypes.byref(length), flags)
         except OSError as e:
-            raise ValueError(e)
+            raise ValueError(e) from None
         uri = buf[: length.value]
         # https://bitbucket.org/pypy/pypy/issues/3133
         uri = _merge_surrogates(uri)

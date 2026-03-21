@@ -148,18 +148,7 @@ ignore = [
 "quodlibet/ext/**/*" = [
   "N802", # allow plugins to have methods like PluginPreferences etc
 ]
-"quodlibet/fsn/**/*" = [
-  "N801",
-  "N802",
-  "UP031",
-  "B904",
-  "RET504",
-  "N804",
-  "B006",
-  "UP007",
-  "UP036",
-]
-
+"quodlibet/fsn/**/*" = ["N801"]
 "quodlibet/cli.py" = [
   "C901", # TODO: refactor process_arguments to simplify (46)
 ]
