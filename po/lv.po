@@ -179,7 +179,7 @@ msgstr "Albuma attēlojums"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr[1] "%d dziesmas"
 msgstr[2] "%d dziesmu"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Nederīgs paraugs"
@@ -272,7 +272,7 @@ msgstr "Albumu saraksta iestatījumi"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr ""
 
@@ -1280,15 +1280,15 @@ msgstr "apraksts"
 msgid "Data to be sent:"
 msgstr ""
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "audio tagu redaktors"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "mape"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 #, fuzzy
 msgid "Audio metadata editor"
 msgstr "Audio tagu redaktors"
@@ -1620,7 +1620,7 @@ msgstr "Jau_na stacija"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3235,19 +3235,24 @@ msgstr "Dziesmas vārdi"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "Dziesmas vārdi"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, fuzzy, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr "Šajai dziesmai vārdi netika atrasti."
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 #, fuzzy
 msgid "No active song"
 msgstr "Neizdevās saglabāt dziesmu"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6479,7 +6484,7 @@ msgstr ""
 "Tagi tika izmainīti, bet netika saglabāti. Saglabāt šos failus, vai "
 "atgriezties un izmest izmaiņas?"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 #, fuzzy
 msgid "_Revert"
@@ -7712,7 +7717,7 @@ msgstr ""
 "ir nederīgs. Iespējams, tas satur vienu un to pašu tagu divreiz, vai arī "
 "tajā ir nenobalancētas zīmes (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7725,7 +7730,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Rediģēt rādāmo"
 
@@ -7751,7 +7756,7 @@ msgstr "Atskaņotājs"
 msgid "Previous"
 msgstr "_Priekšskats"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, fuzzy, python-format
 msgid "and %d more…"
 msgstr "un vēl %d..."

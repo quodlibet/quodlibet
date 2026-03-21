@@ -169,7 +169,7 @@ msgstr "Alben-Anzeige"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "S_chließen"
 
@@ -188,7 +188,7 @@ msgstr[0] "%d Titel"
 msgstr[1] "%d Titel"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Ungültiges Muster"
@@ -259,7 +259,7 @@ msgstr "Einstellungen der Albensammlung"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "_Anwenden"
 
@@ -1226,15 +1226,15 @@ msgstr "Kurze Beschreibung …"
 msgid "Data to be sent:"
 msgstr "Daten, die gesendet werden:"
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "ein Editor für Audio-Metadaten"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "Verzeichnis"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "Editor für Audio-Metadaten"
 
@@ -1581,7 +1581,7 @@ msgstr "_Aktualisierungsstrategie:"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3233,7 +3233,12 @@ msgstr ""
 "Zeigt metadaten- oder dateibasierte Liedtexte automatisch in einer "
 "Seitenleiste an."
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "Liedtext anzeigen"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3242,11 +3247,11 @@ msgstr ""
 "Es wurden keine Liedtexte gefunden für\n"
 " %s"
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr "Kein aktiver Titel"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6481,7 +6486,7 @@ msgstr ""
 "Die Metadaten wurden verändert, aber noch nicht gespeichert. Sollen die "
 "Änderungen gespeichert oder verworfen werden?"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "Zu_rücksetzen"
@@ -7670,7 +7675,7 @@ msgstr ""
 "ist ungültig. Möglicherweise enthält es das gleiche Feld zweimal, oder es "
 "enthält nicht zueinander passende Klammern (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7684,7 +7689,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Anzeige bearbeiten"
 
@@ -7708,7 +7713,7 @@ msgstr "Abspielen/Pause"
 msgid "Previous"
 msgstr "Vorheriger"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr "und %d weitere …"

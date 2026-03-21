@@ -167,7 +167,7 @@ msgstr "Προβολή Άλμπουμ"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
@@ -186,7 +186,7 @@ msgstr[0] "%d τραγούδι"
 msgstr[1] "%d τραγούδια"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Μη έγκυρη αναζήτηση"
@@ -257,7 +257,7 @@ msgstr "Προτιμήσεις Συλλογής Άλμπουμ"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "_Εφαρμογή"
 
@@ -1228,15 +1228,15 @@ msgstr "Σύντομη περιγραφή…"
 msgid "Data to be sent:"
 msgstr "Δεδομένα προς αποστολή:"
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "ένας επεξεργαστής ετικετών μουσικής"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "κατάλογος"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "Επεξεργαστής ηχητικών μεταδεδομένων"
 
@@ -1570,7 +1570,7 @@ msgstr "_Ανανέωση Σταθμών"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3202,18 +3202,23 @@ msgstr "Προβολή Στίχων"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "Προβολή στίχων κάτω από την λίστα τραγουδιών"
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "Προβολή Στίχων"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, fuzzy, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr "Δεν βρέθηκαν στίχοι γι' αυτό το τραγούδι."
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr "Δεν υπάρχει ενεργό τραγούδι"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6457,7 +6462,7 @@ msgstr ""
 "Ετικέτες έχουν αλλαχθεί αλλά δεν έχουν αποθηκευθεί. Αποθήκευση αυτών των "
 "αρχείων ή επαναφορά και απόρριψη των αλλαγών;"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "Επανέφε_ρε"
@@ -7675,7 +7680,7 @@ msgstr ""
 "δεν είναι έγκυρο. Πιθανότατα περιέχει την ίδια ετικέτα δύο φορές ή έχει μη "
 "ισορροπημένες γωνιακές αγκύλες (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7688,7 +7693,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Επεξεργασία Προβολής"
 
@@ -7712,7 +7717,7 @@ msgstr "Αναπαραγωγή/Παύση"
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr "και %d ακόμη…"

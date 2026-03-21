@@ -161,7 +161,7 @@ msgstr "專輯顯示"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "關閉(_C)"
 
@@ -179,7 +179,7 @@ msgid_plural "%d songs"
 msgstr[0] "%d 曲目"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "無效的型式"
@@ -250,7 +250,7 @@ msgstr "專輯收藏偏好設定"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "套用(_A)"
 
@@ -1192,15 +1192,15 @@ msgstr "簡短描述…"
 msgid "Data to be sent:"
 msgstr "資料被發送："
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "一個音樂檔案標籤編輯器"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "目錄"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "音檔詮釋資料編輯器"
 
@@ -1528,7 +1528,7 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -2412,8 +2412,8 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
-"商店 Seekoints A 及/或 B 的曲目。當曲目播放時，跳到時間 A，然後在時間 B 停止"
-"。\n"
+"商店 Seekoints A 及/或 B 的曲目。當曲目播放時，跳到時間 A，然後在時間 B 停"
+"止。\n"
 "\n"
 "ℹ 請注意，變更以下點的名稱並不會更新實際的書籤名稱，它只會變改外掛在決定是否"
 "尋找的書籤名稱。"
@@ -3083,7 +3083,12 @@ msgstr "查看歌詞"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "在側邊欄自動顯示標籤或檔案內歌詞。"
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "查看歌詞"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3092,11 +3097,11 @@ msgstr ""
 "找不到歌詞\n"
 " %s"
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr "無法作用此曲"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr "隱藏 .lrc 或 .elrc 格式歌詞的時間戳記"
 
@@ -4469,8 +4474,8 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
-"曲目需要 <i><b>musicbrainz_trackid</b></i>，或 <i><b>artist</b></i> / <i><b>"
-"title</b></i> / <i><b>專輯</b></i> 標籤來完成提交。"
+"曲目需要 <i><b>musicbrainz_trackid</b></i>，或 <i><b>artist</b></i> / "
+"<i><b>title</b></i> / <i><b>專輯</b></i> 標籤來完成提交。"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:122
 msgid "Fingerprints:"
@@ -4615,9 +4620,9 @@ msgstr ""
 "請注意，您選擇匯出的任何內容都會被匯入。如果您匯出了檔案詞條(沒有副檔名的檔案"
 "名稱)，那麼在匯入時，所選的檔案將會重新命名。\n"
 "\n"
-"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。曲目的順序和數量可以不相同"
-"。該外掛將匯出的資料與新的曲目，即使曲目名稱僅略有不同。自動符合匹配並非永遠"
-"正確，因此最好不要降低太多相似度值。"
+"匯出專輯之後，您可以將資料匯入至該專輯另一個版本。曲目的順序和數量可以不相"
+"同。該外掛將匯出的資料與新的曲目，即使曲目名稱僅略有不同。自動符合匹配並非永"
+"遠正確，因此最好不要降低太多相似度值。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:231
 msgid "User interaction on import"
@@ -6164,7 +6169,7 @@ msgid ""
 "discard changes?"
 msgstr "標籤已經改變但尚未儲存。要儲存檔案？或是還原並放棄變更？"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "還原(_R)"
@@ -7289,7 +7294,7 @@ msgstr ""
 "\t%s\n"
 "無效。可能是包含兩次同樣的標籤或是括號內不相稱 (&lt; / &gt;)。"
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7302,7 +7307,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "編輯顯示"
 
@@ -7326,7 +7331,7 @@ msgstr "播放/暫停"
 msgid "Previous"
 msgstr "前一個"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr "以及還有 %d 之多…"

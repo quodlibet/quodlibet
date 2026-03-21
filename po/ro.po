@@ -183,7 +183,7 @@ msgstr "Afişare albume"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgstr[1] "%d piese"
 msgstr[2] "%d de piese"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Şablon invalid"
@@ -276,7 +276,7 @@ msgstr "Preferinţe listă albume"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr ""
 
@@ -1276,15 +1276,15 @@ msgstr "descriere"
 msgid "Data to be sent:"
 msgstr ""
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "un editor de etichete audio"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "director"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 #, fuzzy
 msgid "Audio metadata editor"
 msgstr "Editor pentru etichete audio"
@@ -1615,7 +1615,7 @@ msgstr "Staţie _nouă"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3226,19 +3226,24 @@ msgstr "Versuri"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "Versuri"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, fuzzy, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr "Versurile pentru această piesă nu au putut fi găsite."
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 #, fuzzy
 msgid "No active song"
 msgstr "Nu s-a putut salva piesa"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6456,7 +6461,7 @@ msgstr ""
 "Etichetele au fost modificate, dar nu au fost salvate. Salvaţi aceste "
 "fişiere sau reveniţi la valorile iniţiale şi anulaţi modificările?"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 #, fuzzy
 msgid "_Revert"
@@ -7681,7 +7686,7 @@ msgstr ""
 "este invalid. S-ar putea să conţină aceeaşi etichetă de două ori sau "
 "paranteze potrivite greşit (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7694,7 +7699,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Editare afişare"
 
@@ -7720,7 +7725,7 @@ msgstr "Redare"
 msgid "Previous"
 msgstr "_Previzualizare"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, fuzzy, python-format
 msgid "and %d more…"
 msgstr "şi alte %d..."
