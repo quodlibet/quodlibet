@@ -24,7 +24,6 @@ from quodlibet.senf import (
     extsep,
     devnull,
     defpath,
-    argv,
     getcwd,
     environ,
     getenv,
@@ -126,17 +125,6 @@ with preserve_environ():
     os.environ.pop("senf", None)
     os.environ["SENF"] = "foo"
     environ_case_sensitive = "senf" not in os.environ
-
-
-@contextlib.contextmanager
-def preserve_argv(argv=argv):
-    old = argv[:]
-    if argv is not sys.argv:
-        with preserve_argv(sys.argv):
-            yield
-    else:
-        yield
-    argv[:] = old
 
 
 @contextlib.contextmanager
@@ -797,54 +785,6 @@ def test_constants():
     assert isinstance(extsep, fsnative)
     assert isinstance(devnull, fsnative)
     assert isinstance(defpath, fsnative)
-
-
-def test_argv():
-    # type: () -> None
-
-    assert len(sys.argv) == len(argv)
-    assert all(isinstance(v, fsnative) for v in argv)
-    assert all(isinstance(v, fsnative) for v in argv[:])
-
-
-def test_argv_change():
-    # type: () -> None
-
-    with preserve_argv():
-        argv.append(fsnative("\u1234"))
-        assert argv[-1] == fsnative("\u1234")
-        assert len(sys.argv) == len(argv)
-        assert sys.argv[-1] in (fsnative("\u1234"), "?")
-        argv[-1] = fsnative("X")
-        assert path2fsn(sys.argv[-1]) == argv[-1]
-        del argv[-1]
-        assert len(sys.argv) == len(argv)
-
-    with preserve_argv():
-        sys.argv[0] = sys.argv[0] + sys.argv[0]
-        if path2fsn(sys.argv[0]) != argv[0]:
-            del sys.argv[:]
-            argv[0] = fsnative("")
-            del argv[0]
-
-    with preserve_argv():
-        argv[:] = [fsnative("foo")]
-        assert repr(argv).replace("u'", "'") == repr(sys.argv)
-        assert argv[:] == argv
-
-    with preserve_argv():
-        del argv[:]
-        assert not argv
-        assert argv == []
-        assert argv == argv
-        assert not argv != argv
-        argv.append("")
-        assert len(argv) == 1
-        assert isinstance(argv[-1], fsnative)
-        argv.insert(0, "")
-        assert isinstance(argv[0], fsnative)
-        assert len(argv) == 2
-        assert not (argv > argv)
 
 
 def test_getcwd():

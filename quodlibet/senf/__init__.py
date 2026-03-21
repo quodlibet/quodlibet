@@ -27,7 +27,6 @@ from ._stdlib import (
     expanduser,
     expandvars,
 )
-from ._argv import argv
 from ._environ import environ, getenv, unsetenv, putenv
 from ._temp import mkstemp, gettempdir, gettempprefix, mkdtemp
 
@@ -65,12 +64,6 @@ version = (1, 5, 1)
 
 version_string = ".".join(map(str, version))
 """`str`: A version string"""
-
-
-argv = argv
-"""List[`fsnative`]: Like `sys.argv` but contains unicode under
-Windows + Python 2
-"""
 
 
 sep = sep

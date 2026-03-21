@@ -48,7 +48,6 @@ def expandvars(path: _pathlike) -> _fsnative: ...
 def expanduser(path: _pathlike) -> _fsnative: ...
 
 environ: dict[_fsnative, _fsnative]
-argv: list[_fsnative]
 
 def gettempdir() -> _fsnative:
     pass
