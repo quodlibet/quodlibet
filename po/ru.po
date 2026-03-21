@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-02-12 07:52+0000\n"
+"PO-Revision-Date: 2026-03-19 08:09+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:226
@@ -3194,9 +3194,8 @@ msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "Отображение тегов или файлов лирики в боковой панели."
 
 #: quodlibet/ext/events/viewlyrics.py:55
-#, fuzzy
 msgid "Edit Lyrics"
-msgstr "Текст песни"
+msgstr "Изменить текст песни"
 
 #: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
