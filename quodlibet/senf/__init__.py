@@ -28,7 +28,6 @@ from ._stdlib import (
     expandvars,
 )
 from ._environ import environ, getenv, unsetenv, putenv
-from ._temp import mkstemp, gettempdir, gettempprefix, mkdtemp
 
 
 (
@@ -46,10 +45,6 @@ from ._temp import mkstemp, gettempdir, gettempprefix, mkdtemp
     bytes2fsn,
     uri2fsn,
     fsn2uri,
-    mkstemp,
-    gettempdir,
-    gettempprefix,
-    mkdtemp,
     input_,
     expanduser,
     text2fsn,

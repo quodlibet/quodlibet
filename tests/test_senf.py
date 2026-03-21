@@ -10,6 +10,7 @@ import shutil
 import codecs
 from typing import TYPE_CHECKING
 from io import BytesIO, StringIO
+from tempfile import mkdtemp
 
 import pytest
 
@@ -32,8 +33,6 @@ from quodlibet.senf import (
     uri2fsn,
     fsn2uri,
     path2fsn,
-    mkstemp,
-    mkdtemp,
     fsn2text,
     fsn2bytes,
     bytes2fsn,
@@ -997,34 +996,6 @@ def test_uri_roundtrip():
         assert uri2fsn(fsn2uri(fsnative("/foo"))) == "/foo"
         assert uri2fsn(fsn2uri(path)) == path
         assert isinstance(uri2fsn(fsn2uri(path)), fsnative)
-
-
-def test_mkdtemp():
-    # type: () -> None
-
-    fsn = mkdtemp()
-    assert isinstance(fsn, fsnative)
-    os.rmdir(fsn)
-
-    fsn = mkdtemp(suffix="foo")
-    fsn.endswith("foo")
-    assert isinstance(fsn, fsnative)
-    os.rmdir(fsn)
-
-
-def test_test_mkstemp():
-    # type: () -> None
-
-    fd, fsn = mkstemp()
-    os.close(fd)
-    assert isinstance(fsn, fsnative)
-    os.remove(fsn)
-
-    fd, fsn = mkstemp(suffix="foo")
-    os.close(fd)
-    fsn.endswith("foo")
-    assert isinstance(fsn, fsnative)
-    os.remove(fsn)
 
 
 def test_expandvars():

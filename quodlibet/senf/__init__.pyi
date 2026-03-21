@@ -49,21 +49,6 @@ def expanduser(path: _pathlike) -> _fsnative: ...
 
 environ: dict[_fsnative, _fsnative]
 
-def gettempdir() -> _fsnative:
-    pass
-
-def mkstemp(
-    suffix: _pathlike | None = None,
-    prefix: _pathlike | None = None,
-    dir: _pathlike | None = None,
-    text: bool = False,
-) -> tuple[int, _fsnative]: ...
-def mkdtemp(
-    suffix: _pathlike | None = None,
-    prefix: _pathlike | None = None,
-    dir: _pathlike | None = None,
-) -> _fsnative: ...
-
 version_string: str
 
 version: tuple[int, int, int]
