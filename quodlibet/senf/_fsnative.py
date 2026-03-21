@@ -8,14 +8,13 @@ import ctypes
 import codecs
 
 from . import _winapi as winapi
-from ._compat import text_type, PY3, PY2, urlparse, quote, unquote, urlunparse
-
+from urllib.parse import urlparse, quote, unquote, urlunparse
 
 is_win = os.name == "nt"
 is_unix = not is_win
 is_darwin = sys.platform == "darwin"
 
-_surrogatepass = "strict" if PY2 else "surrogatepass"
+_surrogatepass = "surrogatepass"
 
 
 def _normalize_codec(codec, _cache={}):
@@ -26,16 +25,6 @@ def _normalize_codec(codec, _cache={}):
     except KeyError:
         _cache[codec] = codecs.lookup(codec).name
         return _cache[codec]
-
-
-def _swap_bytes(data):
-    """swaps bytes for 16 bit, leaves remaining trailing bytes alone"""
-
-    a, b = data[1::2], data[::2]
-    data = bytearray().join(bytearray(x) for x in zip(a, b, strict=False))
-    if len(b) > len(a):
-        data += b[-1:]
-    return bytes(data)
 
 
 def _decode_surrogatepass(data, codec):
@@ -50,17 +39,6 @@ def _decode_surrogatepass(data, codec):
     try:
         return data.decode(codec, _surrogatepass)
     except UnicodeDecodeError:
-        if PY2:
-            if _normalize_codec(codec) == "utf-16-be":
-                data = _swap_bytes(data)
-                codec = "utf-16-le"
-            if _normalize_codec(codec) == "utf-16-le":
-                buffer_ = ctypes.create_string_buffer(data + b"\x00\x00")
-                value = ctypes.wstring_at(buffer_, len(data) // 2)
-                if value.encode("utf-16-le", _surrogatepass) != data:
-                    raise
-                return value
-            raise
         raise
 
 
@@ -97,8 +75,7 @@ def fsn2norm(path):
 
     if is_win:
         return _merge_surrogates(native)
-    if PY3:
-        return bytes2fsn(native, None)
+    return bytes2fsn(native, None)
     return path
 
 
@@ -113,14 +90,12 @@ def _fsn2legacy(path):
         str
     """
 
-    if PY2 and is_win:
-        return path.encode(_encoding, "replace")
     return path
 
 
 def _fsnative(text):
-    if not isinstance(text, text_type):
-        raise TypeError("%r needs to be a text type (%r)" % (text, text_type))
+    if not isinstance(text, str):
+        raise TypeError("%r needs to be a text type (%r)" % (text, str))
 
     if is_unix:
         # First we go to bytes so we can be sure we have a valid source.
@@ -138,9 +113,7 @@ def _fsnative(text):
         if b"\x00" in path:
             path = path.replace(b"\x00", fsn2bytes(_fsnative("\ufffd"), None))
 
-        if PY3:
-            return path.decode(_encoding, "surrogateescape")
-        return path
+        return path.decode(_encoding, "surrogateescape")
     if "\x00" in text:
         text = text.replace("\x00", "\ufffd")
     text = fsn2norm(text)
@@ -205,7 +178,7 @@ def _create_fsnative(type_):
     return new_type
 
 
-fsnative_type = text_type if is_win or PY3 else bytes
+fsnative_type = str
 fsnative = _create_fsnative(fsnative_type)
 
 
@@ -220,17 +193,14 @@ def _typecheck_fsnative(path):
     if not isinstance(path, fsnative_type):
         return False
 
-    if PY3 or is_win:
-        if "\x00" in path:
-            return False
-
-        if is_unix:
-            try:
-                path.encode(_encoding, "surrogateescape")
-            except UnicodeEncodeError:
-                return False
-    elif b"\x00" in path:
+    if "\x00" in path:
         return False
+
+    if is_unix:
+        try:
+            path.encode(_encoding, "surrogateescape")
+        except UnicodeEncodeError:
+            return False
 
     return True
 
@@ -257,18 +227,17 @@ def _fsn2native(path):
         )
 
     if is_unix:
-        if PY3:
-            try:
-                path = path.encode(_encoding, "surrogateescape")
-            except UnicodeEncodeError:
-                # This look more like ValueError, but raising only one error
-                # makes things simpler... also one could say str + surrogates
-                # is its own type
-                raise TypeError(
-                    "path contained Unicode code points not valid in"
-                    "the current path encoding. To create a valid "
-                    "path from Unicode use text2fsn()"
-                )
+        try:
+            path = path.encode(_encoding, "surrogateescape")
+        except UnicodeEncodeError:
+            # This look more like ValueError, but raising only one error
+            # makes things simpler... also one could say str + surrogates
+            # is its own type
+            raise TypeError(
+                "path contained Unicode code points not valid in"
+                "the current path encoding. To create a valid "
+                "path from Unicode use text2fsn()"
+            )
 
         if b"\x00" in path:
             raise TypeError("fsnative can't contain nulls")
@@ -310,33 +279,22 @@ def path2fsn(path):
     Returns a `fsnative` path for a `pathlike`.
     """
 
-    # allow mbcs str on py2+win and bytes on py3
-    if PY2:
-        if is_win:
-            if isinstance(path, bytes):
-                path = path.decode(_encoding)
-        else:
-            if isinstance(path, text_type):
-                path = path.encode(_encoding)
+    path = getattr(os, "fspath", lambda x: x)(path)
+    if isinstance(path, bytes):
+        if b"\x00" in path:
+            raise ValueError("embedded null")
+        path = path.decode(_encoding, "surrogateescape")
+    elif is_unix and isinstance(path, str):
+        # make sure we can encode it and this is not just some random
+        # unicode string
+        data = path.encode(_encoding, "surrogateescape")
+        if b"\x00" in data:
+            raise ValueError("embedded null")
+        path = fsn2norm(path)
+    else:
         if "\x00" in path:
             raise ValueError("embedded null")
-    else:
-        path = getattr(os, "fspath", lambda x: x)(path)
-        if isinstance(path, bytes):
-            if b"\x00" in path:
-                raise ValueError("embedded null")
-            path = path.decode(_encoding, "surrogateescape")
-        elif is_unix and isinstance(path, str):
-            # make sure we can encode it and this is not just some random
-            # unicode string
-            data = path.encode(_encoding, "surrogateescape")
-            if b"\x00" in data:
-                raise ValueError("embedded null")
-            path = fsn2norm(path)
-        else:
-            if "\x00" in path:
-                raise ValueError("embedded null")
-            path = fsn2norm(path)
+        path = fsn2norm(path)
 
     if not isinstance(path, fsnative_type):
         raise TypeError("path needs to be %s", fsnative_type.__name__)
@@ -421,23 +379,17 @@ def fsn2bytes(path, encoding="utf-8"):
         if encoding is None:
             raise ValueError("invalid encoding %r" % encoding)
 
-        if PY2:
-            try:
-                return path.encode(encoding)
-            except LookupError:
-                raise ValueError("invalid encoding %r" % encoding)
-        else:
-            try:
-                return path.encode(encoding)
-            except LookupError:
-                raise ValueError("invalid encoding %r" % encoding)
-            except UnicodeEncodeError:
-                # Fallback implementation for text including surrogates
-                # merge surrogate codepoints
-                if _normalize_codec(encoding).startswith("utf-16"):
-                    # fast path, utf-16 merges anyway
-                    return path.encode(encoding, _surrogatepass)
-                return _merge_surrogates(path).encode(encoding, _surrogatepass)
+        try:
+            return path.encode(encoding)
+        except LookupError:
+            raise ValueError("invalid encoding %r" % encoding)
+        except UnicodeEncodeError:
+            # Fallback implementation for text including surrogates
+            # merge surrogate codepoints
+            if _normalize_codec(encoding).startswith("utf-16"):
+                # fast path, utf-16 merges anyway
+                return path.encode(encoding, _surrogatepass)
+            return _merge_surrogates(path).encode(encoding, _surrogatepass)
     else:
         return path
 
@@ -477,8 +429,6 @@ def bytes2fsn(data, encoding="utf-8"):
         return path
     if b"\x00" in data:
         raise ValueError("contains nulls")
-    if PY2:
-        return data
     return data.decode(_encoding, "surrogateescape")
 
 
@@ -495,14 +445,8 @@ def uri2fsn(uri):
     Takes a file URI and returns a `fsnative` path
     """
 
-    if PY2:
-        if isinstance(uri, text_type):
-            uri = uri.encode("utf-8")
-        if not isinstance(uri, bytes):
-            raise TypeError("uri needs to be ascii str or unicode")
-    else:
-        if not isinstance(uri, str):
-            raise TypeError("uri needs to be str")
+    if not isinstance(uri, str):
+        raise TypeError("uri needs to be str")
 
     parsed = urlparse(uri)
     scheme = parsed.scheme
@@ -530,19 +474,11 @@ def uri2fsn(uri):
         else:
             path = drive[-1] + ":"
             rest = rest.replace("/", "\\")
-        if PY2:
-            path += unquote(rest)
-        else:
-            path += unquote(rest, encoding="utf-8", errors="surrogatepass")
-        if PY2:
-            path = path.decode("utf-8")
+        path += unquote(rest, encoding="utf-8", errors="surrogatepass")
         if "\x00" in path:
             raise ValueError("embedded null")
         return path
-    if PY2:
-        path = unquote(uri)
-    else:
-        path = unquote(uri, encoding=_encoding, errors="surrogateescape")
+    path = unquote(uri, encoding=_encoding, errors="surrogateescape")
     if "\x00" in path:
         raise ValueError("embedded null")
     return path
@@ -569,8 +505,6 @@ def fsn2uri(path):
     def _quote_path(path):
         # RFC 2396
         path = quote(path, "/:@&=+$,")
-        if PY2:
-            path = path.decode("ascii")
         return path
 
     if is_win:
@@ -587,12 +521,8 @@ def fsn2uri(path):
 
         # For some reason UrlCreateFromPathW escapes some chars outside of
         # ASCII and some not. Unquote and re-quote with utf-8.
-        if PY3:
-            # latin-1 maps code points directly to bytes, which is what we want
-            uri = unquote(uri, "latin-1")
-        else:
-            # Python 2 does what we want by default
-            uri = unquote(uri)
+        # latin-1 maps code points directly to bytes, which is what we want
+        uri = unquote(uri, "latin-1")
 
         return _quote_path(uri.encode("utf-8", _surrogatepass))
 

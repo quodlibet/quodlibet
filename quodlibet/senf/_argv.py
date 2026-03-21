@@ -5,13 +5,9 @@
 import sys
 import ctypes
 
-try:
-    from collections import abc
-except ImportError:
-    import collections as abc  # type: ignore
+from collections import abc
 from functools import total_ordering
 
-from ._compat import PY2, string_types
 from ._fsnative import is_win, _fsn2legacy, path2fsn
 from . import _winapi as winapi
 
@@ -50,23 +46,20 @@ class Argv(abc.MutableSequence):
     """
 
     def __init__(self):
-        if PY2 and is_win:
-            self._argv = _get_win_argv()
-        else:
-            self._argv = sys.argv
+        self._argv = sys.argv
 
     def __getitem__(self, index):
         return self._argv[index]
 
     def __setitem__(self, index, value):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             value = path2fsn(value)
 
         self._argv[index] = value
 
         if sys.argv is not self._argv:
             try:
-                if isinstance(value, string_types):
+                if isinstance(value, str):
                     sys.argv[index] = _fsn2legacy(value)
                 else:
                     sys.argv[index] = [_fsn2legacy(path2fsn(v)) for v in value]

@@ -4,14 +4,9 @@
 
 import os
 import ctypes
+from collections import abc
 
-try:
-    from collections import abc
-except ImportError:
-    import collections as abc  # type: ignore
-
-from ._compat import text_type, PY2
-from ._fsnative import path2fsn, is_win, _fsn2legacy, fsnative
+from ._fsnative import path2fsn, is_win, fsnative
 from . import _winapi as winapi
 
 
@@ -22,8 +17,8 @@ def get_windows_env_var(key):
         WindowsError
     """
 
-    if not isinstance(key, text_type):
-        raise TypeError("%r not of type %r" % (key, text_type))
+    if not isinstance(key, str):
+        raise TypeError("%r not of type %r" % (key, str))
 
     buf = ctypes.create_unicode_buffer(32767)
 
@@ -40,11 +35,11 @@ def set_windows_env_var(key, value):
         WindowsError
     """
 
-    if not isinstance(key, text_type):
-        raise TypeError("%r not of type %r" % (key, text_type))
+    if not isinstance(key, str):
+        raise TypeError("%r not of type %r" % (key, str))
 
-    if not isinstance(value, text_type):
-        raise TypeError("%r not of type %r" % (value, text_type))
+    if not isinstance(value, str):
+        raise TypeError("%r not of type %r" % (value, str))
 
     status = winapi.SetEnvironmentVariableW(key, value)
     if status == 0:
@@ -58,8 +53,8 @@ def del_windows_env_var(key):
         WindowsError
     """
 
-    if not isinstance(key, text_type):
-        raise TypeError("%r not of type %r" % (key, text_type))
+    if not isinstance(key, str):
+        raise TypeError("%r not of type %r" % (key, str))
 
     status = winapi.SetEnvironmentVariableW(key, None)
     if status == 0:
@@ -124,14 +119,7 @@ class Environ(abc.MutableMapping):
     """
 
     def __init__(self):
-        if is_win and PY2:
-            try:
-                env = read_windows_environ()
-            except OSError:
-                env = {}
-        else:
-            env = os.environ
-        self._env = env
+        self._env = os.environ
 
     def __getitem__(self, key):
         key = _norm_key(path2fsn(key))
@@ -141,18 +129,6 @@ class Environ(abc.MutableMapping):
         key = _norm_key(path2fsn(key))
         value = path2fsn(value)
 
-        if is_win and PY2:
-            # this calls putenv, so do it first and replace later
-            try:
-                os.environ[_fsn2legacy(key)] = _fsn2legacy(value)
-            except OSError:
-                raise ValueError
-
-            try:
-                set_windows_env_var(key, value)
-            except OSError:
-                # py3+win fails for invalid keys. try to do the same
-                raise ValueError
         try:
             self._env[key] = value
         except OSError:
@@ -160,17 +136,6 @@ class Environ(abc.MutableMapping):
 
     def __delitem__(self, key):
         key = _norm_key(path2fsn(key))
-
-        if is_win and PY2:
-            try:
-                del_windows_env_var(key)
-            except OSError:
-                pass
-
-            try:
-                del os.environ[_fsn2legacy(key)]
-            except KeyError:
-                pass
 
         del self._env[key]
 
@@ -202,8 +167,6 @@ def getenv(key, value=None):
     """
 
     key = path2fsn(key)
-    if is_win and PY2:
-        return environ.get(key, value)
     return os.getenv(key, value)
 
 
@@ -238,16 +201,9 @@ def putenv(key, value):
     key = path2fsn(key)
     value = path2fsn(value)
 
-    if is_win and PY2:
-        try:
-            set_windows_env_var(key, value)
-        except OSError:
-            # py3 + win fails here
-            raise ValueError
-    else:
-        try:
-            os.putenv(key, value)
-        except OSError:
-            # win + py3 raise here for invalid keys which is probably a bug.
-            # ValueError seems better
-            raise ValueError
+    try:
+        os.putenv(key, value)
+    except OSError:
+        # win + py3 raise here for invalid keys which is probably a bug.
+        # ValueError seems better
+        raise ValueError

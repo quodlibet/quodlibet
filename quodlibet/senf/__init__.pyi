@@ -3,19 +3,9 @@ import os
 
 from typing import Union, Any, Optional
 
-if sys.version_info[0] == 2:
-    _pathlike = Union[str, bytes]
-else:
-    _pathlike = Union[str, bytes, "os.PathLike[Any]"]
+_pathlike = Union[str, bytes, "os.PathLike[Any]"]
 _uri = Union[str, str]
-
-if sys.version_info[0] == 2:
-    if sys.platform == "win32":
-        _base = str
-    else:
-        _base = bytes
-else:
-    _base = str
+_base = str
 
 class fsnative(_base):
     def __init__(self, object: str = "") -> None: ...

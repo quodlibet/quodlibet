@@ -8,7 +8,6 @@ import ctypes
 import re
 
 from ._fsnative import _encoding, is_win, is_unix, _surrogatepass, bytes2fsn
-from ._compat import text_type, PY2, PY3
 from ._winansi import AnsiState, ansi_split
 from . import _winapi as winapi
 
@@ -55,33 +54,28 @@ def _print_unix(objects, sep, end, file, flush):
 
     encoding = _encoding
 
-    if isinstance(sep, text_type):
+    if isinstance(sep, str):
         sep = sep.encode(encoding, "replace")
     if not isinstance(sep, bytes):
         raise TypeError
 
-    if isinstance(end, text_type):
+    if isinstance(end, str):
         end = end.encode(encoding, "replace")
     if not isinstance(end, bytes):
         raise TypeError
 
     if end == b"\n":
-        end = os.linesep
-        if PY3:
-            end = end.encode("ascii")
+        end = os.linesep.encode("ascii")
 
     parts = []
     for obj in objects:
-        if not isinstance(obj, text_type) and not isinstance(obj, bytes):
-            obj = text_type(obj)
-        if isinstance(obj, text_type):
-            if PY2:
+        if not isinstance(obj, str) and not isinstance(obj, bytes):
+            obj = str(obj)
+        if isinstance(obj, str):
+            try:
+                obj = obj.encode(encoding, "surrogateescape")
+            except UnicodeEncodeError:
                 obj = obj.encode(encoding, "replace")
-            else:
-                try:
-                    obj = obj.encode(encoding, "surrogateescape")
-                except UnicodeEncodeError:
-                    obj = obj.encode(encoding, "replace")
         assert isinstance(obj, bytes)
         parts.append(obj)
 
@@ -93,15 +87,11 @@ def _print_unix(objects, sep, end, file, flush):
     try:
         file.write(data)
     except TypeError:
-        if PY3:
-            # For StringIO, first try with surrogates
-            surr_data = data.decode(encoding, "surrogateescape")
-            try:
-                file.write(surr_data)
-            except (TypeError, ValueError):
-                file.write(data.decode(encoding, "replace"))
-        else:
-            # for file like objects with don't support bytes
+        # For StringIO, first try with surrogates
+        surr_data = data.decode(encoding, "surrogateescape")
+        try:
+            file.write(surr_data)
+        except (TypeError, ValueError):
             file.write(data.decode(encoding, "replace"))
 
     if flush:
@@ -132,25 +122,25 @@ def _print_windows(objects, sep, end, file, flush):
     for obj in objects:
         if isinstance(obj, bytes):
             obj = obj.decode(encoding, "replace")
-        if not isinstance(obj, text_type):
-            obj = text_type(obj)
+        if not isinstance(obj, str):
+            obj = str(obj)
         parts.append(obj)
 
     if isinstance(sep, bytes):
         sep = sep.decode(encoding, "replace")
-    if not isinstance(sep, text_type):
+    if not isinstance(sep, str):
         raise TypeError
 
     if isinstance(end, bytes):
         end = end.decode(encoding, "replace")
-    if not isinstance(end, text_type):
+    if not isinstance(end, str):
         raise TypeError
 
     if end == "\n":
         end = os.linesep
 
     text = sep.join(parts) + end
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     is_console = True
     if h == winapi.INVALID_HANDLE_VALUE:
@@ -271,7 +261,7 @@ def _encode_codepage(codepage, text):
     can't be encoded using that codepage.
     """
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     if not text:
         return b""
@@ -306,9 +296,7 @@ def _readline_windows_fallback():
 def _readline_default():
     assert is_unix
     data = getattr(sys.stdin, "buffer", sys.stdin).readline().rstrip(b"\r\n")
-    if PY3:
-        return data.decode(_encoding, "surrogateescape")
-    return data
+    return data.decode(_encoding, "surrogateescape")
 
 
 def _readline():

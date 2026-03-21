@@ -6,7 +6,6 @@ import re
 import os
 
 from ._fsnative import path2fsn, fsnative, is_win
-from ._compat import PY2
 from ._environ import environ
 
 
@@ -27,8 +26,6 @@ def getcwd():
         `fsnative`
     """
 
-    if is_win and PY2:
-        return os.getcwdu()
     return os.getcwd()
 
 
