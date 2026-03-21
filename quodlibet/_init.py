@@ -11,7 +11,7 @@ import sys
 import warnings
 import logging
 
-from quodlibet.senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet.const import MinVersions
 from quodlibet import config

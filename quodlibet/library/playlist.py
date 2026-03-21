@@ -10,7 +10,7 @@ import quodlibet
 from quodlibet import print_d, print_w, print_e, ngettext, _
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
-from quodlibet.senf import fsnative, text2fsn
+from quodlibet.fsn import fsnative, text2fsn
 from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
 from quodlibet.util.path import is_hidden
 

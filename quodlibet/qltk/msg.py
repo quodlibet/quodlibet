@@ -15,7 +15,7 @@ from quodlibet.qltk import get_top_parent
 from quodlibet.qltk.icons import Icons
 from quodlibet.qltk.window import Dialog
 from quodlibet.util import escape
-from quodlibet.senf import fsn2text, path2fsn
+from quodlibet.fsn import fsn2text, path2fsn
 
 
 class Message(Gtk.MessageDialog, Dialog):

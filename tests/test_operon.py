@@ -9,7 +9,7 @@ import os
 import sys
 
 from quodlibet.util import is_osx, is_windows
-from quodlibet.senf import path2fsn
+from quodlibet.fsn import path2fsn
 
 from tests import TestCase, get_data_path, mkstemp, skipIf
 from .helper import capture_output, get_temp_copy

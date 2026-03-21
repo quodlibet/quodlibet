@@ -16,7 +16,7 @@ from gi.repository import Gtk, Gdk, Pango, GLib
 
 from quodlibet.library.base import Library
 from quodlibet.player._base import BasePlayer
-from quodlibet.senf import bytes2fsn, fsn2bytes
+from quodlibet.fsn import bytes2fsn, fsn2bytes
 
 import quodlibet
 from quodlibet import ngettext, _, print_e, print_w, print_d

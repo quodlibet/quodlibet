@@ -10,7 +10,7 @@ import sys
 import tempfile
 from functools import wraps
 
-from quodlibet.senf import path2fsn
+from quodlibet.fsn import path2fsn
 
 
 from .environment import is_linux

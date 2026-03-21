@@ -8,7 +8,7 @@ import shutil
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library, iter_paths, PicklingMixin
 from quodlibet.util import connect_obj, is_windows
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 from tests import TestCase, mkstemp, mkdtemp, skipIf, run_gtk_loop
 
 

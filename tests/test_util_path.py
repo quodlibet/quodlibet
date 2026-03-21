@@ -8,7 +8,7 @@ import shutil
 import unittest
 from pathlib import Path
 
-from quodlibet.senf import uri2fsn, fsn2uri, fsnative
+from quodlibet.fsn import uri2fsn, fsn2uri, fsnative
 
 from quodlibet.util.path import (
     iscommand,

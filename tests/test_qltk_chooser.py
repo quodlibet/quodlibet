@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.qltk.chooser import (
     choose_files,

@@ -27,7 +27,7 @@ import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
 from quodlibet import util
 
-from quodlibet.senf import fsnative, path2fsn
+from quodlibet.fsn import fsnative, path2fsn
 from unittest import TestCase as OrigTestCase
 
 

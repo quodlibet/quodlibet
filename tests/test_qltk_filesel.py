@@ -11,7 +11,7 @@ import sys
 
 sys.modules["dircache"] = os  # cheat the dircache effects
 
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.qltk.filesel import (
     DirectoryTree,

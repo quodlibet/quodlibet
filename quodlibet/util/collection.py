@@ -32,7 +32,7 @@ try:
 except ImportError:
     import collections as abc  # type: ignore
 
-from quodlibet.senf import bytes2fsn, fsn2bytes, fsn2uri, fsnative, path2fsn, uri2fsn
+from quodlibet.fsn import bytes2fsn, fsn2bytes, fsn2uri, fsnative, path2fsn, uri2fsn
 from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
 from quodlibet.util.dprint import print_d, print_w

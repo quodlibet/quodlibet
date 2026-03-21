@@ -10,7 +10,7 @@
 import os
 import contextlib
 
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 from pathlib import Path
 
 if os.name == "nt":

@@ -8,7 +8,7 @@
 
 import os
 
-from quodlibet.senf import path2fsn, fsn2bytes, bytes2fsn, fsnative
+from quodlibet.fsn import path2fsn, fsn2bytes, bytes2fsn, fsnative
 
 from quodlibet.util import fifo, print_w
 from quodlibet import get_user_dir

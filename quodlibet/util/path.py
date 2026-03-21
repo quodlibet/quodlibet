@@ -19,7 +19,7 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from quodlibet.senf import bytes2fsn, fsn2bytes, fsn2text, fsnative, path2fsn, uri2fsn
+from quodlibet.fsn import bytes2fsn, fsn2bytes, fsn2text, fsnative, path2fsn, uri2fsn
 
 from . import windows
 from .environment import is_windows

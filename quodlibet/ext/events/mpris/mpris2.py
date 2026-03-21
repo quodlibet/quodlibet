@@ -10,7 +10,7 @@ import tempfile
 
 import dbus
 import dbus.service
-from quodlibet.senf import fsn2uri
+from quodlibet.fsn import fsn2uri
 
 from quodlibet import app
 from quodlibet.order.repeat import RepeatListForever, RepeatSongForever

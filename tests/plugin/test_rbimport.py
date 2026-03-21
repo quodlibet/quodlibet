@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 import xml.sax
-from quodlibet.senf import fsn2uri
+from quodlibet.fsn import fsn2uri
 
 from quodlibet.formats import AudioFile
 

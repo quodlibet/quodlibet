@@ -10,7 +10,7 @@ import re
 import os
 from collections.abc import Iterable
 
-from quodlibet.senf import fsn2bytes, bytes2fsn, fsnative
+from quodlibet.fsn import fsn2bytes, bytes2fsn, fsnative
 
 from quodlibet import _
 from quodlibet import app

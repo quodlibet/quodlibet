@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.formats import AudioFile
 from tests import TestCase, init_fake_app, destroy_fake_app

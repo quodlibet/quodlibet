@@ -14,7 +14,7 @@ from tempfile import gettempdir
 from gi.repository import GdkPixbuf, GLib
 
 from quodlibet import print_w, print_d
-from quodlibet.senf import fsn2uri, fsnative
+from quodlibet.fsn import fsn2uri, fsnative
 
 import quodlibet
 from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home

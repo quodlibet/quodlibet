@@ -15,7 +15,7 @@ from collections.abc import Iterable
 from gi.repository import GLib
 from gi.repository import Gio
 from gi.repository import Gtk
-from quodlibet.senf import fsn2uri, fsnative
+from quodlibet.fsn import fsn2uri, fsnative
 
 from quodlibet import print_d
 from quodlibet.util import is_windows, is_osx

@@ -10,7 +10,7 @@ import errno
 from urllib.parse import urlsplit
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from quodlibet.senf import uri2fsn, fsnative, fsn2text, bytes2fsn
+from quodlibet.fsn import uri2fsn, fsnative, fsn2text, bytes2fsn
 
 from quodlibet import formats, print_d, util
 from quodlibet import qltk

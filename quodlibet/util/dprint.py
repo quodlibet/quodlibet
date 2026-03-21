@@ -14,7 +14,7 @@ import re
 import logging
 import errno
 
-from quodlibet.senf import (
+from quodlibet.fsn import (
     print_,
     path2fsn,
     fsn2text,

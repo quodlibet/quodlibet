@@ -9,7 +9,7 @@
 import os
 import sys
 
-from quodlibet.senf import path2fsn
+from quodlibet.fsn import path2fsn
 
 from quodlibet import util
 from quodlibet import const

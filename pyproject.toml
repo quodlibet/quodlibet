@@ -148,7 +148,7 @@ ignore = [
 "quodlibet/ext/**/*" = [
   "N802", # allow plugins to have methods like PluginPreferences etc
 ]
-"quodlibet/senf/**/*" = [
+"quodlibet/fsn/**/*" = [
   "N801",
   "N802",
   "UP031",

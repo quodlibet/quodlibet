@@ -7,7 +7,7 @@
 
 import os
 
-from quodlibet.senf import path2fsn, fsn2text
+from quodlibet.fsn import path2fsn, fsn2text
 
 from ._audio import AudioFile, translate_errors
 

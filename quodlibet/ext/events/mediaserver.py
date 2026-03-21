@@ -14,7 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
     raise PluginNotSupportedError
 
 from gi.repository import Gtk, GdkPixbuf
-from quodlibet.senf import fsn2uri
+from quodlibet.fsn import fsn2uri
 
 import dbus
 import dbus.service

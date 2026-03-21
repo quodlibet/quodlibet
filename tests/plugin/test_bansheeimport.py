@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 import sqlite3
-from quodlibet.senf import fsn2uri
+from quodlibet.fsn import fsn2uri
 
 from quodlibet.formats import AudioFile
 

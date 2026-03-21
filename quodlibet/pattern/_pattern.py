@@ -17,7 +17,7 @@ from collections import OrderedDict
 from re import Scanner  # type: ignore
 from urllib.parse import quote_plus
 
-from quodlibet.senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import util
 from quodlibet.query import Query

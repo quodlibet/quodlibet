@@ -17,7 +17,7 @@ except ImportError:
     pass
 
 from gi.repository import GLib
-from quodlibet.senf import fsn2bytes
+from quodlibet.fsn import fsn2bytes
 
 from quodlibet import print_d, print_e
 from quodlibet.util.path import mkdir

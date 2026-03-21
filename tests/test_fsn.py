@@ -14,8 +14,8 @@ from tempfile import mkdtemp
 
 import pytest
 
-from quodlibet import senf
-from quodlibet.senf import (
+from quodlibet import fsn
+from quodlibet.fsn import (
     fsnative,
     uri2fsn,
     fsn2uri,
@@ -29,10 +29,10 @@ from quodlibet.senf import (
     supports_ansi_escape_codes,
     fsn2norm,
 )
-from quodlibet.senf._winansi import ansi_parse, ansi_split
-from quodlibet.senf._fsnative import _encoding, is_unix, _get_encoding
-from quodlibet.senf._print import _encode_codepage, _decode_codepage
-from quodlibet.senf import _winapi as winapi
+from quodlibet.fsn._winansi import ansi_parse, ansi_split
+from quodlibet.fsn._fsnative import _encoding, is_unix, _get_encoding
+from quodlibet.fsn._print import _encode_codepage, _decode_codepage
+from quodlibet.fsn import _winapi as winapi
 
 
 is_wine = "WINEDEBUG" in os.environ
@@ -394,7 +394,7 @@ def test_fsnative():
 def test_path2fsn():
     # type: () -> None
 
-    assert isinstance(path2fsn(senf.__path__[0]), fsnative)  # type: ignore
+    assert isinstance(path2fsn(fsn.__path__[0]), fsnative)  # type: ignore
 
     with pytest.raises(ValueError):
         path2fsn(b"\x00")

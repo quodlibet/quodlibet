@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from gi.repository import Pango
 
 from quodlibet.qltk.msg import ConfirmationPrompt
-from quodlibet.senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet import _, print_w, print_d, app, ngettext
 from quodlibet.qltk.chooser import choose_folders, _get_chooser, _run_chooser

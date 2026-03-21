@@ -15,7 +15,7 @@ from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
-from quodlibet.senf import text2fsn
+from quodlibet.fsn import text2fsn
 from tests import (
     mkdtemp,
     get_data_path,
