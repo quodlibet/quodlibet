@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-02-11 08:49+0000\n"
+"PO-Revision-Date: 2026-03-17 06:09+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3153,9 +3153,8 @@ msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "タグやファイルベースの歌詞を自動的にサイドバーに表示します。"
 
 #: quodlibet/ext/events/viewlyrics.py:55
-#, fuzzy
 msgid "Edit Lyrics"
-msgstr "歌詞表示"
+msgstr "歌詞の編集"
 
 #: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
