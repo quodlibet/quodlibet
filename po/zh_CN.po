@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-02-28 00:09+0000\n"
+"PO-Revision-Date: 2026-03-17 06:09+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.16.1-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3079,9 +3079,8 @@ msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "在侧边栏中自动显示基于标签或文件的歌词。"
 
 #: quodlibet/ext/events/viewlyrics.py:55
-#, fuzzy
 msgid "Edit Lyrics"
-msgstr "查看歌词"
+msgstr "编辑歌词"
 
 #: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
