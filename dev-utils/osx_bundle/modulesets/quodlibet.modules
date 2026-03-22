@@ -11,7 +11,7 @@
   <repository type="tarball" name="sourceforge"
           href="http://downloads.sourceforge.net/sourceforge/"/>
   <repository type="tarball" name="pypi.org"
-              href="https://pypi.org/packages/source/"/>
+              href="https://files.pythonhosted.org/packages/"/>
   <repository type="tarball" name="cairographics"
               href="https://cairographics.org/releases/"/>
   <repository type="tarball" name="cairographics-snapshots"
@@ -66,7 +66,7 @@
   <repository type="tarball" name="autoconf-archive"
               href="https://ftpmirror.gnu.org/autoconf-archive/"/>
   <repository type="tarball" name="zlib"
-              href="https://www.zlib.net/"/>
+              href="https://www.zlib.net/fossils/"/>
   <repository type="tarball" name="pkgconfig"
               href="http://pkgconfig.freedesktop.org/releases/"/>
   <repository type="tarball" name="ffmpeg"
@@ -103,7 +103,6 @@
       <dep package="python-musicbrainzngs"/>
       <dep package="python-mutagen"/>
       <dep package="python-pyobjc"/>
-      <dep package="python-pip"/>
     </dependencies>
   </metamodule>
 
@@ -210,21 +209,22 @@
   <autotools id="zlib" autogen-sh="configure" skip-autogen="never"
              supports-non-srcdir-builds="no">
     <branch repo="zlib" version="1.3.1"
-            module="zlib-${version}.tar.xz"
-            hash="sha256:38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32"/>
+            module="zlib-${version}.tar.gz"
+            hash="sha256:9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"/>
   </autotools>
 
   <autotools id="libffi" autogenargs="--disable-builddir"
              autogen-sh="configure">
-    <branch module="libffi/libffi-${version}.tar.gz" repo="sourceware.org"
-            version="3.3"
-            hash="sha256:72fba7922703ddfa7a028d513ac15a85c8d54c8d67f55fa5a4802885dc652056"/>
+    <branch module="libffi/libffi/releases/download/v${version}/libffi-${version}.tar.gz"
+            repo="github-tar"
+            version="3.5.2"
+            hash="sha256:f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc"/>
   </autotools>
 
   <meson id="pixman">
-    <branch version="0.42.2" module="pixman-${version}.tar.gz"
+    <branch version="0.44.2" module="pixman-${version}.tar.gz"
             repo="cairographics"
-            hash="sha1:7063429f9952fd8c4fcbc887c3210b35adb6a6c7">
+            hash="sha256:6349061ce1a338ab6952b92194d1b0377472244208d47ff25bef86fc71973466">
     </branch>
   </meson>
 
@@ -252,9 +252,9 @@
   </meson>
 
   <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="configure">
-    <branch version="1.6.39" module="libpng/libpng-${version}.tar.xz"
+    <branch version="1.6.43" module="libpng/libpng-${version}.tar.xz"
             repo="sourceforge"
-            hash="sha256:1f4696ce70b4ee5f85f1e1623dc1229b210029fa4b7aee573df3e2ba7b036937"/>
+            hash="sha256:6a5ca0652392a2d7c9db2ae5b40210843c0bbc081cbd410825ab00cc59f14a6c"/>
   </autotools>
 
   <autotools id="librsvg" autogenargs="--disable-Bsymbolic --disable-gtk-doc">
@@ -492,9 +492,9 @@
   <distutils id="meson" python3="1">
     <branch repo="pypi.org"
             checkoutdir="meson-${version}"
-            module="m/meson/meson-${version}.tar.gz"
-            version="1.2.3"
-            hash="sha256:4533a43c34548edd1f63a276a42690fce15bde9409bcf20c4b8fa3d7e4d7cac1"/>
+            module="ce/99/f2e4780865ebabda14ab03b98def0bf27c021efaf7ec7138c1dbbf1c72cb/meson-${version}.tar.gz"
+            version="1.10.2"
+            hash="sha256:7890287d911dd4ee1ebd0efb61ed0321bfcd87c725df923a837cf90c6508f96b"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="ninja"/>
@@ -626,17 +626,17 @@
 
   <distutils id="python-setuptools" python3="1">
     <branch repo="pypi.org"
-            module="s/setuptools/setuptools-${version}.tar.gz"
-            version="64.0.3"
+            module="65/d8/10a70e86f6c28ae59f101a9de6d77bf70f147180fbf40c3af0f64080adc3/setuptools-${version}.tar.gz"
+            version="70.3.0"
             checkoutdir="python-setuptools-${version}"
-            hash="sha256:3bcaf6e27ad3b0f643ba0a48c5ab9eca930c3eb51df0e068f4826ab880c394ea"/>
+            hash="sha256:f171bab1dfbc86b132997f26a119f6056a57950d058587841a0082e8830f9dc5"/>
     <dependencies>
       <dep package="python"/>
     </dependencies>
   </distutils>
 
   <distutils id="dmgbuild" python3="1">
-    <branch repo="pypi.org" checkoutdir="dmgbuild-${version}" module="d/dmgbuild/dmgbuild-${version}.tar.gz"
+    <branch repo="pypi.org" checkoutdir="dmgbuild-${version}" module="54/a6/6034f3e05d61c60853e1cc634d830fcd5affc726be5bfb87c06aea78a3c7/dmgbuild-${version}.tar.gz"
             version="1.5.2"
             hash="sha256:65bfb7c267cb9475cb52a32c04779e1cec12dfb9bcb7d02cf2b6bee5faf088f4"/>
     <dependencies>
@@ -649,7 +649,7 @@
 
   <distutils id="python-mac_alias" python3="1">
     <branch repo="pypi.org"
-            checkoutdir="python-mac_alias-${version}" module="m/mac_alias/mac_alias-${version}.tar.gz"
+            checkoutdir="python-mac_alias-${version}" module="54/cf/d4379fc5a6c7835ef92ff8ca49e8dc1c5c51b3c72333a394118887c87a6d/mac_alias-${version}.tar.gz"
             version="2.2.0"
             hash="sha256:0eb84a63f98bf54c2f9fbdc4de956a63e64eb8a4a124143a1c1f5a78326442f0"/>
     <dependencies>
@@ -659,7 +659,7 @@
 
   <distutils id="python-ds_store" python3="1">
     <branch repo="pypi.org"
-            checkoutdir="python-ds_store-${version}" module="d/ds_store/ds_store-${version}.tar.gz"
+            checkoutdir="python-ds_store-${version}" module="38/a1/cab1b1cf3387eec963a18706854facdc5b699f782985a0001579e5dd6cda/ds_store-${version}.tar.gz"
             version="1.3.0"
             hash="sha256:e52478f258626600c1f53fc18c1ddcd8542fa0bca41d4bd81d57c04c87aabf24"/>
     <dependencies>
@@ -670,25 +670,26 @@
   <distutils id="python-certifi" python3="1">
     <branch repo="pypi.org"
           checkoutdir="python-certifi-${version}"
-            module="c/certifi/certifi-${version}.tar.gz"
-            version="2022.12.7"
-            hash="sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"/>
+            module="af/2d/7bf41579a8986e348fa033a31cdd0e4121114f6bce2457e8876010b092dd/certifi-${version}.tar.gz"
+            version="2026.2.25"
+            hash="sha256:e887ab5cee78ea814d3472169153c2d12cd43b14bd03329a39a9c6e2e80bfba7"/>
   </distutils>
 
   <distutils id="python-sgmllib3k" python3="1">
-    <branch repo="pypi.org" module="s/sgmllib3k/sgmllib3k-${version}.tar.gz"
+    <branch repo="pypi.org" module="9e/bd/3704a8c3e0942d711c1299ebf7b9091930adae6675d7c8f476a7ce48653c/sgmllib3k-${version}.tar.gz"
             checkoutdir="python-sgmllib3k-${version}"
-            version="1.0.0"/>
+            version="1.0.0"
+            hash="sha256:7868fb1c8bfa764c1ac563d3cf369c381d1325d36124933a726f29fcdaa812e9"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
   </distutils>
 
   <distutils id="python-feedparser" python3="1">
-    <branch repo="pypi.org" module="f/feedparser/feedparser-${version}.tar.gz"
+    <branch repo="pypi.org" module="dc/79/db7edb5e77d6dfbc54d7d9df72828be4318275b2e580549ff45a962f6461/feedparser-${version}.tar.gz"
             checkoutdir="python-feedparser-${version}"
-            version="6.0.10"
-            hash="sha256:27da485f4637ce7163cdeab13a80312b93b7d0c1b775bef4a47629a3110bca51"/>
+            version="6.0.12"
+            hash="sha256:64f76ce90ae3e8ef5d1ede0f8d3b50ce26bcce71dd8ae5e82b1cd2d4a5f94228"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-sgmllib3k"/>
@@ -696,18 +697,9 @@
   </distutils>
 
   <distutils id="python-mutagen" python3="1">
-    <branch repo="pypi.org" checkoutdir="python-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
-            version="1.46.0"
-            hash="sha256:6e5f8ba84836b99fe60be5fb27f84be4ad919bbb6b49caa6ae81e70584b55e58"/>
-    <dependencies>
-      <dep package="python-setuptools"/>
-    </dependencies>
-  </distutils>
-
-  <distutils id="python-pip" python3="1">
-    <branch repo="pypi.org" checkoutdir="python-pip-${version}" module="p/pip/pip-${version}.tar.gz"
-            version="23.1.2"
-            hash="sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"/>
+    <branch repo="pypi.org" checkoutdir="python-mutagen-${version}" module="81/e6/64bc71b74eef4b68e61eb921dcf72dabd9e4ec4af1e11891bbd312ccbb77/mutagen-${version}.tar.gz"
+            version="1.47.0"
+            hash="sha256:719fadef0a978c31b4cf3c956261b3c58b6948b32023078a2117b1de09f0fc99"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -728,9 +720,9 @@
   <distutils id="python-pyobjc-core" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-core-${version}"
-            module="p/pyobjc-core/pyobjc-core-${version}.tar.gz"
-            version="9.1.1"
-            hash="sha256:4b6cb9053b5fcd3c0e76b8c8105a8110786b20f3403c5643a688c5ec51c55c6b"/>
+            module="b8/b6/d5612eb40be4fd5ef88c259339e6313f46ba67577a95d86c3470b951fce0/pyobjc_core-${version}.tar.gz"
+            version="12.1"
+            hash="sha256:2bb3903f5387f72422145e1466b3ac3f7f0ef2e9960afa9bcd8961c5cbf8bd21"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -739,9 +731,9 @@
   <distutils id="python-pyobjc-framework-Cocoa" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Cocoa-${version}"
-            module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-${version}.tar.gz"
-            version="9.1.1"
-            hash="sha256:345c32b6d1f3db45f635e400f2d0d6c0f0f7349d45ec823f76fc1df43d13caeb"/>
+            module="02/a3/16ca9a15e77c061a9250afbae2eae26f2e1579eb8ca9462ae2d2c71e1169/pyobjc_framework_cocoa-${version}.tar.gz"
+            version="12.1"
+            hash="sha256:5556c87db95711b985d5efdaaf01c917ddd41d148b1e52a0c66b1a2e2c5c1640"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -751,9 +743,9 @@
   <distutils id="python-pyobjc-framework-Quartz" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Quartz-${version}"
-            module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-${version}.tar.gz"
-            version="9.1.1"
-            hash="sha256:8d03bc52bd6d90f00f274fd709b82e53dc5dfca19f3fc744997634e03faaa159"/>
+            module="94/18/cc59f3d4355c9456fc945eae7fe8797003c4da99212dd531ad1b0de8a0c6/pyobjc_framework_quartz-${version}.tar.gz"
+            version="12.1"
+            hash="sha256:27f782f3513ac88ec9b6c82d9767eef95a5cf4175ce88a1e5a65875fee799608"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -764,9 +756,9 @@
   <distutils id="python-pyobjc" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-${version}"
-            module="p/pyobjc/pyobjc-${version}.tar.gz"
-            version="9.1.1"
-            hash="sha256:79071b1a71238708a34e87e50d5693c8a31206c567a125b0db7f500f841c64c9"/>
+            module="17/06/d77639ba166cc09aed2d32ae204811b47bc5d40e035cdc9bff7fff72ec5f/pyobjc-${version}.tar.gz"
+            version="12.1"
+            hash="sha256:686d6db3eb3182fac9846b8ce3eedf4c7d2680b21b8b8d6e6df054a17e92a12d"/>
     <dependencies>
     <dep package="python-setuptools"/>
     <dep package="python-pyobjc-core"/>
@@ -815,7 +807,13 @@
     </branch>
   </autotools>
 
-  <meson id="pulseaudio" mesonargs="-Dtests=false -Ddaemon=false -Ddoxygen=false -Ddatabase=simple">
+  <autotools id="libsndfile" autogen-sh="configure">
+    <branch module="libsndfile/libsndfile/releases/download/${version}/libsndfile-${version}.tar.xz"
+            repo="github-tar" version="1.2.2"
+            hash="sha256:3799ca9924d3125038880367bf1468e53a1b7e3686a934f098b7e1d286cdb80e"/>
+  </autotools>
+
+  <meson id="pulseaudio" mesonargs="-Dtests=false -Ddaemon=false -Ddoxygen=false -Ddatabase=simple -Dman=false">
     <branch module="pulseaudio/pulseaudio/-/archive/v${version}/pulseaudio-v${version}.tar.gz"
         repo="gitlab" version="16.1"
         hash="sha256:bd9df649ba2062b3bedea168e75745b755b789223aeb23ca47686f103170a481">
@@ -824,6 +822,7 @@
     </branch>
     <dependencies>
       <dep package="liblzo"/>
+      <dep package="libsndfile"/>
     </dependencies>
   </meson>
 
