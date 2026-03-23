@@ -46,3 +46,36 @@ jobs:
         with:
           path: dist/quodlibet-*
           if-no-files-found: error
+
+  build-macos:
+    runs-on: macos-latest
+    name: build-macos
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # - name: Cache jhbuild dependencies
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       dev-utils/osx_bundle/_home/jhbuild_checkoutroot/pkgs
+      #       dev-utils/osx_bundle/_home/jhbuild_prefix
+      #       dev-utils/osx_bundle/_home/.cache/jhbuild/build
+      #     key: jhbuild-${{ runner.os }}-${{ hashFiles('dev-utils/osx_bundle/modulesets/quodlibet.modules') }}
+      #     restore-keys: |
+      #       jhbuild-${{ runner.os }}-
+
+      - name: Bootstrap jhbuild
+        run: |
+          cd dev-utils/osx_bundle
+          ./bootstrap.sh
+
+      - name: Build
+        run: |
+          cd dev-utils/osx_bundle
+          ./build.sh
