@@ -88,13 +88,15 @@
                 gtksourceview4
                 kakasi
                 keybinder3
-                libappindicator-gtk3
                 libmodplug
                 libnotify
                 librsvg
                 libsoup_3
                 pcre2
                 shared-mime-info
+              ]
+              ++ lib.optionals stdenv.isLinux [
+                libappindicator-gtk3
                 xorg.xvfb
               ]
               ++ (with gst_all_1; [

@@ -20,8 +20,8 @@ rustup install "$RUST_REVISION"
 # Python 3.12+ removed distutils from stdlib; setuptools provides compatibility
 # Bootstrap pip and setuptools (needed for jhbuild)
 # Try without --break-system-packages first (for CI), fall back if externally-managed
-curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --user setuptools 2>/dev/null || \
-  curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --user --break-system-packages setuptools
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --user setuptools 2>/dev/null ||
+    curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --user --break-system-packages setuptools
 
 # Clone and install JHBuild.  Specify "--simple-install" so that we get the same
 # behavior regardless of whether autotools is installed or not.

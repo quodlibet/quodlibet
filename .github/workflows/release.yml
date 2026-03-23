@@ -57,18 +57,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-
-      # - name: Cache jhbuild dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       dev-utils/osx_bundle/_home/jhbuild_checkoutroot/pkgs
-      #       dev-utils/osx_bundle/_home/jhbuild_prefix
-      #       dev-utils/osx_bundle/_home/.cache/jhbuild/build
-      #     key: jhbuild-${{ runner.os }}-${{ hashFiles('dev-utils/osx_bundle/modulesets/quodlibet.modules') }}
-      #     restore-keys: |
-      #       jhbuild-${{ runner.os }}-
+          python-version: "3.12"
 
       - name: Bootstrap jhbuild
         run: |
