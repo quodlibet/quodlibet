@@ -17,7 +17,7 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.path import uri_is_valid
 from urllib.response import addinfourl
-from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
+from quodlibet.fsn import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
 def confirm_remove_playlist_dialog_invoke(

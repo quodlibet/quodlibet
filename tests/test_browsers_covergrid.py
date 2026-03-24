@@ -9,7 +9,6 @@
 
 
 from quodlibet.browsers.covergrid.main import CoverGrid
-from senf import fsnative
 
 from . import TestCase, run_gtk_loop
 from .helper import realized
@@ -26,28 +25,28 @@ SONGS = [
         {
             "album": "one",
             "artist": "piman",
-            "~filename": fsnative("/dev/null"),
+            "~filename": "/dev/null",
         }
     ),
     AudioFile(
         {
             "album": "two",
             "artist": "mu",
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
         }
     ),
     AudioFile(
         {
             "album": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls"),
+            "~filename": "/bin/ls",
         }
     ),
     AudioFile(
         {
             "album": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls2"),
+            "~filename": "/bin/ls2",
         }
     ),
 ]

@@ -38,8 +38,14 @@ repository = "https://github.com/quodlibet/quodlibet"
 documentation = "https://quodlibet.readthedocs.io/"
 
 [project.scripts]
-# Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
+# `poetry run quodlibet` just runs the app (with no CLI args)
+operon = "quodlibet.operon:main"
+quodlibet-cmd = "quodlibet.main:main"
+exfalso-cmd = "quodlibet.exfalso:main"
+
+[project.gui-scripts]
 quodlibet = "quodlibet.main:main"
+exfalso = "quodlibet.exfalso:main"
 
 [dependency-groups]
 dev = [
@@ -48,11 +54,11 @@ dev = [
   "coverage[toml]>=7.2.1,<8",
   "mypy>=1.14.1,<1.19",
   "flaky>=3.7.0,<4",
-  "types-docutils>=0.21.0,<0.22",
+  "types-docutils>=0.22.0,<0.23",
   "types-certifi>=2021.10.8.3,<2022",
   "types-requests>=2.28.11.15,<3",
   "pyvirtualdisplay~=3.0 ; sys_platform == 'linux'",
-  "setuptools>=78.1.1,<81",
+  "setuptools>=78.1.1,<82",
   "packaging>=24.2",
   "ruff==0.7.3 ; sys_platform == 'linux'",
 ]
@@ -69,10 +75,31 @@ package-mode = false
 [tool.poetry.group.docs]
 optional = true
 
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+exclude = "(dev-utils/.*)"
+follow_imports = "silent"
+disable_error_code = "annotation-unchecked"
+
+[[tool.mypy.overrides]]
+module = ["tests.*", "gi.repository", "gdist.*"]
+ignore_errors = true
+
+[tool.pytest]
+junit_suite_name = "quodlibet"
+# Pytest long traces are way too long in bulk
+addopts = ["--tb=short"]
+filterwarnings = ["ignore::DeprecationWarning"]
+markers = [
+  "quality: Code quality tests (e.g. PEP-8 compliance)",
+  "network: Tests that need working internet connectivity",
+]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 88
-extend-exclude = ["dev-utils/*", "quodlibet/packages/"]
+extend-exclude = ["dev-utils/*"]
 
 [tool.ruff.lint]
 select = [
@@ -127,7 +154,7 @@ ignore = [
 "quodlibet/ext/**/*" = [
   "N802", # allow plugins to have methods like PluginPreferences etc
 ]
-
+"quodlibet/fsn/**/*" = ["N801"]
 "quodlibet/cli.py" = [
   "C901", # TODO: refactor process_arguments to simplify (46)
 ]

@@ -12,7 +12,7 @@
 from collections.abc import Sequence
 
 from gi.repository import Gtk, GLib, Gdk, GObject
-from senf import uri2fsn
+from quodlibet.fsn import uri2fsn
 
 from quodlibet import app, print_w, print_d
 from quodlibet import config

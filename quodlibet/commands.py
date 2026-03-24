@@ -10,7 +10,7 @@
 import json
 import os
 
-from senf import uri2fsn, fsnative, fsn2text, text2fsn
+from quodlibet.fsn import uri2fsn, fsnative, fsn2text, text2fsn
 
 from quodlibet.util.string import split_escape
 
@@ -569,7 +569,7 @@ def _print_playing(app, fstring=None):
     pattern = make_pattern(fstring, "<artist~album~tracknumber~title>")
     song = app.player.info
     if song is None:
-        song = AudioFile({"~filename": fsnative("/")})
+        song = AudioFile({"~filename": "/"})
         song.sanitize()
     else:
         song = app.player.with_elapsed_info(song)

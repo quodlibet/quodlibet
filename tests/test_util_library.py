@@ -7,7 +7,7 @@
 
 import os
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import config
 from quodlibet.util.library import (
@@ -22,12 +22,10 @@ from quodlibet.util.path import get_home_dir, unexpand
 from tests import TestCase
 
 
-STANDARD_PATH = fsnative("/home/user/Music")
-OTHER_PATH = fsnative("/opt/party")
-GVFS_PATH = fsnative(
-    "/run/user/12345/gvfs/smb-share:server=12.23.34.45,share=/foo/bar/baz/path"
-)
-GVFS_PATH_ESCAPED = fsnative(
+STANDARD_PATH = "/home/user/Music"
+OTHER_PATH = "/opt/party"
+GVFS_PATH = "/run/user/12345/gvfs/smb-share:server=12.23.34.45,share=/foo/bar/baz/path"
+GVFS_PATH_ESCAPED = (
     "/run/user/12345/gvfs/smb-share\\:server=12.23.34.45,share=/foo/bar/baz/path"
 )
 

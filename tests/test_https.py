@@ -13,7 +13,7 @@ from gi.repository import Gio, Soup, GLib
 from urllib.request import urlopen, build_opener
 from tests import TestCase, skipIf
 
-from quodlibet.util import is_linux, get_ca_file
+from quodlibet.util import is_linux
 
 
 @pytest.mark.network
@@ -33,10 +33,10 @@ class Thttps(TestCase):
 
     def test_urllib(self):
         for url in self.GOOD:
-            urlopen(url, cafile=get_ca_file()).close()
+            urlopen(url).close()
         for url in self.BAD:
             with pytest.raises(OSError):
-                urlopen(url, cafile=get_ca_file()).close()
+                urlopen(url).close()
 
     def test_urllib_default(self):
         for url in self.GOOD:

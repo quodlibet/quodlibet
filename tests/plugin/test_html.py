@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from senf import fsnative
 
 from tests.plugin import PluginTestCase
 
@@ -18,20 +17,20 @@ SONGS = [
         {
             "title": "one",
             "artist": "piman",
-            "~filename": fsnative("/dev/null"),
+            "~filename": "/dev/null",
         }
     ),
     AudioFile(
         {
             "title": "\xf6\xe4\xfc",
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
         }
     ),
     AudioFile(
         {
             "title": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls"),
+            "~filename": "/bin/ls",
         }
     ),
 ]

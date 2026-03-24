@@ -112,7 +112,7 @@ musicbrainzngs
 "
 
     # shellcheck disable=SC2046
-    build_pip install --no-binary ":all:" \
+    build_pip install --break-system-packages --no-binary ":all:" \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr '\n' " ")
 
     # transitive dependencies which we don't need

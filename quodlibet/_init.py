@@ -11,7 +11,7 @@ import sys
 import warnings
 import logging
 
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet.const import MinVersions
 from quodlibet import config
@@ -256,7 +256,7 @@ def _init_gtk():
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # PyGObject doesn't fail anymore when init fails, so do it ourselves
+    # PyGObject doesn't fail any more when init fails, so do it ourselves
     initialized, sys.argv[:] = Gtk.init_check(sys.argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")

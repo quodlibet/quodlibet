@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#        2020-22 Nick Boultbee
+#        2020-25 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -328,17 +328,20 @@ def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
     return item
 
 
-def _Button(type_, label, icon_name, size):
+def _Button(
+    type_: type[Gtk.Widget], text: str | None, icon_name: str | None, size: Gtk.IconSize
+) -> Gtk.Widget:
     if icon_name is None:
-        return type_.new_with_mnemonic(label)
+        return type_.new_with_mnemonic(text)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
     hbox = Gtk.HBox(spacing=6)
     image = Gtk.Image.new_from_icon_name(icon_name, size)
     hbox.pack_start(image, True, True, 0)
-    label = Gtk.Label(label=label)
-    label.set_use_underline(True)
-    hbox.pack_start(label, True, True, 0)
+    if text is not None:
+        label = Gtk.Label(label=text)
+        label.set_use_underline(True)
+        hbox.pack_start(label, True, True, 0)
     align.add(hbox)
     align.show_all()
     button = type_()
@@ -346,7 +349,11 @@ def _Button(type_, label, icon_name, size):
     return button
 
 
-def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def Button(
+    label: str | None,
+    icon_name: str | None = None,
+    size: Gtk.IconSize = Gtk.IconSize.BUTTON,
+):
     """A Button with a custom label and stock image. It should pack
     exactly like a stock button.
     """
@@ -354,7 +361,9 @@ def Button(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     return _Button(Gtk.Button, label, icon_name, size)
 
 
-def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
+def ToggleButton(
+    label: str, icon_name: str | None = None, size: Gtk.IconSize = Gtk.IconSize.BUTTON
+):
     """A ToggleButton with a custom label and stock image. It should pack
     exactly like a stock button.
     """

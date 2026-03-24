@@ -9,7 +9,6 @@
 import os
 import sys
 
-from senf import fsnative
 
 from quodlibet import _
 from quodlibet import app
@@ -38,7 +37,7 @@ def main(argv=None):
         "[{}]".format(_("directory")),
     )
 
-    argv.append(os.path.abspath(fsnative(".")))
+    argv.append(os.path.abspath("."))
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
 

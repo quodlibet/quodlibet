@@ -9,7 +9,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
-from senf import fsnative
+from quodlibet.fsn import fsnative
 from tests import TestCase, mkdtemp
 
 

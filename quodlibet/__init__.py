@@ -1,9 +1,6 @@
 # Copyright 2012 Christoph Reiter
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import sys
 import os
@@ -15,10 +12,6 @@ if sys.platform == "win32":
     from ctypes import windll
 
     windll.kernel32.SetDllDirectoryW(os.path.dirname(sys.executable))
-
-from ._import import install_redirect_import_hook
-
-install_redirect_import_hook()
 
 from .util.i18n import _, C_, N_, ngettext, npgettext
 from .util.dprint import print_d, print_e, print_w

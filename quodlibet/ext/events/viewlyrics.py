@@ -1,7 +1,7 @@
 #
 # View Lyrics: a Quod Libet plugin for viewing lyrics.
 # Copyright (C) 2008, 2011, 2012 Vasiliy Faronov <vfaronov@gmail.com>
-#                        2013-25 Nick Boultbee
+#                        2013-26 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,11 +31,13 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
-        self.scrolled_window = Gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
-        )
-        self.adjustment = self.scrolled_window.get_vadjustment()
+        self.scrolled_window = sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.NONE)
+        # Create an overlay container
+        self.overlay = overlay = Gtk.Overlay()
+
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.adjustment = sw.get_vadjustment()
 
         self.textview = Gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
@@ -47,17 +49,20 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect("key-press-event", self.key_press_event_cb)
-        add_css(self.textview, "* { padding: 6px; }")
-        vbox = Gtk.VBox()
-        vbox.pack_start(self.textview, True, True, 0)
-        self._edit_button = Button("Edit Lyrics", Icons.EDIT)
-        hbox = Gtk.HBox()
-        hbox.pack_end(self._edit_button, False, False, 3)
-        vbox.pack_start(hbox, False, False, 3)
-        self.scrolled_window.add(vbox)
+        add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
+        overlay.add(sw)
+        self._edit_button = Button(None, Icons.EDIT)
+        self._edit_button.set_tooltip_text(_("Edit Lyrics"))
+        vbox = Gtk.Box(margin=6)
+        vbox.pack_end(self._edit_button, False, False, 0)
+        vbox.set_valign(Gtk.Align.END)
+        vbox.set_halign(Gtk.Align.END)
+
+        overlay.add_overlay(vbox)
+        self.scrolled_window.add(self.textview)
         self.textview.show()
 
-        self.scrolled_window.show()
+        sw.show()
         self._sig = None
         cur = app.player.info
         if cur is not None:
@@ -66,7 +71,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def create_sidebar(self):
         vbox = Gtk.VBox(margin=0)
-        vbox.pack_start(self.scrolled_window, True, True, 0)
+        vbox.pack_start(self.overlay, True, True, 0)
         vbox.show_all()
         return vbox
 

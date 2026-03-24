@@ -103,7 +103,16 @@ def load_module(name, package, path):
         parent_spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
         sys.modules[package] = importlib.util.module_from_spec(parent_spec)
 
-    mod = spec.loader.load_module(fullname)
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    try:
+        spec.loader.exec_module(mod)
+    except:
+        try:
+            del sys.modules[spec.name]
+        except KeyError:
+            pass
+        raise
 
     # make it accessible from the parent, like __import__ does
     vars(sys.modules[package])[name] = mod

@@ -7,7 +7,7 @@
 
 import sys
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from tests import TestCase, get_data_path
 from .helper import capture_output

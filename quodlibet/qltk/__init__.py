@@ -19,7 +19,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GLib, GObject, PangoCairo
-from senf import fsn2bytes, bytes2fsn, uri2fsn
+from quodlibet.fsn import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx
 

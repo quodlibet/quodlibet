@@ -262,7 +262,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.MENU), arrow=True
         )
         button.set_menu(menu)
         self.pack_start(button, False, False, 0)

@@ -10,7 +10,6 @@
 from functools import cmp_to_key
 
 from gi.repository import Gtk
-from senf import fsnative
 
 from quodlibet.browsers._base import DisplayPatternMixin
 from . import TestCase, run_gtk_loop
@@ -39,28 +38,28 @@ SONGS = [
         {
             "album": "one",
             "artist": "piman",
-            "~filename": fsnative("/dev/null"),
+            "~filename": "/dev/null",
         }
     ),
     AudioFile(
         {
             "album": "two",
             "artist": "mu",
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
         }
     ),
     AudioFile(
         {
             "album": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls"),
+            "~filename": "/bin/ls",
         }
     ),
     AudioFile(
         {
             "album": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls2"),
+            "~filename": "/bin/ls2",
         }
     ),
 ]

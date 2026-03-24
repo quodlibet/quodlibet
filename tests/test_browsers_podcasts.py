@@ -9,7 +9,7 @@ import quodlibet.config
 from quodlibet.browsers.podcasts import Podcasts, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
 from quodlibet.util.config import Config
-from senf import fsn2uri
+from quodlibet.fsn import fsn2uri
 from tests import TestCase, get_data_path
 
 TEST_URL = "https://a@b:foo.example.com?bar=baz&quxx#anchor"

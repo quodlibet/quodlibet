@@ -19,7 +19,7 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, path2fsn, uri2fsn, _fsnative
+from quodlibet.fsn import bytes2fsn, fsn2bytes, fsn2text, fsnative, path2fsn, uri2fsn
 
 from . import windows
 from .environment import is_windows
@@ -127,7 +127,7 @@ def escape_filename(s: str, safe: bytes = b""):
     return bytes2fsn(quoted.encode("ascii"), "utf-8")
 
 
-def unescape_filename(filename: _fsnative) -> str:
+def unescape_filename(filename: fsnative) -> str:
     """Unescape a string in a manner suitable for a filename.
 
     Args:
@@ -193,7 +193,7 @@ def unexpand(filename):
         fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and fsnative("%USERPROFILE%")) or fsnative("~")
+    sub = (os.name == "nt" and "%USERPROFILE%") or "~"
     home = os.path.normcase(get_home_dir()).rstrip(os.path.sep)
     norm = os.path.normcase(filename)
     if norm == home:
@@ -325,11 +325,11 @@ def get_temp_cover_file(data: bytes, mime: str | None = None) -> Any:
         if mime:
             mime = mime.lower()
             if "png" in mime:
-                suffix = fsnative(".png")
+                suffix = ".png"
             elif "jpg" in mime or "jpeg" in mime:
-                suffix = fsnative(".jpg")
+                suffix = ".jpg"
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = NamedTemporaryFile(prefix=fsnative("cover-"), suffix=suffix)
+        fn = NamedTemporaryFile(prefix="cover-", suffix=suffix)
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
@@ -428,7 +428,7 @@ def limit_path(path, ellipsis=True):
 
         if len(p) > limit:
             if ellipsis:
-                p = p[: limit - 2] + fsnative("..")
+                p = p[: limit - 2] + ".."
             else:
                 p = p[:limit]
         parts[i] = p
@@ -444,7 +444,7 @@ def get_home_dir():
     return os.path.expanduser("~")
 
 
-def is_hidden(path: _fsnative) -> bool:
+def is_hidden(path: fsnative) -> bool:
     """Returns if a directory / file is considered hidden by the platform.
 
     Hidden meaning the user should normally not be exposed to those files when

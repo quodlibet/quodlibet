@@ -16,7 +16,7 @@ Only use trash_files() or trash_songs() and TrashMenuItem().
 import os
 
 from gi.repository import Gtk
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet import _
 from quodlibet import print_w

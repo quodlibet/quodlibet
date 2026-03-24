@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any, Generic, TypeVar
 from collections.abc import Iterable
 
-from senf import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
+from quodlibet.fsn import bytes2fsn, fsn2text, fsn2uri, fsnative, path2fsn
 
 from quodlibet import _, config, print_d, util
 from quodlibet.util import cached_property, capitalize, iso639
@@ -719,7 +719,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if "~" in key or key == "title":
             if key in FILESYSTEM_TAGS:
-                v = fsn2text(self(key, fsnative()))
+                v = fsn2text(self(key, ""))
             else:
                 v = self(key, "")
         else:
@@ -919,11 +919,11 @@ class AudioFile(dict, ImageContainer, HasKey):
                 head, tail = os.path.split(head)
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
-                head = head or fsnative("/")
+                head = head or "/"
                 if ismount(head):
                     self["~mountpoint"] = head
         else:
-            self["~mountpoint"] = fsnative("/")
+            self["~mountpoint"] = "/"
 
         # Fill in necessary values.
         self.setdefault("~#added", int(time.time()))

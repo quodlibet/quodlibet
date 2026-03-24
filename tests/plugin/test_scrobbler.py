@@ -13,13 +13,10 @@ from quodlibet import config
 from quodlibet.ext.events.qlscrobbler import QLSubmitQueue
 from quodlibet.formats import AudioFile
 from quodlibet.util.picklehelper import pickle_load
-from senf import fsnative
 from tests import run_gtk_loop, init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
-A_SONG = AudioFile(
-    {"~filename": fsnative("fake.mp3"), "artist": "Foo bar", "title": "The Title"}
-)
+A_SONG = AudioFile({"~filename": "fake.mp3", "artist": "Foo bar", "title": "The Title"})
 
 
 class TScrobbler(PluginTestCase):

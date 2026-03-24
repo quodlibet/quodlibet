@@ -1,15 +1,14 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#            2016-22 Nick Boultbee
+#            2016-26 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 import functools
-import os
 import re
-from os.path import splitext
+from pathlib import Path
 
 from gi.repository import Gtk, Gdk, GLib
 
@@ -27,8 +26,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "SynchronizedLyrics"
     PLUGIN_NAME = _("Synchronized Lyrics")
     PLUGIN_DESC = _(
-        "Shows synchronized lyrics from an .lrc file "
-        "with same name as the track (or similar)."
+        "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
     )
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
@@ -45,8 +43,11 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     # Note the trimming of whitespace, seems "most correct" behaviour
     LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)]\s*(.+)\s*")
 
+    song: AudioFile | None
+
     def __init__(self) -> None:
         super().__init__()
+        self.song = None
         self._lines: list[tuple[int, str]] = []
         self._timers: list[tuple[int, int]] = []
         self._start_clearing_from = 0
@@ -153,7 +154,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.scrolled_window.show()
 
         self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
-        self._build_data(app.player.song)
+        self.song = app.player.song
+        self._build_data(self.song, self._get_mtime())
         self._timer_control()
 
     def disabled(self):
@@ -185,35 +187,24 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return app.player.get_position()
 
     @functools.lru_cache()  # noqa
-    def _build_data(self, song: AudioFile | None) -> list[tuple[int, str]]:
-        if self.textview:
-            self.textview.get_buffer().set_text("")
-        if song:
-            # check in same location as track
-            track_name = splitext(song("~basename") or "")[0]
-            dir_ = song("~dirname")
-            print_d(f"Looking for .lrc files in {dir_}")
-            for filename in [
-                f"{s}.lrc"
-                for s in {
-                    track_name,
-                    track_name.lower(),
-                    track_name.upper(),
-                    song("~artist~title"),
-                    song("~artist~tracknumber~title"),
-                    song("~tracknumber~title"),
-                }
-            ]:
-                print_d(f"Looking for {filename!r}")
-                try:
-                    with open(os.path.join(dir_, filename), encoding="utf-8") as f:
-                        print_d(f"Found lyrics file: {filename}")
-                        contents = f.read()
-                except FileNotFoundError:
-                    continue
-                return self._parse_lrc(contents)
-            print_d(f"No lyrics found for {track_name!r}")
-        return []
+    def _build_data(
+        self, song: AudioFile | None, mtime: float = 0
+    ) -> list[tuple[int, str]]:
+        if not song:
+            return []
+        if lyrics := song("~lyrics"):
+            print_d(f"Found embedded lyrics for {song.key}")
+        else:
+            path = song.lyrics_path
+            if path is None:
+                return []
+            try:
+                lyrics = path.read_text(encoding="utf-8")
+                print_d(f"Found lyrics file: {path}")
+            except FileNotFoundError:
+                print_d(f"No lyrics found for {path}")
+                return []
+        return self._parse_lrc(lyrics)
 
     def _parse_lrc(self, contents: str) -> list[tuple[int, str]]:
         data = []
@@ -229,7 +220,6 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     def _set_timers(self):
         if not self._timers:
-            print_d("Setting timers")
             cur_time = self._cur_position()
             cur_idx = self._greater(self._lines, cur_time)
             if cur_idx != -1:
@@ -270,12 +260,28 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return False
 
     def plugin_on_song_started(self, song: AudioFile) -> None:
-        if song:
-            print_d(f"Preparing for {song.key}")
+        self.song = song
         self._clear_timers()
-        self._lines = self._build_data(song)
+        self._lines = self._build_data(song, self._get_mtime())
+        self._clear_view()
         # delay so that current position is for current track, not previous one
-        GLib.timeout_add(5, self._timer_control)
+        GLib.timeout_add(2, self._timer_control)
+
+    def _clear_view(self):
+        if self.textview:
+            self.textview.get_buffer().set_text("")
+
+    def _get_mtime(self) -> float:
+        if not self.song:
+            return 0
+        path = self.song.lyrics_path
+        if path is None:
+            return 0
+        if not path.exists():
+            path = Path(str(self.song.key))
+        if not path.exists():
+            return 0
+        return path.stat().st_mtime
 
     def plugin_on_song_ended(self, song, stopped):
         self._clear_timers()
@@ -288,6 +294,14 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     def plugin_on_seek(self, song, msec):
         if not app.player.paused:
+            self._clear_view()
+            self._clear_timers()
+            self._set_timers()
+
+    def plugin_on_changed(self, songs):
+        if self.song in songs:
+            print_d("Current song changed, updating lyrics")
+            self._lines = self._build_data(self.song, self._get_mtime())
             self._clear_timers()
             self._set_timers()
 

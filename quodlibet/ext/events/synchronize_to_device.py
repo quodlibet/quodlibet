@@ -12,7 +12,7 @@ import unicodedata
 from pathlib import Path
 
 from gi.repository import Gtk, Pango
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet import _
 from quodlibet import app

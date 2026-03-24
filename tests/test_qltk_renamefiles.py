@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject
 
 from tests import TestCase, mkdtemp
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
@@ -36,13 +36,13 @@ class TFilter(TestCase):
 
 class TFilterMixin:
     def test_mix_empty(self):
-        empty = fsnative("")
+        empty = ""
         v = self.c.filter(empty, "")
         assert v == ""
         assert isinstance(v, str)
 
     def test_mix_safe(self):
-        empty = fsnative("")
+        empty = ""
         safe = "safe"
         assert self.c.filter(empty, safe) == safe
 
@@ -64,13 +64,13 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
             assert self.c.filter("", 'foo\\:*?;"<>|/') == "foo_________/"
 
     def test_type(self):
-        empty = fsnative("")
+        empty = ""
         assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def test_ends_with_dots_or_spaces(self):
-        empty = fsnative("")
-        v = self.c.filter(empty, fsnative("foo. . "))
-        assert v == fsnative("foo. ._")
+        empty = ""
+        v = self.c.filter(empty, "foo. . ")
+        assert v == "foo. ._"
         assert isinstance(v, fsnative)
 
         if os.name == "nt":
@@ -103,11 +103,11 @@ class TReplaceColons(TFilter, TFilterMixin):
         )
 
     def test_type(self):
-        empty = fsnative("")
+        empty = ""
         assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def conv(self, s: str):
-        return self.c.filter(fsnative(""), s)
+        return self.c.filter("", s)
 
     def unaffected(self, s: str) -> bool:
         return self.conv(s) == s
@@ -117,7 +117,7 @@ class TStripDiacriticals(TFilter, TFilterMixin):
     Kind = StripDiacriticals
 
     def test_conv(self):
-        empty = fsnative("")
+        empty = ""
         test = "\u00c1 test"
         out = "A test"
         v = self.c.filter(empty, test)
@@ -129,7 +129,7 @@ class TStripNonASCII(TFilter, TFilterMixin):
     Kind = StripNonASCII
 
     def test_conv(self):
-        empty = fsnative("")
+        empty = ""
         in_ = "foo \u00c1 \u1234"
         out = "foo _ _"
         v = self.c.filter(empty, in_)
@@ -141,14 +141,14 @@ class TLowercase(TFilter, TFilterMixin):
     Kind = Lowercase
 
     def test_conv(self):
-        empty = fsnative("")
+        empty = ""
 
-        v = self.c.filter(empty, fsnative("foobar baz"))
-        assert v == fsnative("foobar baz")
+        v = self.c.filter(empty, "foobar baz")
+        assert v == "foobar baz"
         assert isinstance(v, fsnative)
 
-        v = self.c.filter(empty, fsnative("Foobar.BAZ"))
-        assert v == fsnative("foobar.baz")
+        v = self.c.filter(empty, "Foobar.BAZ")
+        assert v == "foobar.baz"
         assert isinstance(v, fsnative)
 
 

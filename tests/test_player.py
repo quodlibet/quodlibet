@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from senf import fsnative
 
 from tests import TestCase, skipUnless, get_data_path
 
@@ -20,9 +19,9 @@ from quodlibet.qltk.controls import Volume
 
 
 FILES = [
-    AudioFile({"~filename": fsnative("/foo/bar1"), "title": "1"}),
-    AudioFile({"~filename": fsnative("/foo/bar2"), "title": "2"}),
-    AudioFile({"~filename": fsnative("/foo/bar3"), "title": "3"}),
+    AudioFile({"~filename": "/foo/bar1", "title": "1"}),
+    AudioFile({"~filename": "/foo/bar2", "title": "2"}),
+    AudioFile({"~filename": "/foo/bar3", "title": "3"}),
 ]
 for file_ in FILES:
     file_.sanitize()

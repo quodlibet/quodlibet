@@ -27,7 +27,7 @@ from io import StringIO
 from typing import Any, cast
 from collections.abc import Callable
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import print_w
 from quodlibet.util import list_unique, print_d

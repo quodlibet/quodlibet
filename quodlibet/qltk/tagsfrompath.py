@@ -9,7 +9,7 @@ import re
 import os
 
 from gi.repository import Gtk
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 import quodlibet
 

@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk, Pango
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet import ngettext, _
 from quodlibet import qltk

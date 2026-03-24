@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk, GObject, Pango
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import ngettext, _
 from quodlibet import config
@@ -117,7 +117,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         menu.show_all()
 
         menu_button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.BUTTON),
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.BUTTON),
             arrow=True,
             down=False,
         )

@@ -7,7 +7,6 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from senf import fsnative
 
 from quodlibet import _
 from quodlibet import qltk
@@ -93,7 +92,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
 
     assert isinstance(text, str)
 
-    f = AudioFile({"~filename": fsnative("dummy")})
+    f = AudioFile({"~filename": "dummy"})
 
     try:
         if alternative_markup:

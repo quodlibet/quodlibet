@@ -8,7 +8,7 @@
 import os
 import re
 
-from senf import fsnative, fsn2text
+from quodlibet.fsn import fsnative, fsn2text
 
 from quodlibet.util import re_escape
 

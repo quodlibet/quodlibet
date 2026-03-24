@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject, Pango
 
 from quodlibet.qltk.bookmarks import EditBookmarksPane
 from quodlibet.qltk.lyrics import LyricsPane
-from senf import fsn2text
+from quodlibet.fsn import fsn2text
 
 from quodlibet import ngettext, _
 from quodlibet import qltk

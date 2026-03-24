@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
-from senf import fsnative
 
 from tests import TestCase
 from quodlibet import config
@@ -24,7 +23,7 @@ class TRatingsMenuItem(TestCase):
         self.assertEqual(config.RATINGS.number, NUM_RATINGS)
         self.library = SongLibrary()
         self.library.librarian = SongLibrarian()
-        self.af = AudioFile({"~filename": fsnative("/foo"), "~#rating": 1.0})
+        self.af = AudioFile({"~filename": "/foo", "~#rating": 1.0})
         self.af.sanitize()
         self.rmi = RatingsMenuItem([self.af], self.library)
 
@@ -45,7 +44,7 @@ class TRatingsMenuItem(TestCase):
         self.assertEqual(children[1].get_active(), False)
 
     def test_no_rating(self):
-        af = AudioFile({"~filename": fsnative("/foobar"), "artist": "foo"})
+        af = AudioFile({"~filename": "/foobar", "artist": "foo"})
         rmi = RatingsMenuItem([af], self.library)
         children = [
             mi

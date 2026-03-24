@@ -13,7 +13,7 @@ import glob
 import shutil
 
 from gi.repository import Gtk, Gdk
-from senf import fsn2text, text2fsn
+from quodlibet.fsn import fsn2text, text2fsn
 
 import quodlibet
 from quodlibet import qltk

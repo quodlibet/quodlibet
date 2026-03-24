@@ -367,7 +367,7 @@ class SongsMenu(Gtk.Menu):
         text = ngettext("_Download file…", "_Download %(total)d files…", total) % {
             "total": total
         }
-        b = qltk.MenuItem(text, Icons.EMBLEM_DOWNLOADS)
+        b = qltk.MenuItem(text, Icons.FOLDER_DOWNLOAD)
         b.set_sensitive(relevant and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
 
         def _finished(p, successes, failures):

@@ -8,7 +8,7 @@
 """Code for serializing AudioFile instances"""
 
 import pickle
-from senf import bytes2fsn, fsn2bytes
+from quodlibet.fsn import bytes2fsn, fsn2bytes
 
 from quodlibet.util.picklehelper import pickle_loads, pickle_dumps
 from quodlibet.util import is_windows

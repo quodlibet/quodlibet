@@ -7,7 +7,6 @@ from tests import TestCase, run_gtk_loop
 from .helper import realized
 
 from gi.repository import Gtk
-from senf import fsnative
 
 from quodlibet import config, util
 
@@ -30,7 +29,7 @@ SONGS = [
             "title": "three",
             "artist": "<boris>",
             "genre": "Rock",
-            "~filename": fsnative("/bin/ls"),
+            "~filename": "/bin/ls",
             "foo": "bar",
         }
     ),
@@ -39,7 +38,7 @@ SONGS = [
             "title": "two",
             "artist": "mu",
             "genre": "Rock",
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
             "foo": "bar",
         }
     ),
@@ -48,7 +47,7 @@ SONGS = [
             "title": "four",
             "artist": "piman",
             "genre": "J-Pop",
-            "~filename": fsnative("/dev/null"),
+            "~filename": "/dev/null",
             "foo": "bar\nquux",
         }
     ),
@@ -57,11 +56,11 @@ SONGS = [
             "title": "one",
             "artist": "piman",
             "genre": "J-Pop",
-            "~filename": fsnative("/bin/foo"),
+            "~filename": "/bin/foo",
             "foo": "bar\nnope",
         }
     ),
-    AudioFile({"title": "xxx", "~filename": fsnative("/bin/bar"), "foo": "bar"}),
+    AudioFile({"title": "xxx", "~filename": "/bin/bar", "foo": "bar"}),
 ]
 
 UNKNOWN_ARTIST = AudioFile(dict(SONGS[0]))

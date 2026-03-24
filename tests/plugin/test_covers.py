@@ -23,7 +23,7 @@ import pytest as pytest
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
-from senf import fsnative
+from quodlibet.fsn import fsnative
 from tests.plugin import PluginTestCase, plugins
 
 AN_ARTIST = "The Beatles"
@@ -86,7 +86,7 @@ def test_live_cover_download(plugin_class_name):
             header.startswith(f) for f in FORMAT_HEADERS
         ), f"Unknown format: {header}"
 
-    def on_failure(source, error, log):
+    def on_failure(source, error, log, results):
         # For debugging
         results.covers = error
         results.success = False

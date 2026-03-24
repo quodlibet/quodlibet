@@ -13,7 +13,6 @@ from quodlibet.plugins import Plugin
 from quodlibet.plugins.query import QueryPlugin, QUERY_HANDLER
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
-from senf import fsnative
 from tests import TestCase, skip
 
 
@@ -194,7 +193,7 @@ class TQuery(TestCase):
                 "artist": "piman",
                 "title": "Quuxly",
                 "version": "cake mix",
-                "~filename": fsnative("/dir1/foobar.ogg"),
+                "~filename": "/dir1/foobar.ogg",
                 "~#length": 224,
                 "~#skipcount": 13,
                 "~#playcount": 24,
@@ -207,7 +206,7 @@ class TQuery(TestCase):
                 "album": "Foo the Bar",
                 "artist": "mu",
                 "title": "Rockin' Out",
-                "~filename": fsnative("/dir2/something.mp3"),
+                "~filename": "/dir2/something.mp3",
                 "tracknumber": "12/15",
             }
         )
@@ -215,8 +214,8 @@ class TQuery(TestCase):
         self.s3 = AudioFile(
             {
                 "artist": "piman\nmu",
-                "~filename": fsnative("/test/\xf6\xe4\xfc/fo\xfc.ogg"),
-                "~mountpoint": fsnative("/bla/\xf6\xe4\xfc/fo\xfc"),
+                "~filename": "/test/\xf6\xe4\xfc/fo\xfc.ogg",
+                "~mountpoint": "/bla/\xf6\xe4\xfc/fo\xfc",
             }
         )
         self.s4 = AudioFile({"title": "Ångström", "utf8": "Ångström"})
@@ -270,7 +269,7 @@ class TQuery(TestCase):
         assert r == "<Query string='&(/bar/d)' type=TEXT star=['foo']>"
 
     def test_2007_07_27_synth_search(self):
-        song = AudioFile({"~filename": fsnative("foo/64K/bar.ogg")})
+        song = AudioFile({"~filename": "foo/64K/bar.ogg"})
         query = Query("~dirname = !64K")
         assert not query.search(song), f"{query!r}, {song!r}"
 
@@ -498,7 +497,7 @@ class TQuery(TestCase):
         assert Query("mountpoint=öä").search(self.s3)
 
     def test_mountpoint_no_value(self):
-        af = AudioFile({"~filename": fsnative("foo")})
+        af = AudioFile({"~filename": "foo"})
         assert not Query("~mountpoint=bla").search(af)
 
     def test_star_numeric(self):

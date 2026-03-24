@@ -491,8 +491,23 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         if isinstance(sink_element, Gst.Bin):
             sink_element = iter_to_list(sink_element.iterate_recurse)[-1]
 
+        sink_name = sink_element.get_factory().get_name()
+
+        exclusive_mode_active = False
+        if config.getboolean("player", "gst_exclusive_mode") and hasattr(
+            sink_element.props, "exclusive"
+        ):
+            sink_element.set_property("exclusive", True)
+            exclusive_mode_active = True
+
+        force_internal_volume = False
+        if sink_name == AudioSinks.WASAPI2.value and exclusive_mode_active:
+            # wasapi2sink volume doesn't work in exclusive mode,
+            # so force using our internal volume element in this case
+            force_internal_volume = True
+
         self._ext_vol_element = None
-        if hasattr(sink_element.props, "volume"):
+        if hasattr(sink_element.props, "volume") and not force_internal_volume:
             self._ext_vol_element = sink_element
 
             # In case we use the sink volume directly we can increase buffering
@@ -508,15 +523,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._ext_vol_element.connect("notify::volume", ext_volume_notify)
 
         self._ext_mute_element = None
-        if (
-            hasattr(sink_element.props, "mute")
-            and sink_element.get_factory().get_name() != "directsoundsink"
-        ):
-            # directsoundsink has a mute property but it doesn't work
-            # https://bugzilla.gnome.org/show_bug.cgi?id=755106
+        if hasattr(sink_element.props, "mute"):
             self._ext_mute_element = sink_element
 
             def mute_notify(*args):
+                # directsoundsink has a mute property but it doesn't work properly
+                # https://bugzilla.gnome.org/show_bug.cgi?id=755106
+                # un-muting doesn't take effect until we set the volume again
+                if not self.props.mute and sink_name == AudioSinks.DIRECTSOUND.value:
+                    self.props.volume = self.props.volume
                 # gets called from a thread
                 GLib.idle_add(self.notify, "mute")
 

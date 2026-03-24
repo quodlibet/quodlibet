@@ -4,7 +4,6 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
-from senf import fsnative
 
 from tests import TestCase
 
@@ -12,7 +11,7 @@ from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.delete import DeleteDialog, TrashDialog, TrashMenuItem
 
-SONG = AudioFile({"~filename": fsnative("/dev/null")})
+SONG = AudioFile({"~filename": "/dev/null"})
 SONG.sanitize()
 
 
