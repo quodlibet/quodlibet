@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-03-17 06:09+0000\n"
+"PO-Revision-Date: 2026-03-28 16:09+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -214,7 +214,7 @@ msgstr "自訂(_C)"
 #: quodlibet/qltk/edittags.py:335 quodlibet/qltk/quodlibetwindow.py:1362
 #: quodlibet/qltk/scanbox.py:67
 msgid "_Add"
-msgstr "增加(_A)"
+msgstr "添加(_A)"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:92
@@ -348,7 +348,7 @@ msgstr "網路電台"
 
 #: quodlibet/browsers/iradio.py:230
 msgid "Add stations"
-msgstr "增加站台"
+msgstr "添加站台"
 
 #: quodlibet/browsers/iradio.py:273
 msgid "Downloading station list"
@@ -521,7 +521,7 @@ msgstr "無分類"
 
 #: quodlibet/browsers/iradio.py:672
 msgid "_Add Station…"
-msgstr "增加站台(_A)…"
+msgstr "添加站台(_A)…"
 
 #: quodlibet/browsers/iradio.py:674
 msgid "_Update Stations"
@@ -538,7 +538,7 @@ msgstr "在 %s 沒有網路電台被找到。"
 
 #: quodlibet/browsers/iradio.py:874
 msgid "Nothing to add"
-msgstr "沒有增加"
+msgstr "無可添加"
 
 #: quodlibet/browsers/iradio.py:875
 msgid "All stations listed are already in your library."
@@ -726,7 +726,7 @@ msgstr[0] "擴增 \"{pl_name}\" 用 {num} 個外加曲目？"
 
 #: quodlibet/browsers/playlists/util.py:64
 msgid "_Add Tracks"
-msgstr "增加曲目(_A)"
+msgstr "添加曲目(_A)"
 
 #: quodlibet/browsers/playlists/util.py:75
 #: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
@@ -770,7 +770,7 @@ msgstr "Poscast 播客(_P)"
 
 #: quodlibet/browsers/podcasts.py:421
 msgid "_Add Feed…"
-msgstr "增加播放 Feed(_A)…"
+msgstr "添加播放 Feed(_A)…"
 
 #: quodlibet/browsers/podcasts.py:489 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/pluginwin.py:425
@@ -795,7 +795,7 @@ msgstr "移除此播客及其插播"
 
 #: quodlibet/browsers/podcasts.py:565
 msgid "Unable to add feed"
-msgstr "無法增加 Feed"
+msgstr "無法添加 Feed"
 
 #: quodlibet/browsers/podcasts.py:567
 #, python-format
@@ -1111,7 +1111,7 @@ msgstr "非佇列檔案或查詢"
 
 #: quodlibet/cli.py:184
 msgid "Add a file or directory to the library"
-msgstr "增加檔案或目錄至音樂庫"
+msgstr "添加檔案或目錄至音樂庫"
 
 #: quodlibet/cli.py:184 quodlibet/util/tags.py:101
 msgid "location"
@@ -2316,7 +2316,7 @@ msgstr "開始最近常用"
 
 #: quodlibet/ext/events/randomalbum.py:43
 msgid "Added more recently"
-msgstr "增加最近常用"
+msgstr "最近所添加的"
 
 #: quodlibet/ext/events/randomalbum.py:44
 msgid "Longer albums"
@@ -2437,8 +2437,8 @@ msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
-"書籤名稱在曲目播放過程中使用每個刻度（如果存在）。如果目前位置超過時間戳記，"
-"即尋找至曲目末端。"
+"書籤名稱在曲目播放過程中使用每個刻度(如果存在)。如果目前位置超過時間戳記，即"
+"尋找至曲目末端。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -3411,7 +3411,7 @@ msgstr "無法刪除現存存的 Sonos 播放清單 %s："
 #: quodlibet/ext/playlist/export_to_sonos.py:288
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr "匯出撥放清單 %(playlist)r (%(total)d 曲目)"
+msgstr "匯出至撥放清單 %(playlist)r (%(total)d 曲目)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3615,7 +3615,7 @@ msgstr "重設至預設"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr "跳過不喜歡的曲目"
+msgstr "跳過不受喜愛的曲目"
 
 #: quodlibet/ext/playorder/skip_disliked.py:27
 msgid ""
@@ -3627,11 +3627,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/skip_disliked.py:31
 msgid "Skip disliked tracks"
-msgstr "跳過不喜歡的曲目"
+msgstr "跳過不受喜愛的曲目"
 
 #: quodlibet/ext/playorder/skip_disliked.py:32
 msgid "Skip _disliked tracks"
-msgstr "跳過不喜歡的曲目(_D)"
+msgstr "跳過不受喜愛的曲目(_D)"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
@@ -5171,7 +5171,7 @@ msgstr "移除標籤設定"
 
 #: quodlibet/operon/commands.py:489
 msgid "Add a tag value"
-msgstr "增加標籤設定值"
+msgstr "添加標籤設定值"
 
 #: quodlibet/operon/commands.py:505 quodlibet/operon/commands.py:763
 #, python-format
@@ -5755,7 +5755,7 @@ msgstr "從標題分割出原創藝人(_O)"
 
 #: quodlibet/qltk/edittags.py:328
 msgid "Add a Tag"
-msgstr "增加標籤"
+msgstr "添加標籤"
 
 #: quodlibet/qltk/edittags.py:349
 msgid "_Tag:"
@@ -5805,12 +5805,12 @@ msgstr "複製設定值(_C)"
 
 #: quodlibet/qltk/edittags.py:791
 msgid "Unable to add tag"
-msgstr "無法增加標籤"
+msgstr "無法添加標籤"
 
 #: quodlibet/qltk/edittags.py:792
 #, python-format
 msgid "Unable to add %s"
-msgstr "無法增加 %s"
+msgstr "無法添加 %s"
 
 #: quodlibet/qltk/edittags.py:795
 #, python-format
@@ -6337,7 +6337,7 @@ msgstr "其他(_O)："
 
 #: quodlibet/qltk/prefs.py:124
 msgid "Add or remove additional column headers"
-msgstr "增加或移除外加的欄位標頭"
+msgstr "添加或移除外加的欄位標頭"
 
 #: quodlibet/qltk/prefs.py:134
 msgid "Visible Columns"
@@ -6691,7 +6691,7 @@ msgstr "設定(_S)"
 
 #: quodlibet/qltk/quodlibetwindow.py:896
 msgid "Unable to add songs"
-msgstr "無法增加曲目"
+msgstr "無法添加曲目"
 
 #: quodlibet/qltk/quodlibetwindow.py:897 quodlibet/qltk/quodlibetwindow.py:1376
 #, python-format
@@ -6783,7 +6783,7 @@ msgstr "%s 不是有效的位置。"
 #: quodlibet/qltk/quodlibetwindow.py:1385
 #: quodlibet/qltk/quodlibetwindow.py:1394
 msgid "Add Music"
-msgstr "增加音樂"
+msgstr "添加音樂"
 
 #: quodlibet/qltk/quodlibetwindow.py:1385 quodlibet/qltk/scanbox.py:139
 msgid "_Add Folders"
@@ -7049,7 +7049,7 @@ msgstr "加權(_W)"
 
 #: quodlibet/qltk/searchbar.py:362
 msgid "Add query"
-msgstr "增加查詢"
+msgstr "添加查詢"
 
 #: quodlibet/qltk/searchbar.py:364
 msgid "Add a QL query or free text to be &ed together"
@@ -7105,7 +7105,7 @@ msgstr "左鍵點按欄位檔頭"
 
 #: quodlibet/qltk/shortcuts.py:43
 msgid "Add the column to the list of columns to sort by"
-msgstr "增加欄位用以排序"
+msgstr "添加欄位用以排序"
 
 #: quodlibet/qltk/shortcuts.py:48
 msgid "Tree View"
