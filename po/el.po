@@ -113,7 +113,7 @@ msgstr "Τραγούδια που δεν ανήκουν σε κάποιο άλμ
 #: quodlibet/browsers/covergrid/prefs.py:50
 #: quodlibet/browsers/playlists/prefs.py:37
 #: quodlibet/ext/songsmenu/brainz/widgets.py:105
-#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -123,7 +123,7 @@ msgstr[1] "%d τραγούδια"
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
 #: quodlibet/ext/songsmenu/brainz/widgets.py:104
-#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -178,7 +178,7 @@ msgstr "Περιηγητής Μουσικοθήκης"
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
 #: quodlibet/qltk/information.py:520 quodlibet/qltk/maskedbox.py:66
-#: quodlibet/util/collection.py:557
+#: quodlibet/util/collection.py:556
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -748,7 +748,7 @@ msgid "_Add Tracks"
 msgstr "Κομμάτι"
 
 #: quodlibet/browsers/playlists/util.py:75
-#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
+#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "Νέα Λίστα Αναπαραγωγής"
 
@@ -6950,7 +6950,7 @@ msgstr "Σάρωση Καταλόγων"
 msgid "Advanced"
 msgstr "Χορευτική"
 
-#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:346
+#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:345
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7765,16 +7765,16 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:341
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 
-#: quodlibet/util/collection.py:442
+#: quodlibet/util/collection.py:441
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:653
+#: quodlibet/util/collection.py:652
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Υπάρχει ήδη λίστα αναπαραγωγής με το όνομα %s."
