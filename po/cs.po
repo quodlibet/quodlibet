@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-03-02 20:09+0000\n"
+"PO-Revision-Date: 2026-03-22 05:20+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -2974,13 +2974,13 @@ msgstr[2] "přeskočeno {count} dříve synchronizovaných souborů"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
-msgstr "Synchronizované texty"
+msgstr "Synchronizované texty písní"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
-"Zobrazuje synchronizované texty vložené do skladby, nebo ze souboru textů "
-"(lrc)."
+"Zobrazuje synchronizované texty písní vložené do skladby, nebo ze souboru "
+"textů (lrc)."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
@@ -3187,17 +3187,15 @@ msgstr "Zobrazení tipů"
 
 #: quodlibet/ext/events/viewlyrics.py:29
 msgid "View Lyrics"
-msgstr "Zobrazit texty skladeb"
+msgstr "Zobrazit texty písní"
 
 #: quodlibet/ext/events/viewlyrics.py:30
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
-msgstr ""
-"Automaticky zobrazí text skladby z tagů nebo souborů v postranním panelu."
+msgstr "Automaticky zobrazí text písně z tagů nebo souborů v postranním panelu."
 
 #: quodlibet/ext/events/viewlyrics.py:55
-#, fuzzy
 msgid "Edit Lyrics"
-msgstr "Zobrazit texty skladeb"
+msgstr "Upravit text písně"
 
 #: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
@@ -3206,7 +3204,7 @@ msgid ""
 " %s"
 msgstr ""
 "Pro %s\n"
-"nenalezeny žádné texty"
+"nenalezen žádný text písně"
 
 #: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
@@ -3214,7 +3212,7 @@ msgstr "Žádná aktivní skladba"
 
 #: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr "Skrýt časové značky textů ve formátu .lrc nebo .elrc"
+msgstr "Skrýt časové značky textů písní ve formátu .lrc nebo .elrc"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -5980,7 +5978,7 @@ msgstr "Zobrazit _víceřádkové tagy"
 
 #: quodlibet/qltk/edittags.py:557
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
-msgstr "Zobrazit zde i víceřádkové tagy (např. text skladby)"
+msgstr "Zobrazit zde i víceřádkové tagy (např. text písně)"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:588
@@ -6341,7 +6339,7 @@ msgstr "Soubory"
 
 #: quodlibet/qltk/lyrics.py:30
 msgid "Lyrics"
-msgstr "Texty"
+msgstr "Texty písní"
 
 #: quodlibet/qltk/lyrics.py:37
 msgid "_View online"
@@ -6349,11 +6347,11 @@ msgstr "_Zobrazit online"
 
 #: quodlibet/qltk/lyrics.py:73
 msgid "Delete the saved lyrics from this song"
-msgstr "Smazat uložené texty pro tuto skladbu"
+msgstr "Smazat uložené texty písní pro tuto skladbu"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr "Vyberte skladbu pro kterou upravit texty"
+msgstr "Vyberte skladbu pro kterou upravit texty písní"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -7951,7 +7949,7 @@ msgstr "textaři"
 
 #: quodlibet/util/tags.py:102
 msgid "lyrics"
-msgstr "texty"
+msgstr "texty písní"
 
 #. Translators: Also e.g. "record label", "publisher"
 #: quodlibet/util/tags.py:104
