@@ -52,7 +52,7 @@ class AppInformation(EventPlugin):
                 justify=Gtk.Justification.RIGHT,
                 selectable=True,
             )
-            l.get_style_context().add_class(Gtk.STYLE_CLASS_DIM_LABEL)
+            l.add_css_class("dim-label")
             return l
 
         def label_value(text):

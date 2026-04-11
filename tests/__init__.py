@@ -310,13 +310,18 @@ def unit(
 
 
 def run_gtk_loop():
-    """Exhausts the GTK main loop of any events"""
+    """Exhausts the GTK main loop of any pending events.
+
+    Runs one blocking iteration first to ensure any thread-scheduled
+    idle callbacks have a chance to be queued, then drains all pending events.
+    """
 
     # Import late as various version / init checks fail otherwise
     from gi.repository import GLib
 
-    # GTK4: events_pending() and main_iteration() removed
-    # Use GLib.MainContext to process pending events
     context = GLib.MainContext.default()
+    # One blocking iteration to pick up callbacks scheduled from threads
+    context.iteration(True)
+    # Drain any remaining pending events
     while context.pending():
         context.iteration(False)

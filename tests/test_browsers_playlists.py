@@ -360,25 +360,25 @@ class TPlaylistsBrowser(TestCase):
     def test_songs_deletion(self):
         b = self.bar
         self._fake_browser_pack(b)
-        event = self.a_delete_event()
+        keyval, state = self.a_delete_keypress()
         # This is selected in setUp() call
         first_pl = b.playlists()[0]
         app.window.songlist.set_songs(first_pl)
         app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)
         original_length = len(first_pl)
-        ret = b.key_pressed(event)
+        ret = b.key_pressed(self._make_key_event(keyval, state))
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
 
     def test_playlist_deletion_ACCEPT(self):
         b = self.bar
         orig_length = len(b.playlists())
-        event = self.a_delete_event()
+        keyval, state = self.a_delete_keypress()
         first_pl = b.playlists()[0]
         second_pl = b.playlists()[1]
         b._select_playlist(first_pl)
 
-        ret = b._PlaylistsBrowser__key_pressed(b, event)
+        ret = b._PlaylistsBrowser__key_pressed(None, keyval, 0, state)
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length - 1)
         self.assertEqual(b.playlists()[0], second_pl)
@@ -386,12 +386,12 @@ class TPlaylistsBrowser(TestCase):
     def test_playlist_deletion_CANCEL(self):
         b = self.bar_decline
         orig_length = len(b.playlists())
-        event = self.a_delete_event()
+        keyval, state = self.a_delete_keypress()
         first_pl = b.playlists()[0]
         second_pl = b.playlists()[1]
         b._select_playlist(first_pl)
 
-        ret = b._PlaylistsBrowser__key_pressed(b, event)
+        ret = b._PlaylistsBrowser__key_pressed(None, keyval, 0, state)
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length)
         self.assertEqual(b.playlists()[0], first_pl)
@@ -427,11 +427,22 @@ class TPlaylistsBrowser(TestCase):
             assert PlaylistsBrowser(FileLibrary("no-playlists"))
 
     @staticmethod
-    def a_delete_event():
-        ev = Gdk.Event()
-        ev.type = Gdk.EventType.KEY_PRESS
-        ev.keyval, accel_mod = Gtk.accelerator_parse("Delete")
-        ev.state = Gtk.accelerator_get_default_mod_mask() & accel_mod
+    def a_delete_keypress():
+        """Return (keyval, state) for a Delete keypress."""
+        keyval, accel_mod = Gtk.accelerator_parse("Delete")
+        state = Gtk.accelerator_get_default_mod_mask() & accel_mod
+        return keyval, state
+
+    @staticmethod
+    def _make_key_event(keyval, state):
+        """Build a key-event-like object for qltk.is_accel."""
+
+        class _KeyEvent:
+            type = Gdk.EventType.KEY_PRESS
+
+        ev = _KeyEvent()
+        ev.keyval = keyval
+        ev.state = state
         return ev
 
     @staticmethod

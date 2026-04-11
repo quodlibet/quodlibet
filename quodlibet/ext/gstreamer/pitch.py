@@ -84,7 +84,14 @@ class Preferences(Gtk.Box):
             self.emit("changed")
 
         for idx, key in enumerate(["tempo", "rate", "pitch"]):
-            adjustment = Gtk.Adjustment(0, 0.1, 3, 0.1, 1, 0)
+            adjustment = Gtk.Adjustment(
+                value=0,
+                lower=0.1,
+                upper=3,
+                step_increment=0.1,
+                page_increment=1,
+                page_size=0,
+            )
             scale = Gtk.HScale(adjustment=adjustment)
             scale.set_digits(2)
             scale.add_mark(1.0, Gtk.PositionType.BOTTOM, None)

@@ -590,7 +590,7 @@ class WaveformScale(Gtk.Box):
     def remaining_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         if CONFIG.remaining_color:
             return parse_color(CONFIG.remaining_color)
-        default = context.get_color(context.get_state())
+        default = context.get_color()
         default.alpha = 0.35
         return default
 
@@ -760,7 +760,14 @@ class WaveformSeekBarPlugin(EventPlugin):
         label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
         hbox.append(label)
         seek_amount = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(CONFIG.seek_amount, 0, 60000, 1000, 1000, 0)
+            adjustment=Gtk.Adjustment(
+                value=CONFIG.seek_amount,
+                lower=0,
+                upper=60000,
+                step_increment=1000,
+                page_increment=1000,
+                page_size=0,
+            )
         )
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
@@ -771,7 +778,14 @@ class WaveformSeekBarPlugin(EventPlugin):
         label = Gtk.Label(label=_("Waveform height (pixels):"))
         hbox.append(label)
         height_px = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
+            adjustment=Gtk.Adjustment(
+                value=CONFIG.height_px,
+                lower=40,
+                upper=400,
+                step_increment=10,
+                page_increment=10,
+                page_size=0,
+            )
         )
         height_px.set_numeric(True)
         height_px.connect("changed", on_height_px_changed)

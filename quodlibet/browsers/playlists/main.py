@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gdk, Gtk, GLib, Pango
 
 import quodlibet
 from quodlibet import _
@@ -46,6 +46,23 @@ from .util import (
 )
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
+
+
+def _make_key_event(keyval, state):
+    """Build a minimal key-event-like object for use with qltk.is_accel.
+
+    EventControllerKey.key-pressed provides (keyval, keycode, state) rather
+    than a Gdk.Event, so we wrap them in a lightweight object that satisfies
+    the qltk.is_accel interface.
+    """
+
+    class _KeyEvent:
+        type = Gdk.EventType.KEY_PRESS
+
+    ev = _KeyEvent()
+    ev.keyval = keyval
+    ev.state = state
+    return ev
 
 
 class PlaylistsBrowser(Browser, DisplayPatternMixin):
@@ -276,7 +293,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.connect("row-activated", lambda *x: self.songs_activated())
         view.connect("popup-menu", self.__popup_menu, self.songs_lib)
         view.get_selection().connect("changed", self.activate)
-        self.connect("key-press-event", self.__key_pressed)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_pressed)
+        self.add_controller(key_controller)
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
@@ -298,7 +317,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         model, iters = self.__get_selected_songs()
         self.__remove_songs(iters, model)
 
-    def __key_pressed(self, widget, event):
+    def __key_pressed(self, controller, keyval, keycode, state):
+        event = _make_key_event(keyval, state)
         if qltk.is_accel(event, "Delete"):
             model, iter = self.__selected_playlists()
             if not iter:

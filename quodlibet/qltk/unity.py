@@ -10,10 +10,7 @@
 See the MPRIS plugin for sound menu integration.
 """
 
-import gi
-
 from quodlibet import _
-from quodlibet.util import gi_require_versions
 
 
 # Dbusmenu/Unity are GTK3-only and conflict with GTK4's type system

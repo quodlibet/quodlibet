@@ -760,7 +760,7 @@ def connect_obj(this, detailed_signal, handler, that, *args, **kwargs):
 
 def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     """Connect a bound method to a foreign object signal and disconnect
-    if the object the method is bound to emits destroy (Gtk.Widget subclass).
+    when the object the method is bound to is finalized (Gtk.Widget subclass).
 
     Also works if the handler is a nested function in a method and
     references the method's bound object.
@@ -782,10 +782,11 @@ def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
 
     handler_id = func(detailed_signal, handler, *args, **kwargs)
 
-    def disconnect_cb(*args):
+    def on_finalized(_dead_ref):
         sender.disconnect(handler_id)
 
-    obj.connect("destroy", disconnect_cb)
+    # GTK4: "destroy" signal removed from GtkWidget; use weak_ref notify instead
+    obj.weak_ref(on_finalized)
     return handler_id
 
 

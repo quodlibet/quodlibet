@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gio, Gtk
 
 from quodlibet import config
 from quodlibet.browsers.tracks import TrackList
@@ -266,14 +266,27 @@ class TSongList(TestCase):
     def test_check_sensible_menu_items(self):
         col = SongListColumn("title")
 
-        menu = self.songlist._menu(col)
-        submenus = [item.get_submenu() for item in menu.get_children()]
-        names = {
-            item.get_label()
-            for child in submenus
-            if child and not isinstance(child, Gtk.SeparatorMenuItem)
-            for item in child.get_children()
-        }
+        popover = self.songlist._menu(col)
+        menu_model = popover.get_menu_model()
+
+        def collect_submenu_item_labels(model):
+            """Collect all item labels from submenus in a Gio.Menu model."""
+            labels = set()
+            for i in range(model.get_n_items()):
+                submenu = model.get_item_link(i, Gio.MENU_LINK_SUBMENU)
+                if submenu is not None:
+                    for j in range(submenu.get_n_items()):
+                        label = submenu.get_item_attribute_value(
+                            j, Gio.MENU_ATTRIBUTE_LABEL, None
+                        )
+                        if label is not None:
+                            labels.add(label.get_string())
+                section = model.get_item_link(i, Gio.MENU_LINK_SECTION)
+                if section is not None:
+                    labels |= collect_submenu_item_labels(section)
+            return labels
+
+        names = collect_submenu_item_labels(menu_model)
         assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):

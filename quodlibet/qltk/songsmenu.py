@@ -269,6 +269,10 @@ class SongsMenu(Gtk.PopoverMenu):
     def init_plugins(cls):
         PluginManager.instance.register_handler(cls.plugins)
 
+    def __len__(self):
+        """Return the number of items (including separators) in this menu."""
+        return len(qltk.get_children(self))
+
     def __init__(
         self,
         library,
@@ -351,12 +355,6 @@ class SongsMenu(Gtk.PopoverMenu):
 
         if download:
             self.init_download(songs, folder_chooser)
-
-        def selection_done_cb(menu):
-            # GTK4: destroy() removed - menu cleaned up automatically
-            pass
-
-        self.connect("selection-done", selection_done_cb)
 
     def init_download(self, songs, folder_chooser):
         def is_downloadable(song: AudioFile):

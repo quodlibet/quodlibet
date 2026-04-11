@@ -12,7 +12,6 @@ try:
 except ImportError:
     dbus = None
 
-from quodlibet.fsn import fsnative
 
 from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app

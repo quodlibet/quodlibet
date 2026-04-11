@@ -32,7 +32,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def enabled(self):
         self.scrolled_window = sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.NONE)
+        sw.set_has_frame(False)
         # Create an overlay container
         self.overlay = overlay = Gtk.Overlay()
 
@@ -50,10 +50,10 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.textview.connect("key-press-event", self.key_press_event_cb)
         add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
-        overlay.add(sw)
+        overlay.set_child(sw)
         self._edit_button = Button(None, Icons.EDIT)
         self._edit_button.set_tooltip_text(_("Edit Lyrics"))
-        vbox = Gtk.Box(margin=6)
+        vbox = Gtk.Box(margin_start=6, margin_end=6, margin_top=6, margin_bottom=6)
         vbox.append(self._edit_button)
         vbox.set_valign(Gtk.Align.END)
         vbox.set_halign(Gtk.Align.END)

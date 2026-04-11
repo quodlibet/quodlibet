@@ -18,6 +18,7 @@ from quodlibet import library
 from quodlibet import get_user_dir
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PM
+from quodlibet.qltk import get_children
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util.path import strip_win32_incompat_from_path
 from tests.plugin import PluginTestCase
@@ -172,7 +173,7 @@ class TSyncToDevice(PluginTestCase):
         self.main_vbox = self._start_plugin()
 
         self.searches = {}
-        for button in self.plugin.saved_search_vbox.get_children():
+        for button in get_children(self.plugin.saved_search_vbox):
             self.searches[button] = button.get_active()
 
         self.dest_entry = self.plugin.destination_entry
@@ -212,7 +213,7 @@ class TSyncToDevice(PluginTestCase):
         )
 
     def _select_searches(self, *labels):
-        for button in self.plugin.saved_search_vbox.get_children():
+        for button in get_children(self.plugin.saved_search_vbox):
             if button.get_label() in labels:
                 button.set_active(True)
 
@@ -326,11 +327,11 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(len(self.plugin.queries), len(QUERIES))
         assert all(
             isinstance(button, ConfigCheckButton)
-            for button in self.plugin.saved_search_vbox.get_children()
+            for button in get_children(self.plugin.saved_search_vbox)
         )
         assert not any(
             button.get_active()
-            for button in self.plugin.saved_search_vbox.get_children()
+            for button in get_children(self.plugin.saved_search_vbox)
         )
 
         self.assertNotEqual(self.plugin.destination_entry.get_placeholder_text(), "")
@@ -355,7 +356,7 @@ class TSyncToDevice(PluginTestCase):
         assert not self.plugin.sync_stop_button.get_visible()
 
     def test_select_saved_search(self):
-        button = self.plugin.saved_search_vbox.get_children()[0]
+        button = get_children(self.plugin.saved_search_vbox)[0]
 
         button.set_active(True)
         assert button.get_active()

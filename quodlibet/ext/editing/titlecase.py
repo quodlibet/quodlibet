@@ -37,11 +37,6 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         self.human = self.config_get_bool("human_title_case", True)
 
         super().__init__(label=_("Title-_case Value"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(
-                Icons.TOOLS_CHECK_SPELLING, Gtk.IconSize.NORMAL
-            )
-        )
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod

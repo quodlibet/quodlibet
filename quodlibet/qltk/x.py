@@ -169,13 +169,30 @@ class Align(Gtk.Box):
         return self.get_first_child()
 
 
+class _MenuItemButton(Gtk.Button):
+    """A GTK4 widget-based menu item backed by a Button.
+
+    Provides set_submenu()/get_submenu() stubs so call sites that treat this
+    like a GTK3 MenuItem don't crash.  The submenu is not rendered in the
+    current widget-based fake-menu approach; it is stored only so that
+    code that checks get_submenu() can branch correctly.
+    """
+
+    _submenu: Gtk.Widget | None = None
+
+    def set_submenu(self, menu: Gtk.Widget | None) -> None:
+        self._submenu = menu
+
+    def get_submenu(self) -> Gtk.Widget | None:
+        return self._submenu
+
+
 def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
     """A GTK4 menu item using Button.
 
-    Note: In GTK4, menus should use Gio.Menu with actions, but for compatibility
-    we provide a widget-based fallback using Button."""
+    Returns a _MenuItemButton that exposes set_submenu()/get_submenu() for
+    compatibility with call sites that still use the GTK3 MenuItem API."""
 
-    # Create a box to hold icon and label if needed
     if icon_name:
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         image = Gtk.Image.new_from_icon_name(icon_name)
@@ -183,15 +200,14 @@ def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
         label_widget = Gtk.Label(label=label, use_underline=True)
         box.append(label_widget)
 
-        item = Gtk.Button()
+        item = _MenuItemButton()
         item.set_child(box)
     else:
-        item = Gtk.Button(label=label, use_underline=True)
+        item = _MenuItemButton(label=label, use_underline=True)
 
     if tooltip:
         item.set_tooltip_text(tooltip)
 
-    # Remove default button styling for menu-like appearance
     item.add_css_class("flat")
 
     return item
@@ -513,9 +529,9 @@ class HighlightToggleButton(Gtk.ToggleButton):
         style_context = self._dummy.get_style_context()
         style_context.save()
         style_context.set_state(Gtk.StateFlags.NORMAL)
-        a = style_context.get_color(style_context.get_state())
+        a = style_context.get_color()
         style_context.set_state(Gtk.StateFlags.CHECKED)
-        b = style_context.get_color(style_context.get_state())
+        b = style_context.get_color()
         same_color = a.to_string() == b.to_string()
         style_context.restore()
         if not same_color:
@@ -530,7 +546,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
         style_context = self.get_style_context()
         style_context.save()
         style_context.set_state(Gtk.StateFlags.VISITED)
-        color = style_context.get_color(style_context.get_state())
+        color = style_context.get_color()
         style_context.restore()
         if self._color != color.to_string():
             self._color = color.to_string()

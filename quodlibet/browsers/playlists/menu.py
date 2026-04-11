@@ -23,7 +23,9 @@ class PlaylistMenu(Gtk.PopoverMenu):
         i.connect("activate", self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
-        self.set_size_request(int(i.size_request().width * 2), -1)
+        # GTK4: size_request() removed; use measure() for size hints
+        min_w = i.measure(0, -1)[0]  # 0 = Gtk.Orientation.HORIZONTAL
+        self.set_size_request(min_w * 2, -1)
 
         for playlist in sorted(pl_lib):
             name = playlist.name
@@ -31,7 +33,9 @@ class PlaylistMenu(Gtk.PopoverMenu):
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)
-            i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
+            label_child = i.get_child()
+            if label_child is not None:
+                label_child.set_ellipsize(Pango.EllipsizeMode.END)
             i.connect("activate", self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 

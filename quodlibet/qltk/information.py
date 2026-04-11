@@ -54,7 +54,7 @@ class ReactiveCoverImage(CoverImage):
 
     def __init__(self, resize=False, size=DEFAULT_SIZE, song=None, tooltip=None):
         super().__init__(resize, size, song)
-        self.set_property("no-show-all", True)
+        self.set_visible(False)
 
         def show_cover(cover, success):
             if success:

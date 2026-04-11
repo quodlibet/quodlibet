@@ -108,7 +108,7 @@ class CoverGridContainer(ScrolledWindow):
         self._fb = fb
         fb.set_hadjustment(self.props.hadjustment)
         fb.set_vadjustment(self.props.vadjustment)
-        self.add(fb)
+        self.set_child(fb)
 
     def scroll_up(self):
         va = self.props.vadjustment
@@ -304,7 +304,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
         # view.connect("drag-data-get", self.__drag_data_get)
-        # view.connect("child-activated", self.__child_activated)
+        view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(

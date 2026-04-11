@@ -14,7 +14,7 @@ import quodlibet
 class TIconTheme(TestCase):
     def test_icon_theme(self):
         theme = Gtk.IconTheme.get_default()
-        theme.append_search_path(quodlibet.get_image_dir())
+        theme.add_search_path(quodlibet.get_image_dir())
 
         for i in [
             "io.github.quodlibet.QuodLibet",

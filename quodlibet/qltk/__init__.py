@@ -136,14 +136,17 @@ def redraw_all_toplevels():
         widget.set_sensitive(sensitive)
 
 
+_SONGS_CONTENT_TYPE = "text/x-quodlibet-songs"
+
+
 def selection_set_songs(selection_data, songs):
     """Stores filenames of the passed songs in a Gtk.SelectionData"""
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
         filenames.append(fsn2bytes(filename, "utf-8"))
-    type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-    selection_data.set(type_, 8, b"\x00".join(filenames))
+    # GTK4: Gdk.atom_intern() removed; content types are plain strings
+    selection_data.set(_SONGS_CONTENT_TYPE, 8, b"\x00".join(filenames))
 
 
 def selection_get_filenames(selection_data):
@@ -152,7 +155,9 @@ def selection_get_filenames(selection_data):
     """
 
     data_type = selection_data.get_data_type()
-    assert data_type.name() == "text/x-quodlibet-songs"
+    # GTK4: data_type is a string; GTK3: was a Gdk.Atom with .name()
+    type_name = data_type if isinstance(data_type, str) else data_type.name()
+    assert type_name == _SONGS_CONTENT_TYPE
 
     items = selection_data.get_data().split(b"\x00")
     return [bytes2fsn(i, "utf-8") for i in items]

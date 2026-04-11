@@ -14,7 +14,6 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
 from quodlibet.qltk import Icons
-from quodlibet.qltk import SeparatorMenuItem
 from quodlibet.util import format_rating
 
 
@@ -52,33 +51,36 @@ class RatingsMenuItem(Gtk.Button):
         box.append(Gtk.Label(label=label, use_underline=True))
         self.set_child(box)
 
-        # GTK4: Buttons don't have submenus; use popover with Box
+        # GTK4: Buttons don't have submenus; use a PopoverMenu as a fake submenu.
+        # Items are appended via the shim's append() so get_children() works.
         submenu = Gtk.PopoverMenu()
         submenu.set_parent(self)
         self._submenu = submenu
-        menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        submenu.set_child(menu_box)
 
         self._rating_menu_items = []
         for i in RATINGS.all:
             text = f"{i:0.2f}\t{format_rating(i)}"
             itm = Gtk.CheckButton(label=text)
             itm.rating = i
-            menu_box.append(itm)
+            submenu.append(itm)
             handler = itm.connect("toggled", self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
 
-        menu_box.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
+        submenu.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
         reset = Gtk.Button(label=_("_Remove Rating"), use_underline=True)
         reset.add_css_class("flat")
         reset.connect("clicked", self._on_rating_remove, library)
-        menu_box.append(reset)
+        submenu.append(reset)
 
         self._select_ratings()
 
         # Connect button to show popover
         self.connect("clicked", lambda w: self._submenu.popup())
+
+    def get_submenu(self):
+        """Return the ratings popover for compatibility with MenuItem-style access."""
+        return self._submenu
 
     def set_songs(self, songs):
         """Set a new set of songs affected by the rating menu"""

@@ -311,7 +311,6 @@ class StatusBar(Gtk.Box):
         self.append(self.task_widget)
 
         self.show_all()
-        self.set_no_show_all(True)
         self.__set_shown("default")
         self.connect("destroy", self.__destroy)
 

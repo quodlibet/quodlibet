@@ -40,7 +40,7 @@ from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy, format_int_locale
@@ -143,7 +143,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         vb.append(Align(bbox, border=6))
         vb.show_all()
 
-        hp.pack1(vb, resize=True, shrink=False)
+        hp.set_start_child(vb)
+        hp.set_resize_start_child(True)
+        hp.set_shrink_start_child(False)
 
         nb = qltk.Notebook()
         nb.props.scrollable = True
@@ -152,7 +154,9 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             page = Page(self, self.__library)
             page.show()
             nb.append_page(page)
-        hp.pack2(nb, resize=True, shrink=False)
+        hp.set_end_child(nb)
+        hp.set_resize_end_child(True)
+        hp.set_shrink_end_child(False)
         fs.connect("changed", self.__changed, l)
         if dir:
             fs.go_to(dir)
@@ -161,12 +165,12 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
         self.__save = None
         connect_obj(self, "changed", self.set_pending, None)
-        for c in get_children(fs):
-            c.get_child().connect(
+        for sw in (fs.get_start_child(), fs.get_end_child()):
+            sw.get_child().connect(
                 "button-press-event", self.__pre_selection_changed, fs, nb
             )
-            c.get_child().connect("focus", self.__pre_selection_changed, fs, nb)
-        get_children(fs)[1].get_child().connect("popup-menu", self.__popup_menu, fs)
+            sw.get_child().connect("focus", self.__pre_selection_changed, fs, nb)
+        fs.get_end_child().get_child().connect("popup-menu", self.__popup_menu, fs)
         self.emit("changed", [])
 
         self.get_child().show()
@@ -176,9 +180,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
-        # GtkosxApplication assumes the menu bar is mapped, so add
-        # it but don't show it.
-        self._dummy_osx_menu_bar = Gtk.MenuBar()
+        # GTK4: Gtk.MenuBar removed; macOS native menu integration is not
+        # supported in GTK4 via GtkosxApplication the same way.
+        # TODO GTK4: investigate macOS menu bar integration for GTK4
+        self._dummy_osx_menu_bar = Gtk.Box()
+        self._dummy_osx_menu_bar.set_visible(False)
         vb.prepend(self._dummy_osx_menu_bar)
 
     def __library_changed(self, library, songs, fs):

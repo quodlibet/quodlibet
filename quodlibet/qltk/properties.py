@@ -118,7 +118,9 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         if len(songs) > 1:
             sw.show_all()
 
-        paned.pack1(sw, shrink=False, resize=True)
+        paned.set_start_child(sw)
+        paned.set_resize_start_child(True)
+        paned.set_shrink_start_child(False)
 
         for song in songs:
             fbasemodel.append(row=[_ListEntry(song)])
@@ -126,7 +128,9 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         self.connect("changed", self.__on_changed)
 
         selection.select_all()
-        paned.pack2(notebook, shrink=False, resize=True)
+        paned.set_end_child(notebook)
+        paned.set_resize_end_child(True)
+        paned.set_shrink_end_child(False)
 
         csig = selection.connect("changed", self.__selection_changed)
         connect_destroy(

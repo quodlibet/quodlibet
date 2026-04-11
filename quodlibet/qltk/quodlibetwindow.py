@@ -592,7 +592,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.song_scroller.show()
 
         self.qexpander = QueueExpander(library, player)
-        self.qexpander.set_no_show_all(True)
         self.qexpander.set_visible(config.getboolean("memory", "queue"))
 
         def on_queue_visible(qex, param):
@@ -739,7 +738,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def add_sidebar_to_layout(self, widget):
         print_d("Recreating sidebar")
         align = Align(widget, top=6, bottom=3)
-        self.__paned.pack2(align, shrink=True)
+        self.__paned.set_end_child(align)
+        self.__paned.set_resize_end_child(True)
+        self.__paned.set_shrink_end_child(True)
 
     @property
     def side_book_empty(self):

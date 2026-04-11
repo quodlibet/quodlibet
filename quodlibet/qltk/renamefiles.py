@@ -71,7 +71,7 @@ class ReplaceColons(FilterCheckButton):
         if os.name == "nt":
             self.set_active(False)
             self.set_sensitive(False)
-            self.set_no_show_all(True)
+            self.set_visible(False)
 
     def filter(self, original, filename):
         regx = re.compile(r"\s*[:;]\s+\b")
@@ -90,7 +90,7 @@ class StripWindowsIncompat(FilterCheckButton):
         if os.name == "nt":
             self.set_active(False)
             self.set_sensitive(False)
-            self.set_no_show_all(True)
+            self.set_visible(False)
 
     def filter(self, original, filename):
         return strip_win32_incompat_from_path(filename)

@@ -9,7 +9,6 @@
 import os
 import socket
 
-from quodlibet.fsn import fsnative
 
 from quodlibet.formats import AudioFile
 from quodlibet import app

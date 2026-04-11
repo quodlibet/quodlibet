@@ -334,7 +334,7 @@ def _main_setup_osx(window):
 
 def run(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk, GLib
+    from gi.repository import GLib
     from quodlibet._init import is_init
 
     assert is_init()

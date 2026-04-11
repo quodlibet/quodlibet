@@ -296,7 +296,6 @@ def _init_gtk():
             # GTK4 doesn't have insert_child_after with position number
             # This is a simplified implementation
             if position == 0:
-                children = []
                 first = self.get_first_child()
                 if first:
                     self.reorder_child_after(child, None)  # Insert at start
@@ -420,7 +419,7 @@ def _init_gtk():
             width, height
         )
 
-    # GTK4: Box.add() → Box.append() (or prepend depending on context, append is default)
+    # GTK4: Box.add() -> Box.append()
     if not hasattr(Gtk.Box, "add"):
         Gtk.Box.add = lambda self, child: self.append(child)
 
@@ -770,6 +769,10 @@ def _init_gtk():
             def set_submenu(self, menu):
                 """Store submenu reference (not fully implemented in GTK4 shim)"""
                 self._submenu = menu
+
+            def get_submenu(self):
+                """Return stored submenu reference"""
+                return getattr(self, "_submenu", None)
 
         Gtk.MenuItem = MenuItem
 
@@ -1151,6 +1154,10 @@ def _init_gtk():
 
     def _label_init_compat(self, *args, **kwargs):
         kwargs.pop("no_show_all", None)
+        # GTK4: Label requires label= as keyword argument
+        if args and "label" not in kwargs:
+            kwargs["label"] = args[0]
+            args = args[1:]
         return _orig_label_init(self, *args, **kwargs)
 
     Gtk.Label.__init__ = _label_init_compat
@@ -1367,10 +1374,6 @@ def _init_gtk():
     )
 
     settings = Gtk.Settings.get_default()
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        # settings.set_property("gtk-button-images", True)
-        # settings.set_property("gtk-menu-images", True)
     if hasattr(settings.props, "gtk_primary_button_warps_slider"):
         # https://bugzilla.gnome.org/show_bug.cgi?id=737843
         settings.set_property("gtk-primary-button-warps-slider", True)

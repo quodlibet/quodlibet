@@ -13,7 +13,6 @@
 
 import os
 
-import cairo
 from gi.repository import Gtk, Pango, GLib, Gio
 
 import quodlibet
@@ -28,7 +27,7 @@ from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.image import add_border_widget
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.properties import SongProperties
@@ -483,15 +482,15 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         cls.__library = library
 
     @util.cached_property
-    def _no_cover(self) -> cairo.Surface | None:
-        """Returns a cairo surface representing a missing cover"""
+    def _no_cover(self):
+        """Returns a pixbuf representing a missing cover"""
 
         cover_size = get_cover_size()
         scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         if not pb:
             raise OSError("Can't find / scale missing art image")
-        return get_surface_for_pixbuf(self, pb)
+        return pb
 
     def __init__(self, library):
         super().__init__(spacing=6)
@@ -525,20 +524,19 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
             item = model.get_value(iter_)
 
             if item.album is None:
-                surface = None
+                pixbuf = None
             elif item.cover:
                 pixbuf = item.cover
-                pixbuf = add_border_widget(pixbuf, self.view)
-                surface = get_surface_for_pixbuf(self, pixbuf) or no_cover
+                pixbuf = add_border_widget(pixbuf, self.view) or no_cover
                 # don't cache, too much state has an effect on the result
                 self.__last_render_surface = None
             else:
-                surface = no_cover
+                pixbuf = no_cover
 
-            if self.__last_render_surface == surface:
+            if self.__last_render_surface == pixbuf:
                 return
-            self.__last_render_surface = surface
-            cell.set_property("surface", surface)
+            self.__last_render_surface = pixbuf
+            cell.set_property("pixbuf", pixbuf)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)

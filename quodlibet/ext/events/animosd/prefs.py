@@ -38,10 +38,12 @@ class AnimOsdPrefs(Gtk.Box):
         self.plugin = plugin
 
         def __coltofloat(x):
-            return x / 65535.0
+            # GTK4: Gdk.RGBA uses 0.0-1.0; no conversion needed from float config
+            return x
 
         def __floattocol(x):
-            return int(x * 65535)
+            # GTK4: Gdk.RGBA uses 0.0-1.0; no conversion needed
+            return x
 
         def show_preview():
             preview_song = app.player.song if app.player.song else DUMMY_SONG
@@ -51,21 +53,17 @@ class AnimOsdPrefs(Gtk.Box):
             show_preview()
 
         def set_text(button):
-            color = button.get_color()
-            color = map(__coltofloat, (color.red, color.green, color.blue, 0.0))
-            self.Conf.text = tuple(color)
+            rgba = button.get_rgba()
+            self.Conf.text = (rgba.red, rgba.green, rgba.blue, rgba.alpha)
             show_preview()
 
         def set_fill(button):
-            color = button.get_color()
-            color = map(
-                __coltofloat, (color.red, color.green, color.blue, button.get_alpha())
-            )
-            self.Conf.fill = tuple(color)
+            rgba = button.get_rgba()
+            self.Conf.fill = (rgba.red, rgba.green, rgba.blue, rgba.alpha)
             show_preview()
 
         def set_font(button):
-            font = button.get_font_name()
+            font = button.get_font()
             self.Conf.font = font
             show_preview()
 
@@ -133,7 +131,7 @@ class AnimOsdPrefs(Gtk.Box):
             vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
             hb = Gtk.Box(spacing=6)
             # Set monitor to display OSD on if there's more than one
-            monitor_cnt = Gdk.Display.get_default().get_n_monitors()
+            monitor_cnt = Gdk.Display.get_default().get_monitors().get_n_items()
             if monitor_cnt > 1:
                 adj = Gtk.Adjustment(
                     value=self.Conf.monitor,
@@ -209,8 +207,8 @@ class AnimOsdPrefs(Gtk.Box):
             t.set_col_spacings(6)
             t.set_row_spacings(3)
 
-            font = Gtk.FontButton(show_style=True)
-            font.set_font_name(self.Conf.font)
+            font = Gtk.FontButton()
+            font.set_font(self.Conf.font)
             font.connect("font-set", set_font)
             lbl = ConfigLabel(_("_Font:"), font)
             t.attach(lbl, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
@@ -237,17 +235,15 @@ class AnimOsdPrefs(Gtk.Box):
             t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
-            b = Gtk.ColorButton(rgba=Gdk.RGBA(*map(__floattocol, self.Conf.text)))
+            b = Gtk.ColorButton(rgba=Gdk.RGBA(*self.Conf.text))
             l = ConfigLabel(_("_Text:"), b)
 
             t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(b, 1, 2, 0, 1)
             b.connect("color-set", set_text)
-            b = Gtk.ColorButton(
-                color=Gdk.Color(*map(__floattocol, self.Conf.fill[0:3]))
-            )
+            fill = self.Conf.fill
+            b = Gtk.ColorButton(rgba=Gdk.RGBA(*fill))
             b.set_use_alpha(True)
-            b.set_alpha(__floattocol(self.Conf.fill[3]))
             b.connect("color-set", set_fill)
             l = ConfigLabel(_("_Fill:"), b)
             t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)

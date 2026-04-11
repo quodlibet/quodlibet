@@ -86,7 +86,13 @@ class Preferences(Gtk.Box):
         preview = Gtk.Label()
         preview.set_line_wrap(True)
         preview_frame = Gtk.Frame(label=_("Preview"))
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin=18)
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+            margin_top=18,
+            margin_bottom=18,
+            margin_start=18,
+            margin_end=18,
+        )
         vbox.append(preview)
         preview_frame.add(vbox)
         box.append(preview_frame)

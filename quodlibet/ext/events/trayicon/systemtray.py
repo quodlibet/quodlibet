@@ -39,18 +39,30 @@ def get_paused_pixbuf(boundary, diff):
     if diff < 0:
         raise ValueError("diff has to be >= 0")
 
-    names = (Icons.MEDIA_PLAYBACK_PAUSE,)
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
 
-    # Get the suggested icon
-    info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
-    if not info:
+    # GTK4: choose_icon() removed; use lookup_icon() instead
+    paintable = theme.lookup_icon(
+        Icons.MEDIA_PLAYBACK_PAUSE,
+        None,
+        size,
+        1,
+        Gtk.TextDirection.NONE,
+        Gtk.IconLookupFlags(0),
+    )
+    if not paintable:
         return None
 
     try:
-        pixbuf = info.load_icon()
+        icon_file = paintable.get_file()
+        if icon_file is None:
+            return None
+        icon_path = icon_file.get_path()
+        if icon_path is None:
+            return None
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_path)
     except GLib.GError:
-        pass
+        return None
     else:
         # In case it is too big, rescale
         pb_size = min(pixbuf.get_height(), pixbuf.get_width())

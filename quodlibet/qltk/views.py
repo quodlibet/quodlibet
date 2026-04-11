@@ -14,7 +14,7 @@ import os
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
-from quodlibet import _, print_e, util
+from quodlibet import print_e
 from quodlibet import config
 from quodlibet.qltk import (
     get_top_parent,

@@ -420,7 +420,6 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         errors.connect("clicked", self.__show_errors)
         errors.show()
         errors = Align(errors, top=6, bottom=6)
-        errors.set_no_show_all(True)
         bbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         bbox.prepend(errors)
 
@@ -445,7 +444,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         align_bbox.set_margin_top(3)
         vbox.append(align_bbox)
         paned = Paned()
-        paned.pack1(vbox, False, False)
+        paned.set_start_child(vbox)
+        paned.set_resize_start_child(False)
+        paned.set_shrink_start_child(False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
@@ -465,7 +466,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             right_box.append(bb_align)
 
         align = Align(right_box, left=6, right=15, top=12, bottom=3)
-        paned.pack2(align, True, False)
+        paned.set_end_child(align)
+        paned.set_resize_end_child(True)
+        paned.set_shrink_end_child(False)
         paned.set_position(290)
 
         self.add(paned)

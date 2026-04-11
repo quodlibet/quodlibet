@@ -37,25 +37,25 @@ class BigCenteredImage(qltk.Window):
         parent = qltk.get_top_parent(parent)
         self.set_transient_for(parent)
 
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-
         # If image fails to set, abort construction.
         if not self.set_image(fileobj, parent, scale):
-            # GTK4: destroy() removed - self cleaned up automatically
             return
 
         event_box = Gtk.Box()
-        event_box.add(self.__image)
+        event_box.append(self.__image)
 
         frame = Gtk.Frame()
-        frame.add(event_box)
+        frame.set_child(event_box)
 
-        self.add(frame)
+        self.set_child(frame)
 
-        event_box.connect("button-press-event", self.__destroy)
-        event_box.connect("key-press-event", self.__destroy)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__destroy)
+        event_box.add_controller(click)
 
-        self.get_child().show_all()
+        key = Gtk.EventControllerKey()
+        key.connect("key-pressed", self.__destroy)
+        event_box.add_controller(key)
 
     def set_image(self, file, parent, scale=0.5):
         scale_factor = self.get_scale_factor()
@@ -73,20 +73,24 @@ class BigCenteredImage(qltk.Window):
             return False
 
         self.__image = Gtk.Image()
-        self.__image.set_from_surface(get_surface_for_pixbuf(self, pixbuf))
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.__image.set_from_paintable(texture)
 
         return True
 
     def __calculate_screen_width(self, parent, scale=0.5):
-        # GTK4: get_size() removed, use get_width()/get_height()
         width, height = parent.get_width(), parent.get_height()
+        # Fall back to a reasonable default if the window is not yet realized
+        if width <= 0:
+            width = 800
+        if height <= 0:
+            height = 600
         width = int(width * scale)
         height = int(height * scale)
         return (width, height)
 
     def __destroy(self, *args):
-        # GTK4: destroy() removed - self cleaned up automatically
-        pass
+        self.destroy()
 
 
 def get_no_cover_pixbuf(width, height, scale_factor=1):
@@ -253,11 +257,11 @@ class CoverImage(Gtk.Box):
         self.__cancellable = None
         self._scale = 0.9
 
-        self.add(ResizeImage(resize, size))
-        self.connect("button-press-event", self.__album_clicked)
+        self.append(ResizeImage(resize, size))
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__album_clicked)
+        self.add_controller(click)
         self.set_song(song)
-        # GTK4: Box.get_child() → Box.get_first_child()
-        self.get_first_child().show_all()
 
     def set_image(self, _file):
         if _file is not None and not _file.name:
@@ -309,18 +313,15 @@ class CoverImage(Gtk.Box):
     def __reset_bci(self, bci):
         self.__current_bci = None
 
-    def __album_clicked(self, box, event):
+    def __album_clicked(self, gesture, n_press, x, y):
         song = self.__song
         if not song:
-            return None
+            return
 
-        if (
-            event.type != Gdk.EventType.BUTTON_PRESS
-            or event.button == Gdk.BUTTON_MIDDLE
-        ):
-            return False
+        if gesture.get_current_button() == Gdk.BUTTON_MIDDLE:
+            return
 
-        return self.__show_cover(song, scale=self._scale)
+        self.__show_cover(song, scale=self._scale)
 
     def __show_cover(self, song, scale=0.5):
         """Show the cover as a detached BigCenteredImage.

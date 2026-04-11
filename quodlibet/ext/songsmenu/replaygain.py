@@ -367,14 +367,14 @@ class RGDialog(Dialog):
         hbox = Gtk.Box(spacing=6)
         info = Gtk.Label()
         hbox.append(info)
-        self.vbox.append(hbox)
+        self.get_content_area().append(hbox)
 
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        self.vbox.append(swin)
+        self.get_content_area().append(swin)
         view = HintedTreeView()
-        swin.add(view)
+        swin.set_child(view)
 
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]

@@ -96,7 +96,7 @@ class TagsFromPathPlugin:
         return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
-class EditTagsPlugin(Gtk.Widget):
+class EditTagsPlugin(Gtk.MenuItem):
     """Plugins will be added to the context menu of the EditTags tree view.
 
     The 'tags' attribute is a list of tags this plugin should appear on,

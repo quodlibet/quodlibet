@@ -54,7 +54,11 @@ class RPaned(Paned):
 
     def do_size_allocate(self, width, height, baseline):
         if not self.__alloced and self.__relative is not None:
-            max_pos = width if self.get_orientation() == Gtk.Orientation.HORIZONTAL else height
+            max_pos = (
+                width
+                if self.get_orientation() == Gtk.Orientation.HORIZONTAL
+                else height
+            )
             if max_pos > 0:
                 self.set_position(int(round(self.__relative * max_pos)))
         self.__alloced = True

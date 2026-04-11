@@ -63,7 +63,6 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         parent = get_top_parent(parent)
         super().__init__(
             transient_for=parent,
-            flags=0,
             message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE,
         )

@@ -104,28 +104,39 @@ class TDirectoryTree(TestCase):
         dt = DirectoryTree(None, folders=self.ROOTS)
         menu = dt._create_menu()
         dt._popup_menu(menu)
-        children = menu.get_children()
-        self.assertEqual(len(children), 4)
-        delete = children[1]
-        self.assertEqual(delete.get_label(), __("_Delete"))
-        assert delete.get_sensitive()
+        ag = dt._action_group
+        # 4 actions: new-folder, delete, refresh, expand
+        self.assertEqual(len(list(ag.list_actions())), 4)
+        delete_action = ag.lookup_action("delete")
+        self.assertIsNotNone(delete_action)
+        # Verify the Gio.Menu has the right label for the delete item
+        gio_model = menu.gio_model
+        delete_label = gio_model.get_item_attribute_value(1, "label").get_string()
+        self.assertEqual(delete_label, __("_Delete"))
+        assert delete_action.get_enabled()
 
     def test_multiple_selections(self):
         dt = DirectoryTree(None, folders=self.ROOTS)
         menu = dt._create_menu()
         dt._popup_menu(menu)
-        children = menu.get_children()
-        select_sub = children[3]
-        assert "sub-folders" in select_sub.get_label().lower()
-        assert select_sub.get_sensitive()
+        ag = dt._action_group
+        gio_model = menu.gio_model
+        expand_label = gio_model.get_item_attribute_value(3, "label").get_string()
+        assert "sub-folders" in expand_label.lower()
+        expand_action = ag.lookup_action("expand")
+        assert expand_action.get_enabled()
         sel = dt.get_selection()
         model = dt.get_model()
         for it, _pth in model.iterrows(None):
             sel.select_iter(it)
-        assert select_sub.get_sensitive(), "Select All should work for multiple"
+        dt._popup_menu(menu)
+        assert expand_action.get_enabled(), "Select All should work for multiple"
+        new_folder_action = ag.lookup_action("new-folder")
         msg = "New Folder should be disabled for multiple"
-        assert not children[0].get_sensitive(), msg
-        assert children[3].get_sensitive(), "Refresh should be enabled for multiple"
+        assert not new_folder_action.get_enabled(), msg
+        assert ag.lookup_action(
+            "refresh"
+        ).get_enabled(), "Refresh should be enabled for multiple"
 
 
 class TFileSelector(TestCase):

@@ -132,7 +132,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         if not self.has_close_button():
             main_box.append(b)
-        self.add(main_box)
+        self.set_child(main_box)
 
         close.grab_focus()
         self.show_all()

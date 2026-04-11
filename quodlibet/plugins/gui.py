@@ -85,6 +85,10 @@ class MenuItemPlugin(Gtk.Button):
         """Store submenu reference for GTK4 compatibility"""
         self._submenu = menu
 
+    def get_submenu(self):
+        """Return stored submenu reference"""
+        return getattr(self, "_submenu", None)
+
     @property
     def plugin_window(self):
         return get_menu_item_top_parent(self)

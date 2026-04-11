@@ -197,9 +197,6 @@ class TagSplitter(EditTagsPlugin):
 class SplitValues(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=_("Split into _Multiple Values"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
-        )
         spls = config.gettext("editing", "split_on").split()
         vals = [
             val if len(val) <= 64 else val[:64] + "…"
@@ -221,9 +218,6 @@ class SplitDisc(TagSplitter):
 
     def __init__(self, tag, value):
         super().__init__(label=_("Split Disc out of _Album"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
-        )
 
         album, disc = split_album(value)
         if disc is not None:
@@ -244,9 +238,6 @@ class SplitTitle(TagSplitter):
 
     def __init__(self, tag, value):
         super().__init__(label=_("Split _Version out of Title"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
-        )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
 
@@ -274,9 +265,6 @@ class SplitPerson(TagSplitter):
 
     def __init__(self, tag, value):
         super().__init__(label=self.title, use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.NORMAL)
-        )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
 
@@ -333,7 +321,7 @@ class AddTagDialog(Dialog):
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         add = self.add_icon_button(_("_Add"), Icons.LIST_ADD, Gtk.ResponseType.OK)
-        self.vbox.set_spacing(6)
+        self.get_content_area().set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
         table = Gtk.Grid()
         table.set_row_spacing(12)
@@ -370,7 +358,7 @@ class AddTagDialog(Dialog):
         table.attach(label, 0, 1, 1, 1)
         table.attach(valuebox, 1, 1, 1, 1)
         hbox = Gtk.Box()
-        valuebox.add(hbox)
+        valuebox.append(hbox)
         hbox.append(self.__val)
         hbox.set_spacing(6)
         invalid = Gtk.Image.new_from_icon_name(
@@ -378,7 +366,7 @@ class AddTagDialog(Dialog):
         )
         hbox.append(invalid)
 
-        self.vbox.append(table)
+        self.get_content_area().append(table)
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:

@@ -485,6 +485,8 @@ class QuestionBar(Gtk.InfoBar):
 
     def __init__(self):
         super().__init__()
+        # GTK4: widgets are visible by default; start hidden until needed
+        self.set_visible(False)
         self.connect("response", self.__response)
         self.set_message_type(Gtk.MessageType.QUESTION)
 

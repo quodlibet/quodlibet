@@ -12,7 +12,6 @@
 from collections.abc import Sequence
 
 from gi.repository import Gtk, GLib, Gdk, Gio, GObject
-from quodlibet.fsn import uri2fsn
 
 from quodlibet import app, print_w, print_d
 from quodlibet import config
@@ -32,7 +31,6 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
-from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
 
@@ -239,7 +237,6 @@ class SongListDnDMixin(GObject.GObject):
 
     def disable_drop(self):
         """Disable drop target."""
-        pass
 
     # --- Drag Source callbacks ---
 
@@ -1275,9 +1272,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         ]:
             submenu_model = Gio.Menu()
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
-                action_name = (
-                    "toggle-sub." + tag.replace("~", "_").replace("#", "n")
-                )
+                action_name = "toggle-sub." + tag.replace("~", "_").replace("#", "n")
                 active = tag in current_set
                 action = Gio.SimpleAction.new_stateful(
                     action_name, None, GLib.Variant.new_boolean(active)
