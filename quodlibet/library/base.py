@@ -31,7 +31,7 @@ from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import mkdir, is_hidden
-from senf import fsnative, path2fsn
+from quodlibet.fsn import fsnative, path2fsn
 
 K = TypeVar("K", covariant=True)
 V = TypeVar("V", bound=HasKey)

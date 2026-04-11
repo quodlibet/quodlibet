@@ -1,37 +1,19 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import sys
 import os
 import ctypes
 import re
+from typing import Any, TYPE_CHECKING
 
-from ._fsnative import _encoding, is_win, is_unix, _surrogatepass, bytes2fsn
-from ._compat import text_type, PY2, PY3
+from ._fsnative import _encoding, is_unix, bytes2fsn, fsnative
 from ._winansi import AnsiState, ansi_split
 from . import _winapi as winapi
 
 
-def print_(*objects, **kwargs):
+def _print_(*objects, **kwargs):
     """print_(*objects, sep=None, end=None, file=None, flush=False)
 
     Args:
@@ -62,10 +44,16 @@ def print_(*objects, **kwargs):
     file = file if file is not None else sys.stdout
     flush = bool(kwargs.get("flush", False))
 
-    if is_win:
+    if sys.platform == "win32":
         _print_windows(objects, sep, end, file, flush)
     else:
         _print_unix(objects, sep, end, file, flush)
+
+
+if TYPE_CHECKING:
+    print_ = print
+else:
+    print_ = _print_
 
 
 def _print_unix(objects, sep, end, file, flush):
@@ -73,33 +61,28 @@ def _print_unix(objects, sep, end, file, flush):
 
     encoding = _encoding
 
-    if isinstance(sep, text_type):
+    if isinstance(sep, str):
         sep = sep.encode(encoding, "replace")
     if not isinstance(sep, bytes):
         raise TypeError
 
-    if isinstance(end, text_type):
+    if isinstance(end, str):
         end = end.encode(encoding, "replace")
     if not isinstance(end, bytes):
         raise TypeError
 
     if end == b"\n":
-        end = os.linesep
-        if PY3:
-            end = end.encode("ascii")
+        end = os.linesep.encode("ascii")
 
     parts = []
     for obj in objects:
-        if not isinstance(obj, text_type) and not isinstance(obj, bytes):
-            obj = text_type(obj)
-        if isinstance(obj, text_type):
-            if PY2:
+        if not isinstance(obj, str) and not isinstance(obj, bytes):
+            obj = str(obj)
+        if isinstance(obj, str):
+            try:
+                obj = obj.encode(encoding, "surrogateescape")
+            except UnicodeEncodeError:
                 obj = obj.encode(encoding, "replace")
-            else:
-                try:
-                    obj = obj.encode(encoding, "surrogateescape")
-                except UnicodeEncodeError:
-                    obj = obj.encode(encoding, "replace")
         assert isinstance(obj, bytes)
         parts.append(obj)
 
@@ -111,15 +94,11 @@ def _print_unix(objects, sep, end, file, flush):
     try:
         file.write(data)
     except TypeError:
-        if PY3:
-            # For StringIO, first try with surrogates
-            surr_data = data.decode(encoding, "surrogateescape")
-            try:
-                file.write(surr_data)
-            except (TypeError, ValueError):
-                file.write(data.decode(encoding, "replace"))
-        else:
-            # for file like objects with don't support bytes
+        # For StringIO, first try with surrogates
+        surr_data = data.decode(encoding, "surrogateescape")
+        try:
+            file.write(surr_data)
+        except (TypeError, ValueError):
             file.write(data.decode(encoding, "replace"))
 
     if flush:
@@ -136,7 +115,7 @@ def _print_windows(objects, sep, end, file, flush):
 
     try:
         fileno = file.fileno()
-    except (EnvironmentError, AttributeError):
+    except (OSError, AttributeError):
         pass
     else:
         if fileno == 1:
@@ -150,25 +129,25 @@ def _print_windows(objects, sep, end, file, flush):
     for obj in objects:
         if isinstance(obj, bytes):
             obj = obj.decode(encoding, "replace")
-        if not isinstance(obj, text_type):
-            obj = text_type(obj)
+        if not isinstance(obj, str):
+            obj = str(obj)
         parts.append(obj)
 
     if isinstance(sep, bytes):
         sep = sep.decode(encoding, "replace")
-    if not isinstance(sep, text_type):
+    if not isinstance(sep, str):
         raise TypeError
 
     if isinstance(end, bytes):
         end = end.decode(encoding, "replace")
-    if not isinstance(end, text_type):
+    if not isinstance(end, str):
         raise TypeError
 
-    if end == u"\n":
+    if end == "\n":
         end = os.linesep
 
     text = sep.join(parts) + end
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     is_console = True
     if h == winapi.INVALID_HANDLE_VALUE:
@@ -195,7 +174,7 @@ def _print_windows(objects, sep, end, file, flush):
                     ansi_state.apply(h, part)
                 else:
                     if encoding is not None:
-                        data = part.encode(encoding, _surrogatepass)
+                        data = part.encode(encoding, "surrogatepass")
                     else:
                         data = _encode_codepage(cp, part)
                     os.write(fileno, data)
@@ -206,7 +185,7 @@ def _print_windows(objects, sep, end, file, flush):
         # try writing bytes first, so in case of Python 2 StringIO we get
         # the same type on all platforms
         try:
-            file.write(text.encode("utf-8", _surrogatepass))
+            file.write(text.encode("utf-8", "surrogatepass"))
         except (TypeError, ValueError):
             file.write(text)
 
@@ -219,7 +198,7 @@ def _readline_windows():
 
     try:
         fileno = sys.stdin.fileno()
-    except (EnvironmentError, AttributeError):
+    except (OSError, AttributeError):
         fileno = -1
 
     # In case stdin is replaced, read from that
@@ -234,16 +213,15 @@ def _readline_windows():
     buf = ctypes.create_string_buffer(buf_size * ctypes.sizeof(winapi.WCHAR))
     read = winapi.DWORD()
 
-    text = u""
+    text = ""
     while True:
-        if winapi.ReadConsoleW(
-                h, buf, buf_size, ctypes.byref(read), None) == 0:
+        if winapi.ReadConsoleW(h, buf, buf_size, ctypes.byref(read), None) == 0:
             if not text:
                 return _readline_windows_fallback()
             raise ctypes.WinError()
-        data = buf[:read.value * ctypes.sizeof(winapi.WCHAR)]
-        text += data.decode("utf-16-le", _surrogatepass)
-        if text.endswith(u"\r\n"):
+        data = buf[: read.value * ctypes.sizeof(winapi.WCHAR)]
+        text += data.decode("utf-16-le", "surrogatepass")
+        if text.endswith("\r\n"):
             return text[:-2]
 
 
@@ -262,7 +240,7 @@ def _decode_codepage(codepage, data):
     assert isinstance(data, bytes)
 
     if not data:
-        return u""
+        return ""
 
     # get the required buffer length first
     length = winapi.MultiByteToWideChar(codepage, 0, data, len(data), None, 0)
@@ -271,8 +249,7 @@ def _decode_codepage(codepage, data):
 
     # now decode
     buf = ctypes.create_unicode_buffer(length)
-    length = winapi.MultiByteToWideChar(
-        codepage, 0, data, len(data), buf, length)
+    length = winapi.MultiByteToWideChar(codepage, 0, data, len(data), buf, length)
     if length == 0:
         raise ctypes.WinError()
 
@@ -291,24 +268,23 @@ def _encode_codepage(codepage, text):
     can't be encoded using that codepage.
     """
 
-    assert isinstance(text, text_type)
+    assert isinstance(text, str)
 
     if not text:
         return b""
 
-    size = (len(text.encode("utf-16-le", _surrogatepass)) //
-            ctypes.sizeof(winapi.WCHAR))
+    size = len(text.encode("utf-16-le", "surrogatepass")) // ctypes.sizeof(winapi.WCHAR)
 
     # get the required buffer size
-    length = winapi.WideCharToMultiByte(
-        codepage, 0, text, size, None, 0, None, None)
+    length = winapi.WideCharToMultiByte(codepage, 0, text, size, None, 0, None, None)
     if length == 0:
         raise ctypes.WinError()
 
     # decode to the buffer
     buf = ctypes.create_string_buffer(length)
     length = winapi.WideCharToMultiByte(
-        codepage, 0, text, size, buf, length, None, None)
+        codepage, 0, text, size, buf, length, None, None
+    )
     if length == 0:
         raise ctypes.WinError()
     return buf[:length]
@@ -318,7 +294,7 @@ def _readline_windows_fallback():
     # In case reading from the console failed (maybe we get piped data)
     # we assume the input was generated according to the output encoding.
     # Got any better ideas?
-    assert is_win
+    assert sys.platform == "win32"
     cp = winapi.GetConsoleOutputCP()
     data = getattr(sys.stdin, "buffer", sys.stdin).readline().rstrip(b"\r\n")
     return _decode_codepage(cp, data)
@@ -327,20 +303,16 @@ def _readline_windows_fallback():
 def _readline_default():
     assert is_unix
     data = getattr(sys.stdin, "buffer", sys.stdin).readline().rstrip(b"\r\n")
-    if PY3:
-        return data.decode(_encoding, "surrogateescape")
-    else:
-        return data
+    return data.decode(_encoding, "surrogateescape")
 
 
 def _readline():
-    if is_win:
+    if sys.platform == "win32":
         return _readline_windows()
-    else:
-        return _readline_default()
+    return _readline_default()
 
 
-def input_(prompt=None):
+def input_(prompt: Any = None) -> fsnative:
     """
     Args:
         prompt (object): Prints the passed object to stdout without
@@ -371,30 +343,29 @@ def _get_file_name_for_handle(handle):
        `text` or `None` if no file name could be retrieved.
     """
 
-    assert is_win
+    assert sys.platform == "win32"
     assert handle != winapi.INVALID_HANDLE_VALUE
 
-    size = winapi.FILE_NAME_INFO.FileName.offset + \
-        winapi.MAX_PATH * ctypes.sizeof(winapi.WCHAR)
+    size = winapi.FILE_NAME_INFO.FileName.offset + winapi.MAX_PATH * ctypes.sizeof(
+        winapi.WCHAR
+    )
     buf = ctypes.create_string_buffer(size)
 
     if winapi.GetFileInformationByHandleEx is None:
         # Windows XP
         return None
 
-    status = winapi.GetFileInformationByHandleEx(
-        handle, winapi.FileNameInfo, buf, size)
+    status = winapi.GetFileInformationByHandleEx(handle, winapi.FileNameInfo, buf, size)
     if status == 0:
         return None
 
-    name_info = ctypes.cast(
-        buf, ctypes.POINTER(winapi.FILE_NAME_INFO)).contents
+    name_info = ctypes.cast(buf, ctypes.POINTER(winapi.FILE_NAME_INFO)).contents
     offset = winapi.FILE_NAME_INFO.FileName.offset
-    data = buf[offset:offset + name_info.FileNameLength]
+    data = buf[offset : offset + name_info.FileNameLength]
     return bytes2fsn(data, "utf-16-le")
 
 
-def supports_ansi_escape_codes(fd):
+def supports_ansi_escape_codes(fd: int) -> bool:
     """Returns whether the output device is capable of interpreting ANSI escape
     codes when :func:`print_` is used.
 
@@ -407,7 +378,7 @@ def supports_ansi_escape_codes(fd):
     if os.isatty(fd):
         return True
 
-    if not is_win:
+    if sys.platform != "win32":
         return False
 
     # Check for cygwin/msys terminal
@@ -420,5 +391,6 @@ def supports_ansi_escape_codes(fd):
 
     file_name = _get_file_name_for_handle(handle)
     match = re.match(
-        "^\\\\(cygwin|msys)-[a-z0-9]+-pty[0-9]+-(from|to)-master$", file_name)
+        "^\\\\(cygwin|msys)-[a-z0-9]+-pty[0-9]+-(from|to)-master$", file_name
+    )
     return match is not None

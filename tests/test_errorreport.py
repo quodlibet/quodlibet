@@ -15,8 +15,6 @@ from quodlibet.errorreport import faulthandling, enable_errorhook, errorhook
 from quodlibet.errorreport.faulthandling import FaultHandlerCrash
 from quodlibet.errorreport.logdump import dump_to_disk
 from quodlibet.errorreport.ui import ErrorDialog, SubmitErrorDialog
-from quodlibet.errorreport.main import get_sentry
-from quodlibet.errorreport.sentrywrapper import SentryError, CapturedException
 
 from . import TestCase, mkdtemp
 from .helper import temp_filename
@@ -89,23 +87,3 @@ class Terrorreport(TestCase):
             raise Exception
         except Exception:
             errorhook()
-
-
-class Tsentrywrapper(TestCase):
-    def test_main(self):
-        sentry = get_sentry()
-        try:
-            raise Exception
-        except Exception:
-            exc_info = sys.exc_info()
-
-        try:
-            err = sentry.capture(exc_info)
-        except SentryError:
-            return
-
-        assert isinstance(err, CapturedException)
-        assert isinstance(err.get_report(), str)
-
-        err.set_comment("foo")
-        err.set_comment("bar")

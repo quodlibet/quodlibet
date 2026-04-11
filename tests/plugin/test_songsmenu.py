@@ -6,7 +6,6 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
-from senf import fsnative
 
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from tests.plugin import PluginTestCase
@@ -21,21 +20,21 @@ SONGS = [
         {
             "title": "one",
             "artist": "piman",
-            "~filename": fsnative("/dev/null"),
+            "~filename": "/dev/null",
         }
     ),
     AudioFile(
         {
             "title": "two",
             "artist": "mu",
-            "~filename": fsnative("/dev/zero"),
+            "~filename": "/dev/zero",
         }
     ),
     AudioFile(
         {
             "title": "three",
             "artist": "boris",
-            "~filename": fsnative("/bin/ls"),
+            "~filename": "/bin/ls",
         }
     ),
 ]

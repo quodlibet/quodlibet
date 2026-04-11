@@ -44,7 +44,6 @@ from .dbus_services import BuildDbusServices, InstallDbusServices
 from .appdata import BuildAppdata, InstallAppdata
 from .coverage import CoverageCmd
 from .docs import BuildSphinx
-from .scripts import BuildScripts
 from .tests import QualityCmd, DistcheckCmd, TestCmd
 from .clean import Clean
 from .bash_completions import InstallBashCompletions
@@ -151,7 +150,6 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("build_shortcuts", BuildShortcuts)
         self.cmdclass.setdefault("build_dbus_services", BuildDbusServices)
         self.cmdclass.setdefault("build_appdata", BuildAppdata)
-        self.cmdclass.setdefault("build_scripts", BuildScripts)
         self.cmdclass.setdefault("install_icons", InstallIcons)
         self.cmdclass.setdefault("install_shortcuts", InstallShortcuts)
         self.cmdclass.setdefault("install_dbus_services", InstallDbusServices)

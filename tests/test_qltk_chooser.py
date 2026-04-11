@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.qltk.chooser import (
     choose_files,
@@ -66,5 +66,5 @@ class Tchooser(TestCase):
         assert isinstance(path, fsnative)
 
     def test_set_current_dir(self):
-        set_current_dir(fsnative("."))
+        set_current_dir(".")
         assert get_current_dir() == os.getcwd()

@@ -10,7 +10,6 @@ from pathlib import Path
 from gi.repository import Gio
 
 from quodlibet.util.path import normalize_path
-from senf import fsnative
 
 from quodlibet import config
 from quodlibet.ext.covers.artwork_url import ArtworkUrlCover
@@ -22,7 +21,7 @@ from tests import TestCase, mkdtemp
 
 bar_2_1 = AudioFile(
     {
-        "~filename": fsnative("does not/exist"),
+        "~filename": "does not/exist",
         "title": "more songs",
         "discnumber": "2/2",
         "tracknumber": "1",
@@ -94,7 +93,7 @@ class TCoverManager(TestCase):
         self.test_labelid()  # labelid must work with other files present
 
     def test_file_encoding(self):
-        p = self.add_file(fsnative("öäü - AlbumName - cover.jpg"))
+        p = self.add_file("öäü - AlbumName - cover.jpg")
         assert isinstance(self.song("album"), str)
         h = self._find_cover(self.song)
         assert h, "Nothing found"

@@ -27,7 +27,7 @@ from quodlibet.util.collection import (
     XSPFBackedPlaylist,
     XSPF_NS,
 )
-from senf import fsnative, uri2fsn
+from quodlibet.fsn import uri2fsn
 from tests import TestCase, mkdtemp
 
 config.RATINGS = config.HardCodedRatingsPrefs()
@@ -35,7 +35,7 @@ config.RATINGS = config.HardCodedRatingsPrefs()
 NUMERIC_SONGS = [
     Fakesong(
         {
-            "~filename": fsnative("fake1-\xf0.mp3"),
+            "~filename": "fake1-\xf0.mp3",
             "~#length": 4,
             "~#added": 5,
             "~#lastplayed": 1,
@@ -48,7 +48,7 @@ NUMERIC_SONGS = [
     ),
     Fakesong(
         {
-            "~filename": fsnative("fake2.mp3"),
+            "~filename": "fake2.mp3",
             "~#length": 7,
             "~#added": 7,
             "~#lastplayed": 88,
@@ -61,7 +61,7 @@ NUMERIC_SONGS = [
     ),
     Fakesong(
         {
-            "~filename": fsnative("fake3.mp3"),
+            "~filename": "fake3.mp3",
             "~#length": 1,
             "~#added": 3,
             "~#lastplayed": 43,
@@ -591,7 +591,7 @@ class TFileBackedPlaylist(TPlaylist):
     def test_write(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            pl.extend([fsnative("xf0xf0")])
+            pl.extend(["xf0xf0"])
             pl.write()
 
             with open(pl.path, "rb") as h:
@@ -652,7 +652,7 @@ class TFileBackedPlaylist(TPlaylist):
         # playlists can contain songs and paths for masked handling..
         lib = FileLibrary("foobar")
         with self.wrap("playlist", lib) as pl:
-            song = Fakesong({"date": "2038", "~filename": fsnative("/fake")})
+            song = Fakesong({"date": "2038", "~filename": "/fake"})
             song.sanitize()
             lib.add([song])
 
@@ -704,7 +704,7 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
     def test_write(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            some_path = fsnative(os.path.join(self.temp, "xf0xf0"))
+            some_path = os.path.join(self.temp, "xf0xf0")
             pl.extend([some_path])
             pl.write()
 

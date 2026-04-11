@@ -10,7 +10,7 @@ import re
 import os
 from collections.abc import Iterable
 
-from senf import fsn2bytes, bytes2fsn, fsnative
+from quodlibet.fsn import fsn2bytes, bytes2fsn, fsnative
 
 from quodlibet import _
 from quodlibet import app
@@ -82,9 +82,9 @@ def set_scan_dirs(dirs):
     assert all(isinstance(d, fsnative) for d in dirs)
 
     if is_windows():
-        joined = fsnative(":").join(dirs)
+        joined = ":".join(dirs)
     else:
-        joined = join_escape(dirs, fsnative(":"))
+        joined = join_escape(dirs, ":")
     config.setbytes("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 

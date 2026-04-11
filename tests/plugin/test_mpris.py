@@ -12,7 +12,7 @@ try:
 except ImportError:
     dbus = None
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
@@ -32,7 +32,7 @@ A1 = AudioFile(
         "artist": "fooman\ngo",
         "~#lastplayed": 1234,
         "~#rating": 0.75,
-        "~filename": fsnative("/foo a/b"),
+        "~filename": "/foo a/b",
         "~#length": 123,
         "albumartist": "aa\nbb",
         "bpm": "123.5",
@@ -48,7 +48,7 @@ A2 = AudioFile(
         "artist": "fooman\ufffe",
         "~#lastplayed": 1234,
         "~#rating": 1.0,
-        "~filename": fsnative("/foo"),
+        "~filename": "/foo",
         "discnumber": "4294967296",
     }
 )

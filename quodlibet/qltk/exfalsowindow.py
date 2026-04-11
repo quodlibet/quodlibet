@@ -8,7 +8,7 @@
 import os
 
 from gi.repository import Gtk, GObject, Pango
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import ngettext, _
 from quodlibet import config

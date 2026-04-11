@@ -7,7 +7,7 @@ from quodlibet.util.path import mtime
 from tests import TestCase, NamedTemporaryFile, get_data_path
 
 from gi.repository import GdkPixbuf
-from senf import fsn2uri, fsnative
+from quodlibet.fsn import fsn2uri, fsnative
 
 import os
 

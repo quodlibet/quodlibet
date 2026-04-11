@@ -110,7 +110,7 @@ msgstr ""
 #: quodlibet/browsers/covergrid/prefs.py:50
 #: quodlibet/browsers/playlists/prefs.py:37
 #: quodlibet/ext/songsmenu/brainz/widgets.py:105
-#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -120,7 +120,7 @@ msgstr[1] ""
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
 #: quodlibet/ext/songsmenu/brainz/widgets.py:104
-#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -164,7 +164,7 @@ msgstr ""
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "და_ხურვა"
 
@@ -175,7 +175,7 @@ msgstr "ბიბლიოთეკის ბრაუზერი"
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
 #: quodlibet/qltk/information.py:520 quodlibet/qltk/maskedbox.py:66
-#: quodlibet/util/collection.py:557
+#: quodlibet/util/collection.py:556
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -183,7 +183,7 @@ msgstr[0] "%d სიმღერა"
 msgstr[1] "%d სიმღერა"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr ""
@@ -254,7 +254,7 @@ msgstr ""
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "გ_ადატარება"
 
@@ -732,7 +732,7 @@ msgid "_Add Tracks"
 msgstr ""
 
 #: quodlibet/browsers/playlists/util.py:75
-#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
+#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "ახალი დასაკრავი სია"
 
@@ -1188,15 +1188,15 @@ msgstr ""
 msgid "Data to be sent:"
 msgstr ""
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr ""
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "საქაღალდე"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr ""
 
@@ -1506,7 +1506,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3024,18 +3024,23 @@ msgstr ""
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "ლირიკა"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6046,7 +6051,7 @@ msgid ""
 "discard changes?"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "და_ბრუნება"
@@ -6482,7 +6487,7 @@ msgstr ""
 msgid "Advanced"
 msgstr "დამატებით"
 
-#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:346
+#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:345
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7160,7 +7165,7 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7169,7 +7174,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr ""
 
@@ -7193,7 +7198,7 @@ msgstr "დაკვრა/პაუზა"
 msgid "Previous"
 msgstr "წინა"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr ""
@@ -7237,15 +7242,15 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:341
 msgid "Empty Playlist"
 msgstr ""
 
-#: quodlibet/util/collection.py:442
+#: quodlibet/util/collection.py:441
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:653
+#: quodlibet/util/collection.py:652
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr ""

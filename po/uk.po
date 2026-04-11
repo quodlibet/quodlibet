@@ -116,7 +116,7 @@ msgstr "Пісні, що не входять в альбом"
 #: quodlibet/browsers/covergrid/prefs.py:50
 #: quodlibet/browsers/playlists/prefs.py:37
 #: quodlibet/ext/songsmenu/brainz/widgets.py:105
-#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -127,7 +127,7 @@ msgstr[2] "%d доріжок"
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
 #: quodlibet/ext/songsmenu/brainz/widgets.py:104
-#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -172,7 +172,7 @@ msgstr "Відображення альбомів"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Закрити"
 
@@ -183,7 +183,7 @@ msgstr "Оглядач бібліотеки"
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
 #: quodlibet/qltk/information.py:520 quodlibet/qltk/maskedbox.py:66
-#: quodlibet/util/collection.py:557
+#: quodlibet/util/collection.py:556
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -192,7 +192,7 @@ msgstr[1] "%d пісні"
 msgstr[2] "%d пісень"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Неправильний шаблон"
@@ -263,7 +263,7 @@ msgstr "Налаштування колекції альбомів"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "_Застосувати"
 
@@ -762,7 +762,7 @@ msgid "_Add Tracks"
 msgstr "Трек"
 
 #: quodlibet/browsers/playlists/util.py:75
-#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
+#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "Новий список відтворення"
 
@@ -1238,15 +1238,15 @@ msgstr "Короткий опис…"
 msgid "Data to be sent:"
 msgstr "Дані, що надсилаються:"
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "редактор авдіо-міток"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "каталог"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "Редактор авдіо-метаданих"
 
@@ -1564,7 +1564,7 @@ msgstr "_Оновити стратегію:"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -3133,19 +3133,24 @@ msgstr "Текст пісні"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+#, fuzzy
+msgid "Edit Lyrics"
+msgstr "Текст пісні"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, fuzzy, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr "Для цієї пісні текст не знайдено."
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 #, fuzzy
 msgid "No active song"
 msgstr "Не вдалося зберегти пісню"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
@@ -6371,7 +6376,7 @@ msgstr ""
 "Теги було змінено, але зміни не були збережені. Зберегти їх чи повернути "
 "зміни?"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 #, fuzzy
 msgid "_Revert"
@@ -6849,7 +6854,7 @@ msgstr "_Сканувати каталоги"
 msgid "Advanced"
 msgstr ""
 
-#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:346
+#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:345
 #, fuzzy, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7598,7 +7603,7 @@ msgstr ""
 "є недопустимим. Можливо, він містить незакриті лапки (&lt; / &gt;) або "
 "повторений двічі тег."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7611,7 +7616,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Змінити зовнішній вигляд"
 
@@ -7637,7 +7642,7 @@ msgstr "Програвач"
 msgid "Previous"
 msgstr "_Попередній перегляд"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, fuzzy, python-format
 msgid "and %d more…"
 msgstr "%d інших..."
@@ -7683,16 +7688,16 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:341
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "Імпортувати список програвання"
 
-#: quodlibet/util/collection.py:442
+#: quodlibet/util/collection.py:441
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:653
+#: quodlibet/util/collection.py:652
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Список програвання %s вже існує."

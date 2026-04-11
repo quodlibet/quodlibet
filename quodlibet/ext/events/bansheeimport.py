@@ -9,7 +9,7 @@ import os
 import sqlite3
 
 from gi.repository import Gtk
-from senf import uri2fsn, text2fsn
+from quodlibet.fsn import uri2fsn, text2fsn
 
 from quodlibet import _
 from quodlibet import app

@@ -26,7 +26,7 @@ try:
 except ImportError:
     fcntl = None  # type: ignore
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.util.string.titlecase import title
 

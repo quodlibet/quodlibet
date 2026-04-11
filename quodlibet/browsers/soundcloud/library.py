@@ -16,7 +16,7 @@ from quodlibet.library.base import K
 from quodlibet.qltk.notif import Task
 from quodlibet.util import cached_property, print_exc, copool
 from quodlibet.util.dprint import print_d, print_w
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 
 class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):

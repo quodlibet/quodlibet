@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-02-17 07:09+0000\n"
+"PO-Revision-Date: 2026-03-22 05:20+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.16\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -114,7 +114,7 @@ msgstr "Skladby neobsažené v albu"
 #: quodlibet/browsers/covergrid/prefs.py:50
 #: quodlibet/browsers/playlists/prefs.py:37
 #: quodlibet/ext/songsmenu/brainz/widgets.py:105
-#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -125,7 +125,7 @@ msgstr[2] "%d skladeb"
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
 #: quodlibet/ext/songsmenu/brainz/widgets.py:104
-#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -170,7 +170,7 @@ msgstr "Zobrazení alba"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "_Zavřít"
 
@@ -181,7 +181,7 @@ msgstr "Prohlížeč knihovny"
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
 #: quodlibet/qltk/information.py:520 quodlibet/qltk/maskedbox.py:66
-#: quodlibet/util/collection.py:557
+#: quodlibet/util/collection.py:556
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -190,7 +190,7 @@ msgstr[1] "%d skladby"
 msgstr[2] "%d skladeb"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "Neplatná šablona"
@@ -261,7 +261,7 @@ msgstr "Nastavení sbírky alb"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "_Použít"
 
@@ -752,7 +752,7 @@ msgid "_Add Tracks"
 msgstr "_Přidat skladby"
 
 #: quodlibet/browsers/playlists/util.py:75
-#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
+#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "Nový seznam skladeb"
 
@@ -1220,15 +1220,15 @@ msgstr "Krátký popis…"
 msgid "Data to be sent:"
 msgstr "Data k odeslání:"
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "editor tagů"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "složka"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "Editor metadat"
 
@@ -1569,7 +1569,7 @@ msgstr "Strategie akt_ualizace:"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -2174,7 +2174,7 @@ msgstr "Zobrazovat notifikace"
 
 #: quodlibet/ext/events/notify.py:168
 msgid "Only on <i>_manual</i> song changes"
-msgstr "Jen při <i>_ručních</i>změnách skladby"
+msgstr "Jen při <i>_ručních</i> změnách skladby"
 
 #: quodlibet/ext/events/notify.py:178
 msgid "Only on <i>_automatic</i> song changes"
@@ -2974,13 +2974,13 @@ msgstr[2] "přeskočeno {count} dříve synchronizovaných souborů"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
-msgstr "Synchronizované texty"
+msgstr "Synchronizované texty písní"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Shows synchronized lyrics from embedded lyrics, or a lyrics (lrc) file."
 msgstr ""
-"Zobrazuje synchronizované texty vložené do skladby, nebo ze souboru textů "
-"(lrc)."
+"Zobrazuje synchronizované texty písní vložené do skladby, nebo ze souboru "
+"textů (lrc)."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
@@ -3187,29 +3187,33 @@ msgstr "Zobrazení tipů"
 
 #: quodlibet/ext/events/viewlyrics.py:29
 msgid "View Lyrics"
-msgstr "Zobrazit texty skladeb"
+msgstr "Zobrazit texty písní"
 
 #: quodlibet/ext/events/viewlyrics.py:30
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
-"Automaticky zobrazí text skladby z tagů nebo souborů v postranním panelu."
+"Automaticky zobrazí text písně z tagů nebo souborů v postranním panelu."
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+msgid "Edit Lyrics"
+msgstr "Upravit text písně"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr ""
 "Pro %s\n"
-"nenalezeny žádné texty"
+"nenalezen žádný text písně"
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr "Žádná aktivní skladba"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr "Skrýt časové značky textů ve formátu .lrc nebo .elrc"
+msgstr "Skrýt časové značky textů písní ve formátu .lrc nebo .elrc"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -5975,7 +5979,7 @@ msgstr "Zobrazit _víceřádkové tagy"
 
 #: quodlibet/qltk/edittags.py:557
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
-msgstr "Zobrazit zde i víceřádkové tagy (např. text skladby)"
+msgstr "Zobrazit zde i víceřádkové tagy (např. text písně)"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:588
@@ -6336,7 +6340,7 @@ msgstr "Soubory"
 
 #: quodlibet/qltk/lyrics.py:30
 msgid "Lyrics"
-msgstr "Texty"
+msgstr "Texty písní"
 
 #: quodlibet/qltk/lyrics.py:37
 msgid "_View online"
@@ -6344,11 +6348,11 @@ msgstr "_Zobrazit online"
 
 #: quodlibet/qltk/lyrics.py:73
 msgid "Delete the saved lyrics from this song"
-msgstr "Smazat uložené texty pro tuto skladbu"
+msgstr "Smazat uložené texty písní pro tuto skladbu"
 
 #: quodlibet/qltk/lyrics.py:85
 msgid "Select a single track to edit its lyrics"
-msgstr "Vyberte skladbu pro kterou upravit texty"
+msgstr "Vyberte skladbu pro kterou upravit texty písní"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -6392,7 +6396,7 @@ msgstr ""
 "Tagy byly změněny, ale nebyly uloženy. Uložit změny do souborů, nebo "
 "ponechat původní a změny zahodit?"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "_Zpět"
@@ -6849,7 +6853,7 @@ msgstr "Prohledávané složky"
 msgid "Advanced"
 msgstr "Pokročilé"
 
-#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:346
+#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:345
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7558,7 +7562,7 @@ msgstr ""
 "není platný. Možná obsahuje duplicitní tag, nebo má neuzavřené závorky "
 "(&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7571,7 +7575,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "Upravit zobrazení"
 
@@ -7595,7 +7599,7 @@ msgstr "Přehrát/Pozastavit"
 msgid "Previous"
 msgstr "Předchozí"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr "a %d další…"
@@ -7646,15 +7650,15 @@ msgstr ""
 "\n"
 "Navštivte <a href='%(url)s'>stránku</a>"
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:341
 msgid "Empty Playlist"
 msgstr "Prázdný seznam skladeb"
 
-#: quodlibet/util/collection.py:442
+#: quodlibet/util/collection.py:441
 msgid "Playlists must have a name"
 msgstr "Seznam skladeb musí mít název"
 
-#: quodlibet/util/collection.py:653
+#: quodlibet/util/collection.py:652
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Seznam skladeb %(name)s již existuje %(path)s"
@@ -7946,7 +7950,7 @@ msgstr "textaři"
 
 #: quodlibet/util/tags.py:102
 msgid "lyrics"
-msgstr "texty"
+msgstr "texty písní"
 
 #. Translators: Also e.g. "record label", "publisher"
 #: quodlibet/util/tags.py:104

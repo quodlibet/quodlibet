@@ -15,7 +15,7 @@ from typing import TypeVar
 from collections.abc import Iterable
 
 from gi.repository import Gtk, Gdk
-from senf import fsn2uri, fsn2bytes, bytes2fsn
+from quodlibet.fsn import fsn2uri, fsn2bytes, bytes2fsn
 
 from quodlibet import config
 from quodlibet import formats

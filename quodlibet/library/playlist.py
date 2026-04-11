@@ -10,9 +10,9 @@ import quodlibet
 from quodlibet import print_d, print_w, print_e, ngettext, _
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
+from quodlibet.fsn import fsnative, text2fsn
 from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
 from quodlibet.util.path import is_hidden
-from senf import text2fsn, _fsnative, fsnative
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
@@ -30,7 +30,7 @@ class PlaylistLibrary(Library[str, Playlist]):
     the values are Playlist objects.
     """
 
-    def __init__(self, library: Library, pl_dir: _fsnative = _DEFAULT_PLAYLIST_DIR):
+    def __init__(self, library: Library, pl_dir: fsnative = _DEFAULT_PLAYLIST_DIR):
         self.librarian = None
         super().__init__(f"{type(self).__name__} for {library._name}")
         print_d(f"Initializing Playlist Library {self} to watch {library._name!r}")

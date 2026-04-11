@@ -8,7 +8,7 @@ import shutil
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library, iter_paths, PicklingMixin
 from quodlibet.util import connect_obj, is_windows
-from senf import fsnative
+from quodlibet.fsn import fsnative
 from tests import TestCase, mkstemp, mkdtemp, skipIf, run_gtk_loop
 
 
@@ -44,7 +44,7 @@ class AlbumSong(AudioFile):
 
     def __init__(self, num, album=None):
         super().__init__()
-        self["~filename"] = fsnative("file_%d.mp3" % (num + 1))
+        self["~filename"] = "file_%d.mp3" % (num + 1)
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
         if album is None:

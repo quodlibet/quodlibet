@@ -7,7 +7,7 @@ import os
 from time import sleep
 
 from quodlibet.order.reorder import OrderShuffle
-from senf import bytes2fsn
+from quodlibet.fsn import bytes2fsn
 from tests import TestCase, run_gtk_loop
 
 from quodlibet.player.nullbe import NullPlayer

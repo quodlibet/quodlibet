@@ -17,7 +17,7 @@ from collections import OrderedDict
 from re import Scanner  # type: ignore
 from urllib.parse import quote_plus
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import util
 from quodlibet.query import Query
@@ -237,7 +237,7 @@ class PatternFormatter:
     class Dummy(dict):
         def __call__(self, key, *args):
             if key in FILESYSTEM_TAGS:
-                return fsnative("_")
+                return "_"
             if key[:2] == "~#" and "~" not in key[2:]:
                 return 0
             return "_"

@@ -11,7 +11,7 @@ import sys
 
 sys.modules["dircache"] = os  # cheat the dircache effects
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.qltk.filesel import (
     DirectoryTree,
@@ -81,8 +81,8 @@ class TDirectoryTree(TestCase):
             assert selected[0].startswith(path)
 
     def test_bad_go_to(self):
-        newpath = fsnative("/woooooo/bar/fun/broken")
-        dirlist = DirectoryTree(fsnative("/"), folders=self.ROOTS)
+        newpath = "/woooooo/bar/fun/broken"
+        dirlist = DirectoryTree("/", folders=self.ROOTS)
         dirlist.go_to(newpath)
         dirlist.destroy()
 

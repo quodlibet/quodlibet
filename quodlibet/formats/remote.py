@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 
-from senf import fsnative, path2fsn
+from quodlibet.fsn import fsnative, path2fsn
 
 from ._audio import AudioFile
 

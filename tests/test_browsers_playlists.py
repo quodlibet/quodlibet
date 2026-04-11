@@ -25,7 +25,7 @@ from quodlibet.library.librarians import SongLibrarian
 from quodlibet.qltk.songlist import DND_QL
 from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
-from senf import fsnative, fsn2uri, fsn2bytes
+from quodlibet.fsn import fsn2uri, fsn2bytes
 from tests import (
     TestCase,
     get_data_path,
@@ -316,7 +316,7 @@ class TPlaylistsBrowser(TestCase):
     def test_drag_data_get(self):
         b = self.bar
         song = AudioFile()
-        song["~filename"] = fsnative("foo")
+        song["~filename"] = "foo"
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
@@ -326,9 +326,9 @@ class TPlaylistsBrowser(TestCase):
         song1 = AudioFile()
         song2 = AudioFile()
         song3 = AudioFile()
-        song1["~filename"] = fsnative("foo1")
-        song2["~filename"] = fsnative("foo2")
-        song3["~filename"] = fsnative("foo3")
+        song1["~filename"] = "foo1"
+        song2["~filename"] = "foo2"
+        song3["~filename"] = "foo3"
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song1, song2, song3])
         filenames = qltk.selection_get_filenames(sel)
@@ -345,9 +345,9 @@ class TPlaylistsBrowser(TestCase):
         song1 = AudioFile()
         song2 = AudioFile()
         song3 = AudioFile()
-        song1["~filename"] = fsnative("foo1")
-        song2["~filename"] = fsnative("foo2")
-        song3["~filename"] = fsnative("foo3")
+        song1["~filename"] = "foo1"
+        song2["~filename"] = "foo2"
+        song3["~filename"] = "foo3"
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song1, song2, song3])
         filenames = qltk.selection_get_filenames(sel)

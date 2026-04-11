@@ -7,7 +7,7 @@
 import struct
 import os
 
-from senf import path2fsn, fsn2text
+from quodlibet.fsn import path2fsn, fsn2text
 from ._audio import AudioFile, translate_errors
 from quodlibet.util.dprint import print_d
 from quodlibet.util import list_unique

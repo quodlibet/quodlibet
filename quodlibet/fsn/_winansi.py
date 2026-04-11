@@ -1,24 +1,6 @@
-# -*- coding: utf-8 -*-
 # Copyright 2016 Christoph Reiter
 #
-# Permission is hereby granted, free of charge, to any person obtaining
-# a copy of this software and associated documentation files (the
-# "Software"), to deal in the Software without restriction, including
-# without limitation the rights to use, copy, modify, merge, publish,
-# distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so, subject to
-# the following conditions:
-#
-# The above copyright notice and this permission notice shall be included
-# in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 import ctypes
 import re
@@ -33,7 +15,7 @@ def ansi_parse(code):
     return code[-1:], tuple([int(v or "0") for v in code[2:-1].split(";")])
 
 
-def ansi_split(text, _re=re.compile(u"(\x1b\\[(\\d*;?)*\\S)")):
+def ansi_split(text, _re=re.compile("(\x1b\\[(\\d*;?)*\\S)")):
     """Yields (is_ansi, text)"""
 
     for part in _re.split(text):
@@ -119,7 +101,6 @@ class TextAction:
 
 
 class AnsiState:
-
     def __init__(self):
         self.default_attrs = None
 
@@ -132,8 +113,7 @@ class AnsiState:
     def do_text_action(self, attrs, action):
         # In case the external state has changed, apply it it to ours.
         # Mostly the first time this is called.
-        if attrs & winapi.FOREGROUND_INTENSITY and not self.fg_light \
-                and not self.bold:
+        if attrs & winapi.FOREGROUND_INTENSITY and not self.fg_light and not self.bold:
             self.fg_light = True
         if attrs & winapi.BACKGROUND_INTENSITY and not self.bg_light:
             self.bg_light = True
@@ -142,64 +122,52 @@ class AnsiState:
             TextAction.FG_BLACK: 0,
             TextAction.FG_RED: winapi.FOREGROUND_RED,
             TextAction.FG_GREEN: winapi.FOREGROUND_GREEN,
-            TextAction.FG_YELLOW:
-                winapi.FOREGROUND_GREEN | winapi.FOREGROUND_RED,
+            TextAction.FG_YELLOW: winapi.FOREGROUND_GREEN | winapi.FOREGROUND_RED,
             TextAction.FG_BLUE: winapi.FOREGROUND_BLUE,
-            TextAction.FG_MAGENTA: winapi.FOREGROUND_BLUE |
-                winapi.FOREGROUND_RED,
-            TextAction.FG_CYAN:
-                winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN,
-            TextAction.FG_WHITE:
-                winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN |
-                winapi.FOREGROUND_RED,
+            TextAction.FG_MAGENTA: winapi.FOREGROUND_BLUE | winapi.FOREGROUND_RED,
+            TextAction.FG_CYAN: winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN,
+            TextAction.FG_WHITE: winapi.FOREGROUND_BLUE
+            | winapi.FOREGROUND_GREEN
+            | winapi.FOREGROUND_RED,
         }
 
         dark_bg = {
             TextAction.BG_BLACK: 0,
             TextAction.BG_RED: winapi.BACKGROUND_RED,
             TextAction.BG_GREEN: winapi.BACKGROUND_GREEN,
-            TextAction.BG_YELLOW:
-                winapi.BACKGROUND_GREEN | winapi.BACKGROUND_RED,
+            TextAction.BG_YELLOW: winapi.BACKGROUND_GREEN | winapi.BACKGROUND_RED,
             TextAction.BG_BLUE: winapi.BACKGROUND_BLUE,
-            TextAction.BG_MAGENTA:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_RED,
-            TextAction.BG_CYAN:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN,
-            TextAction.BG_WHITE:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN |
-                winapi.BACKGROUND_RED,
+            TextAction.BG_MAGENTA: winapi.BACKGROUND_BLUE | winapi.BACKGROUND_RED,
+            TextAction.BG_CYAN: winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN,
+            TextAction.BG_WHITE: winapi.BACKGROUND_BLUE
+            | winapi.BACKGROUND_GREEN
+            | winapi.BACKGROUND_RED,
         }
 
         light_fg = {
             TextAction.FG_LIGHT_BLACK: 0,
             TextAction.FG_LIGHT_RED: winapi.FOREGROUND_RED,
             TextAction.FG_LIGHT_GREEN: winapi.FOREGROUND_GREEN,
-            TextAction.FG_LIGHT_YELLOW:
-                winapi.FOREGROUND_GREEN | winapi.FOREGROUND_RED,
+            TextAction.FG_LIGHT_YELLOW: winapi.FOREGROUND_GREEN | winapi.FOREGROUND_RED,
             TextAction.FG_LIGHT_BLUE: winapi.FOREGROUND_BLUE,
-            TextAction.FG_LIGHT_MAGENTA:
-                winapi.FOREGROUND_BLUE | winapi.FOREGROUND_RED,
-            TextAction.FG_LIGHT_CYAN:
-                winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN,
-            TextAction.FG_LIGHT_WHITE:
-                winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN |
-                winapi.FOREGROUND_RED,
+            TextAction.FG_LIGHT_MAGENTA: winapi.FOREGROUND_BLUE | winapi.FOREGROUND_RED,
+            TextAction.FG_LIGHT_CYAN: winapi.FOREGROUND_BLUE | winapi.FOREGROUND_GREEN,
+            TextAction.FG_LIGHT_WHITE: winapi.FOREGROUND_BLUE
+            | winapi.FOREGROUND_GREEN
+            | winapi.FOREGROUND_RED,
         }
 
         light_bg = {
             TextAction.BG_LIGHT_BLACK: 0,
             TextAction.BG_LIGHT_RED: winapi.BACKGROUND_RED,
             TextAction.BG_LIGHT_GREEN: winapi.BACKGROUND_GREEN,
-            TextAction.BG_LIGHT_YELLOW:
-                winapi.BACKGROUND_GREEN | winapi.BACKGROUND_RED,
+            TextAction.BG_LIGHT_YELLOW: winapi.BACKGROUND_GREEN | winapi.BACKGROUND_RED,
             TextAction.BG_LIGHT_BLUE: winapi.BACKGROUND_BLUE,
-            TextAction.BG_LIGHT_MAGENTA:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_RED,
-            TextAction.BG_LIGHT_CYAN:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN,
-            TextAction.BG_LIGHT_WHITE:
-                winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN |
-                winapi.BACKGROUND_RED,
+            TextAction.BG_LIGHT_MAGENTA: winapi.BACKGROUND_BLUE | winapi.BACKGROUND_RED,
+            TextAction.BG_LIGHT_CYAN: winapi.BACKGROUND_BLUE | winapi.BACKGROUND_GREEN,
+            TextAction.BG_LIGHT_WHITE: winapi.BACKGROUND_BLUE
+            | winapi.BACKGROUND_GREEN
+            | winapi.BACKGROUND_RED,
         }
 
         if action == TextAction.RESET_ALL:
@@ -252,8 +220,7 @@ class AnsiState:
 
     def apply(self, handle, code):
         buffer_info = winapi.CONSOLE_SCREEN_BUFFER_INFO()
-        if not winapi.GetConsoleScreenBufferInfo(handle,
-                                                 ctypes.byref(buffer_info)):
+        if not winapi.GetConsoleScreenBufferInfo(handle, ctypes.byref(buffer_info)):
             return
 
         attrs = buffer_info.wAttributes
@@ -263,17 +230,19 @@ class AnsiState:
             self.default_attrs = attrs
             # Make sure that like with linux terminals the program doesn't
             # affect the prompt after it exits
-            atexit.register(
-                winapi.SetConsoleTextAttribute, handle, self.default_attrs)
+            atexit.register(winapi.SetConsoleTextAttribute, handle, self.default_attrs)
 
         cmd, args = ansi_parse(code)
         if cmd == AnsiCommand.TEXT:
             for action in args:
                 attrs = self.do_text_action(attrs, action)
             winapi.SetConsoleTextAttribute(handle, attrs)
-        elif cmd in (AnsiCommand.MOVE_UP, AnsiCommand.MOVE_DOWN,
-                     AnsiCommand.MOVE_FORWARD, AnsiCommand.MOVE_BACKWARD):
-
+        elif cmd in (
+            AnsiCommand.MOVE_UP,
+            AnsiCommand.MOVE_DOWN,
+            AnsiCommand.MOVE_FORWARD,
+            AnsiCommand.MOVE_BACKWARD,
+        ):
             coord = buffer_info.dwCursorPosition
             x, y = coord.X, coord.Y
 

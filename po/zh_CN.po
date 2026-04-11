@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-02-12 07:52+0000\n"
-"Last-Translator: Sketch6580 <sketch6580@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-03-17 06:09+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -109,7 +110,7 @@ msgstr "不在专辑里的曲目"
 #: quodlibet/browsers/covergrid/prefs.py:50
 #: quodlibet/browsers/playlists/prefs.py:37
 #: quodlibet/ext/songsmenu/brainz/widgets.py:105
-#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:339 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -118,7 +119,7 @@ msgstr[0] "%d 音轨"
 #: quodlibet/browsers/albums/prefs.py:49
 #: quodlibet/browsers/covergrid/prefs.py:51
 #: quodlibet/ext/songsmenu/brainz/widgets.py:104
-#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:338 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -161,7 +162,7 @@ msgstr "专辑显示"
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:98
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:895
-#: quodlibet/qltk/textedit.py:167 quodlibet/update.py:157
+#: quodlibet/qltk/textedit.py:166 quodlibet/update.py:157
 msgid "_Close"
 msgstr "关闭(_C)"
 
@@ -172,14 +173,14 @@ msgstr "曲库浏览器"
 #: quodlibet/browsers/_base.py:269 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:254
 #: quodlibet/qltk/information.py:520 quodlibet/qltk/maskedbox.py:66
-#: quodlibet/util/collection.py:557
+#: quodlibet/util/collection.py:556
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
 msgstr[0] "%d 首歌曲"
 
 #: quodlibet/browsers/_base.py:394 quodlibet/browsers/_base.py:399
-#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
+#: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:602
 msgid "Invalid pattern"
 msgstr "非法参数"
@@ -250,7 +251,7 @@ msgstr "专辑集合首选项"
 #: quodlibet/browsers/paned/prefs.py:249
 #: quodlibet/ext/songsmenu/editplaycount.py:49
 #: quodlibet/ext/songsmenu/exact_rating.py:37
-#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "应用(_A)"
 
@@ -730,7 +731,7 @@ msgid "_Add Tracks"
 msgstr "添加曲目(_A)"
 
 #: quodlibet/browsers/playlists/util.py:75
-#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:614
+#: quodlibet/browsers/playlists/util.py:165 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "新播放列表"
 
@@ -1193,15 +1194,15 @@ msgstr "简短描述…"
 msgid "Data to be sent:"
 msgstr "以下数据将被发送："
 
-#: quodlibet/exfalso.py:37
+#: quodlibet/exfalso.py:36
 msgid "an audio tag editor"
 msgstr "音频标签编辑器"
 
-#: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
+#: quodlibet/exfalso.py:37 quodlibet/util/tags.py:157
 msgid "directory"
 msgstr "目录"
 
-#: quodlibet/exfalso.py:46
+#: quodlibet/exfalso.py:45
 msgid "Audio metadata editor"
 msgstr "音频元数据编辑器"
 
@@ -1528,7 +1529,7 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/events/auto_update_tags_in_files.py:252
 #: quodlibet/ext/events/mpris/__init__.py:56
 #: quodlibet/ext/events/themeswitcher.py:86
-#: quodlibet/ext/events/viewlyrics.py:183
+#: quodlibet/ext/events/viewlyrics.py:188
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
@@ -2116,15 +2117,15 @@ msgstr "显示通知"
 
 #: quodlibet/ext/events/notify.py:168
 msgid "Only on <i>_manual</i> song changes"
-msgstr "仅当 <i>手工</i> 切换歌曲时"
+msgstr "仅当 <i>手动(_M)</i> 切换歌曲时"
 
 #: quodlibet/ext/events/notify.py:178
 msgid "Only on <i>_automatic</i> song changes"
-msgstr "仅当 <i>自动</i> 切换歌曲时"
+msgstr "仅当 <i>自动(_A)</i> 切换歌曲时"
 
 #: quodlibet/ext/events/notify.py:189
 msgid "On <i>a_ll</i> song changes"
-msgstr "在<i>所有</i>歌曲切换时"
+msgstr "在<i>所有(_L)</i>歌曲切换模式时"
 
 #: quodlibet/ext/events/notify.py:203
 msgid "Only when the main window is not _focused"
@@ -3077,7 +3078,11 @@ msgstr "查看歌词"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "在侧边栏中自动显示基于标签或文件的歌词。"
 
-#: quodlibet/ext/events/viewlyrics.py:121
+#: quodlibet/ext/events/viewlyrics.py:55
+msgid "Edit Lyrics"
+msgstr "编辑歌词"
+
+#: quodlibet/ext/events/viewlyrics.py:126
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3086,11 +3091,11 @@ msgstr ""
 "没有找到以下曲目的歌词\n"
 "%s"
 
-#: quodlibet/ext/events/viewlyrics.py:151
+#: quodlibet/ext/events/viewlyrics.py:156
 msgid "No active song"
 msgstr "没有正在播放的曲目"
 
-#: quodlibet/ext/events/viewlyrics.py:175
+#: quodlibet/ext/events/viewlyrics.py:180
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr "隐藏 .lrc 或 .elrc 格式歌词文件的时间戳"
 
@@ -6164,7 +6169,7 @@ msgid ""
 "discard changes?"
 msgstr "标签已经修改但是尚未保存。现在保存，还是重置回原状态，还是放弃修改？"
 
-#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:114
 msgid "_Revert"
 msgstr "恢复(_R)"
@@ -6605,7 +6610,7 @@ msgstr "扫描目录"
 msgid "Advanced"
 msgstr "高级"
 
-#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:346
+#: quodlibet/qltk/properties.py:170 quodlibet/util/collection.py:345
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7289,7 +7294,7 @@ msgstr ""
 "\t%s\n"
 "无效。它可能包含两次相同的标签，或者它有不配对的括号（&lt; / &gt;）。"
 
-#: quodlibet/qltk/textedit.py:142
+#: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7302,7 +7307,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:161
+#: quodlibet/qltk/textedit.py:160
 msgid "Edit Display"
 msgstr "编辑显示"
 
@@ -7326,7 +7331,7 @@ msgstr "播放/暂停"
 msgid "Previous"
 msgstr "上一首"
 
-#: quodlibet/qltk/views.py:944
+#: quodlibet/qltk/views.py:951
 #, python-format
 msgid "and %d more…"
 msgstr "及另外 %d …"
@@ -7377,15 +7382,15 @@ msgstr ""
 "\n"
 "请访问官网下载 <a href='%(url)s'>website</a>"
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:341
 msgid "Empty Playlist"
 msgstr "空播放列表"
 
-#: quodlibet/util/collection.py:442
+#: quodlibet/util/collection.py:441
 msgid "Playlists must have a name"
 msgstr "播放列表必须有名称"
 
-#: quodlibet/util/collection.py:653
+#: quodlibet/util/collection.py:652
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "名为 %(name)s 的播放列表存在于 %(path)s"

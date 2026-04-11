@@ -38,8 +38,14 @@ repository = "https://github.com/quodlibet/quodlibet"
 documentation = "https://quodlibet.readthedocs.io/"
 
 [project.scripts]
-# Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
+# `poetry run quodlibet` just runs the app (with no CLI args)
+operon = "quodlibet.operon:main"
+quodlibet-cmd = "quodlibet.main:main"
+exfalso-cmd = "quodlibet.exfalso:main"
+
+[project.gui-scripts]
 quodlibet = "quodlibet.main:main"
+exfalso = "quodlibet.exfalso:main"
 
 [dependency-groups]
 dev = [
@@ -72,13 +78,12 @@ optional = true
 [tool.mypy]
 python_version = "3.10"
 ignore_missing_imports = true
-mypy_path = ["quodlibet/packages"]
-exclude = "(quodlibet/packages/.+/.+\\.py|dev-utils/.*)"
+exclude = "(dev-utils/.*)"
 follow_imports = "silent"
 disable_error_code = "annotation-unchecked"
 
 [[tool.mypy.overrides]]
-module = ["quodlibet.packages", "tests.*", "gi.repository", "gdist.*"]
+module = ["tests.*", "gi.repository", "gdist.*"]
 ignore_errors = true
 
 [tool.pytest]
@@ -94,7 +99,7 @@ markers = [
 [tool.ruff]
 target-version = "py310"
 line-length = 88
-extend-exclude = ["dev-utils/*", "quodlibet/packages/"]
+extend-exclude = ["dev-utils/*"]
 
 [tool.ruff.lint]
 select = [
@@ -149,7 +154,7 @@ ignore = [
 "quodlibet/ext/**/*" = [
   "N802", # allow plugins to have methods like PluginPreferences etc
 ]
-
+"quodlibet/fsn/**/*" = ["N801"]
 "quodlibet/cli.py" = [
   "C901", # TODO: refactor process_arguments to simplify (46)
 ]

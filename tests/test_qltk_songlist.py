@@ -17,7 +17,6 @@ from quodlibet.qltk.songlist import (
     get_sort_tag,
 )
 from quodlibet.qltk.songlistcolumns import SongListColumn
-from senf import fsnative
 from tests import TestCase, run_gtk_loop
 
 
@@ -211,7 +210,7 @@ class TSongList(TestCase):
         assert self.songs_removed == [{song}], f"Signal not emitted: {self.__sigs}"
 
     def test_header_menu(self):
-        song = AudioFile({"~filename": fsnative("/dev/null")})
+        song = AudioFile({"~filename": "/dev/null"})
         song.sanitize()
         self.songlist.set_songs([song])
 

@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from tests import TestCase
 

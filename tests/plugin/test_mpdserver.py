@@ -9,7 +9,7 @@
 import os
 import socket
 
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet.formats import AudioFile
 from quodlibet import app
@@ -40,7 +40,7 @@ class TMPDServer(PluginTestCase):
         format_tags = self.mod.main.format_tags
 
         def getline(key, value):
-            song = AudioFile({"~filename": fsnative("/dev/null")})
+            song = AudioFile({"~filename": "/dev/null"})
             song.sanitize()
             song[key] = value
             lines = format_tags(song).splitlines()
@@ -107,7 +107,7 @@ class TMPDCommands(PluginTestCase):
         app.player.go_to(
             AudioFile(
                 {
-                    "~filename": fsnative(),
+                    "~filename": "",
                     "~#length": 12.25,
                 }
             )

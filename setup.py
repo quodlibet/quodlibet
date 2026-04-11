@@ -91,11 +91,6 @@ def main():
                 "images/hicolor/*/*/*.svg",
             ],
         },
-        "scripts": [
-            "quodlibet.py",
-            "exfalso.py",
-            "operon.py",
-        ],
         "po_directory": "po",
         "po_package": "quodlibet",
         "shortcuts": [

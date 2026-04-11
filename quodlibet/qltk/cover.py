@@ -8,7 +8,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
-from senf import fsnative
+from quodlibet.fsn import fsnative
 
 from quodlibet import qltk
 from quodlibet import app

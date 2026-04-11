@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from senf import fsnative
 
 from tests import TestCase
 
@@ -23,7 +22,7 @@ class TBookmarks(TestCase):
         player = NullPlayer()
         song = AudioFile()
         song.bookmarks = [(10, "bla")]
-        song.sanitize(fsnative("/"))
+        song.sanitize("/")
         player.song = song
         self.player = player
         self.library = SongLibrary()
