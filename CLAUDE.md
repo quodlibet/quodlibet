@@ -6,6 +6,8 @@ Hard Rules
 
 1. **Write idiomatic GTK4 code.** Never add shims, monkey-patches, or compatibility wrappers that make GTK4 look like GTK3. Never maintain dual-use code that works on both GTK3 and GTK4. Always update the call site to use the native GTK4 API. If a shim already exists in `quodlibet/_init.py`, the fix is to remove usage of it, not to add more.
 2. **Tests**: Write concise tests. Use descriptive names instead of docstrings. Reuse existing fixtures; extract new fixtures only when genuinely shared. Don't over-mock.
+3. **No lazy imports.** Put all imports at the top of the file.
+  Do not use inline / deferred imports unless there is a real circular dependency that cannot be resolved otherwise.
 
 
 Project Overview
