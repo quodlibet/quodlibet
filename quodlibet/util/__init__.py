@@ -760,33 +760,67 @@ def connect_obj(this, detailed_signal, handler, that, *args, **kwargs):
 
 def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     """Connect a bound method to a foreign object signal and disconnect
-    when the object the method is bound to is finalized (Gtk.Widget subclass).
+    when the object the method is bound to is garbage collected.
 
     Also works if the handler is a nested function in a method and
     references the method's bound object.
 
     This solves the problem that the sender holds a strong reference
     to the bound method and the bound to object doesn't get GCed.
-    """
 
-    if hasattr(handler, "__self__"):
+    In GTK4 the GtkWidget::destroy signal was removed. This implementation
+    uses a weakref wrapper so the connection does not prevent the handler's
+    bound object from being garbage collected.
+    """
+    import weakref
+
+    if hasattr(handler, "__self__") and hasattr(handler, "__func__"):
+        # Standard bound method: hold only a weak ref to the bound object.
+        # Call via the unbound __func__ to avoid holding a strong ref.
         obj = handler.__self__
+        unbound_func = handler.__func__
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            live = obj_ref()
+            if live is None:
+                sender.disconnect(_handler_id[0])
+                return
+            unbound_func(live, *call_args, **call_kwargs)
+
+    elif hasattr(handler, "__self__"):
+        # Callable with __self__ but not a standard bound method (e.g. DeferredSignal).
+        # Hold a weak ref to __self__; call the handler directly.
+        obj = handler.__self__
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            if obj_ref() is None:
+                sender.disconnect(_handler_id[0])
+                return
+            handler(*call_args, **call_kwargs)
+
     else:
         # XXX: get the "self" var of the enclosing scope.
         # Used for nested functions which ref the object but aren't methods.
         # In case they don't ref "self" normal connect() should be used anyway.
         index = handler.__code__.co_freevars.index("self")
         obj = handler.__closure__[index].cell_contents
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            if obj_ref() is None:
+                sender.disconnect(_handler_id[0])
+                return
+            handler(*call_args, **call_kwargs)
 
     assert obj is not sender
 
-    handler_id = func(detailed_signal, handler, *args, **kwargs)
-
-    def on_finalized(_dead_ref):
-        sender.disconnect(handler_id)
-
-    # GTK4: "destroy" signal removed from GtkWidget; use weak_ref notify instead
-    obj.weak_ref(on_finalized)
+    handler_id = func(detailed_signal, weak_handler, *args, **kwargs)
+    _handler_id[0] = handler_id
     return handler_id
 
 

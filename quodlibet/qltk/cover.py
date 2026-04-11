@@ -249,8 +249,6 @@ class CoverImage(Gtk.Box):
 
     def __init__(self, resize=False, size=70, song=None):
         super().__init__()
-        # GTK4: set_visible_window removed - all widgets are windowless by default
-        # self.set_visible_window(False)
         self.__song = None
         self.__file = None
         self.__current_bci = None
@@ -267,7 +265,6 @@ class CoverImage(Gtk.Box):
         if _file is not None and not _file.name:
             print_w("Got file which is not in the filesystem!")
         self.__file = _file
-        # GTK4: Box.get_child() → Box.get_first_child()
         self.get_first_child().set_file(_file)
 
     def set_song(self, song):
@@ -300,7 +297,6 @@ class CoverImage(Gtk.Box):
     def update_bci(self, albumfile):
         # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
-            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
             if albumfile:
                 if self._scale:
                     self.__show_cover(self.__song, self._scale)
@@ -340,7 +336,7 @@ class CoverImage(Gtk.Box):
 
         if self.__current_bci is not None:
             # We're displaying it; destroy it.
-            # GTK4: self.destroy() removed - __current_bci cleaned up automatically
+            self.__current_bci.destroy()
             return True
 
         if not self.__file:
