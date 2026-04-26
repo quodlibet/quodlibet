@@ -10,6 +10,8 @@
       href="https://github.com/"/>
   <repository type="tarball" name="sourceforge"
           href="http://downloads.sourceforge.net/sourceforge/"/>
+  <repository type="tarball" name="savannah"
+          href="https://download.savannah.gnu.org/releases/"/>
   <repository type="tarball" name="pypi.org"
               href="https://files.pythonhosted.org/packages/"/>
   <repository type="tarball" name="cairographics"
@@ -195,10 +197,12 @@
     </branch>
   </autotools>
 
-  <autotools id="itstool" autogen-sh="configure" autogenargs="PYTHON=$JHBUILD_PREFIX/bin/python3">
-    <branch module="itstool/itstool-${version}.tar.bz2" version="2.0.7"
-            hash="sha256:6b9a7cd29a12bb95598f5750e8763cee78836a1a207f85b74d8b3275b27e87ca"
-            repo="itstool"/>
+  <autotools id="itstool" autogen-sh="autoreconf" autogenargs="PYTHON=$JHBUILD_PREFIX/bin/python3">
+    <branch module="itstool/itstool/archive/refs/tags/${version}.tar.gz"
+            version="2.0.7"
+            checkoutdir="itstool-${version}"
+            hash="sha256:fba78a37dc3535e4686c7f57407b97d03c676e3a57beac5fb2315162b0cc3176"
+            repo="github-tar"/>
       <patch file="patches/itstool.use-correct-libxml.patch" strip="1"/>
     <dependencies>
       <dep package="libxml2-python"/>
@@ -251,10 +255,11 @@
     </dependencies>
   </meson>
 
-  <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="configure">
-    <branch version="1.6.43" module="libpng/libpng-${version}.tar.xz"
-            repo="sourceforge"
-            hash="sha256:6a5ca0652392a2d7c9db2ae5b40210843c0bbc081cbd410825ab00cc59f14a6c"/>
+  <autotools id="libpng" autogenargs="--enable-shared" autogen-sh="autoreconf">
+    <branch version="1.6.43" module="pnggroup/libpng/archive/refs/tags/v${version}.tar.gz"
+            repo="github-tar"
+            checkoutdir="libpng-${version}"
+            hash="sha256:fecc95b46cf05e8e3fc8a414750e0ba5aad00d89e9fdf175e94ff041caf1a03a"/>
   </autotools>
 
   <autotools id="librsvg" autogenargs="--disable-Bsymbolic --disable-gtk-doc">
@@ -310,8 +315,9 @@
   </cmake>
 
   <autotools id="libjpeg-turbo" autogen-sh="configure">
-    <branch module="libjpeg-turbo/${version}/libjpeg-turbo-${version}.tar.gz" version="1.5.3"
-            repo="sourceforge"
+    <branch module="libjpeg-turbo/libjpeg-turbo/releases/download/${version}/libjpeg-turbo-${version}.tar.gz"
+            version="1.5.3"
+            repo="github-tar"
             checkoutdir="libjpeg-turbo-${version}"
             hash="sha256:b24890e2bb46e12e72a79f7e965f409f4e16466d00e1dd15d93d73ee6b592523">
     </branch>
@@ -324,7 +330,7 @@
              skip-autogen="never"
              autogenargs="--without-bzip2 --without-harfbuzz">
     <branch module="freetype/freetype-${version}.tar.gz" version="2.13.0"
-            repo="sourceforge"
+            repo="savannah"
             checkoutdir="freetype-no-harfbuzz-${version}"
             hash="sha256:a7aca0e532a276ea8d85bd31149f0a74c33d19c8d287116ef8f5f8357b4f1f80">
     </branch>
@@ -375,7 +381,7 @@
   <autotools id="freetype" autogen-sh="configure" skip-autogen="never"
          autogenargs="--without-bzip2 --with-harfbuzz">
     <branch module="freetype/freetype-${version}.tar.gz" version="2.13.0"
-            repo="sourceforge"
+            repo="savannah"
             hash="sha256:a7aca0e532a276ea8d85bd31149f0a74c33d19c8d287116ef8f5f8357b4f1f80">
     </branch>
     <dependencies>
