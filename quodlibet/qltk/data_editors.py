@@ -6,7 +6,7 @@
 # (at your option) any later version.
 from collections.abc import Iterable
 
-from gi.repository import Gtk
+from gi.repository import GLib, Gtk
 from gi.repository import Pango
 
 from quodlibet import _
@@ -289,7 +289,7 @@ class TagListEditor(qltk.Window):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
-        sw.set_size_request(-1, max(sw.size_request().height, 100))
+        sw.set_size_request(-1, max(sw.get_size_request().height, 100))
         hbox.prepend(sw)
 
         self.__setup_column(view)

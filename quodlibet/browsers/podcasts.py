@@ -468,33 +468,8 @@ class Podcasts(Browser):
         view.get_parent().drag_unhighlight()
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # view.emit_stop_by_name("drag-data-received")
-        # targets = [
-        # ("text/uri-list", 0, DND_URI_LIST),
-        # ("text/x-moz-url", 0, DND_MOZ_URL),
-        # ]
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # if tid == DND_URI_LIST:
-        # uri = sel.get_uris()[0]
-        # elif tid == DND_MOZ_URL:
-        # uri = sel.data.decode("utf16", "replace").split("\n")[0]
-        # else:
-        # ctx.finish(False, False, etime)
-        # return
-
-        ctx.finish(True, False, etime)
-
-        feed = Feed(uri.encode("ascii", "replace"))
-        feed.changed = feed.parse()
-        if feed:
-            self.__feeds.append(row=[feed])
-            Podcasts.write()
-        else:
-            self.feed_error(feed).run()
+        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
+        pass
 
     def _popup_menu(self, view: Gtk.Widget) -> Gtk.PopoverMenu | None:
         model, paths = self._view.get_selection().get_selected_rows()

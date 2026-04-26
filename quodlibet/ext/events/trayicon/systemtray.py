@@ -9,7 +9,7 @@
 
 import sys
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gsk
 
 from quodlibet import _
 from quodlibet import app
@@ -41,7 +41,6 @@ def get_paused_pixbuf(boundary, diff):
 
     theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
 
-    # GTK4: choose_icon() removed; use lookup_icon() instead
     paintable = theme.lookup_icon(
         Icons.MEDIA_PLAYBACK_PAUSE,
         None,
@@ -54,21 +53,31 @@ def get_paused_pixbuf(boundary, diff):
         return None
 
     try:
+        # Try file-backed icon first (faster, preserves full resolution)
         icon_file = paintable.get_file()
-        if icon_file is None:
+        if icon_file is not None:
+            icon_path = icon_file.get_path()
+            if icon_path is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_path)
+                pb_size = min(pixbuf.get_height(), pixbuf.get_width())
+                if abs(pb_size - size) > diff:
+                    return scale(pixbuf, boundary)
+                return pixbuf
+
+        # Fallback: render the paintable to a pixbuf via snapshot
+        snapshot = Gtk.Snapshot()
+        paintable.snapshot(snapshot, size, size)
+        node = snapshot.to_node()
+        if node is None:
             return None
-        icon_path = icon_file.get_path()
-        if icon_path is None:
-            return None
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_path)
-    except GLib.GError:
-        return None
-    else:
-        # In case it is too big, rescale
-        pb_size = min(pixbuf.get_height(), pixbuf.get_width())
-        if abs(pb_size - size) > diff:
-            return scale(pixbuf, boundary)
+        renderer = Gsk.CairoRenderer.new()
+        renderer.realize(None)
+        texture = renderer.render_texture(node, None)
+        renderer.unrealize()
+        pixbuf = Gdk.pixbuf_get_from_texture(texture)
         return pixbuf
+    except (GLib.GError, Exception):
+        return None
 
 
 def new_with_paused_emblem(icon_pixbuf):

@@ -8,7 +8,7 @@
 
 import operator
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import GLib, Gtk, Pango, Gdk
 
 from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton

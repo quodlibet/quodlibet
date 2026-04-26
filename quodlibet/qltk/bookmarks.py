@@ -8,7 +8,7 @@
 
 # FIXME: Only allow one bookmark window per song.
 
-from gi.repository import Gtk, Pango
+from gi.repository import GLib, Gtk, Pango
 
 from quodlibet import qltk, print_w
 from quodlibet import util

@@ -511,6 +511,8 @@ def _init_gtk():
 
     if not hasattr(Gtk.Window, "add_accel_group"):
         Gtk.Window.add_accel_group = lambda self, group: None
+    if not hasattr(Gtk.Window, "remove_accel_group"):
+        Gtk.Window.remove_accel_group = lambda self, group: None
 
     # GTK4: accelerator_parse now returns (success, keyval, modifiers)
     _original_accelerator_parse = Gtk.accelerator_parse

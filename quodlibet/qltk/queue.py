@@ -413,7 +413,6 @@ class PlayQueue(SongList):
             self._write(self, self.model)
             return True
 
-        self.connect("destroy", self.__destroy)
         if self.autosave_interval:
             self._tid = GLib.timeout_add(self.autosave_interval * 1000, write)
         else:
@@ -426,12 +425,13 @@ class PlayQueue(SongList):
         key_controller.connect("key-pressed", self.__delete_key_pressed)
         self.add_controller(key_controller)
 
-    def __destroy(self, widget):
-        self._write(widget, self.model, force=True)
+    def destroy(self):
+        self._write(self, self.model, force=True)
         if self._tid:
             GLib.source_remove(self._tid)
             self._tid = None
             print_d("Stopped autosave")
+        super().destroy()
 
     def __delete_key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
