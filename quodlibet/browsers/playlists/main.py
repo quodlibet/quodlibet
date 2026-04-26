@@ -361,11 +361,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             view.set_drag_dest(x, y, into_only=True)
             return True
         # Highlighting the view itself doesn't work.
-        view.get_parent().drag_highlight()
+        view.get_parent().add_css_class("drop-target")
         return True
 
     def __drag_leave(self, view, ctx, time):
-        view.get_parent().drag_unhighlight()
+        view.get_parent().remove_css_class("drop-target")
 
     def __remove_songs(self, iters, smodel):
         def song_at(itr):

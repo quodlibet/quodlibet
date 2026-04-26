@@ -460,12 +460,12 @@ class Podcasts(Browser):
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
         if "text/x-quodlibet-songs" not in targets:
-            view.get_parent().drag_highlight()
+            view.get_parent().add_css_class("drop-target")
             return True
         return False
 
     def __drag_leave(self, view, ctx, time):
-        view.get_parent().drag_unhighlight()
+        view.get_parent().remove_css_class("drop-target")
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget

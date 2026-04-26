@@ -8,22 +8,19 @@
 # (at your option) any later version.
 
 import contextlib
-import sys
 import os
 
-from gi.repository import Gtk, Gdk, GObject, Pango, GLib
+from gi.repository import Gtk, Gdk, GObject, Graphene, Pango, GLib
 import cairo
 
 from quodlibet import print_e
 from quodlibet import config
 from quodlibet.qltk import (
-    get_top_parent,
     is_accel,
     is_wayland,
     menu_popup,
     get_primary_accel_mod,
 )
-from quodlibet.util import is_windows
 
 from .util import GSignals
 
@@ -36,9 +33,10 @@ class TreeViewHints(Gtk.Window):
         def do_get_preferred_width(*args):
             return (0, Gtk.Label.do_get_preferred_width(*args)[0])
 
-    # TODO GTK4: replace with Gtk EventController stuff
-
-    __empty_region = cairo.Region(cairo.RectangleInt())
+    # TODO GTK4: TreeViewHints.__motion still uses removed GTK3 APIs
+    # (bin_window, convert_bin_window_to_widget_coords, Gdk.Screen,
+    # Gdk.Window.move/resize). Needs rewrite to attach controllers to the
+    # view and compute positions in widget coordinates.
 
     def __init__(self):
         try:
@@ -49,45 +47,24 @@ class TreeViewHints(Gtk.Window):
 
         super().__init__()
         self.__clabel = Gtk.Label()
-        self.__clabel.show()
         self.__clabel.set_valign(0.5)
         self.__clabel.set_ellipsize(Pango.EllipsizeMode.NONE)
-
-        # screen = self.get_screen()
-        # rgba = screen.get_rgba_visual()
-        # if rgba is not None:
-        #     self.set_visual(rgba)
 
         self.__label = label = self._MinLabel()
         label.set_valign(0.5)
         label.set_ellipsize(Pango.EllipsizeMode.NONE)
-        label.show()
         self.set_child(label)
-
-        # TODO GTK4: EventController?
-        # self.add_events(
-        #     Gdk.EventMask.BUTTON_MOTION_MASK
-        #     | Gdk.EventMask.BUTTON_PRESS_MASK
-        #     | Gdk.EventMask.BUTTON_RELEASE_MASK
-        #     | Gdk.EventMask.KEY_PRESS_MASK
-        #     | Gdk.EventMask.KEY_RELEASE_MASK
-        #     | Gdk.EventMask.ENTER_NOTIFY_MASK
-        #     | Gdk.EventMask.LEAVE_NOTIFY_MASK
-        #     | Gdk.EventMask.SCROLL_MASK
-        #     | Gdk.EventMask.POINTER_MOTION_MASK
-        # )
 
         context = self.get_style_context()
         context.add_class("tooltip")
         context.add_class("ql-tooltip")
 
         self.set_can_focus(False)
+        # Hint window must not intercept pointer events; events should reach
+        # the view underneath.
+        self.set_can_target(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
-
-        controller = Gtk.EventControllerMotion()
-        controller.connect("leave", self.__undisplay)
-        self.add_controller(controller)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -117,26 +94,19 @@ class TreeViewHints(Gtk.Window):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
 
-        if is_windows():
-            # See issues #4259, #4365
-            leave_notify_cb = self.__motion
-        else:
-            leave_notify_cb = self.__undisplay
-
-        motion_controller = Gtk.EventControllerMotion()
-        scroll_controller = Gtk.EventControllerScroll()
-        key_controller = Gtk.EventControllerKey()
-        # Store only handlers connected to view (not to self's controllers)
+        # Hide the hint on view-level events. Motion/showing the hint itself
+        # is currently disabled — see the TODO on the class.
         self.__handlers[view] = [
             view.connect("unmap", self.__undisplay),
         ]
-        self.add_controller(motion_controller)
-        self.add_controller(scroll_controller)
-        self.add_controller(key_controller)
-        motion_controller.connect("motion", self.__motion)
-        motion_controller.connect("leave", self.__motion)
+        scroll_controller = Gtk.EventControllerScroll.new(
+            Gtk.EventControllerScrollFlags.BOTH_AXES
+        )
         scroll_controller.connect("scroll", self.__undisplay)
+        view.add_controller(scroll_controller)
+        key_controller = Gtk.EventControllerKey()
         key_controller.connect("key-pressed", self.__undisplay)
+        view.add_controller(key_controller)
 
     def disconnect_view(self, view):
         try:
@@ -153,270 +123,15 @@ class TreeViewHints(Gtk.Window):
         if self.__hide_id:
             GLib.source_remove(self.__hide_id)
             self.__hide_id = None
-            self.hide()
+            self.set_visible(False)
 
         Gtk.StyleContext.remove_provider_for_display(
             Gdk.Display.get_default(), self._style_provider
         )
 
-    def __motion(self, view, event):
-        label = self.__label
-        clabel = self.__clabel
-
-        # trigger over row area, not column headers
-        if event.window is not view.get_bin_window():
-            self.__undisplay()
-            return False
-
-        x, y = map(int, [event.x, event.y])
-
-        # For gtk3.16 overlay scrollbars: if our event x coordinate
-        # is contained in the scrollbar, hide the tooltip. Unlike other
-        # hiding events we don't want to send a leave event to the scrolled
-        # window so the overlay scrollbar doesn't hide and can be interacted
-        # with.
-        parent = view.get_parent()
-        # We only need to check if the tooltip is there since events
-        # on the scrollbars don't get forwarded to us anyway.
-        if self.__view and parent and isinstance(parent, Gtk.ScrolledWindow):
-            vscrollbar = parent.get_vscrollbar()
-            res = vscrollbar.translate_coordinates(view, 0, 0)
-            if res is not None:
-                x_offset = res[0]
-                vbar_width = vscrollbar.get_allocation().width
-                if x_offset <= x <= x_offset + vbar_width:
-                    self.__undisplay(send_leave=False)
-                    return False
-
-        # hide if any modifier is active.
-        mask = Gtk.accelerator_get_default_mod_mask()
-        mask = Gdk.Keymap.get_default().map_virtual_modifiers(mask)[1]
-        if event.get_state() & mask:
-            self.__undisplay()
-            return False
-
-        # get the cell at the mouse position
-        try:
-            path, col, cellx, celly = view.get_path_at_pos(x, y)
-        except TypeError:
-            # no hints where no rows exist
-            self.__undisplay()
-            return False
-
-        col_area = view.get_cell_area(path, col)
-        # make sure we are on the same level
-        if x < col_area.x:
-            self.__undisplay()
-            return False
-
-        # hide for partial hidden rows at the bottom
-        if y > view.get_visible_rect().height:
-            self.__undisplay()
-            return False
-
-        # get the renderer at the mouse position and get the xpos/width
-        renderers = col.get_cells()
-        pos = zip(map(col.cell_get_position, renderers), renderers, strict=False)
-        pos = [p for p in sorted(pos) if p[0][0] < cellx]
-        if not pos:
-            self.__undisplay()
-            return False
-        (render_offset, render_width), renderer = pos[-1]
-
-        if self.__current_renderer == renderer and self.__current_path == path:
-            return False
-
-        # only ellipsized text renderers
-        if not isinstance(renderer, Gtk.CellRendererText):
-            self.__undisplay()
-            return False
-
-        ellipsize = renderer.get_property("ellipsize")
-        if ellipsize == Pango.EllipsizeMode.END:
-            expand_left = False
-        elif ellipsize == Pango.EllipsizeMode.MIDDLE:
-            # depending on where the cursor is
-            expand_left = x > col_area.x + render_offset + render_width / 2
-        elif ellipsize == Pango.EllipsizeMode.START:
-            expand_left = True
-        else:
-            self.__undisplay()
-            return False
-
-        # don't display if the renderer is in editing mode
-        if renderer.props.editing:
-            self.__undisplay()
-            return False
-
-        # set the cell renderer attributes for the active cell
-        model = view.get_model()
-        col.cell_set_cell_data(model, model.get_iter(path), False, False)
-
-        # the markup attribute is write only, so the markup text needs
-        # to be saved on the python side, so we can copy it to the label
-        markup = getattr(renderer, "markup", None)
-        if markup is None:
-            text = renderer.get_property("text")
-
-            def set_text(l):
-                return l.set_text(text)
-        else:
-            # markup can also be column index
-            if isinstance(markup, int):
-                markup = model[path][markup]
-
-            def set_text(l):
-                return l.set_markup(markup)
-
-        # Use the renderer padding as label padding so the text offset matches
-        render_xpad = renderer.get_property("xpad")
-
-        # the renderer xpad is not enough for the tooltip, especially with
-        # rounded corners the label gets nearly clipped.
-        MIN_HINT_X_PAD = 4
-        if render_xpad < MIN_HINT_X_PAD:
-            extra_xpad = MIN_HINT_X_PAD - render_xpad
-        else:
-            extra_xpad = 0
-
-        # GTK4: set_padding() removed, use margins
-        label.set_margin_start(render_xpad + extra_xpad)
-        label.set_margin_end(render_xpad + extra_xpad)
-        label.set_margin_top(0)
-        label.set_margin_bottom(0)
-        set_text(clabel)
-        # GTK4: set_padding() removed, use margins
-        clabel.set_margin_start(render_xpad)
-        clabel.set_margin_end(render_xpad)
-        clabel.set_margin_top(0)
-        clabel.set_margin_bottom(0)
-        label_width = clabel.get_layout().get_pixel_size()[0]
-        label_width += clabel.get_layout_offsets()[0] or 0
-        # layout offset includes the left padding, so add one more
-        label_width += render_xpad
-
-        # CellRenderer width is too large if it's the last one in a column.
-        # Use cell_area width as a maximum and limit render_width.
-        max_width = col_area.width
-        if render_width + render_offset > max_width:
-            render_width = max_width - render_offset
-
-        # don't display if it doesn't need expansion
-        if label_width < render_width:
-            self.__undisplay()
-            return False
-
-        dummy, ox, oy = view.get_window().get_origin()
-        bg_area = view.get_background_area(path, None)
-
-        # save for adjusting passthrough events
-        self.__dx, self.__dy = col_area.x + render_offset, bg_area.y
-        self.__dx -= extra_xpad
-        if expand_left:
-            # shift to the left
-            # FIXME: ellipsize start produces a space at the end depending
-            # on the text. I don't know how to compute it..
-            self.__dx -= label_width - render_width
-
-        # final window coordinates/size
-        x = ox + self.__dx
-        y = oy + self.__dy
-        x, y = view.convert_bin_window_to_widget_coords(x, y)
-
-        w = label_width + extra_xpad * 2
-        h = bg_area.height
-
-        if not is_wayland():
-            # clip if it's bigger than the monitor
-            mon_border = 5  # leave some space
-            screen = Gdk.Screen.get_default()
-            if not expand_left:
-                monitor_idx = screen.get_monitor_at_point(x, y)
-                mon = screen.get_monitor_geometry(monitor_idx)
-                space_right = mon.x + mon.width - x - w - mon_border
-
-                if space_right < 0:
-                    w += space_right
-                    label.set_ellipsize(Pango.EllipsizeMode.END)
-                else:
-                    label.set_ellipsize(Pango.EllipsizeMode.NONE)
-            else:
-                monitor_idx = screen.get_monitor_at_point(x + w, y)
-                mon = screen.get_monitor_geometry(monitor_idx)
-                space_left = x - mon.x - mon_border
-
-                if space_left < 0:
-                    x -= space_left
-                    self.__dx -= space_left
-                    w += space_left
-                    label.set_ellipsize(Pango.EllipsizeMode.START)
-                else:
-                    label.set_ellipsize(Pango.EllipsizeMode.NONE)
-        else:
-            label.set_ellipsize(Pango.EllipsizeMode.NONE)
-
-        # Don't show if the resulting tooltip would be smaller
-        # than the visible area (if not all is on the display)
-        if w < render_width:
-            self.__undisplay()
-            return False
-
-        self.__view = view
-        self.__current_renderer = renderer
-        self.__edit_id = renderer.connect("editing-started", self.__undisplay)
-        self.__current_path = path
-        self.__current_col = col
-
-        if self.__hide_id:
-            GLib.source_remove(self.__hide_id)
-            self.__hide_id = None
-
-        self.set_transient_for(get_top_parent(view))
-        set_text(label)
-        self.set_size_request(w, h)
-
-        # Set region on this window for which to receive mouse events to the
-        # empty region. Mouse events will be passed to the window below the
-        # tooltip. The Gdk implementation for win32 does not support this, which
-        # leads to events not being received in either window.
-        if sys.platform != "win32":
-            self.input_shape_combine_region(self.__empty_region)
-
-        window = self.get_window()
-        if self.get_visible() and window:
-            window.move_resize(x, y, w, h)
-        else:
-            self.move(x, y)
-            self.resize(w, h)
-            self.show()
-
-        return False
-
     def __undisplay(self, *args, **kwargs):
         if not self.__view:
             return
-
-        send_leave = kwargs.pop("send_leave", True)
-
-        # XXXXXXXX!: for overlay scrollbars the parent scrolled window
-        # listens to notify-leave events to hide them. In case we show
-        # the tooltip and leave the SW through the tooltip the SW will never
-        # get an event and the scrollbar stays visible forever.
-        # This creates a half broken leave event which is just enough
-        # to make this work.
-        parent = self.__view.get_parent()
-        fake_event = None
-        if parent and isinstance(parent, Gtk.ScrolledWindow) and send_leave:
-            fake_event = Gdk.Event.new(Gdk.EventType.LEAVE_NOTIFY)
-            fake_event.any.window = parent.get_window()
-            struct = fake_event.crossing
-            struct.time = GLib.CURRENT_TIME
-            ok, state = Gtk.get_current_event_state()
-            if ok:
-                struct.state = state
-            device = Gtk.get_current_event_device()
-            if device is not None:
-                struct.set_device(device)
 
         if self.__current_renderer and self.__edit_id:
             self.__current_renderer.disconnect(self.__edit_id)
@@ -424,102 +139,8 @@ class TreeViewHints(Gtk.Window):
         self.__current_path = self.__current_col = None
         self.__view = None
 
-        def hide(fake_event):
-            if fake_event is not None:
-                Gtk.main_do_event(fake_event)
-
-            self.__hide_id = None
-            self.hide()
-            return False
-
-        # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
-        # to assume we have a fixed mutter release..
-        hide(fake_event)
-
-    def __event(self, event):
-        if not self.__view:
-            return True
-
-        # hack: present the main window on key press
-        if event.type == Gdk.EventType.BUTTON_PRESS:
-            # hack: present is overridden to present all windows.
-            # bypass to only select one
-            Gtk.Window.present(get_top_parent(self.__view))
-
-        def translate_enter_leave_event(event):
-            # enter/leave events have different x/y values as motion events
-            # so it makes sense to push them to the underlying view as
-            # additional motion events.
-            # Warning: this may result in motion events outside of the
-            # view window.. ?
-            new_event = Gdk.Event.new(Gdk.EventType.MOTION_NOTIFY)
-            struct = new_event.motion
-            for attr in [
-                "x",
-                "y",
-                "x_root",
-                "y_root",
-                "time",
-                "window",
-                "state",
-                "send_event",
-            ]:
-                setattr(struct, attr, getattr(event.crossing, attr))
-            device = Gtk.get_current_event_device()
-            if device is not None:
-                struct.set_device(device)
-            return new_event
-
-        # FIXME: We should translate motion events on the tooltip
-        # to crossing events for the underlying view.
-        # (I think, no tested) Currently the hover scrollbar stays visible
-        # if the mouse leaves the view through the tooltip without the
-        # knowledge of the view.
-
-        type_ = event.type
-        real_event = None
-        if type_ == Gdk.EventType.BUTTON_PRESS:
-            real_event = event.button
-        elif type_ == Gdk.EventType.BUTTON_RELEASE:
-            real_event = event.button
-        elif type_ == Gdk.EventType.MOTION_NOTIFY:
-            real_event = event.motion
-        elif type_ == Gdk.EventType.ENTER_NOTIFY:
-            event = translate_enter_leave_event(event)
-            real_event = event.motion
-        elif type_ == Gdk.EventType.LEAVE_NOTIFY:
-            event = translate_enter_leave_event(event)
-            real_event = event.motion
-
-        if real_event:
-            real_event.x += self.__dx
-            real_event.y += self.__dy
-
-        # modifying event.window is a necessary evil, made okay because
-        # nobody else should tie to any TreeViewHints events ever.
-        event.any.window = self.__view.get_bin_window()
-
-        Gtk.main_do_event(event)
-
-        return True
-
-    def do_button_press_event(self, event):
-        return self.__event(event)
-
-    def do_button_release_event(self, event):
-        return self.__event(event)
-
-    def do_motion_notify_event(self, event):
-        return self.__event(event)
-
-    def do_enter_notify_event(self, event):
-        return self.__event(event)
-
-    def do_leave_notify_event(self, event):
-        return self.__event(event)
-
-    def do_scroll_event(self, event):
-        return self.__event(event)
+        self.__hide_id = None
+        self.set_visible(False)
 
 
 class DragScroll:
@@ -868,13 +489,14 @@ class BaseView(Gtk.TreeView):
         if dest_row is None:
             rows = len(self.get_model())
             if not rows:
-                # TODO GTK4: drag_highlight() removed; DnD highlighting via CSS or drop controllers
-                pass
+                self.add_css_class("drop-target")
             else:
+                self.remove_css_class("drop-target")
                 self.set_drag_dest_row(
                     Gtk.TreePath(rows - 1), Gtk.TreeViewDropPosition.AFTER
                 )
         else:
+            self.remove_css_class("drop-target")
             path, pos = dest_row
             if into_only:
                 if pos == Gtk.TreeViewDropPosition.BEFORE:
@@ -946,22 +568,51 @@ class DragIconTreeView(BaseView):
         model, paths = self.get_selection().get_selected_rows()
         paintable = self.create_multi_row_drag_icon(paths, max_rows=3)
         if paintable is not None:
-            # TODO GTK4: set proper drag icon hotspot
-            Gtk.DragIcon.set_from_paintable(drag, paintable, 0, 0)
+            hot_x, hot_y = self.__drag_hotspot(drag_source, paths, paintable)
+            Gtk.DragIcon.set_from_paintable(drag, paintable, hot_x, hot_y)
+
+    def __drag_hotspot(self, drag_source, paths, paintable):
+        """Compute the drag-icon hotspot as the cursor's offset within
+        the first selected row's cell area, clamped to the paintable."""
+        sequence = drag_source.get_current_sequence()
+        ok, x, y = drag_source.get_point(sequence)
+        if not ok or not paths:
+            return 0, 0
+        cell_area = self.get_cell_area(paths[0], None)
+        max_x = max(0, paintable.get_intrinsic_width() - 1)
+        max_y = max(0, paintable.get_intrinsic_height() - 1)
+        hot_x = min(max(0, int(x - cell_area.x)), max_x)
+        hot_y = min(max(0, int(y - cell_area.y)), max_y)
+        return hot_x, hot_y
 
     def create_multi_row_drag_icon(self, paths, max_rows):
-        """Similar to create_row_drag_icon() but creates a drag icon
-        for multiple paths or None.
-
-        GTK4: Returns a Gdk.Paintable. Multi-row composite icon is a
-        TODO GTK4 - currently returns icon for the first row only.
-        """
+        """Composite up to max_rows row paintables stacked vertically into
+        a single Gdk.Paintable, or None if paths is empty."""
 
         if not paths:
             return None
 
-        # TODO GTK4: composite multiple row paintables into a single icon
-        return self.create_row_drag_icon(paths[0])
+        paintables = [self.create_row_drag_icon(p) for p in paths[:max_rows]]
+        paintables = [p for p in paintables if p is not None]
+        if not paintables:
+            return None
+        if len(paintables) == 1:
+            return paintables[0]
+
+        width = max(p.get_intrinsic_width() for p in paintables)
+        height = sum(p.get_intrinsic_height() for p in paintables)
+
+        snapshot = Gtk.Snapshot()
+        y = 0
+        for paintable in paintables:
+            ph = paintable.get_intrinsic_height()
+            snapshot.save()
+            snapshot.translate(Graphene.Point().init(0, y))
+            paintable.snapshot(snapshot, paintable.get_intrinsic_width(), ph)
+            snapshot.restore()
+            y += ph
+
+        return snapshot.to_paintable(Graphene.Size().init(width, height))
 
 
 class MultiDragTreeView(BaseView):
