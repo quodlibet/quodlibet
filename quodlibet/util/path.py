@@ -377,7 +377,9 @@ def _normalize_darwin_path(filename, canonicalise=False):
     decoded = data.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        return bytes2fsn(NSString.fileSystemRepresentation(decoded), "utf-8")
+        return bytes2fsn(
+            NSString.stringWithString_(decoded).fileSystemRepresentation(), "utf-8"
+        )
     except ValueError:
         return filename
 
