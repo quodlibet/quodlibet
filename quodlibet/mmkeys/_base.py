@@ -42,6 +42,12 @@ class MMKeysBackend:
         (e.g. the main window got focused)
         """
 
+    def set_playing(self, playing):
+        """Called when the player starts or stops playing.
+        Backends that need to track play state (e.g. for system media routing)
+        can override this. No-op by default.
+        """
+
     def cancel(self):
         """After cancel returns the callback will no longer be called.
         Can be called multiple times.

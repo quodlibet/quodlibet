@@ -68,6 +68,8 @@ class MMKeysHandler:
         self._backend.grab()
 
         self._window.connect("notify::is-active", self._focus_event)
+        self._player.connect("unpaused", self._on_unpaused)
+        self._player.connect("paused", self._on_paused)
 
     def quit(self):
         if self._backend:
@@ -75,6 +77,14 @@ class MMKeysHandler:
             self._backend = None
             self._window = None
             self._player = None
+
+    def _on_unpaused(self, player):
+        if self._backend:
+            self._backend.set_playing(True)
+
+    def _on_paused(self, player):
+        if self._backend:
+            self._backend.set_playing(False)
 
     def _focus_event(self, window, param):
         if window.get_property(param.name) and self._backend:
