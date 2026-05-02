@@ -23,10 +23,13 @@ from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 
 try:
     import objc
+    from AppKit import NSImage
     from Foundation import NSObject
     from MediaPlayer import (
+        MPMediaItemArtwork,
         MPMediaItemPropertyAlbumTitle,
         MPMediaItemPropertyArtist,
+        MPMediaItemPropertyArtwork,
         MPMediaItemPropertyPlaybackDuration,
         MPMediaItemPropertyTitle,
         MPNowPlayingInfoCenter,
@@ -37,6 +40,26 @@ try:
     )
 except ImportError as e:
     raise MMKeysImportError from e
+
+# Provide block type metadata that pyobjc-framework-MediaPlayer may not include.
+# Arguments: 0=self, 1=SEL, 2=boundsSize, 3=requestHandler (block).
+objc.registerMetaDataForSelector(
+    b"MPMediaItemArtwork",
+    b"initWithBoundsSize:requestHandler:",
+    {
+        "arguments": {
+            3: {
+                "callable": {
+                    "retval": {"type": b"@"},
+                    "arguments": {
+                        0: {"type": b"^v"},
+                        1: {"type": b"{CGSize=dd}"},
+                    },
+                }
+            }
+        }
+    },
+)
 
 
 class _CommandDispatcher(NSObject):
@@ -74,6 +97,8 @@ class OSXBackend(MMKeysBackend):
         self._dispatcher._callback = callback
         center = MPRemoteCommandCenter.sharedCommandCenter()
         self._commands = []
+        self._art_song_key = None
+        self._art = None
 
         MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
             {MPNowPlayingInfoPropertyPlaybackRate: 0.0}
@@ -93,22 +118,57 @@ class OSXBackend(MMKeysBackend):
         command.addTarget_action_(self._dispatcher, b"handleCommand:")
         self._commands.append(command)
 
+    @staticmethod
+    def _build_artwork(song):
+        try:
+            embedded = song.get_primary_image()
+            if embedded is not None:
+                ns_image = NSImage.alloc().initWithData_(embedded.read())
+                if ns_image is not None:
+                    return (
+                        MPMediaItemArtwork.alloc().initWithBoundsSize_requestHandler_(
+                            (512.0, 512.0), lambda size: ns_image
+                        )
+                    )
+            from pathlib import Path
+
+            dirname = Path(song("~dirname", ""))
+            for name in ("cover.jpg", "cover.png", "folder.jpg", "folder.png"):
+                path = dirname / name
+                if path.exists():
+                    ns_image = NSImage.alloc().initWithContentsOfFile_(str(path))
+                    if ns_image is not None:
+                        artwork = MPMediaItemArtwork.alloc()
+                        return artwork.initWithBoundsSize_requestHandler_(
+                            (512.0, 512.0), lambda size, img=ns_image: img
+                        )
+        except Exception:
+            pass
+        return None
+
     def update_now_playing(self, song, position_ms, playing):
         if song is None:
+            self._art_song_key = None
+            self._art = None
             MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
                 {MPNowPlayingInfoPropertyPlaybackRate: 0.0}
             )
             return
-        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
-            {
-                MPMediaItemPropertyTitle: song("title", ""),
-                MPMediaItemPropertyArtist: song.comma("artist"),
-                MPMediaItemPropertyAlbumTitle: song.comma("album"),
-                MPMediaItemPropertyPlaybackDuration: float(song("~#length", 0)),
-                MPNowPlayingInfoPropertyElapsedPlaybackTime: position_ms / 1000.0,
-                MPNowPlayingInfoPropertyPlaybackRate: 1.0 if playing else 0.0,
-            }
-        )
+        key = song("~filename", None)
+        if key != self._art_song_key:
+            self._art_song_key = key
+            self._art = self._build_artwork(song)
+        info = {
+            MPMediaItemPropertyTitle: song("title", ""),
+            MPMediaItemPropertyArtist: song.comma("artist"),
+            MPMediaItemPropertyAlbumTitle: song.comma("album"),
+            MPMediaItemPropertyPlaybackDuration: float(song("~#length", 0)),
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: position_ms / 1000.0,
+            MPNowPlayingInfoPropertyPlaybackRate: 1.0 if playing else 0.0,
+        }
+        if self._art is not None:
+            info[MPMediaItemPropertyArtwork] = self._art
+        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(info)
 
     def cancel(self):
         for command in self._commands:
@@ -116,4 +176,6 @@ class OSXBackend(MMKeysBackend):
             command.setEnabled_(False)
         self._commands.clear()
         self._dispatcher = None
+        self._art = None
+        self._art_song_key = None
         MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(None)
