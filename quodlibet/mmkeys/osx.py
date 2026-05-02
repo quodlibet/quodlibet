@@ -25,7 +25,12 @@ try:
     import objc
     from Foundation import NSObject
     from MediaPlayer import (
+        MPMediaItemPropertyAlbumTitle,
+        MPMediaItemPropertyArtist,
+        MPMediaItemPropertyPlaybackDuration,
+        MPMediaItemPropertyTitle,
         MPNowPlayingInfoCenter,
+        MPNowPlayingInfoPropertyElapsedPlaybackTime,
         MPNowPlayingInfoPropertyPlaybackRate,
         MPRemoteCommandCenter,
         MPRemoteCommandHandlerStatusSuccess,
@@ -50,7 +55,10 @@ class _CommandDispatcher(NSObject):
     def handle_command_(self, event):
         action = self._dispatch.get(event.command())
         if action is not None and self._callback is not None:
-            GLib.idle_add(self._callback, action)
+            if action == MMKeysAction.SEEK:
+                GLib.idle_add(self._callback, action, event.positionTime())
+            else:
+                GLib.idle_add(self._callback, action)
         return MPRemoteCommandHandlerStatusSuccess
 
     # Explicit ObjC selector name preserves the camelCase selector that
@@ -77,6 +85,7 @@ class OSXBackend(MMKeysBackend):
         self._register(center.stopCommand(), MMKeysAction.STOP)
         self._register(center.playCommand(), MMKeysAction.PLAY)
         self._register(center.pauseCommand(), MMKeysAction.PAUSE)
+        self._register(center.changePlaybackPositionCommand(), MMKeysAction.SEEK)
 
     def _register(self, command, action):
         command.setEnabled_(True)
@@ -84,9 +93,21 @@ class OSXBackend(MMKeysBackend):
         command.addTarget_action_(self._dispatcher, b"handleCommand:")
         self._commands.append(command)
 
-    def set_playing(self, playing):
+    def update_now_playing(self, song, position_ms, playing):
+        if song is None:
+            MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
+                {MPNowPlayingInfoPropertyPlaybackRate: 0.0}
+            )
+            return
         MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
-            {MPNowPlayingInfoPropertyPlaybackRate: 1.0 if playing else 0.0}
+            {
+                MPMediaItemPropertyTitle: song("title", ""),
+                MPMediaItemPropertyArtist: song.comma("artist"),
+                MPMediaItemPropertyAlbumTitle: song.comma("album"),
+                MPMediaItemPropertyPlaybackDuration: float(song("~#length", 0)),
+                MPNowPlayingInfoPropertyElapsedPlaybackTime: position_ms / 1000.0,
+                MPNowPlayingInfoPropertyPlaybackRate: 1.0 if playing else 0.0,
+            }
         )
 
     def cancel(self):
