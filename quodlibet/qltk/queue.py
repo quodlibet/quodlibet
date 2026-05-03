@@ -95,6 +95,7 @@ class ExpandBoxHack(Gtk.Box):
 class QueueExpander(Gtk.Expander):
     def __init__(self, library, player):
         super().__init__()
+        self._library = library
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_property("has-frame", True)
@@ -218,7 +219,12 @@ class QueueExpander(Gtk.Expander):
         self.set_child(sw)
         self.connect("notify::expanded", self.__expand, button)
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
+        drop_target = Gtk.DropTarget.new(
+            Gdk.FileList, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
+        )
+        drop_target.connect("motion", self.__drop_motion)
+        drop_target.connect("drop", self.__drop)
+        self.add_controller(drop_target)
 
         self.queue.model.connect_after(
             "row-inserted", DeferredSignal(self.__check_expand), count_label
@@ -291,8 +297,34 @@ class QueueExpander(Gtk.Expander):
                     self.queue.set_first_column_type(None)
                     break
 
-    def __motion(self, wid, context, x, y, time):
-        Gdk.drag_status(context, Gdk.DragAction.COPY, time)
+    def __drop_motion(self, target, x, y):
+        if not self.get_expanded():
+            self.set_expanded(True)
+        return Gdk.DragAction.COPY
+
+    def __drop(self, target, value, x, y):
+        if not isinstance(value, Gdk.FileList):
+            return False
+        filenames = [f.get_path() for f in value.get_files() if f.get_path()]
+        if not filenames:
+            return False
+
+        library = self._library
+        librarian = library.librarian or library
+        to_add = []
+        for filename in filenames:
+            if filename not in librarian:
+                library.add_filename(filename)
+            elif filename not in library:
+                to_add.append(librarian[filename])
+        library.add(to_add)
+
+        songs = list(filter(None, map(library.get, filenames)))
+        if not songs:
+            return False
+
+        for song in songs:
+            self.queue.model.append([song])
         return True
 
     def __update_count(self, model, path, lab):
@@ -308,9 +340,6 @@ class QueueExpander(Gtk.Expander):
     def __check_expand(self, model, path, iter, lab):
         self.__update_count(model, path, lab)
         self.show()
-
-    def __drag_data_received(self, expander, *args):
-        self.queue.emit("drag-data-received", *args)
 
     def __queue_shuffle(self, button):
         self.set_shuffled(button.get_active())

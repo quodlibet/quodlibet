@@ -2,7 +2,7 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-04-26
+**Last Updated**: 2026-05-03
 **Test Results**: 4641 passed, 27 failed, 48 skipped (99.4%)
 
 
@@ -47,8 +47,15 @@ These tests pass individually but fail in the full suite. Likely GTK4 widget lif
 - DBus teardown issue (not GTK-related), test_entry_name, test_name_owner
 
 
-Fixed This Session (2026-04-26)
+Fixed This Session (2026-05-03)
 -------------------------------
+- QueueExpander DnD: `Gtk.DropTarget` accepting `Gdk.FileList`, auto-expand on
+  motion, append dropped songs to queue model. Removed orphan GTK3 `__motion`
+  and `__drag_data_received` callbacks.
+
+
+Fixed Previously (2026-04-26)
+-----------------------------
 - Missing GLib imports in data_editors, bookmarks, exfalsowindow, pane, duplicates
 - `remove_accel_group` shim added (matching existing `add_accel_group` shim)
 - `size_request` → `get_size_request()` in data_editors
@@ -62,7 +69,10 @@ Fixed This Session (2026-04-26)
 TODO Markers
 ------------
 
-37 `# TODO GTK4` across 15 files, nearly all DnD-related (unchanged).
+31 `# TODO GTK4` across 14 files, nearly all DnD-related. Hotspots:
+- 8 browsers × 3 each (albums, collection, covergrid, filesystem, paned,
+  playlists, podcasts, plus albumart in songsmenu)
+- `qltk/quodlibetwindow.py` (2), various single-TODO qltk files
 
 
 Priority Order (Next Steps)
@@ -72,4 +82,4 @@ Priority Order (Next Steps)
 2. **Ruff cleanup**: Remove commented-out DnD code blocks, fix line lengths — should clear lint failure and reduce noise
 3. **Order-dependent failures**: Investigate widget lifecycle / cleanup in test tearDown — likely need explicit destroy() or idle iteration
 4. **Tray icon test_icons**: Update test to match GTK4 menu item widget types
-5. **DnD rewrite**: Biggest remaining chunk — 37 TODOs, needs DragSource/DropTarget controllers
+5. **DnD rewrite**: 31 TODOs remaining (queue done). Browsers next — each needs DragSource/DropTarget controllers
