@@ -1171,7 +1171,7 @@ Development:
 
 .. _release-3.6.2:
 
-3.6.2 (2016-05-24) - It seemed like there was a lesson here, but nobody was sure what it was
+3.6.2 (2016-05-24) - It requireed like there was a lesson here, but nobody was sure what it was
 --------------------------------------------------------------------------------------------
 
 * Fix queue not expanding with GTK+ 3.20 :bug:`1915`
