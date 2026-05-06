@@ -61,7 +61,7 @@ dev = [
   "pyvirtualdisplay~=3.0 ; sys_platform == 'linux'",
   "setuptools>=78.1.1,<82",
   "packaging>=24.2",
-  "ruff==0.7.3 ; sys_platform == 'linux'",
+  "ruff==0.7.3 ; sys_platform == 'linux' or sys_platform == 'darwin'",
 ]
 docs = [
   "sphinx>=7.2.2,<9",
@@ -75,6 +75,7 @@ package-mode = false
 
 [tool.poetry.group.docs]
 optional = true
+dependencies = {}
 
 [tool.mypy]
 python_version = "3.10"

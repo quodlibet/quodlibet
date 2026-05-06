@@ -1209,7 +1209,7 @@ description = "An extremely fast Python linter and code formatter, written in Ru
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
-markers = "sys_platform == \"linux\""
+markers = "sys_platform == \"linux\" or sys_platform == \"darwin\""
 files = [
     {file = "ruff-0.7.3-py3-none-linux_armv6l.whl", hash = "sha256:34f2339dc22687ec7e7002792d1f50712bf84a13d5152e75712ac08be565d344"},
     {file = "ruff-0.7.3-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:fb397332a1879b9764a3455a0bb1087bda876c2db8aca3a3cbb67b3dbce8cda0"},
@@ -1874,4 +1874,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "regex", 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "b06994aa359d59e8467563875822275ed3f31b7f1608d66235375839935d8060"
+content-hash = "ab2cc739728212619e3a4815e89a66a64a4455203b9a5b46dfabf0574349e3e3"
