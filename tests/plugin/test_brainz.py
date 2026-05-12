@@ -602,13 +602,13 @@ class TBrainz(PluginTestCase):
         assert release.is_single_artist
         track = release.tracks[1]
         meta = build_song_data(release, track)
-        self.assertEqual(meta["albumartist"], "Autechre")
+        self.assertEqual(meta["albumartist"], "Autechre\nThe Hafler Trio")
 
         # albumartist option ON: write the MB value.
         apply_options(meta, True, True, False, False, False)
         dummy = AudioFile({"albumartist": "preexisting"})
         apply_to_song(meta, dummy)
-        self.assertEqual(dummy("albumartist"), "Autechre")
+        self.assertEqual(dummy("albumartist"), "Autechre\nThe Hafler Trio")
 
     def test_apply_options_albumartist_off_preserves_existing(self):
         # Regression test for #4900 (Scenario 2): if the user disables
