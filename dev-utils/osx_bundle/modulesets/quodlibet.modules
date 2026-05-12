@@ -759,6 +759,19 @@
     </dependencies>
   </distutils>
 
+  <distutils id="python-pyobjc-framework-MediaPlayer" python3="1">
+    <branch repo="pypi.org"
+            checkoutdir="python-pyobjc-framework-MediaPlayer-${version}"
+            module="e9/f0/851f6f47e11acbd62d5f5dcb8274afc969135e30018591f75bf3cbf6417f/pyobjc_framework_mediaplayer-${version}.tar.gz"
+            version="12.1"
+            hash="sha256:5ef3f669bdf837d87cdb5a486ec34831542360d14bcba099c7c2e0383380794c"/>
+    <dependencies>
+      <dep package="python-setuptools"/>
+      <dep package="python-pyobjc-core"/>
+      <dep package="python-pyobjc-framework-Cocoa"/>
+    </dependencies>
+  </distutils>
+
   <distutils id="python-pyobjc" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-${version}"
@@ -770,6 +783,7 @@
     <dep package="python-pyobjc-core"/>
     <dep package="python-pyobjc-framework-Cocoa"/>
     <dep package="python-pyobjc-framework-Quartz"/>
+    <dep package="python-pyobjc-framework-MediaPlayer"/>
     </dependencies>
   </distutils>
 

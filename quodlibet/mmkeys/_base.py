@@ -22,6 +22,7 @@ class MMKeysAction:
     REWIND = "rewind"
     REPEAT = "repeat"
     SHUFFLE = "shuffle"
+    SEEK = "seek"
 
 
 class MMKeysBackend:
@@ -40,6 +41,17 @@ class MMKeysBackend:
     def grab(self):
         """Should tell the backend that the application was active
         (e.g. the main window got focused)
+        """
+
+    def set_playing(self, playing):
+        """Called when the player starts or stops playing.
+        Backends that need to track play state (e.g. for system media routing)
+        can override this. No-op by default.
+        """
+
+    def update_now_playing(self, song, position_ms, playing):
+        """Push current track metadata and playback state to the system.
+        `song` may be None when stopped. No-op by default.
         """
 
     def cancel(self):

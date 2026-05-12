@@ -1,5 +1,6 @@
 # Copyright 2012 Martijn Pieters <mj@zopatista.com>
 # Copyright 2014 Eric Le Lay elelay.fr:dev
+# Copyright 2025 Jost Schulte
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,165 +8,174 @@
 # (at your option) any later version.
 
 """
-osxmmkey - Mac OS X Media Keys support
---------------------------------------
+osxmmkey - Mac OS X Media Keys support via MPRemoteCommandCenter
+----------------------------------------------------------------
 
-Requires the PyObjC, with the Cocoa and Quartz bindings to be installed.
-Under macports, that's the `py27-pyobjc`, `py27-pyobjc-cocoa`
-and`py27-pyobjc-quartz` ports, or equivalents for the python version used by
-quodlibet.
+Requires pyobjc-framework-MediaPlayer to be installed.
 
-This plugin also requires that 'access for assistive devices' is enabled, see
-the Universal Access preference pane in the OS X System Prefences.
-
-We register a Quartz event tap to listen for the multimedia keys and
-intercept them to control QL and prevent iTunes to get them.
+Media key routing is handled by the system — multiple apps coexist correctly
+and no Accessibility permission is required.
 """
-
-import threading
 
 from gi.repository import GLib
 
 from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 
 try:
-    from AppKit import NSKeyUp, NSSystemDefined, NSEvent
-    import Quartz
+    import objc
+    from AppKit import NSImage
+    from Foundation import NSObject
+    from MediaPlayer import (
+        MPMediaItemArtwork,
+        MPMediaItemPropertyAlbumTitle,
+        MPMediaItemPropertyArtist,
+        MPMediaItemPropertyArtwork,
+        MPMediaItemPropertyPlaybackDuration,
+        MPMediaItemPropertyTitle,
+        MPNowPlayingInfoCenter,
+        MPNowPlayingInfoPropertyElapsedPlaybackTime,
+        MPNowPlayingInfoPropertyPlaybackRate,
+        MPRemoteCommandCenter,
+        MPRemoteCommandHandlerStatusSuccess,
+    )
 except ImportError as e:
     raise MMKeysImportError from e
+
+# Provide block type metadata that pyobjc-framework-MediaPlayer may not include.
+# Arguments: 0=self, 1=SEL, 2=boundsSize, 3=requestHandler (block).
+objc.registerMetaDataForSelector(
+    b"MPMediaItemArtwork",
+    b"initWithBoundsSize:requestHandler:",
+    {
+        "arguments": {
+            3: {
+                "callable": {
+                    "retval": {"type": b"@"},
+                    "arguments": {
+                        0: {"type": b"^v"},
+                        1: {"type": b"{CGSize=dd}"},
+                    },
+                }
+            }
+        }
+    },
+)
+
+
+class _CommandDispatcher(NSObject):
+    # NSObject subclass used as target for addTarget_action_. One instance is
+    # shared across all commands; the fired command is identified via its
+    # pointer, looked up in _dispatch.
+
+    def init(self):
+        self = objc.super(_CommandDispatcher, self).init()
+        if self is None:
+            return None
+        self._dispatch = {}
+        self._callback = None
+        return self
+
+    def handle_command_(self, event):
+        action = self._dispatch.get(event.command())
+        if action is not None and self._callback is not None:
+            if action == MMKeysAction.SEEK:
+                GLib.idle_add(self._callback, action, event.positionTime())
+            else:
+                GLib.idle_add(self._callback, action)
+        return MPRemoteCommandHandlerStatusSuccess
+
+    # Explicit ObjC selector name preserves the camelCase selector that
+    # addTarget_action_ registers against, while keeping the Python name lowercase.
+    handle_command_ = objc.selector(
+        handle_command_, selector=b"handleCommand:", signature=b"q@:@"
+    )
 
 
 class OSXBackend(MMKeysBackend):
     def __init__(self, name, callback):
-        self.__eventsapp = MacKeyEventsTap(callback)
-        self.__eventsapp.start()
+        self._dispatcher = _CommandDispatcher.alloc().init()
+        self._dispatcher._callback = callback
+        center = MPRemoteCommandCenter.sharedCommandCenter()
+        self._commands = []
+        self._art_song_key = None
+        self._art = None
+
+        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
+            {MPNowPlayingInfoPropertyPlaybackRate: 0.0}
+        )
+
+        self._register(center.togglePlayPauseCommand(), MMKeysAction.PLAYPAUSE)
+        self._register(center.nextTrackCommand(), MMKeysAction.NEXT)
+        self._register(center.previousTrackCommand(), MMKeysAction.PREV)
+        self._register(center.stopCommand(), MMKeysAction.STOP)
+        self._register(center.playCommand(), MMKeysAction.PLAY)
+        self._register(center.pauseCommand(), MMKeysAction.PAUSE)
+        self._register(center.changePlaybackPositionCommand(), MMKeysAction.SEEK)
+
+    def _register(self, command, action):
+        command.setEnabled_(True)
+        self._dispatcher._dispatch[command] = action
+        command.addTarget_action_(self._dispatcher, b"handleCommand:")
+        self._commands.append(command)
+
+    @staticmethod
+    def _build_artwork(song):
+        try:
+            embedded = song.get_primary_image()
+            if embedded is not None:
+                ns_image = NSImage.alloc().initWithData_(embedded.read())
+                if ns_image is not None:
+                    return (
+                        MPMediaItemArtwork.alloc().initWithBoundsSize_requestHandler_(
+                            (512.0, 512.0), lambda size: ns_image
+                        )
+                    )
+            from pathlib import Path
+
+            dirname = Path(song("~dirname", ""))
+            for name in ("cover.jpg", "cover.png", "folder.jpg", "folder.png"):
+                path = dirname / name
+                if path.exists():
+                    ns_image = NSImage.alloc().initWithContentsOfFile_(str(path))
+                    if ns_image is not None:
+                        artwork = MPMediaItemArtwork.alloc()
+                        return artwork.initWithBoundsSize_requestHandler_(
+                            (512.0, 512.0), lambda size, img=ns_image: img
+                        )
+        except Exception:
+            pass
+        return None
+
+    def update_now_playing(self, song, position_ms, playing):
+        if song is None:
+            self._art_song_key = None
+            self._art = None
+            MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(
+                {MPNowPlayingInfoPropertyPlaybackRate: 0.0}
+            )
+            return
+        key = song("~filename", None)
+        if key != self._art_song_key:
+            self._art_song_key = key
+            self._art = self._build_artwork(song)
+        info = {
+            MPMediaItemPropertyTitle: song("title", ""),
+            MPMediaItemPropertyArtist: song.comma("artist"),
+            MPMediaItemPropertyAlbumTitle: song.comma("album"),
+            MPMediaItemPropertyPlaybackDuration: float(song("~#length", 0)),
+            MPNowPlayingInfoPropertyElapsedPlaybackTime: position_ms / 1000.0,
+            MPNowPlayingInfoPropertyPlaybackRate: 1.0 if playing else 0.0,
+        }
+        if self._art is not None:
+            info[MPMediaItemPropertyArtwork] = self._art
+        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(info)
 
     def cancel(self):
-        if self.__eventsapp is not None:
-            self.__eventsapp.stop()
-            self.__eventsapp = None
-
-
-class MacKeyEventsTap(threading.Thread):
-    # Quartz event tap, listens for media key events and translates these to
-    # control messages for quodlibet.
-
-    _EVENTS = {
-        16: MMKeysAction.PLAYPAUSE,
-        19: MMKeysAction.NEXT,
-        20: MMKeysAction.PREV,
-    }
-
-    def __init__(self, callback):
-        super().__init__()
-        self._callback = callback
-        self._tap = None
-        self._runLoopSource = None
-        self._event = threading.Event()
-
-    def _push_callback(self, action):
-        # push to the main thread, ignore if we have been stopped by now
-        def idle_call(action):
-            if self._tap:
-                self._callback(action)
-            return False
-
-        GLib.idle_add(idle_call, action)
-
-    def _event_tap(self, proxy, type_, event, refcon):
-        # evenTrap disabled by timeout or user input, re-enable
-        if (
-            type_ == Quartz.kCGEventTapDisabledByUserInput
-            or type_ == Quartz.kCGEventTapDisabledByTimeout
-        ):
-            assert self._tap is not None
-            Quartz.CGEventTapEnable(self._tap, True)
-            return event
-
-        # Convert the Quartz CGEvent into something more useful
-        keyEvent = NSEvent.eventWithCGEvent_(event)
-        if keyEvent.subtype() == 8:  # subtype 8 is media keys
-            data = keyEvent.data1()
-            keyCode = (data & 0xFFFF0000) >> 16
-            keyState = (data & 0xFF00) >> 8
-            if keyCode in self._EVENTS:
-                if keyState == NSKeyUp:
-                    self._push_callback(self._EVENTS[keyCode])
-                return None  # swallow the event, so iTunes doesn't launch
-        return event
-
-    def _loop_start(self, observer, activiti, info):
-        self._event.set()
-
-    def run(self):
-        self._tap = Quartz.CGEventTapCreate(
-            Quartz.kCGSessionEventTap,  # Session level is enough for our needs
-            Quartz.kCGHeadInsertEventTap,  # Insert wherever, we do not filter
-            # Active, to swallow the play/pause event is enough
-            Quartz.kCGEventTapOptionDefault,
-            # NSSystemDefined for media keys
-            Quartz.CGEventMaskBit(NSSystemDefined),
-            self._event_tap,
-            None,
-        )
-
-        # the above can fail
-        if self._tap is None:
-            self._event.set()
-            return
-
-        self._loop = Quartz.CFRunLoopGetCurrent()
-
-        # add an observer so we know when we can stop it
-        # without a race condition
-        self._observ = Quartz.CFRunLoopObserverCreate(
-            None, Quartz.kCFRunLoopEntry, False, 0, self._loop_start, None
-        )
-        Quartz.CFRunLoopAddObserver(
-            self._loop, self._observ, Quartz.kCFRunLoopCommonModes
-        )
-
-        # Create a runloop source and add it to the current loop
-        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, self._tap, 0)
-
-        Quartz.CFRunLoopAddSource(
-            self._loop, self._runLoopSource, Quartz.kCFRunLoopDefaultMode
-        )
-
-        # Enable the tap
-        Quartz.CGEventTapEnable(self._tap, True)
-
-        # runrunrun
-        Quartz.CFRunLoopRun()
-
-    def stop(self):
-        """Call once from the main thread to stop the thread.
-        After this returns no callback will be called anymore.
-        """
-
-        # wait until we fail or the observer tells us that the loop has started
-        self._event.wait()
-
-        # failed to create a tap, nothing to stop
-        if self._tap is None:
-            return
-
-        # remove the runloop source
-        Quartz.CFRunLoopRemoveSource(
-            self._loop, self._runLoopSource, Quartz.kCFRunLoopDefaultMode
-        )
-        self._runLoopSource = None
-
-        # remove observer
-        Quartz.CFRunLoopRemoveObserver(
-            self._loop, self._observ, Quartz.kCFRunLoopCommonModes
-        )
-        self._observ = None
-
-        # stop the loop
-        Quartz.CFRunLoopStop(self._loop)
-        self._loop = None
-
-        # Disable the tap
-        Quartz.CGEventTapEnable(self._tap, False)
-        self._tap = None
+        for command in self._commands:
+            command.removeTarget_(self._dispatcher)
+            command.setEnabled_(False)
+        self._commands.clear()
+        self._dispatcher = None
+        self._art = None
+        self._art_song_key = None
+        MPNowPlayingInfoCenter.defaultCenter().setNowPlayingInfo_(None)
