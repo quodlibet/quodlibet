@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-03-17 06:09+0000\n"
+"PO-Revision-Date: 2026-05-11 09:11+0000\n"
 "Last-Translator: 大王叫我来巡山 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.5-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3509,7 +3509,6 @@ msgid "Queue Only"
 msgstr "仅队列"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3518,7 +3517,8 @@ msgid ""
 msgstr ""
 "将歌曲的播放限制在队列中。\n"
 "\n"
-"在主窗口中选择此播放顺序，然后双击任何歌曲都会将其加入队列而不是播放。"
+"在主窗口的随机播放设置中选择此播放顺序并启用随机播放模式。双击任何歌曲都会将"
+"其加入队列而不是播放。"
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
