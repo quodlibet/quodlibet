@@ -1533,7 +1533,7 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
-#: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
+#: quodlibet/ext/playorder/queue.py:44 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:863
 msgid "Preferences"
 msgstr "首选项"
@@ -3509,25 +3509,26 @@ msgid "Queue Only"
 msgstr "仅队列"
 
 #: quodlibet/ext/playorder/queue.py:26
+#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
-"Select this play order in the main window, then double-clicking any song "
-"will enqueue it instead of playing."
+"Select this play order in the shuffle settings of the main window and enable "
+"shuffle mode. Double-clicking any song will enqueue it instead of playing."
 msgstr ""
 "将歌曲的播放限制在队列中。\n"
 "\n"
 "在主窗口中选择此播放顺序，然后双击任何歌曲都会将其加入队列而不是播放。"
 
-#: quodlibet/ext/playorder/queue.py:31
+#: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
 msgstr "仅队列"
 
-#: quodlibet/ext/playorder/queue.py:32
+#: quodlibet/ext/playorder/queue.py:33
 msgid "_Queue only"
 msgstr "仅队列(_Q)"
 
-#: quodlibet/ext/playorder/queue.py:37
+#: quodlibet/ext/playorder/queue.py:38
 msgid "Automatically start playing double-clicked songs"
 msgstr "自动开始播放双击的歌曲"
 
