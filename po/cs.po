@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-03-22 05:20+0000\n"
+"PO-Revision-Date: 2026-05-10 08:49+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.5-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3615,7 +3615,7 @@ msgstr "Ekvalizér počtu přehrání"
 #: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr ""
-"Přidá režim zamíchání který upřednostňuje skladby s nižším počtem přehrání."
+"Přidá režim promíchání, který upřednostňuje skladby s nižším počtem přehrání."
 
 #: quodlibet/ext/playorder/playcounteq.py:27
 msgid "Prefer less played"
@@ -3634,7 +3634,6 @@ msgid "Queue Only"
 msgstr "Pouze fronta"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3643,8 +3642,9 @@ msgid ""
 msgstr ""
 "Omezí přehrávání skladeb pouze na frontu.\n"
 "\n"
-"Po zvolení tohoto režimu přehrávání poklepání na skladbu nespustí její "
-"přehrávání, ale přidá ji do fronty."
+"Vyberte toto pořadí přehrávání v nastavení promíchání v hlavním okně a "
+"povolte režim promíchání. Poklepání na skladbu nespustí její přehrávání, ale "
+"přidá ji do fronty."
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
@@ -3673,7 +3673,7 @@ msgstr "_Opačně"
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:99
 msgid "Shuffle by Grouping"
-msgstr "Promíchat podle skupin"
+msgstr "Promíchat podle seskupení"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:34
 msgid ""
@@ -3691,11 +3691,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:41
 msgid "Shuffle by grouping"
-msgstr "Promíchat podle skupin"
+msgstr "Promíchat podle seskupení"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:42
 msgid "Shuffle by _grouping"
-msgstr "_Promíchat podle skupin"
+msgstr "_Promíchat podle seskupení"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:100
 msgid "Waiting to start new group…"
