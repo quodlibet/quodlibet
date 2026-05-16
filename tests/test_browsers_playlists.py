@@ -22,7 +22,6 @@ from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
-from quodlibet.qltk.songlist import DND_QL
 from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
 from quodlibet.fsn import fsn2uri, fsn2bytes
@@ -312,14 +311,6 @@ class TPlaylistsBrowser(TestCase):
         pattern_text = self.bar.display_pattern_text
         self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
         assert "<~name>" in pattern_text
-
-    def test_drag_data_get(self):
-        b = self.bar
-        song = AudioFile()
-        song["~filename"] = "foo"
-        sel = MockSelData()
-        qltk.selection_set_songs(sel, [song])
-        b._drag_data_get(None, None, sel, DND_QL, None)
 
     def test_playlist_drag_data_extend_accept(self):
         b = self.bar

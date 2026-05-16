@@ -14,8 +14,8 @@ import os
 from typing import TypeVar
 from collections.abc import Iterable
 
-from gi.repository import Gtk, Gdk
-from quodlibet.fsn import fsn2uri, fsn2bytes, bytes2fsn
+from gi.repository import Gtk, Gdk, Gio
+from quodlibet.fsn import fsn2bytes, bytes2fsn
 
 from quodlibet import config
 from quodlibet import formats
@@ -44,8 +44,6 @@ class FileSystem(Browser, Gtk.Box):
     keys = ["FileSystem"]
     priority = 10
     uses_main_library = False
-
-    TARGET_QL, TARGET_EXT = range(1, 3)
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "filesystem_pos", 0.4)
@@ -97,17 +95,11 @@ class FileSystem(Browser, Gtk.Box):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
-        targets = [
-            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
-            # ("text/uri-list", 0, self.TARGET_EXT),
-        ]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        # dt.connect("drag-data-get", self.__drag_data_get)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare, dt)
+        dt.add_controller(drag_source)
 
         sel = dt.get_selection()
         sel.unselect_all()
@@ -133,34 +125,26 @@ class FileSystem(Browser, Gtk.Box):
     def get_child(self):
         return get_children(self)[0].get_child()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
-        model, rows = view.get_selection().get_selected_rows()
-        dirs = [model[row][0] for row in rows]
+    def __drag_prepare(self, source, x, y, view):
         songs = []
         for songs in self.__find_songs(view.get_selection()):  # noqa
             pass
-        if tid == self.TARGET_QL:
-            cant_add = [s for s in songs if not s.can_add]
-            if cant_add:
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self),
-                    _("Unable to copy songs"),
-                    _(
-                        "The files selected cannot be copied to other "
-                        "song lists or the queue."
-                    ),
-                ).run()
-                ctx.drag_abort(etime)
-                return
-            to_add = self._only_known(songs)
-            self.__add_songs(view, to_add)
-
-            qltk.selection_set_songs(sel, songs)
-        else:
-            # External target (app) is delivered a list of URIS of songs
-            uris = list({fsn2uri(dir) for dir in dirs})
-            print_d(f"Directories to drop: {dirs}")
-            sel.set_uris(uris)
+        if not songs:
+            return None
+        cant_add = [s for s in songs if not s.can_add]
+        if cant_add:
+            qltk.ErrorMessage(
+                qltk.get_top_parent(self),
+                _("Unable to copy songs"),
+                _(
+                    "The files selected cannot be copied to other "
+                    "song lists or the queue."
+                ),
+            ).run()
+            return None
+        self.__add_songs(view, self._only_known(songs))
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def can_filter_tag(self, key):
         return key == "~dirname"

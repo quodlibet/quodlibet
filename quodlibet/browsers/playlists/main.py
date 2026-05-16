@@ -8,7 +8,7 @@
 
 import os
 
-from gi.repository import Gdk, Gtk, GLib, Pango
+from gi.repository import Gdk, Gio, Gtk, GLib, Pango
 
 import quodlibet
 from quodlibet import _
@@ -272,22 +272,16 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return view
 
     def __configure_dnd(self, view):
-        targets = [
-            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            # ("text/uri-list", 0, DND_URI_LIST),
-            # ("text/x-moz-url", 0, DND_MOZ_URL),
-        ]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # view.enable_model_drag_source(
-        # Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY
-        # )
-        # view.connect("drag-data-received", self.__drag_data_received)
-        # view.connect("drag-data-get", self._drag_data_get)
-        # view.connect("drag-motion", self.__drag_motion)
-        # view.connect("drag-leave", self.__drag_leave)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self._drag_prepare)
+        view.add_controller(drag_source)
+
+        drop_target = Gtk.DropTarget.new(Gdk.FileList, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop)
+        drop_target.connect("motion", self.__on_drop_motion)
+        drop_target.connect("leave", self.__on_drop_leave)
+        view.add_controller(drop_target)
 
     def __connect_signals(self, view):
         view.connect("row-activated", lambda *x: self.songs_activated())
@@ -355,16 +349,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __playlist_deleted(self, row) -> None:
         self.model.remove(row.iter)
 
-    def __drag_motion(self, view, ctx, x, y, time):
-        targets = [t.name() for t in ctx.list_targets()]
-        if "text/x-quodlibet-songs" in targets:
-            view.set_drag_dest(x, y, into_only=True)
-            return True
-        # Highlighting the view itself doesn't work.
-        view.get_parent().add_css_class("drop-target")
-        return True
+    def __on_drop_motion(self, target, x, y):
+        view = target.get_widget()
+        view.set_drag_dest(x, y, into_only=True)
+        return Gdk.DragAction.COPY
 
-    def __drag_leave(self, view, ctx, time):
+    def __on_drop_leave(self, target):
+        view = target.get_widget()
         view.get_parent().remove_css_class("drop-target")
 
     def __remove_songs(self, iters, smodel):
@@ -425,94 +416,46 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         return was_modified
 
-    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        # TreeModelSort doesn't support GtkTreeDragDestDrop.
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        pass
-        # view.emit_stop_by_name("drag-data-received")
-        # model = view.get_model()
-        # if tid == DND_QL:
-        #     filenames = qltk.selection_get_filenames(sel)
-        #     songs = list(filter(None, [self.songs_lib.get(f) for f in filenames]))
-        #     # Used in conjunction with the prompt for DnD to decide whether to
-        #     # perform various updates/refreshes.
-        #     was_modified = True
-        #     if not songs:
-        #         Gtk.drag_finish(ctx, False, False, etime)
-        #         return
-        #
-        #     try:
-        #         path, pos = view.get_dest_row_at_pos(x, y)
-        #     except TypeError:
-        #         # e.g. the target is the empty area after the list of playlists?
-        #         # TODO: Maybe prompt for this too? Though getting a new playlist is
-        #         # less intrusive than modifying an existing playlist.
-        #         # XXX: There does not seem to be an empty area anymore (changed
-        #         # by one of these pull-requests: #3751 #3974 or the newish browser
-        #         # code?).
-        #         playlist = self.pl_lib.create_from_songs(songs)
-        #         GLib.idle_add(self._select_playlist, playlist)
-        #     else:
-        #         playlist = model[path][0]
-        #         # Call a helper-function that adds the tracks to the playlist if the
-        #         # user accepts the prompt.
-        #         was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
-        #
-        #     Gtk.drag_finish(ctx, True, False, etime)
-        #     # Cause a refresh to the dragged-to playlist if it is selected
-        #     # so that the dragged (duplicate) track(s) appears
-        #     if playlist is self._selected_playlist() and was_modified:
-        #         model, plist_iter = self.__selected_playlists()
-        #         songlist = qltk.get_top_parent(self).songlist
-        #         self.activate(resort=not songlist.is_sorted())
-        # else:
-        #     if tid == DND_URI_LIST:
-        #     uri = sel.get_uris()[0]
-        #     name = os.path.basename(uri)
-        #     elif tid == DND_MOZ_URL:
-        #     data = sel.get_data()
-        #     uri, name = data.decode("utf16", "replace").split("\n")
-        #     else:
-        #     Gtk.drag_finish(ctx, False, False, etime)
-        #     return
-        #     name = _name_for(name or os.path.basename(uri))
-        #     try:
-        #     sock = urlopen(uri)
-        #     uri = uri.lower()
-        #     if uri.endswith(".pls"):
-        #     playlist = parse_pls(
-        #     sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
-        #     )
-        #     elif uri.endswith((".m3u", ".m3u8")):
-        #     playlist = parse_m3u(
-        #     sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
-        #     )
-        #     else:
-        #     raise OSError
-        #     self.songs_lib.add(playlist.songs)
-        # TODO: change to use playlist library too?
-        #     Gtk.drag_finish(ctx, True, False, etime)
-        #     except OSError:
-        #     Gtk.drag_finish(ctx, False, False, etime)
-        #     qltk.ErrorMessage(
-        #         qltk.get_top_parent(self),
-        #         _("Unable to import playlist"),
-        #         _(
-        #             "Quod Libet can only import playlists in the M3U/M3U8 "
-        #             "and PLS formats."
-        #         ),
-        #     ).run()
+    def __on_drop(self, target, value, x, y):
+        if not isinstance(value, Gdk.FileList):
+            return False
+        view = target.get_widget()
+        filenames = [f.get_path() for f in value.get_files() if f.get_path()]
+        songs = []
+        for fn in filenames:
+            song = self.songs_lib.get(fn)
+            if song is None:
+                self.songs_lib.add_filename(fn)
+                song = self.songs_lib.get(fn)
+            if song is not None:
+                songs.append(song)
+        if not songs:
+            return False
 
-    def _drag_data_get(self, view, ctx, sel, tid, etime):
+        try:
+            path, _pos = view.get_dest_row_at_pos(x, y)
+        except TypeError:
+            playlist = self.pl_lib.create_from_songs(songs)
+            GLib.idle_add(self._select_playlist, playlist)
+            return True
+
+        playlist = view.get_model()[path][0]
+        was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
+        if playlist is self._selected_playlist() and was_modified:
+            songlist = qltk.get_top_parent(self).songlist
+            self.activate(resort=not songlist.is_sorted())
+        return True
+
+    def _drag_prepare(self, source, x, y):
         model, iters = self.__view.get_selection().get_selected_rows()
         songs = []
         for itr in iters:
             if itr:
                 songs += model[itr][0].songs
-        if tid == 0:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def _select_playlist(self, playlist, scroll=False):
         view = self.__view
