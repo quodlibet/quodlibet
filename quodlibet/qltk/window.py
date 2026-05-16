@@ -105,10 +105,6 @@ class Window(Gtk.Window):
                 self.set_modal(True)
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
-        # TODO GTK4: check what we want to do here given removal of positioning in GTK4
-        # self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        # GTK4: "destroy" signal no longer fires on GtkWidget; use override instead
-        # self.connect("key-press-event", self._on_key_press)
 
     def destroy(self):
         windows = type(self).windows

@@ -242,7 +242,20 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         self.insert_action_group("dirtree", self._action_group)
         self._menu = self._create_menu()
         connect_obj(self, "popup-menu", self._popup_menu, self._menu)
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
+
+        drop_target = Gtk.DropTarget.new(Gdk.FileList, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop)
+        self.add_controller(drop_target)
+
+    def __on_drop(self, target, value, x, y):
+        if not isinstance(value, Gdk.FileList):
+            return False
+        for f in value.get_files():
+            path = f.get_path()
+            if path:
+                self.go_to(path)
+                return True
+        return False
 
     def _create_actions(self):
         ag = Gio.SimpleActionGroup()

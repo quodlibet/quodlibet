@@ -180,9 +180,8 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.__ag.connect(key, mod, 0, lambda *x: self.destroy())
         self.add_accel_group(self.__ag)
 
-        # GTK4: Gtk.MenuBar removed; macOS native menu integration is not
-        # supported in GTK4 via GtkosxApplication the same way.
-        # TODO GTK4: investigate macOS menu bar integration for GTK4
+        # macOS native menu integration is not currently supported in GTK4;
+        # keep a placeholder so set_as_osx_window() has something to pass.
         self._dummy_osx_menu_bar = Gtk.Box()
         self._dummy_osx_menu_bar.set_visible(False)
         vb.prepend(self._dummy_osx_menu_bar)

@@ -22,7 +22,7 @@ from io import BytesIO
 from typing import Any
 from urllib.parse import urlencode
 
-from gi.repository import Gtk, Pango, GLib, GdkPixbuf
+from gi.repository import Gtk, Gdk, Gio, Pango, GLib, GdkPixbuf
 
 from quodlibet import _
 from quodlibet import util, qltk, app
@@ -539,21 +539,14 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.treeview.set_headers_visible(False)
         # GTK4: set_rules_hint() removed (alternating row colors now automatic)
 
-        targets = [("text/uri-list", 0, 0)]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # treeview.drag_source_set(
-        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        # )
-
         treeselection = self.treeview.get_selection()
         treeselection.set_mode(Gtk.SelectionMode.SINGLE)
         treeselection.connect("changed", self.__select_callback, image)
 
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # self.treeview.connect("drag-data-get", self.__drag_data_get, treeselection)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare, treeselection)
+        treeview.add_controller(drag_source)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn("Thumb")
@@ -730,12 +723,15 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.config_set("searchraw", self.search_radioraw.get_active())
         self.config_set("resultsmax", self.search_spinresultsmax.get_value_as_int())
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
+    def __drag_prepare(self, source, x, y, treeselection):
         model, iter = treeselection.get_selected()
         if not iter:
-            return
+            return None
         cover = model.get_value(iter, 1)
-        sel.set_uris([cover["cover"]])
+        uri = cover["cover"]
+        return Gdk.ContentProvider.new_for_value(
+            Gdk.FileList.new_from_list([Gio.File.new_for_uri(uri)])
+        )
 
     def __searchfieldchanged(self, *data):
         search = data[0].get_text()

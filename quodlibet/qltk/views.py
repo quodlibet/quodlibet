@@ -33,10 +33,11 @@ class TreeViewHints(Gtk.Window):
         def do_get_preferred_width(*args):
             return (0, Gtk.Label.do_get_preferred_width(*args)[0])
 
-    # TODO GTK4: TreeViewHints.__motion still uses removed GTK3 APIs
-    # (bin_window, convert_bin_window_to_widget_coords, Gdk.Screen,
-    # Gdk.Window.move/resize). Needs rewrite to attach controllers to the
-    # view and compute positions in widget coordinates.
+    # Note: hover tooltips on truncated TreeView cells are not yet wired up
+    # for GTK4. The original GTK3 motion handler relied on bin_window and
+    # convert_bin_window_to_widget_coords, both removed. A future pass should
+    # attach a Gtk.EventControllerMotion and compute positions in widget
+    # coordinates.
 
     def __init__(self):
         try:

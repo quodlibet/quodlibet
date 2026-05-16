@@ -11,10 +11,9 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
-from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.seekbutton import SeekButton
-from quodlibet.util.dprint import print_e
 
 
 class Volume(Gtk.VolumeButton):
@@ -39,7 +38,6 @@ class Volume(Gtk.VolumeButton):
         self._orig_icon_list = self.props.icons
         player.notify("volume")
         player.notify("mute")
-        # TODO GTK4: Add VolumeMenu with GestureClick controller
 
     def __iadd__(self, v):
         self.set_value(self.get_value() + v)
@@ -69,67 +67,6 @@ class Volume(Gtk.VolumeButton):
             self.props.icons = [self._orig_icon_list[0]]
         else:
             self.props.icons = self._orig_icon_list
-
-
-class VolumeMenu(Gtk.PopoverMenu):
-    __modes = (
-        ("auto", _("Auto_matic"), None),
-        ("track", _("_Track Mode"), ["track"]),
-        ("album", _("_Album Mode"), ["album", "track"]),
-    )
-
-    def __init__(self, player):
-        super().__init__()
-
-        # ubuntu 12.04..
-        if hasattr(player, "bind_property"):
-            # Translators: player state, no action
-            item = Gtk.CheckMenuItem(label=_("_Mute"), use_underline=True)
-            player.bind_property(
-                "mute", item, "active", GObject.BindingFlags.BIDIRECTIONAL
-            )
-            self.append(item)
-            item.show()
-
-        item = Gtk.MenuItem(label=_("_Replay Gain Mode"), use_underline=True)
-        self.append(item)
-        item.show()
-
-        # Set replaygain mode as saved in configuration
-        replaygain_mode = config.gettext("player", "replaygain_mode", "auto")
-        self.__set_mode(player, replaygain_mode)
-
-        rg = Gtk.PopoverMenu()
-        item.set_submenu(rg)
-        item = None
-        for mode, title, _profile in self.__modes:
-            item = RadioMenuItem(group=item, label=title, use_underline=True)
-            rg.append(item)
-            item.connect("toggled", self.__changed, player, mode)
-            if replaygain_mode == mode:
-                item.set_active(True)
-            item.show()
-
-    def __set_mode(self, player, mode):
-        selected_mode = next((m for m in self.__modes if m[0] == mode), None)
-        if selected_mode is None:
-            print_e(f"Invalid selected replaygain mode: {mode!r}")
-            selected_mode = self.__modes[0]
-            print_e(f"Falling back to replaygain mode: {selected_mode[0]!r}")
-
-        player.replaygain_profiles[0] = selected_mode[2]
-        player.reset_replaygain()
-
-    def __changed(self, item, player, mode):
-        if item.get_active():
-            config.settext("player", "replaygain_mode", mode)
-            self.__set_mode(player, mode)
-
-    def popup(self, *args):
-        gain = config.getboolean("player", "replaygain")
-        for child in qltk.get_children(self):
-            child.set_sensitive(gain)
-        return super().popup(*args)
 
 
 class PlayPauseButton(Gtk.Button):
