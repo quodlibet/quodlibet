@@ -1567,7 +1567,7 @@ msgstr "_Ажурирај станице"
 #: quodlibet/ext/gstreamer/compressor.py:109
 #: quodlibet/ext/gstreamer/crossfeed.py:157
 #: quodlibet/ext/gstreamer/karaoke.py:106 quodlibet/ext/gstreamer/pitch.py:102
-#: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
+#: quodlibet/ext/playorder/queue.py:44 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:863
 msgid "Preferences"
 msgstr "Поставке"
@@ -3639,23 +3639,23 @@ msgstr "Само низ"
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
-"Select this play order in the main window, then double-clicking any song "
-"will enqueue it instead of playing."
+"Select this play order in the shuffle settings of the main window and enable "
+"shuffle mode. Double-clicking any song will enqueue it instead of playing."
 msgstr ""
 "Ограничава пуштање песама на низ. Ако је овај поредак одабран, дупли-клик ће "
 "додати песму у низ уместо да је пусти."
 
-#: quodlibet/ext/playorder/queue.py:31
+#: quodlibet/ext/playorder/queue.py:32
 #, fuzzy
 msgid "Queue only"
 msgstr "Само низ"
 
-#: quodlibet/ext/playorder/queue.py:32
+#: quodlibet/ext/playorder/queue.py:33
 #, fuzzy
 msgid "_Queue only"
 msgstr "Само низ"
 
-#: quodlibet/ext/playorder/queue.py:37
+#: quodlibet/ext/playorder/queue.py:38
 msgid "Automatically start playing double-clicked songs"
 msgstr ""
 
