@@ -13,7 +13,7 @@ ease constructors.
 
 from urllib.request import urlopen
 
-from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf, Gdk
+from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk
 
 from quodlibet.util.dprint import print_d
 
@@ -359,97 +359,6 @@ def SymbolicIconImage(name, size, fallbacks=None):
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-
-class Action(Gio.SimpleAction):
-    def __init__(self, *args, **kwargs):
-        # GTK4: SimpleAction doesn't have label/icon_name properties
-        # Store them as instance attributes for compatibility
-        self.label = kwargs.pop("label", None)
-        self.icon_name = kwargs.pop("icon_name", None)
-        super().__init__(*args, **kwargs)
-
-
-class ToggleAction(Gio.SimpleAction):
-    def __init__(self, *args, **kwargs):
-        # GTK4: SimpleAction doesn't have label property
-        self.label = kwargs.pop("label", None)
-        self.icon_name = kwargs.pop("icon_name", None)
-        name = kwargs.pop("name", None)
-        super().__init__(
-            name=name, parameter_type=None, state=GLib.Variant.new_boolean(False)
-        )
-
-    def get_active(self):
-        """Get the toggle state"""
-        state = self.get_state()
-        return state.get_boolean() if state else False
-
-    def set_active(self, active):
-        """Set the toggle state"""
-        self.set_state(GLib.Variant.new_boolean(active))
-
-
-class RadioAction(Gio.SimpleAction):
-    """GTK4: RadioAction reimplemented to support 'changed' signal"""
-
-    def __init__(self, *args, **kwargs):
-        self.label = kwargs.pop("label", None)
-        self._value = kwargs.pop("value", 0)
-        self._group = []
-        self._active = False
-        # Initialize as a SimpleAction
-        name = kwargs.pop("name", None)
-        super().__init__(name=name)
-
-    def join_group(self, group_source):
-        """GTK4: Stub for RadioAction group compatibility"""
-        if group_source is not None:
-            if not hasattr(group_source, "_group"):
-                group_source._group = [group_source]
-            if self not in group_source._group:
-                group_source._group.append(self)
-            self._group = group_source._group
-        return self
-
-    def get_group(self):
-        """GTK4: Return radio group"""
-        # Ensure self is in the group if we have a group
-        if self._group and self not in self._group:
-            self._group.append(self)
-        return self._group if self._group else [self]
-
-    def get_current_value(self):
-        """GTK4: Return current value"""
-        # Find the active action in the group
-        for action in self.get_group():
-            if action._active:
-                return action._value
-        return self._value
-
-    def set_active(self, active):
-        """GTK4: Set action as active"""
-        if active != self._active:
-            self._active = active
-            if active:
-                # Deactivate other actions in the group
-                for action in self.get_group():
-                    if action is not self and action._active:
-                        action._active = False
-                # Emit changed signal on all actions in the group
-                for action in self.get_group():
-                    action.emit("changed", self)
-
-
-# Register the 'changed' signal for RadioAction
-# GTK4: Must use signal_new() when subclassing GObject-based classes from C
-GObject.signal_new(
-    "changed",
-    RadioAction,
-    GObject.SignalFlags.RUN_FIRST,
-    None,  # return type
-    (object,),  # parameter types
-)
 
 
 class WebImage(Gtk.Image):

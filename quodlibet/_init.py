@@ -653,47 +653,7 @@ def _init_gtk():  # noqa: C901
 
         Gtk.WindowType = WindowType
 
-    # GTK4: UIManager removed - stub for now, needs proper Gio.Menu migration
-    if not hasattr(Gtk, "UIManager"):
-        from gi.repository import GObject
-
-        class UIManager(GObject.Object):
-            def __init__(self):
-                GObject.Object.__init__(self)
-                self._action_groups = []
-                self._ui_string = ""
-                self._widgets = {}
-
-            def insert_action_group(self, group, pos):
-                self._action_groups.append(group)
-
-            def add_ui_from_string(self, ui_string):
-                self._ui_string = ui_string
-
-            def get_widget(self, path):
-                if path not in self._widgets:
-                    # Create a Button-like widget with menu item methods
-                    widget = Gtk.Box()
-                    widget.get_children = list
-                    # Add menu item compatibility methods
-                    widget._image = Gtk.Image()
-                    widget.get_image = lambda: widget._image
-                    widget.set_label = lambda text: None  # No-op for now
-                    self._widgets[path] = widget
-                return self._widgets[path]
-
-            def get_accel_group(self):
-                # Return dummy accel group
-                if not hasattr(self, "_accel_group"):
-
-                    class DummyAccelGroup(GObject.Object):
-                        def connect(self, *args, **kwargs):
-                            pass
-
-                    self._accel_group = DummyAccelGroup()
-                return self._accel_group
-
-        Gtk.UIManager = UIManager
+    from gi.repository import GObject
 
     # GTK4: AccelGroup removed - create dummy for compatibility
     class AccelGroup(GObject.Object):
