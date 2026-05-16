@@ -253,9 +253,11 @@ class ValidatingEntryMixin(Gtk.Widget):
         else:
             color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
-        # GTK4: override_color removed, use CSS provider instead
         if color and self.get_property("sensitive"):
-            css = f"* {{ color: rgba({int(color.red*255)}, {int(color.green*255)}, {int(color.blue*255)}, {color.alpha}); }}"
+            r = int(color.red * 255)
+            g = int(color.green * 255)
+            b = int(color.blue * 255)
+            css = f"* {{ color: rgba({r}, {g}, {b}, {color.alpha}); }}"
             from quodlibet.qltk import add_css
 
             add_css(self, css)

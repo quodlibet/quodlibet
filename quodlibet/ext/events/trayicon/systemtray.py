@@ -74,8 +74,7 @@ def get_paused_pixbuf(boundary, diff):
         renderer.realize(None)
         texture = renderer.render_texture(node, None)
         renderer.unrealize()
-        pixbuf = Gdk.pixbuf_get_from_texture(texture)
-        return pixbuf
+        return Gdk.pixbuf_get_from_texture(texture)
     except (GLib.GError, Exception):
         return None
 

@@ -223,7 +223,7 @@ def _init_g():
     sys.modules["gobject"] = None
 
 
-def _init_gtk():
+def _init_gtk():  # noqa: C901
     """Call before using Gtk/Gdk"""
 
     import gi
@@ -489,8 +489,7 @@ def _init_gtk():
 
             @staticmethod
             def new(adjustment):
-                scale = Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adjustment)
-                return scale
+                return Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adjustment)
 
         Gtk.HScale = HScaleCompat
 
@@ -504,8 +503,7 @@ def _init_gtk():
 
             @staticmethod
             def new(adjustment):
-                scale = Gtk.Scale.new(Gtk.Orientation.VERTICAL, adjustment)
-                return scale
+                return Gtk.Scale.new(Gtk.Orientation.VERTICAL, adjustment)
 
         Gtk.VScale = VScaleCompat
 
@@ -520,10 +518,9 @@ def _init_gtk():
     def _accelerator_parse_compat(accelerator):
         result = _original_accelerator_parse(accelerator)
         if len(result) == 3:
-            # GTK4: returns (success, keyval, modifiers)
             success, keyval, modifiers = result
             return (keyval, modifiers) if success else (0, 0)
-        return result  # GTK3: returns (keyval, modifiers)
+        return result
 
     Gtk.accelerator_parse = _accelerator_parse_compat
 
@@ -735,11 +732,7 @@ def _init_gtk():
     if not hasattr(Gtk.Widget, "add_accelerator"):
 
         def _widget_add_accelerator(self, signal, accel_group, key, mod, flags):
-            """Dummy add_accelerator for GTK4 compatibility.
-
-            In GTK4, accelerators are handled via GtkApplication.set_accels_for_action().
-            This no-op allows old code to run without crashing.
-            """
+            """No-op shim: GTK4 uses Application.set_accels_for_action."""
 
         Gtk.Widget.add_accelerator = _widget_add_accelerator
 
@@ -1071,19 +1064,17 @@ def _init_gtk():
             try:
                 if self.get_root() is not None:
                     self.set_child(self._menu_box)
-            except:
-                pass  # Set it later when appending
+            except Exception:
+                pass
 
     def _popover_menu_append_compat(self, widget):
         if not hasattr(self, "_menu_box"):
             self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        # Always append to the box, but delay setting it as child until we're in a window
         self._menu_box.append(widget)
-        # Ensure box is set as child, but only if we're in a window
-        if self.get_child() is None:
-            # Only set_child if we're already in a widget hierarchy to avoid realize() issues
-            if self.get_parent() is not None and self.get_root() is not None:
-                self.set_child(self._menu_box)
+        if self.get_child() is None and (
+            self.get_parent() is not None and self.get_root() is not None
+        ):
+            self.set_child(self._menu_box)
 
     Gtk.PopoverMenu.__init__ = _popover_menu_init_compat
     Gtk.PopoverMenu.append = _popover_menu_append_compat
@@ -1355,12 +1346,6 @@ def _init_gtk():
             self.set_margin_bottom(width)
 
     Gtk.Table = Table
-
-    # TODO: include our own icon theme directory
-    # theme = Gtk.IconTheme.get_default()
-    # theme_search_path = get_image_dir()
-    # assert os.path.exists(theme_search_path)
-    # theme.append_search_path(theme_search_path)
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them

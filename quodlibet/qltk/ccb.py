@@ -85,7 +85,7 @@ class ConfigCheckMenuItem(Gtk.CheckButton):
 
     It is initialised to the current config value if `populate` is set True.
 
-    Note: In GTK4, this uses CheckButton as menu items are widget-based in PopoverMenus."""
+    Backed by CheckButton (GTK4 PopoverMenu items are widget-based)."""
 
     def __init__(self, label, section, option, populate=False, default=False):
         super().__init__(label=label, use_underline=True)

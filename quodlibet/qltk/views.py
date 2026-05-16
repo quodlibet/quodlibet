@@ -319,13 +319,11 @@ class BaseView(Gtk.TreeView):
         self.add_controller(controller)
 
     def destroy(self):
-        # GTK4: Disconnect selection handler explicitly (was done via "destroy" signal in GTK3)
         if hasattr(self, "_sel_change_handler"):
             try:
                 self.get_selection().disconnect(self._sel_change_handler)
             except Exception:
                 pass
-        # GTK4: Widgets don't need explicit destroy(); lifecycle managed by GObject ref counting
 
     def do_key_press_event(self, event):
         if is_accel(event, "space", "KP_Space"):
@@ -767,8 +765,6 @@ class RCMTreeView(BaseView):
         x, y = self.get_window().get_origin()[1:]
         x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
 
-        # GTK4: Don't call realize() - crashes, PopoverMenus don't use this anyway
-        # menu.realize()
         ma = menu.get_allocation()
         menu_y = rect.height + y
         if self.get_direction() == Gtk.TextDirection.LTR:
@@ -810,10 +806,8 @@ class HintedTreeView(BaseView):
             tvh.connect_view(self)
 
     def destroy(self):
-        # GTK4: Clean up TreeViewHints connection explicitly (GTK3 used "destroy" signal)
         if self.supports_hints() and hasattr(type(self), "hints"):
             type(self).hints.disconnect_view(self)
-        # GTK4: Widgets don't need explicit destroy(); call BaseView for its cleanup
         super().destroy()
 
     def set_tooltip_text(self, *args, **kwargs):

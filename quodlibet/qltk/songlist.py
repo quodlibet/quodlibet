@@ -35,7 +35,6 @@ from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColum
 from quodlibet.util import connect_destroy
 
 
-
 class SongSelectionInfo(GObject.Object):
     """
     Songs which get included in the status bar summary.

@@ -780,7 +780,6 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         """set the text and move the cursor to the end"""
 
         self.search_fieldraw.set_text(text)
-        # GTK4: Use set_position(-1) to move cursor to end instead of emitting move-cursor signal
         self.search_fieldraw.set_position(-1)
 
     def __select_callback(self, selection, image):

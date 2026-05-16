@@ -46,7 +46,6 @@ from .util import (
 )
 
 
-
 def _make_key_event(keyval, state):
     """Build a minimal key-event-like object for use with qltk.is_accel.
 

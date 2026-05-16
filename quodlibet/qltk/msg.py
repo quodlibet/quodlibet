@@ -75,9 +75,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         self.set_markup(text)
 
     def run(self):
-        resp = super().run()
-        # GTK4: destroy() removed - self cleaned up automatically
-        return resp
+        return super().run()
 
 
 class ErrorMessage(Message):

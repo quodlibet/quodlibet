@@ -872,9 +872,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
                 if loc not in self.__library:
                     self.__library.add_filename(loc)
         if dirs:
-            copool.add(
-                self.__library.scan, dirs, cofuncid="library", funcid="library"
-            )
+            copool.add(self.__library.scan, dirs, cofuncid="library", funcid="library")
         return True
 
     def __on_drop_uri(self, target, value, x, y):

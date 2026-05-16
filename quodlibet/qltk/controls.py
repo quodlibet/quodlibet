@@ -9,7 +9,6 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import config
 from quodlibet import qltk
-from quodlibet import _
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.util import GSignals

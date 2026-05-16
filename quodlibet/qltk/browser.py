@@ -87,7 +87,7 @@ class FilterMenu:
             act.connect("activate", self.__filter_on, tag_, None, player)
             ag.add_action(act)
 
-        for tag_, accel, label in [
+        for tag_, _accel, label in [
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
             ("album", "M", _("Random Al_bum")),

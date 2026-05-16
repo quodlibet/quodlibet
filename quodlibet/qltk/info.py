@@ -18,7 +18,7 @@ from quodlibet import qltk
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
@@ -54,13 +54,9 @@ class SongInfo(Gtk.Box):
     def __init__(self, library, player, pattern_filename):
         super().__init__()
         self._pattern_filename = pattern_filename
-        # GTK4: set_visible_window removed - all widgets are windowless by default
-        # self.set_visible_window(False)
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
         label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        # GTK4: set_track_visited_links removed
-        # label.set_track_visited_links(False)
         label.set_selectable(True)
         align.add(label)
         # GTK4: set_alignment removed - use xalign/yalign properties
@@ -102,9 +98,6 @@ class SongInfo(Gtk.Box):
         has_selection = label.get_selection_bounds()[0]
 
         if not has_selection:
-            for child in get_children(menu):
-                # GTK4: destroy() removed - child cleaned up automatically
-                pass
             for item in song_menu:
                 song_menu.remove(item)
                 menu.append(item)

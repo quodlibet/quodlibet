@@ -265,8 +265,6 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
         # fit menu to screen, aligned per text direction
         screen_width = screen.get_width()
         screen_height = screen.get_height()
-        # GTK4: Don't call realize() - it causes crashes
-        # menu.realize()
         ma = menu.get_allocation()
 
         menu_y_under = y + dy + wa.height
