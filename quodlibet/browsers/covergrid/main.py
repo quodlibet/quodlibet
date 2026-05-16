@@ -291,19 +291,10 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             ),
         )
 
-        targets = [
-            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            # ("text/uri-list", 0, 2),
-        ]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        # view.drag_source_set(
-        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        # )
-
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # view.connect("drag-data-get", self.__drag_data_get)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare)
+        view.add_controller(drag_source)
         view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
@@ -448,12 +439,12 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         albums = self.__get_selected_albums()
         return self.__get_songs_from_albums(albums, sort)
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_prepare(self, source, x, y):
         songs = self.__get_selected_songs()
-        if tid == 1:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def __child_activated(self, view, child):
         self.songs_activated()

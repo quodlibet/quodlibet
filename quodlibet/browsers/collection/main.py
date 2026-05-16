@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, Gdk, Gio, GLib, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -267,19 +267,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.connect("row-activated", self.__play)
         connect_obj(view, "popup-menu", self.__popup, view, library)
 
-        targets = [
-            # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-            # ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            # ("text/uri-list", 0, 2),
-        ]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # view.drag_source_set(
-        # Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        # )
-        # view.connect("drag-data-get", self.__drag_data_get)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare)
+        view.add_controller(drag_source)
 
         self.connect("destroy", self.__destroy)
         self.connect("key-press-event", self.__key_pressed, library.librarian)
@@ -327,12 +318,12 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if not klass.instances():
             klass._destroy_model()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_prepare(self, source, x, y):
         songs = self.__get_selected_songs()
-        if tid == 1:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
