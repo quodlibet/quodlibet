@@ -109,50 +109,29 @@ class PlayPauseButton(Gtk.Button):
 class PlayControls(Gtk.Box):
     def __init__(self, player, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        self.add_css_class("linked")
 
-        upper = Gtk.Grid()
-        upper.set_row_spacing(3)
-        upper.set_column_spacing(3)
-        upper.set_column_homogeneous(True)
+        upper = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
 
         prev = Gtk.Button()
         prev.set_child(SymbolicIconImage("media-skip-backward", Gtk.IconSize.NORMAL))
-        prev.set_hexpand(True)
-        upper.attach(prev, 0, 0, 1, 1)
+        upper.append(prev)
 
         play = PlayPauseButton()
-        play.set_hexpand(True)
-        upper.attach(play, 1, 0, 1, 1)
+        upper.append(play)
 
         next_ = Gtk.Button()
         next_.set_child(SymbolicIconImage("media-skip-forward", Gtk.IconSize.NORMAL))
-        next_.set_hexpand(True)
-        upper.attach(next_, 2, 0, 1, 1)
+        upper.append(next_)
 
-        lower = Gtk.Grid()
-        lower.set_row_spacing(3)
-        lower.set_column_spacing(3)
-        lower.set_column_homogeneous(True)
+        lower = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=3)
 
         self.volume = Volume(player)
-        self.volume.set_hexpand(True)
-        lower.attach(self.volume, 0, 0, 1, 1)
-
-        # XXX: Adwaita defines a different padding for GtkVolumeButton
-        # We force it to 0 here, which works because the other (normal) buttons
-        # in the grid set the width/height
-        qltk.add_css(
-            self.volume,
-            """
-            .button {
-                padding: 0px;
-            }
-        """,
-        )
+        lower.append(self.volume)
 
         seekbutton = SeekButton(player, library)
         seekbutton.set_hexpand(True)
-        lower.attach(seekbutton, 1, 0, 2, 1)
+        lower.append(seekbutton)
 
         self.append(upper)
         self.append(lower)
