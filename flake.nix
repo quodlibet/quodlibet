@@ -103,6 +103,10 @@
                 libsoup_3
                 pcre2
                 shared-mime-info
+                pkg-config
+              ]
+              ++ lib.optionals stdenv.isLinux [
+                libappindicator-gtk3
                 xorg.xvfb
               ]
               ++ (with gst_all_1; [

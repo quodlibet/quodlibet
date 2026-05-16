@@ -68,6 +68,10 @@ class MMKeysHandler:
         self._backend.grab()
 
         self._window.connect("notify::is-active", self._focus_event)
+        self._player.connect("song-started", self._on_song_started)
+        self._player.connect("seek", self._on_seek)
+        self._player.connect("unpaused", self._on_unpaused)
+        self._player.connect("paused", self._on_paused)
 
     def quit(self):
         if self._backend:
@@ -76,11 +80,27 @@ class MMKeysHandler:
             self._window = None
             self._player = None
 
+    def _on_song_started(self, player, song):
+        if self._backend:
+            self._backend.update_now_playing(song, 0, not player.paused)
+
+    def _on_seek(self, player, song, position_ms):
+        if self._backend:
+            self._backend.update_now_playing(song, position_ms, not player.paused)
+
+    def _on_unpaused(self, player):
+        if self._backend:
+            self._backend.update_now_playing(player.info, player.get_position(), True)
+
+    def _on_paused(self, player):
+        if self._backend:
+            self._backend.update_now_playing(player.info, player.get_position(), False)
+
     def _focus_event(self, window, param):
         if window.get_property(param.name) and self._backend:
             self._backend.grab()
 
-    def _callback(self, action):
+    def _callback(self, action, *args):
         print_d(f"Event {action!r} from {type(self._backend).__name__!r}")
 
         def seek_relative(seconds):
@@ -110,6 +130,9 @@ class MMKeysHandler:
         elif action == MMKeysAction.REWIND:
             if player.song:
                 seek_relative(-10)
+        elif action == MMKeysAction.SEEK:
+            if player.song:
+                player.seek(int(args[0] * 1000))  # convert to ms
         elif action == MMKeysAction.REPEAT:
             player_options.repeat = not player_options.repeat
         elif action == MMKeysAction.SHUFFLE:

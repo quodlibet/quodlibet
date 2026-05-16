@@ -20,7 +20,7 @@ extra_prefixes = []
 # being picked up.  We define PKG_CONFIG_PATH ourselves to prevent this.
 os.environ["PKG_CONFIG_PATH"] = prefix + ":/usr/lib"
 
-setup_sdk(target="10.13", sdk_version="native")
+setup_sdk(target="11.0", sdk_version="native")
 
 os.environ["GTLS_SYSTEM_CA_FILE"] = "/etc/ssl/cert.pem"
 

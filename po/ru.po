@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-03-19 08:09+0000\n"
+"PO-Revision-Date: 2026-04-08 22:09+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -2185,7 +2185,7 @@ msgstr "Только при <i>авто_матической</i> смене тр
 
 #: quodlibet/ext/events/notify.py:189
 msgid "On <i>a_ll</i> song changes"
-msgstr "При <i>_любой</i> смене трека"
+msgstr "При <i>_любой</i> смене песни"
 
 #: quodlibet/ext/events/notify.py:203
 msgid "Only when the main window is not _focused"
@@ -4441,13 +4441,13 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
-"Изменить значения <tt>~#playcount</tt> и <tt>~#skipcount</tt> для треков \n"
+"Изменить значения <tt>~#playcount</tt> и <tt>~#skipcount</tt> для дорожек.\n"
 "\n"
 "Когда выбрано несколько треков, счётчики будут увеличены, а не заданы.\n"
 "\n"
-"Если для трека значение <tt>~#playcount</tt> установлено на 0, то записи "
-"<tt>~#lastplayed</tt> и <tt>~#laststarted</tt> будут очищены. Однако, если "
-"для трека с 0 прослушиваний установлено положительное число, количество "
+"Если для трека значение <tt>~#playcount</tt> установлено на 0, то записи <tt>"
+"~#lastplayed</tt> и <tt>~#laststarted</tt> будут очищены. Однако, если для "
+"трека с 0 прослушиваний установлено положительное число, количество "
 "воспроизведений не создаётся."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:72

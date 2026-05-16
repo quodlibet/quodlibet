@@ -832,6 +832,159 @@ files = [
 pycairo = ">=1.16"
 
 [[package]]
+name = "pyobjc-core"
+version = "12.1"
+description = "Python<->ObjC Interoperability Module"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_core-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:93418e79c1655f66b4352168f8c85c942707cb1d3ea13a1da3e6f6a143bacda7"},
+    {file = "pyobjc_core-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:c918ebca280925e7fcb14c5c43ce12dcb9574a33cccb889be7c8c17f3bcce8b6"},
+    {file = "pyobjc_core-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:818bcc6723561f207e5b5453efe9703f34bc8781d11ce9b8be286bb415eb4962"},
+    {file = "pyobjc_core-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:01c0cf500596f03e21c23aef9b5f326b9fb1f8f118cf0d8b66749b6cf4cbb37a"},
+    {file = "pyobjc_core-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:177aaca84bb369a483e4961186704f64b2697708046745f8167e818d968c88fc"},
+    {file = "pyobjc_core-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:844515f5d86395b979d02152576e7dee9cc679acc0b32dc626ef5bda315eaa43"},
+    {file = "pyobjc_core-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:453b191df1a4b80e756445b935491b974714456ae2cbae816840bd96f86db882"},
+    {file = "pyobjc_core-12.1.tar.gz", hash = "sha256:2bb3903f5387f72422145e1466b3ac3f7f0ef2e9960afa9bcd8961c5cbf8bd21"},
+]
+
+[[package]]
+name = "pyobjc-framework-avfoundation"
+version = "12.1"
+description = "Wrappers for the framework AVFoundation on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_avfoundation-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:370d5f1149c1041028cb1f5fb61b9f56655fe53bbffafc79393b0824a474bef0"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:82cc2c2d9ab6cc04feeb4700ff251d00f1fcafff573c63d4e87168ff80adb926"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:bf634f89265b4d93126153200d885b6de4859ed6b3bc65e69ff75540bc398406"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:f8ac7f7e0884ac8f12009cdb9d4fefc2f269294ab2ccfd84520a560859b69cec"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:51aba2c6816badfb1fb5a2de1b68b33a23f065bf9e3b99d46ede0c8c774ac7a4"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:9a3ffd1ae90bd72dbcf2875aa9254369e805b904140362a7338ebf1af54201a6"},
+    {file = "pyobjc_framework_avfoundation-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:394c99876b9a38db4851ddf8146db363556895c12e9c711ccd3c3f907ac8e273"},
+    {file = "pyobjc_framework_avfoundation-12.1.tar.gz", hash = "sha256:eda0bb60be380f9ba2344600c4231dd58a3efafa99fdc65d3673ecfbb83f6fcb"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+pyobjc-framework-Cocoa = ">=12.1"
+pyobjc-framework-CoreAudio = ">=12.1"
+pyobjc-framework-CoreMedia = ">=12.1"
+pyobjc-framework-Quartz = ">=12.1"
+
+[[package]]
+name = "pyobjc-framework-cocoa"
+version = "12.1"
+description = "Wrappers for the Cocoa frameworks on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_cocoa-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:9b880d3bdcd102809d704b6d8e14e31611443aa892d9f60e8491e457182fdd48"},
+    {file = "pyobjc_framework_cocoa-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:f52228bcf38da64b77328787967d464e28b981492b33a7675585141e1b0a01e6"},
+    {file = "pyobjc_framework_cocoa-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:547c182837214b7ec4796dac5aee3aa25abc665757b75d7f44f83c994bcb0858"},
+    {file = "pyobjc_framework_cocoa-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:5a3dcd491cacc2f5a197142b3c556d8aafa3963011110102a093349017705118"},
+    {file = "pyobjc_framework_cocoa-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:914b74328c22d8ca261d78c23ef2befc29776e0b85555973927b338c5734ca44"},
+    {file = "pyobjc_framework_cocoa-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:03342a60fc0015bcdf9b93ac0b4f457d3938e9ef761b28df9564c91a14f0129a"},
+    {file = "pyobjc_framework_cocoa-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:6ba1dc1bfa4da42d04e93d2363491275fb2e2be5c20790e561c8a9e09b8cf2cc"},
+    {file = "pyobjc_framework_cocoa-12.1.tar.gz", hash = "sha256:5556c87db95711b985d5efdaaf01c917ddd41d148b1e52a0c66b1a2e2c5c1640"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+
+[[package]]
+name = "pyobjc-framework-coreaudio"
+version = "12.1"
+description = "Wrappers for the framework CoreAudio on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_coreaudio-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d676c85bb9dc51217d94adc3b5b60e7e5b59a81167446f06821b2687d92641d3"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:a452de6b509fa4a20160c0410b72330ac871696cd80237883955a5b3a4de8f2a"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:a5ad6309779663f846ab36fe6c49647e470b7e08473c3e48b4f004017bdb68a4"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:3d8ef424850c8ae2146f963afaec6c4f5bf0c2e412871e68fb6ecfb209b8376f"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:6552624df39dbc68ff9328f244ba56f59234ecbde8455db1e617a71bc4f3dd3a"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:78ea67483a5deb21625c189328152008d278fe1da4304da9fcc1babd12627038"},
+    {file = "pyobjc_framework_coreaudio-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:8d81b0d0296ab4571a4ff302e5cdb52386e486eb8749e99b95b9141438558ca2"},
+    {file = "pyobjc_framework_coreaudio-12.1.tar.gz", hash = "sha256:a9e72925fcc1795430496ce0bffd4ddaa92c22460a10308a7283ade830089fe1"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+pyobjc-framework-Cocoa = ">=12.1"
+
+[[package]]
+name = "pyobjc-framework-coremedia"
+version = "12.1"
+description = "Wrappers for the framework CoreMedia on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_coremedia-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:4fce8570db3eaa7b841456a7890b24546504d1059157dc33e700b14d9d3073d8"},
+    {file = "pyobjc_framework_coremedia-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:ee7b822c9bb674b5b0a70bfb133410acae354e9241b6983f075395f3562f3c46"},
+    {file = "pyobjc_framework_coremedia-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:161a627f5c8cd30a5ebb935189f740e21e6cd94871a9afd463efdb5d51e255fa"},
+    {file = "pyobjc_framework_coremedia-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:98e885b7a092083fceaef0a7fc406a01ba7bcd3318fb927e59e055931c99cac8"},
+    {file = "pyobjc_framework_coremedia-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:d2b84149c1b3e65ec9050a3e5b617e6c0b4cdad2ab622c2d8c5747a20f013e16"},
+    {file = "pyobjc_framework_coremedia-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:737ec6e0b63414f42f7188030c85975d6d2124fbf6b15b52c99b6cc20250af4d"},
+    {file = "pyobjc_framework_coremedia-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:6a9419e0d143df16a1562520a13a389417386e2a53031530af6da60c34058ced"},
+    {file = "pyobjc_framework_coremedia-12.1.tar.gz", hash = "sha256:166c66a9c01e7a70103f3ca44c571431d124b9070612ef63a1511a4e6d9d84a7"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+pyobjc-framework-Cocoa = ">=12.1"
+
+[[package]]
+name = "pyobjc-framework-mediaplayer"
+version = "12.1"
+description = "Wrappers for the framework MediaPlayer on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_mediaplayer-12.1-py2.py3-none-any.whl", hash = "sha256:85d9baec131807bfdf0f4c24d4b943e83cce806ab31c95c7e19c78e3fb7eefc8"},
+    {file = "pyobjc_framework_mediaplayer-12.1.tar.gz", hash = "sha256:5ef3f669bdf837d87cdb5a486ec34831542360d14bcba099c7c2e0383380794c"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+pyobjc-framework-AVFoundation = ">=12.1"
+
+[[package]]
+name = "pyobjc-framework-quartz"
+version = "12.1"
+description = "Wrappers for the Quartz frameworks on macOS"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "sys_platform == \"darwin\""
+files = [
+    {file = "pyobjc_framework_quartz-12.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:c6f312ae79ef8b3019dcf4b3374c52035c7c7bc4a09a1748b61b041bb685a0ed"},
+    {file = "pyobjc_framework_quartz-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:19f99ac49a0b15dd892e155644fe80242d741411a9ed9c119b18b7466048625a"},
+    {file = "pyobjc_framework_quartz-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:7730cdce46c7e985535b5a42c31381af4aa6556e5642dc55b5e6597595e57a16"},
+    {file = "pyobjc_framework_quartz-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:629b7971b1b43a11617f1460cd218bd308dfea247cd4ee3842eb40ca6f588860"},
+    {file = "pyobjc_framework_quartz-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:53b84e880c358ba1ddcd7e8d5ea0407d760eca58b96f0d344829162cda5f37b3"},
+    {file = "pyobjc_framework_quartz-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:42d306b07f05ae7d155984503e0fb1b701fecd31dcc5c79fe8ab9790ff7e0de0"},
+    {file = "pyobjc_framework_quartz-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:0cc08fddb339b2760df60dea1057453557588908e42bdc62184b6396ce2d6e9a"},
+    {file = "pyobjc_framework_quartz-12.1.tar.gz", hash = "sha256:27f782f3513ac88ec9b6c82d9767eef95a5cf4175ce88a1e5a65875fee799608"},
+]
+
+[package.dependencies]
+pyobjc-core = ">=12.1"
+pyobjc-framework-Cocoa = ">=12.1"
+
+[[package]]
 name = "pypresence"
 version = "4.6.1"
 description = "Discord RPC client written in Python"
@@ -1056,7 +1209,7 @@ description = "An extremely fast Python linter and code formatter, written in Ru
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
-markers = "sys_platform == \"linux\""
+markers = "sys_platform == \"linux\" or sys_platform == \"darwin\""
 files = [
     {file = "ruff-0.7.3-py3-none-linux_armv6l.whl", hash = "sha256:34f2339dc22687ec7e7002792d1f50712bf84a13d5152e75712ac08be565d344"},
     {file = "ruff-0.7.3-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:fb397332a1879b9764a3455a0bb1087bda876c2db8aca3a3cbb67b3dbce8cda0"},
@@ -1721,4 +1874,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "regex", 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "c89b45dab633423b7ca5c0fb126d7d93f538dd0c87a688b59d115d100ebbfb65"
+content-hash = "ab2cc739728212619e3a4815e89a66a64a4455203b9a5b46dfabf0574349e3e3"

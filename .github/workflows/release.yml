@@ -6,11 +6,11 @@ permissions:
   contents: read
 
 jobs:
-  create-release-artifacts:
+  create-release-artifacts-linux:
     runs-on: ubuntu-24.04
-    name: create-release-artifacts
+    name: create-release-artifacts-linux
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -42,7 +42,57 @@ jobs:
           sha256sum "$gz_name" > "$gz_name.sha256"
 
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
+          name: binaries-linux
           path: dist/quodlibet-*
+          if-no-files-found: error
+
+  create-release-artifacts-macos:
+    runs-on: macos-latest
+    name: create-release-artifacts-macos
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bootstrap jhbuild
+        run: |
+          cd dev-utils/osx_bundle
+          ./bootstrap.sh
+
+      # Cache jhbuild dependencies
+      # - key: Perfect match when modulesets unchanged (instant restore)
+      # - restore-keys: Partial match when dependencies change (jhbuild rebuilds only changed packages)
+      # - Includes: source tarballs, built dependencies and build artifacts
+      - name: Cache jhbuild dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            dev-utils/osx_bundle/_home/.cache/jhbuild/build
+            dev-utils/osx_bundle/_home/jhbuild_checkoutroot/pkgs
+            dev-utils/osx_bundle/_home/jhbuild_prefix
+          key: jhbuild-${{ runner.os }}-${{ hashFiles('dev-utils/osx_bundle/modulesets/quodlibet.modules') }}
+          restore-keys: |
+            jhbuild-${{ runner.os }}-
+
+      - name: Build
+        run: |
+          cd dev-utils/osx_bundle
+          ./build.sh
+
+      - name: Bundle
+        run: |
+          cd dev-utils/osx_bundle
+          ./bundle.sh HEAD
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: binaries-macos
+          path: dev-utils/osx_bundle/_build/*.dmg*
           if-no-files-found: error
