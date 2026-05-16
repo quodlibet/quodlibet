@@ -35,6 +35,8 @@ def create_songlist_column(model: Gtk.TreeModel, t):
         return FilesizeColumn()
     if t in ["~rating"]:
         return RatingColumn()
+    if t == "~#position":
+        return PositionColumn()
     if t.startswith("~#"):
         return NumericColumn(t)
     if t in FILESYSTEM_TAGS:
@@ -460,6 +462,34 @@ class FilesizeColumn(NumericColumn):
         text = util.format_size(value)
         cell.set_property("text", text)
         self._recalc_width(model.get_path(iter_), text)
+
+
+class PositionColumn(TextColumn):
+    """Displays the row position (1, 2, 3...) in the current view.
+
+    This shows the track's position within the current list/playlist,
+    not the track number from album metadata.
+    """
+
+    def __init__(self):
+        super().__init__("~#position")
+        self._render.set_property("xalign", 1.0)
+        self.set_alignment(1.0)
+        self.set_expand(False)
+        self.set_resizable(False)
+
+    def _format_title(self, tag):
+        return "#"
+
+    def _get_min_width(self):
+        return self._cell_width("9999")
+
+    def _fetch_value(self, model, iter_):
+        path = model.get_path(iter_)
+        return path[0] + 1 if path else 0
+
+    def _apply_value(self, model, iter_, cell, value):
+        cell.set_property("text", str(value))
 
 
 class CurrentColumn(SongListColumn):
