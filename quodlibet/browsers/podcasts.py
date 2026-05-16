@@ -12,7 +12,7 @@ import threading
 import time
 from urllib.request import urlopen, Request
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 import feedparser
 
 import quodlibet
@@ -39,7 +39,6 @@ from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
 FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
-DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
@@ -434,18 +433,11 @@ class Podcasts(Browser):
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         view.connect("popup-menu", self._popup_menu)
 
-        targets = [
-            ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL),
-        ]
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DragSource/DropTarget
-        # view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        # view.connect("drag-data-received", self.__drag_data_received)
-        # view.connect("drag-motion", self.__drag_motion)
-        # view.connect("drag-leave", self.__drag_leave)
+        drop_target = Gtk.DropTarget.new(GObject.TYPE_STRING, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop)
+        drop_target.connect("motion", self.__on_drop_motion)
+        drop_target.connect("leave", self.__on_drop_leave)
+        view.add_controller(drop_target)
 
         connect_obj(self, "destroy", self.__save, view)
 
@@ -457,19 +449,27 @@ class Podcasts(Browser):
     def menu(self, songs, library, items):
         return SongsMenu(library, songs, download=True, items=items)
 
-    def __drag_motion(self, view, ctx, x, y, time):
-        targets = [t.name() for t in ctx.list_targets()]
-        if "text/x-quodlibet-songs" not in targets:
-            view.get_parent().add_css_class("drop-target")
+    def __on_drop_motion(self, target, x, y):
+        target.get_widget().get_parent().add_css_class("drop-target")
+        return Gdk.DragAction.COPY
+
+    def __on_drop_leave(self, target):
+        target.get_widget().get_parent().remove_css_class("drop-target")
+
+    def __on_drop(self, target, value, x, y):
+        if not isinstance(value, str):
+            return False
+        uri = value.strip().splitlines()[0].strip() if value.strip() else ""
+        if not uri:
+            return False
+        feed = Feed(uri.encode("ascii", "replace"))
+        feed.changed = feed.parse()
+        if feed:
+            self.__feeds.append(row=[feed])
+            Podcasts.write()
             return True
+        self.feed_error(feed).run()
         return False
-
-    def __drag_leave(self, view, ctx, time):
-        view.get_parent().remove_css_class("drop-target")
-
-    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        # TODO GTK4: Reimplement drag-and-drop using Gtk.DropTarget
-        pass
 
     def _popup_menu(self, view: Gtk.Widget) -> Gtk.PopoverMenu | None:
         model, paths = self._view.get_selection().get_selected_rows()
