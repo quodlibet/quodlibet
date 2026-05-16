@@ -34,7 +34,6 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
 
-DND_QL, DND_URI_LIST = range(2)
 
 
 class SongSelectionInfo(GObject.Object):

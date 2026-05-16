@@ -501,9 +501,6 @@ def _browser_items(prefix, external=False):
     ]
 
 
-(DND_URI_LIST,) = range(1)
-
-
 class SongListPaned(RVPaned):
     def __init__(self, song_scroller, qexpander):
         super().__init__()
@@ -581,7 +578,6 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         key_controller = Gtk.EventControllerKey()
         self.songlist.add_controller(key_controller)
         key_controller.connect("key-pressed", self.__songlist_key_press)
-        # TODO GTK4: Migrate songlist drag-data-received to new DnD API
         self.song_scroller = ScrolledWindow()
         self.song_scroller.set_policy(
             Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
@@ -702,7 +698,13 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         lib = library.librarian
         connect_destroy(lib, "changed", self.__song_changed, player)
 
-        # TODO GTK4: Reimplement window drag-and-drop using Gtk.DropTarget
+        drop_target = Gtk.DropTarget.new(Gdk.FileList, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop_files)
+        self.add_controller(drop_target)
+
+        uri_drop = Gtk.DropTarget.new(GObject.TYPE_STRING, Gdk.DragAction.COPY)
+        uri_drop.connect("drop", self.__on_drop_uri)
+        self.add_controller(uri_drop)
 
         if not headless:
             on_first_map(self, self.__configure_scan_dirs, library)
@@ -854,46 +856,54 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.show = lambda: None
         self.present = self.show
 
-    def __drag_data_received(self, widget, ctx, x, y, sel, tid, etime):
-        assert tid == DND_URI_LIST
-
-        uris = sel.get_uris()
-
+    def __on_drop_files(self, target, value, x, y):
+        if not isinstance(value, Gdk.FileList):
+            return False
         dirs = []
-        error = False
+        for f in value.get_files():
+            path = f.get_path()
+            if not path:
+                continue
+            loc = os.path.normpath(path)
+            if os.path.isdir(loc):
+                dirs.append(loc)
+            else:
+                loc = os.path.realpath(loc)
+                if loc not in self.__library:
+                    self.__library.add_filename(loc)
+        if dirs:
+            copool.add(
+                self.__library.scan, dirs, cofuncid="library", funcid="library"
+            )
+        return True
+
+    def __on_drop_uri(self, target, value, x, y):
+        if not isinstance(value, str):
+            return False
+        uris = [u.strip() for u in value.splitlines() if u.strip()]
+        error_uri = None
         for uri in uris:
             try:
                 filename = uri2fsn(uri)
             except ValueError:
                 filename = None
-
             if filename is not None:
-                loc = os.path.normpath(filename)
-                if os.path.isdir(loc):
-                    dirs.append(loc)
-                else:
-                    loc = os.path.realpath(loc)
-                    if loc not in self.__library:
-                        self.__library.add_filename(loc)
-            elif app.player.can_play_uri(uri):
+                continue  # local files handled by the FileList drop target
+            if app.player.can_play_uri(uri):
                 if uri not in self.__library:
                     self.__library.add([RemoteFile(uri)])
             else:
-                error = True
+                error_uri = uri
                 break
-        Gtk.drag_finish(ctx, not error, False, etime)
-        if error:
+        if error_uri:
             ErrorMessage(
                 self,
                 _("Unable to add songs"),
-                _("%s uses an unsupported protocol.") % util.bold(uri),
+                _("%s uses an unsupported protocol.") % util.bold(error_uri),
                 escape_desc=False,
             ).run()
-        else:
-            if dirs:
-                copool.add(
-                    self.__library.scan, dirs, cofuncid="library", funcid="library"
-                )
+            return False
+        return True
 
     def __songlist_key_press(self, controller, keyval, keycode, state):
         # GTK4: EventControllerKey.key-pressed has different signature

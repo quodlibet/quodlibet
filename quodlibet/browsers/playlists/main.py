@@ -45,7 +45,6 @@ from .util import (
     confirm_dnd_playlist_dialog_invoke,
 )
 
-DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 
 def _make_key_event(keyval, state):
