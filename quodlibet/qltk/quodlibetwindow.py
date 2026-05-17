@@ -536,7 +536,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.top_bar = top_bar
 
         self.__browserbox = Align(top=3, bottom=3)
+        self.__browserbox.set_vexpand(True)
         self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
+        paned.set_vexpand(True)
         paned.set_start_child(self.__browserbox)
         paned.set_resize_start_child(True)
         # We'll set_end_child when necessary (when the first sidebar plugin is set up)
@@ -865,7 +867,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         def simple(name, handler=None, *handler_args):
             act = Gio.SimpleAction.new(name, None)
             if handler is not None:
-                act.connect("activate", handler, *handler_args)
+
+                def adapter(action, _parameter, *args, _h=handler):
+                    return _h(action, *args)
+
+                act.connect("activate", adapter, *handler_args)
             ag.add_action(act)
             actions[name] = act
             return act
