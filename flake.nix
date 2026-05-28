@@ -82,14 +82,11 @@
                 gdk-pixbuf
                 glib
                 glib-networking
-                glibcLocales
                 gobject-introspection
                 gtk3
                 gtksourceview4
                 kakasi
-                keybinder3
                 libmodplug
-                libnotify
                 librsvg
                 libsoup_3
                 pcre2
@@ -97,8 +94,14 @@
                 pkg-config
               ]
               ++ lib.optionals stdenv.isLinux [
+                glibcLocales
+                keybinder3
                 libappindicator-gtk3
+                libnotify
                 xorg.xvfb
+              ]
+              ++ lib.optionals stdenv.isDarwin [
+                gettext
               ]
               ++ (with gst_all_1; [
                 gstreamer

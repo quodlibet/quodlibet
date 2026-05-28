@@ -19,6 +19,7 @@ dependencies = [
   "pycairo>=1.19,<2.0",
   "pygobject>=3.34.0,<4.0.0",
   "pyobjc-framework-mediaplayer>=12.1; sys_platform == 'darwin'",
+  "certifi>=2024.0.0; sys_platform == 'darwin'",
 ]
 
 [project.optional-dependencies]

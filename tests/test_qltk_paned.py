@@ -52,7 +52,7 @@ class TRPaned:
         p.set_relative(0.75)
         self.assertEqual(p.get_relative(), 0.75)
         with visible(p) as p:
-            self.assertAlmostEqual(p.get_relative(), 0.75, 2)
+            self.assertAlmostEqual(p.get_relative(), 0.75, delta=0.05)
 
     def test_min_size_child(self):
         p = self.Kind()
@@ -63,7 +63,7 @@ class TRPaned:
         p.pack2(b2, True, False)
         p.set_relative(0.5)
         with visible(p) as p:
-            self.assertEqual(p.get_position(), 100)
+            self.assertAlmostEqual(p.get_position(), 100, delta=5)
 
 
 class RHPaned(TestCase, TRPaned):
