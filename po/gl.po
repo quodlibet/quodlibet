@@ -2272,7 +2272,7 @@ msgstr "Nom há novas emisoras"
 msgid "Displays a notification when the song changes."
 msgstr ""
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "Seguinte"
 
@@ -6311,7 +6311,7 @@ msgid "performers"
 msgstr "intérpretes"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Nunca"
 
@@ -7762,12 +7762,12 @@ msgstr "Comezar de_nde:"
 msgid "_Total tracks:"
 msgstr "Pistas _totais:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 #, fuzzy
 msgid "Play/Pause"
 msgstr "_Parar"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 #, fuzzy
 msgid "Previous"
 msgstr "_Antever"

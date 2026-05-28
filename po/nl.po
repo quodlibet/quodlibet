@@ -2207,7 +2207,7 @@ msgstr "Nummermeldingen"
 msgid "Displays a notification when the song changes."
 msgstr "Toont een melding als het nummer verandert."
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "Volgende"
 
@@ -6245,7 +6245,7 @@ msgid "performers"
 msgstr "uitvoerend artiesten"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Nooit"
 
@@ -7618,11 +7618,11 @@ msgstr "Beginnen b_ij:"
 msgid "_Total tracks:"
 msgstr "_Totaalaantal:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "Afspelen/Pauzeren"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "Vorige"
 

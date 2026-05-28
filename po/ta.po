@@ -2200,7 +2200,7 @@ msgstr "பாடல் அறிவிப்புகள்"
 msgid "Displays a notification when the song changes."
 msgstr "பாடல் மாறும்போது அறிவிப்பைக் காட்டுகிறது."
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "அடுத்தது"
 
@@ -6200,7 +6200,7 @@ msgid "performers"
 msgstr "கலைஞர்கள்"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "ஒருபோதும்"
 
@@ -7563,11 +7563,11 @@ msgstr "இதிலிருந்து தொடங்கவும்:"
 msgid "_Total tracks:"
 msgstr "_ மொத்த தடங்கள்:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "விளையாடு/இடைநிறுத்தம்"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "முந்தைய"
 

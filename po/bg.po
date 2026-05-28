@@ -2256,7 +2256,7 @@ msgstr "Няма нови станции"
 msgid "Displays a notification when the song changes."
 msgstr ""
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr ""
 
@@ -6269,7 +6269,7 @@ msgid "performers"
 msgstr "изпълнители"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Никога"
 
@@ -7688,12 +7688,12 @@ msgstr "Запо_чване от:"
 msgid "_Total tracks:"
 msgstr "_Общо песни:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 #, fuzzy
 msgid "Play/Pause"
 msgstr "Преслушване"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 #, fuzzy
 msgid "Previous"
 msgstr "Пре_глед"
