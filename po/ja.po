@@ -2191,7 +2191,7 @@ msgstr "曲の通知"
 msgid "Displays a notification when the song changes."
 msgstr "曲が変わったときに通知を表示します。"
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "次へ"
 
@@ -6146,7 +6146,7 @@ msgid "performers"
 msgstr "演奏者"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "なし"
 
@@ -7488,11 +7488,11 @@ msgstr "開始番号(_M):"
 msgid "_Total tracks:"
 msgstr "合計トラック数(_T):"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "再生/一時停止"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "前へ"
 
