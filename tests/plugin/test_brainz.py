@@ -588,6 +588,48 @@ class TBrainz(PluginTestCase):
         )
         self.assertEqual(dummy("labelid"), "pgram002")
 
+    def test_build_metadata_single_artist_preserves_albumartist(self):
+        # Regression test for #4900: on a single-artist release, the plugin
+        # used to write meta["albumartist"] = "", which caused
+        # apply_to_song() to delete an existing albumartist tag. The release
+        # artist should now be written instead.
+        Release = brainz.mb.Release
+        build_song_data = brainz.widgets.build_song_data
+        apply_options = brainz.widgets.apply_options
+        apply_to_song = brainz.widgets.apply_to_song
+
+        release = Release(TEST_DATA)
+        assert release.is_single_artist
+        track = release.tracks[1]
+        meta = build_song_data(release, track)
+        self.assertEqual(meta["albumartist"], "Autechre\nThe Hafler Trio")
+
+        # albumartist option ON: write the MB value.
+        apply_options(meta, True, True, False, False, False)
+        dummy = AudioFile({"albumartist": "preexisting"})
+        apply_to_song(meta, dummy)
+        self.assertEqual(dummy("albumartist"), "Autechre\nThe Hafler Trio")
+
+    def test_apply_options_albumartist_off_preserves_existing(self):
+        # Regression test for #4900 (Scenario 2): if the user disables
+        # "Write albumartist when needed", an existing albumartist tag must
+        # be left alone, not deleted.
+        Release = brainz.mb.Release
+        build_song_data = brainz.widgets.build_song_data
+        apply_options = brainz.widgets.apply_options
+        apply_to_song = brainz.widgets.apply_to_song
+
+        release = Release(TEST_DATA)
+        track = release.tracks[1]
+        meta = build_song_data(release, track)
+        # albumartist option OFF.
+        apply_options(meta, True, False, False, False, False)
+        self.assertNotIn("albumartist", meta)
+
+        dummy = AudioFile({"albumartist": "preexisting"})
+        apply_to_song(meta, dummy)
+        self.assertEqual(dummy("albumartist"), "preexisting")
+
     def test_pregap(self):
         Release = brainz.mb.Release
 
