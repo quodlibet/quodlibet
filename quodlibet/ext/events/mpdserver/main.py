@@ -1,4 +1,5 @@
-# Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
+# Copyright 2014-2026 Christoph Reiter <reiter.christoph@gmail.com>
+# Copyright 2026 Felicián Németh <felician.nemeth@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,6 +15,7 @@ from quodlibet.fsn import bytes2fsn, fsn2bytes
 from quodlibet import const
 from quodlibet.util import print_d, print_w
 from .tcpserver import BaseTCPServer, BaseTCPConnection
+from .filtering import MPDSearchConverter, MPDFilterError
 
 
 class AckError:
@@ -32,18 +34,12 @@ class AckError:
 
 
 class Permissions:
-    PERMISSION_NONE = 0
-    PERMISSION_READ = 1
-    PERMISSION_ADD = 2
-    PERMISSION_CONTROL = 4
-    PERMISSION_ADMIN = 8
-    PERMISSION_ALL = (
-        PERMISSION_NONE
-        | PERMISSION_READ
-        | PERMISSION_ADD
-        | PERMISSION_CONTROL
-        | PERMISSION_ADMIN
-    )
+    NONE = 0
+    READ = 1
+    ADD = 2
+    CONTROL = 4
+    ADMIN = 8
+    ALL = NONE | READ | ADD | CONTROL | ADMIN
 
 
 TAG_MAPPING = [
@@ -127,7 +123,7 @@ def parse_command(line):
 class MPDService:
     """This is the actual shared MPD service which the clients talk to"""
 
-    version = (0, 17, 0)
+    version = (0, 25, 0)
 
     def __init__(self, app, config):
         self._app = app
@@ -136,13 +132,21 @@ class MPDService:
         self._idle_queue = {}
         self._pl_ver = 0
 
+        # Queue-as-playlist note: when the queue is empty but playback is
+        # sourced from the main song list, MPD clients will see an empty
+        # playlist (playlistlength=0, playlist/playlistinfo empty) while
+        # currentsong still reports the active track.
+        self._queue_model = None
+        self._queue_sigs = []
+
         self._config = config
         self._options = app.player_options
 
+        # If no password is set, all clients get full permissions by default.
         if not self._config.config_get("password"):
-            self.default_permission = Permissions.PERMISSION_ALL
+            self.default_permission = Permissions.ALL
         else:
-            self.default_permission = Permissions.PERMISSION_NONE
+            self.default_permission = Permissions.NONE
 
         def options_changed(*args):
             self.emit_changed("options")
@@ -176,6 +180,28 @@ class MPDService:
         id_ = app.player.connect("song-started", playlist_changed)
         self._player_sigs.append(id_)
 
+        # Queue support design notes:
+        # - We treat the QL queue as the MPD "current playlist".
+        # - MPD song IDs are derived from the song object's identity (see _get_id),
+        #   so they are process-local and change if the backing object changes.
+        # - Playlist version (_pl_ver) increments on queue mutations so MPD
+        #   clients using idle can observe playlist changes.
+        self._queue_model = self._get_queue_model()
+        if self._queue_model is not None:
+            for signal_name in ("row-inserted", "row-deleted", "rows-reordered"):
+                self._queue_sigs.append(
+                    self._queue_model.connect(signal_name, self._queue_changed)
+                )
+
+    def _get_queue_model(self):
+        window = getattr(self._app, "window", None)
+        qexpander = getattr(window, "qexpander", None)
+        return getattr(qexpander, "model", None)
+
+    def _queue_changed(self, *args):
+        self._pl_ver += 1
+        self.emit_changed("playlist")
+
     def _get_id(self, info):
         # XXX: we need a unique 31 bit ID, but don't have one.
         # Given that the heap is continuous and each object is >16 bytes
@@ -185,6 +211,10 @@ class MPDService:
     def destroy(self):
         for id_ in self._player_sigs:
             self._app.player.disconnect(id_)
+        for id_ in self._queue_sigs:
+            if self._queue_model is not None:
+                self._queue_model.disconnect(id_)
+        self._queue_sigs = []
         del self._options
         del self._app
 
@@ -300,6 +330,8 @@ class MPDService:
         app = self._app
         info = app.player.info
 
+        queue_length = self.queue_length()
+
         if info:
             if app.player.paused:
                 state = "pause"
@@ -315,7 +347,7 @@ class MPDService:
             ("single", int(self._options.single)),
             ("consume", 0),
             ("playlist", self._pl_ver),
-            ("playlistlength", int(bool(app.player.info))),
+            ("playlistlength", queue_length),
             ("mixrampdb", 0.0),
             ("state", state),
         ]
@@ -367,6 +399,104 @@ class MPDService:
 
         return "\n".join(parts)
 
+    def queue_songs(self):
+        if self._queue_model is None:
+            return []
+        return [row[0] for row in self._queue_model]
+
+    def queue_length(self):
+        if self._queue_model is None:
+            return 0
+        return len(self._queue_model)
+
+    def queue_songinfo(self, start=None, end=None):
+        start, _end, songs = self._slice_queue(start, end)
+
+        info = []
+        for index, song in enumerate(songs, start=start):
+            info.append(self._format_queue_song(song, index))
+        return info
+
+    def queue_songinfo_by_id(self, songid):
+        info = []
+        for index, song in enumerate(self.queue_songs()):
+            if self._get_id(song) != songid:
+                continue
+            info.append(self._format_queue_song(song, index))
+        return info
+
+    def _format_queue_song(self, song, index):
+        parts = []
+        parts.append(f"file: {song('~filename')}")
+        tag_info = format_tags(song)
+        if tag_info:
+            parts.append(tag_info)
+        parts.append(f"Time: {int(song('~#length') or 0):d}")
+        parts.append(f"Pos: {index:d}")
+        parts.append(f"Id: {self._get_id(song):d}")
+        return "\n".join(parts)
+
+    def _format_library_song(self, song):
+        parts = []
+        parts.append(f"file: {song('~filename')}")
+        tag_info = format_tags(song)
+        if tag_info:
+            parts.append(tag_info)
+        parts.append(f"Time: {int(song('~#length') or 0):d}")
+        return "\n".join(parts)
+
+    def queue_song_by_pos(self, songpos):
+        songs = self.queue_songs()
+        if songpos < 0 or songpos >= len(songs):
+            raise MPDRequestError("No such song", AckError.NO_EXIST)
+        return songs[songpos]
+
+    def queue_playlist(self, start=None, end=None):
+        _start, _end, songs = self._slice_queue(start, end)
+        return [f"file: {song('~filename')}" for song in songs]
+
+    def queue_posid_info(self):
+        info = []
+        for index, song in enumerate(self.queue_songs()):
+            parts = [
+                f"file: {song('~filename')}",
+                f"Pos: {index:d}",
+                f"Id: {self._get_id(song):d}",
+            ]
+            info.append("\n".join(parts))
+        return info
+
+    def _slice_queue(self, start, end):
+        songs = self.queue_songs()
+        if start is None and end is None:
+            return 0, len(songs), songs
+        start = 0 if start is None else start
+        end = len(songs) if end is None else end
+        return start, end, songs[start:end]
+
+    def queue_remove_positions(self, positions):
+        if self._queue_model is None:
+            raise MPDRequestError("No queue", AckError.NO_EXIST)
+        for pos in sorted(positions, reverse=True):
+            if pos < 0 or pos >= len(self._queue_model):
+                raise MPDRequestError("No such song", AckError.NO_EXIST)
+            iter_ = self._queue_model.get_iter((pos,))
+            self._queue_model.remove(iter_)
+
+    def queue_insert(self, songs, position=None):
+        if self._queue_model is None:
+            raise MPDRequestError("No queue", AckError.NO_EXIST)
+        if position is None or position >= len(self._queue_model):
+            self._queue_model.append_many(songs)
+            return
+        if position < 0:
+            raise MPDRequestError("No such song", AckError.NO_EXIST)
+        for offset, song in enumerate(songs):
+            self._queue_model.insert(position + offset, row=[song])
+
+    def search_library(self, ql_query_text):
+        return self._app.library.query(ql_query_text)
+
     def playlistinfo(self, start=None, end=None):
         if start is not None and start > 1:
             return None
@@ -378,18 +508,13 @@ class MPDService:
 
     def plchanges(self, version):
         if version != self._pl_ver:
-            return self.currentsong()
-        return None
+            return self.queue_songinfo()
+        return []
 
     def plchangesposid(self, version):
-        info = self._app.player.info
-        if version != self._pl_ver and info:
-            parts = []
-            parts.append(f"file: {info('~filename')}")
-            parts.append(f"Pos: {0:d}")
-            parts.append(f"Id: {self._get_id(info):d}")
-            return "\n".join(parts)
-        return None
+        if version != self._pl_ver:
+            return self.queue_posid_info()
+        return []
 
 
 class MPDServer(BaseTCPServer):
@@ -416,6 +541,111 @@ class MPDRequestError(Exception):
         self.msg = msg
         self.code = code
         self.index = index
+
+
+def _mpd_filter_error(e: MPDFilterError) -> MPDRequestError:
+    if e.args and e.args[0] == "Wrong arg count":
+        return MPDRequestError("Wrong arg count")
+    return MPDRequestError("invalid arg")
+
+
+def _parse_search_options(filter_expr, remaining):
+    # MPD uses a parenthesized filter expression followed by key/value options.
+    if not (filter_expr.startswith("(") and filter_expr.endswith(")")):
+        raise MPDFilterError("invalid arg")
+
+    # Store parsed values; keys are always present even if None.
+    options = {"range": None, "position": None, "sort": None}
+
+    if len(remaining) % 2:
+        raise MPDFilterError("invalid arg")
+
+    for idx in range(0, len(remaining), 2):
+        key = remaining[idx]
+        value = remaining[idx + 1]
+        if key == "window":
+            options["range"] = _parse_window(value)  # type: ignore[assignment]
+            continue
+        if key == "sort":
+            options["sort"] = _parse_sort(value)  # type: ignore[assignment]
+            continue
+        if key == "position":
+            options["position"] = _parse_position(value)  # type: ignore[assignment]
+            continue
+        raise MPDFilterError("invalid arg")
+
+    return options
+
+
+def _parse_window(arg):
+    try:
+        start, end = _parse_range(arg)
+    except MPDRequestError as e:
+        raise MPDRequestError("invalid arg") from e
+    if start < 0 or end < 0:
+        raise MPDRequestError("invalid arg")
+    return start, end
+
+
+def _parse_position(arg):
+    try:
+        return _parse_int(arg)
+    except MPDRequestError as e:
+        raise MPDRequestError("invalid arg") from e
+
+
+def _parse_sort(arg):
+    if not arg:
+        raise MPDFilterError("invalid arg")
+    if arg.startswith("-"):
+        tag = arg[1:]
+        if not tag:
+            raise MPDFilterError("invalid arg")
+        return tag, "desc"
+    return arg, "asc"
+
+
+def _prepare_search(args):
+    converter = MPDSearchConverter()
+    if _is_legacy_search_args(args, converter.TAG_MAP):
+        options = {"range": None, "position": None, "sort": None}
+        return converter.legacy_to_query(args), options
+
+    if not args:
+        raise MPDFilterError("Wrong arg count")
+
+    filter_expr = args[0]
+    options = _parse_search_options(filter_expr, args[1:])
+    query_text = converter.to_query(filter_expr)
+    return query_text, options
+
+
+def _is_legacy_search_args(args, tag_map):
+    if not args or len(args) % 2:
+        return False
+    for index in range(0, len(args), 2):
+        if args[index].lower() not in tag_map:
+            return False
+    return True
+
+
+def _apply_window_position(songs, window_range):
+    if window_range is not None:
+        start, end = window_range
+        songs = songs[start:end]
+    return songs
+
+
+def _run_search(service, args):
+    try:
+        query_text, options = _prepare_search(args)
+    except MPDFilterError as e:
+        raise _mpd_filter_error(e) from e
+
+    songs = service.search_library(query_text)
+    if options["position"] is not None:
+        _parse_position(options["position"])
+    return _apply_window_position(songs, options["range"])
 
 
 class MPDConnection(BaseTCPConnection):
@@ -483,7 +713,7 @@ class MPDConnection(BaseTCPConnection):
 
     def authenticate(self, password):
         if password == self.service._config.config_get("password"):
-            self.permission = Permissions.PERMISSION_ALL
+            self.permission = Permissions.ALL
         else:
             self.permission = self.service.default_permission
             raise MPDRequestError("Password incorrect", AckError.PASSWORD)
@@ -594,7 +824,7 @@ class MPDConnection(BaseTCPConnection):
     _commands: dict[str, tuple[Callable, bool, int]] = {}
 
     @classmethod
-    def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):
+    def Command(cls, name, permission=Permissions.ADMIN, ack=True):
         def wrap(func):
             assert name not in cls._commands, name
             cls._commands[name] = (func, ack, permission)
@@ -645,17 +875,24 @@ def _parse_range(arg):
     raise MPDRequestError("invalid range")
 
 
+def _parse_songpos(arg):
+    pos = _parse_int(arg)
+    if pos < 0:
+        raise MPDRequestError("No such song", AckError.NO_EXIST)
+    return pos
+
+
 @MPDConnection.Command("idle", ack=False)
 def _cmd_idle(conn, service, args):
     service.register_idle(conn, args)
 
 
-@MPDConnection.Command("ping", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("ping", Permissions.NONE)
 def _cmd_ping(conn, service, args):
     return
 
 
-@MPDConnection.Command("password", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("password", Permissions.NONE)
 def _cmd_password(conn, service, args):
     _verify_length(args, 1)
     conn.authenticate(args[0])
@@ -666,34 +903,46 @@ def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
-@MPDConnection.Command("close", ack=False, permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("close", Permissions.NONE, ack=False)
 def _cmd_close(conn, service, args):
     conn.close()
 
 
-@MPDConnection.Command("play")
+@MPDConnection.Command("play", Permissions.CONTROL)
 def _cmd_play(conn, service, args):
-    service.play()
+    if args:
+        _verify_length(args, 1)
+        songpos = _parse_songpos(args[0])
+        song = service.queue_song_by_pos(songpos)
+        service._app.player.go_to(song, explicit=True, source=service._queue_model)
+        service._app.player.paused = False
+    else:
+        service.play()
 
 
-@MPDConnection.Command("listplaylists")
+@MPDConnection.Command("listplaylists", Permissions.READ)
 def _cmd_listplaylists(conn, service, args):
     pass
 
 
-@MPDConnection.Command("list")
+@MPDConnection.Command("list", Permissions.READ)
 def _cmd_list(conn, service, args):
     pass
 
 
-@MPDConnection.Command("playid")
+@MPDConnection.Command("playid", Permissions.CONTROL)
 def _cmd_playid(conn, service, args):
     _verify_length(args, 1)
     songid = _parse_int(args[0])
-    service.playid(songid)
+    for song in service.queue_songs():
+        if service._get_id(song) == songid:
+            service._app.player.go_to(song, explicit=True, source=service._queue_model)
+            service._app.player.paused = False
+            return
+    raise MPDRequestError("No such song", AckError.NO_EXIST)
 
 
-@MPDConnection.Command("pause")
+@MPDConnection.Command("pause", Permissions.CONTROL)
 def _cmd_pause(conn, service, args):
     value = None
     if args:
@@ -702,100 +951,100 @@ def _cmd_pause(conn, service, args):
     service.pause(value)
 
 
-@MPDConnection.Command("stop")
+@MPDConnection.Command("stop", Permissions.CONTROL)
 def _cmd_stop(conn, service, args):
     service.stop()
 
 
-@MPDConnection.Command("next")
+@MPDConnection.Command("next", Permissions.CONTROL)
 def _cmd_next(conn, service, args):
     service.next()
 
 
-@MPDConnection.Command("previous")
+@MPDConnection.Command("previous", Permissions.CONTROL)
 def _cmd_previous(conn, service, args):
     service.previous()
 
 
-@MPDConnection.Command("repeat")
+@MPDConnection.Command("repeat", Permissions.CONTROL)
 def _cmd_repeat(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.repeat(value)
 
 
-@MPDConnection.Command("random")
+@MPDConnection.Command("random", Permissions.CONTROL)
 def _cmd_random(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.random(value)
 
 
-@MPDConnection.Command("single")
+@MPDConnection.Command("single", Permissions.CONTROL)
 def _cmd_single(conn, service, args):
     _verify_length(args, 1)
     value = _parse_bool(args[0])
     service.single(value)
 
 
-@MPDConnection.Command("setvol")
+@MPDConnection.Command("setvol", Permissions.CONTROL)
 def _cmd_setvol(conn, service, args):
     _verify_length(args, 1)
     value = _parse_int(args[0])
     service.setvol(value)
 
 
-@MPDConnection.Command("status")
+@MPDConnection.Command("status", Permissions.READ)
 def _cmd_status(conn, service, args):
     status = service.status()
     for k, v in status:
         conn.write_line(f"{k}: {v}")
 
 
-@MPDConnection.Command("stats")
+@MPDConnection.Command("stats", Permissions.READ)
 def _cmd_stats(conn, service, args):
     status = service.stats()
     for k, v in status:
         conn.write_line(f"{k}: {v}")
 
 
-@MPDConnection.Command("currentsong")
+@MPDConnection.Command("currentsong", Permissions.READ)
 def _cmd_currentsong(conn, service, args):
     stats = service.currentsong()
     if stats is not None:
         conn.write_line(stats)
 
 
-@MPDConnection.Command("count")
+@MPDConnection.Command("count", Permissions.READ)
 def _cmd_count(conn, service, args):
     conn.write_line("songs: 0")
     conn.write_line("playtime: 0")
 
 
-@MPDConnection.Command("plchanges")
+@MPDConnection.Command("plchanges", Permissions.READ)
 def _cmd_plchanges(conn, service, args):
     _verify_length(args, 1)
     version = _parse_int(args[0])
     changes = service.plchanges(version)
-    if changes is not None:
-        conn.write_line(changes)
+    for entry in changes:
+        conn.write_line(entry)
 
 
-@MPDConnection.Command("plchangesposid")
+@MPDConnection.Command("plchangesposid", Permissions.READ)
 def _cmd_plchangesposid(conn, service, args):
     _verify_length(args, 1)
     version = _parse_int(args[0])
     changes = service.plchangesposid(version)
-    if changes is not None:
-        conn.write_line(changes)
+    for entry in changes:
+        conn.write_line(entry)
 
 
-@MPDConnection.Command("listallinfo")
+@MPDConnection.Command("listallinfo", Permissions.READ)
 def _cmd_listallinfo(*args):
     _cmd_currentsong(*args)
 
 
-@MPDConnection.Command("seek")
+@MPDConnection.Command("seek", Permissions.CONTROL)
 def _cmd_seek(conn, service, args):
     _verify_length(args, 2)
     songpos = _parse_int(args[0])
@@ -803,7 +1052,7 @@ def _cmd_seek(conn, service, args):
     service.seek(songpos, time_)
 
 
-@MPDConnection.Command("seekid")
+@MPDConnection.Command("seekid", Permissions.CONTROL)
 def _cmd_seekid(conn, service, args):
     _verify_length(args, 2)
     songid = _parse_int(args[0])
@@ -811,7 +1060,7 @@ def _cmd_seekid(conn, service, args):
     service.seekid(songid, time_)
 
 
-@MPDConnection.Command("seekcur")
+@MPDConnection.Command("seekcur", Permissions.CONTROL)
 def _cmd_seekcur(conn, service, args):
     _verify_length(args, 1)
 
@@ -828,48 +1077,116 @@ def _cmd_seekcur(conn, service, args):
     service.seekcur(time_, relative)
 
 
-@MPDConnection.Command("outputs")
+@MPDConnection.Command("outputs", Permissions.READ)
 def _cmd_outputs(conn, service, args):
     conn.write_line("outputid: 0")
     conn.write_line("outputname: dummy")
     conn.write_line("outputenabled: 1")
 
 
-@MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("commands", Permissions.NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
         conn.write_line(f"command: {name!s}")
 
 
-@MPDConnection.Command("tagtypes")
+@MPDConnection.Command("tagtypes", Permissions.READ)
 def _cmd_tagtypes(conn, service, args):
     for mpd_key, _ql_key in TAG_MAPPING:
         conn.write_line(mpd_key)
 
 
-@MPDConnection.Command("lsinfo")
+@MPDConnection.Command("lsinfo", Permissions.READ)
 def _cmd_lsinfo(conn, service, args):
     _verify_length(args, 1)
 
 
-@MPDConnection.Command("playlistinfo")
+@MPDConnection.Command("search", Permissions.READ)
+def _cmd_search(conn, service, args):
+    songs = _run_search(service, args)
+    for song in songs:
+        conn.write_line(service._format_library_song(song))
+
+
+@MPDConnection.Command("searchadd", Permissions.ADD)
+def _cmd_searchadd(conn, service, args):
+    songs = _run_search(service, args)
+    if songs:
+        service.queue_insert(songs)
+
+
+@MPDConnection.Command("searchcount", Permissions.READ)
+def _cmd_searchcount(conn, service, args):
+    songs = _run_search(service, args)
+    playtime = sum(int(song("~#length") or 0) for song in songs)
+    conn.write_line(f"songs: {len(songs):d}")
+    conn.write_line(f"playtime: {playtime:d}")
+
+
+@MPDConnection.Command("playlistinfo", Permissions.READ)
 def _cmd_playlistinfo(conn, service, args):
     if args:
         _verify_length(args, 1)
         start, end = _parse_range(args[0])
-        result = service.playlistinfo(start, end)
     else:
-        result = service.playlistinfo()
-    if result is not None:
-        conn.write_line(result)
+        start = end = None
+    for entry in service.queue_songinfo(start, end):
+        conn.write_line(entry)
 
 
-@MPDConnection.Command("playlistid")
+@MPDConnection.Command("playlistid", Permissions.READ)
 def _cmd_playlistid(conn, service, args):
     if args:
         songid = _parse_int(args[0])
+        matches = service.queue_songinfo_by_id(songid)
     else:
-        songid = None
-    result = service.playlistid(songid)
-    if result is not None:
-        conn.write_line(result)
+        matches = service.queue_songinfo()
+    for entry in matches:
+        conn.write_line(entry)
+
+
+@MPDConnection.Command("playlist", Permissions.READ)
+def _cmd_playlist(conn, service, args):
+    if args:
+        _verify_length(args, 1)
+        start, end = _parse_range(args[0])
+    else:
+        start = end = None
+    for entry in service.queue_playlist(start, end):
+        conn.write_line(entry)
+
+
+@MPDConnection.Command("clear", Permissions.ADD)
+def _cmd_clear(conn, service, args):
+    _verify_length(args, 0)
+    if service._queue_model is None:
+        raise MPDRequestError("No queue", AckError.NO_EXIST)
+    service._queue_model.clear()
+
+
+@MPDConnection.Command("delete", Permissions.ADD)
+def _cmd_delete(conn, service, args):
+    _verify_length(args, 1)
+    pos = _parse_songpos(args[0])
+    service.queue_remove_positions([pos])
+
+
+@MPDConnection.Command("add", Permissions.ADD)
+def _cmd_add(conn, service, args):
+    _verify_length(args, 1)
+    filename = args[0]
+    song = service._app.library.add_filename(filename, add=False)
+    if song is None:
+        raise MPDRequestError("No such song", AckError.NO_EXIST)
+    service.queue_insert([song])
+
+
+@MPDConnection.Command("addid", Permissions.ADD)
+def _cmd_addid(conn, service, args):
+    _verify_length(args, 1)
+    filename = args[0]
+    song = service._app.library.add_filename(filename, add=False)
+    if song is None:
+        raise MPDRequestError("No such song", AckError.NO_EXIST)
+    service.queue_insert([song])
+    conn.write_line(f"Id: {service._get_id(song):d}")
