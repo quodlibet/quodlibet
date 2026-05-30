@@ -85,9 +85,9 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         fbasemodel = ObjectStore()
         fmodel = ObjectModelSort(model=fbasemodel)
         fview = HintedTreeView(model=fmodel)
-        fview.connect("button-press-event", self.__pre_selection_changed)
         selection = fview.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
+        selection.set_select_function(self.__can_change_selection)
         self.__save = None
 
         render = Gtk.CellRendererText()
@@ -198,19 +198,23 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
     def set_pending(self, button, *excess):
         self.__save = button
 
-    def __pre_selection_changed(self, view, event):
-        if self.__save:
-            if self.auto_save_on_change:
-                self.__save.clicked()
-                return None
-            resp = CancelRevertSave(self).run()
-            if resp == Gtk.ResponseType.YES:
-                self.__save.clicked()
-            elif resp == Gtk.ResponseType.NO:
-                return False
-            else:
-                return True  # cancel or closed
-        return None
+    def __can_change_selection(self, selection, model, path, currently_selected):
+        # Allow deselection and selection of already-selected paths
+        # unconditionally; only prompt when the user is about to switch
+        # to a different song with unsaved edits.
+        if currently_selected or not self.__save:
+            return True
+        if self.auto_save_on_change:
+            self.__save.clicked()
+            return True
+        resp = CancelRevertSave(self).run()
+        if resp == Gtk.ResponseType.YES:
+            self.__save.clicked()
+            return True
+        if resp == Gtk.ResponseType.NO:
+            # Discard edits and proceed with the new selection.
+            return True
+        return False  # cancelled — keep the current selection
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()
