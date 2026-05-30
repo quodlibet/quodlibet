@@ -8,7 +8,7 @@
 
 import operator
 
-from gi.repository import Gtk, Pango, Gdk
+from gi.repository import GLib, Gtk, Pango, Gdk, Gio
 
 from quodlibet import qltk
 from quodlibet.qltk.views import AllTreeView, TreeViewColumnButton
@@ -24,9 +24,6 @@ from .util import PaneConfig
 
 class Pane(AllTreeView):
     """Pane of the paned browser"""
-
-    TARGET_INFO_QL = 1
-    TARGET_INFO_URI_LIST = 2
 
     def __init__(self, library, prefs, next_=None):
         super().__init__()
@@ -58,6 +55,7 @@ class Pane(AllTreeView):
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def text_cdf(column, cell, model, iter_, data):
@@ -70,6 +68,7 @@ class Pane(AllTreeView):
         render_count = Gtk.CellRendererText()
         render_count.set_property("xalign", 1.0)
         render_count.set_property("max-width-chars", 5)
+        # GTK4: TreeViewColumn.append() removed - use pack_end() instead
         column.pack_end(render_count, True)
         # Tiny columns break too much rendering
         column.set_min_width(150)
@@ -96,17 +95,10 @@ class Pane(AllTreeView):
         s = self.connect("popup-menu", self.__popup_menu, library)
         connect_obj(self, "destroy", self.disconnect, s)
 
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
-            ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("destroy", self.__destroy)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare)
+        self.add_controller(drag_source)
 
         librarian = library.librarian or library
         self.connect("key-press-event", self.__key_pressed, librarian)
@@ -182,19 +174,18 @@ class Pane(AllTreeView):
         entry = model.get_value(iter_)
         return not entry.contains_text(key)
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_prepare(self, source, x, y):
         songs = self.__get_selected_songs(sort=True)
-
-        if tid == self.TARGET_INFO_QL:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def __popup_menu(self, view, library):
         songs = self.__get_selected_songs(sort=True)
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __selection_changed(self, *args):
         if self.__next:

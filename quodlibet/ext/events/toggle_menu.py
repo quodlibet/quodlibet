@@ -10,7 +10,7 @@ from gi.repository import Gdk
 from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 
 
 class ToggleMenuBarPlugin(EventPlugin):
@@ -23,7 +23,7 @@ class ToggleMenuBarPlugin(EventPlugin):
         window = app.window
 
         # Maybe this should be made directly accessible
-        self._menubar = window.get_children()[0].get_children()[0]
+        self._menubar = get_children(get_children(window)[0])[0]
 
         # Initially set hidden
         self._menubar.set_visible(False)

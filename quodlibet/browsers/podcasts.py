@@ -12,7 +12,7 @@ import threading
 import time
 from urllib.request import urlopen, Request
 
-from gi.repository import Gtk, GLib, Pango, Gdk
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 import feedparser
 
 import quodlibet
@@ -31,7 +31,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
 from quodlibet.util.path import uri_is_valid
@@ -39,7 +39,6 @@ from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
 FEEDS = os.path.join(quodlibet.get_user_dir(), "feeds")
-DND_URI_LIST, DND_MOZ_URL = range(2)
 
 # Migration path for pickle
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
@@ -324,8 +323,20 @@ class Podcasts(Browser):
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "audiofeeds_pos", 0.4)
         self.show()
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -410,81 +421,60 @@ class Podcasts(Browser):
         col.set_cell_data_func(render, Podcasts.cell_data)
         view.append_column(col)
         view.set_model(self.__feeds)
-        view.set_rules_hint(True)
         view.set_headers_visible(False)
         swin = ScrolledWindow()
-        swin.set_shadow_type(Gtk.ShadowType.IN)
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        swin.add(view)
-        self.pack_start(swin, True, True, 0)
+        swin.set_child(view)
+        swin.set_vexpand(True)
+        self.prepend(swin)
 
-        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
         new.connect("clicked", self.__new_feed)
         view.get_selection().connect("changed", self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         view.connect("popup-menu", self._popup_menu)
 
-        targets = [
-            ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        view.connect("drag-data-received", self.__drag_data_received)
-        view.connect("drag-motion", self.__drag_motion)
-        view.connect("drag-leave", self.__drag_leave)
+        drop_target = Gtk.DropTarget.new(GObject.TYPE_STRING, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop)
+        drop_target.connect("motion", self.__on_drop_motion)
+        drop_target.connect("leave", self.__on_drop_leave)
+        view.add_controller(drop_target)
 
         connect_obj(self, "destroy", self.__save, view)
 
-        self.pack_start(Align(new, left=3, bottom=3), False, True, 0)
+        self.append(Align(new, left=3, bottom=3))
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def menu(self, songs, library, items):
         return SongsMenu(library, songs, download=True, items=items)
 
-    def __drag_motion(self, view, ctx, x, y, time):
-        targets = [t.name() for t in ctx.list_targets()]
-        if "text/x-quodlibet-songs" not in targets:
-            view.get_parent().drag_highlight()
-            return True
-        return False
+    def __on_drop_motion(self, target, x, y):
+        target.get_widget().get_parent().add_css_class("drop-target")
+        return Gdk.DragAction.COPY
 
-    def __drag_leave(self, view, ctx, time):
-        view.get_parent().drag_unhighlight()
+    def __on_drop_leave(self, target):
+        target.get_widget().get_parent().remove_css_class("drop-target")
 
-    def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        view.emit_stop_by_name("drag-data-received")
-        targets = [
-            ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        if tid == DND_URI_LIST:
-            uri = sel.get_uris()[0]
-        elif tid == DND_MOZ_URL:
-            uri = sel.data.decode("utf16", "replace").split("\n")[0]
-        else:
-            ctx.finish(False, False, etime)
-            return
-
-        ctx.finish(True, False, etime)
-
+    def __on_drop(self, target, value, x, y):
+        if not isinstance(value, str):
+            return False
+        uri = value.strip().splitlines()[0].strip() if value.strip() else ""
+        if not uri:
+            return False
         feed = Feed(uri.encode("ascii", "replace"))
         feed.changed = feed.parse()
         if feed:
             self.__feeds.append(row=[feed])
             Podcasts.write()
-        else:
-            self.feed_error(feed).run()
+            return True
+        self.feed_error(feed).run()
+        return False
 
-    def _popup_menu(self, view: Gtk.Widget) -> Gtk.Menu | None:
+    def _popup_menu(self, view: Gtk.Widget) -> Gtk.PopoverMenu | None:
         model, paths = self._view.get_selection().get_selected_rows()
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         refresh = MenuItem(
             _("_Refresh"),
             Icons.VIEW_REFRESH,
@@ -511,7 +501,7 @@ class Podcasts(Browser):
         menu.show_all()
         menu.connect("selection-done", lambda m: m.destroy())
 
-        if self._view.popup_menu(menu, 0, Gtk.get_current_event_time()):
+        if self._view.popup_menu(menu, 0, GLib.CURRENT_TIME):
             return menu
         return None
 

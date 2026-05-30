@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#        2016-23 Nick Boultbee
+#        2016-25 Nick Boultbee
 #           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import GLib, Gio, Gtk, Pango
 
 from quodlibet import config, print_d
 from quodlibet import util
@@ -16,111 +16,80 @@ from quodlibet import app
 from quodlibet import _
 
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import ScrolledWindow, Action
-from quodlibet.qltk import Icons
+from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
 
 class FilterMenu:
-    MENU = """
-    <menu action='Filters'>
-        <menuitem action='FilterGenre' always-show-image='true'/>
-        <menuitem action='FilterArtist' always-show-image='true'/>
-        <menuitem action='FilterAlbum' always-show-image='true'/>
-        <separator/>
-        <menuitem action='RandomGenre' always-show-image='true'/>
-        <menuitem action='RandomArtist' always-show-image='true'/>
-        <menuitem action='RandomAlbum' always-show-image='true'/>
-        <separator/>
-        <menuitem action='All' always-show-image='true'/>
-        <menuitem action='PlayedRecently' always-show-image='true'/>
-        <menuitem action='AddedRecently' always-show-image='true'/>
-        <menuitem action='TopRated' always-show-image='true'/>
-    </menu>"""
-    __OUTER_MENU = f"""
-    <ui>
-        <menubar name='Menu'>
-            {MENU}
-        </menubar>
-    </ui>"""
+    """Provides the "Filters" submenu plus its action group.
 
-    def __init__(self, library, player, ui=None):
+    When ``action_group`` is passed in, the menu adds its actions to it (so
+    callers can plug the resulting ``menu_model`` into their own menubar).
+    Otherwise FilterMenu owns a standalone action group.
+    """
+
+    def __init__(self, library, player, action_group=None):
         self._browser = None
         self._library = library
         self._player = player
-        self._standalone = not ui
+        self._standalone = action_group is None
+        ag = action_group if action_group is not None else Gio.SimpleActionGroup()
+        self._action_group = ag
 
-        ag = Gtk.ActionGroup.new("QuodLibetFilterActions")
-        for name, icon_name, label, cb in [
-            ("Filters", "", _("_Filters"), None),
-            (
-                "PlayedRecently",
-                Icons.EDIT_FIND,
-                _("Recently _Played"),
-                self.__filter_menu_actions,
-            ),
-            (
-                "AddedRecently",
-                Icons.EDIT_FIND,
-                _("Recently _Added"),
-                self.__filter_menu_actions,
-            ),
-            ("TopRated", Icons.EDIT_FIND, _("_Top 40"), self.__filter_menu_actions),
-            ("All", Icons.EDIT_FIND, _("All _Songs"), self.__filter_menu_actions),
-        ]:
-            action = Action(name=name, icon_name=icon_name, label=label)
-            if cb:
-                action.connect("activate", cb)
-            ag.add_action(action)
+        actions: dict[str, Gio.SimpleAction] = {}
 
-        for tag_, lab in [
-            ("genre", _("On Current _Genre(s)")),
-            ("artist", _("On Current _Artist(s)")),
-            ("album", _("On Current Al_bum")),
-        ]:
-            act = Action(
-                name=f"Filter{util.capitalize(tag_)}",
-                label=lab,
-                icon_name=Icons.EDIT_SELECT_ALL,
-            )
-            act.connect("activate", self.__filter_on, tag_, None, player)
+        def add(name, handler=None):
+            act = Gio.SimpleAction.new(name, None)
+            if handler is not None:
+                act.connect("activate", handler)
             ag.add_action(act)
+            actions[name] = act
+            return act
 
-        for tag_, accel, label in [
-            ("genre", "G", _("Random _Genre")),
-            ("artist", "T", _("Random _Artist")),
-            ("album", "M", _("Random Al_bum")),
-        ]:
-            act = Action(
-                name=f"Random{util.capitalize(tag_)}",
-                label=label,
-                icon_name=Icons.DIALOG_QUESTION,
-            )
-            act.connect("activate", self.__random, tag_)
-            ag.add_action_with_accel(act, "<Primary>" + accel)
+        add("PlayedRecently", lambda *a: self._make_query("#(lastplayed < 7 days ago)"))
+        add("AddedRecently", lambda *a: self._make_query("#(added < 7 days ago)"))
+        add("TopRated", self.__top_rated)
+        add("All", lambda *a: self._browser and self._browser.unfilter())
 
-        if self._standalone:
-            ui = Gtk.UIManager()
-            ui.add_ui_from_string(self.__OUTER_MENU)
-        ui.insert_action_group(ag, -1)
-        self._ui = ui
+        for tag_ in ("genre", "artist", "album"):
+            add(f"Filter{util.capitalize(tag_)}", self.__filter_on(tag_, player))
+            add(f"Random{util.capitalize(tag_)}", self.__random(tag_))
 
-        self._get_child_widget("TopRated").set_tooltip_text(
-            _(
-                "The 40 songs you've played most (more than 40 may "
-                "be chosen if there are ties)"
-            )
+        self._actions = actions
+
+        # Build the menu model
+        menu = Gio.Menu()
+        sec = Gio.Menu()
+        sec.append(_("On Current _Genre(s)"), "win.FilterGenre")
+        sec.append(_("On Current _Artist(s)"), "win.FilterArtist")
+        sec.append(_("On Current Al_bum"), "win.FilterAlbum")
+        menu.append_section(None, sec)
+        sec = Gio.Menu()
+        sec.append(_("Random _Genre"), "win.RandomGenre")
+        sec.append(_("Random _Artist"), "win.RandomArtist")
+        sec.append(_("Random Al_bum"), "win.RandomAlbum")
+        menu.append_section(None, sec)
+        sec = Gio.Menu()
+        sec.append(_("All _Songs"), "win.All")
+        sec.append(_("Recently _Played"), "win.PlayedRecently")
+        sec.append(_("Recently _Added"), "win.AddedRecently")
+        top_rated = Gio.MenuItem.new(_("_Top 40"), "win.TopRated")
+        top_rated.set_attribute_value(
+            "tooltip",
+            GLib.Variant.new_string(
+                _(
+                    "The 40 songs you've played most (more than 40 may "
+                    "be chosen if there are ties)"
+                )
+            ),
         )
-
-        # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        menu_item = self._get_child_widget("/Menu/Filters")
-        if isinstance(menu_item, Gtk.ImageMenuItem):
-            menu_item.set_image(None)
+        sec.append_item(top_rated)
+        menu.append_section(None, sec)
+        self.menu_model = menu
 
         self._player_id = player.connect("song-started", self._on_song_started)
         self.set_song(player.song)
-
         self._hide_menus()
 
     def destroy(self):
@@ -133,39 +102,35 @@ class FilterMenu:
     def _on_song_started(self, player, song):
         self.set_song(song)
 
-    def __random(self, item, key):
-        self._browser.filter_random(key)
+    def __random(self, key):
+        def cb(*args):
+            if self._browser:
+                self._browser.filter_random(key)
 
-    def __filter_on(self, action, header, songs, player):
-        # Fall back to the playing song
-        if songs is None:
-            if player.song:
-                songs = [player.song]
-            else:
+        return cb
+
+    def __filter_on(self, header, player):
+        def cb(*args):
+            if not self._browser:
                 return
-
-        self._browser.filter_on(songs, header)
-
-    def __filter_menu_actions(self, menuitem):
-        name = menuitem.get_name()
-
-        if name == "PlayedRecently":
-            self._make_query("#(lastplayed < 7 days ago)")
-        elif name == "AddedRecently":
-            self._make_query("#(added < 7 days ago)")
-        elif name == "TopRated":
-            bg = background_filter()
-            songs = (bg and filter(bg, self._library)) or self._library
-            songs = [song.get("~#playcount", 0) for song in songs]
-            if len(songs) == 0:
+            songs = [player.song] if player.song else None
+            if not songs:
                 return
-            songs.sort()
-            if len(songs) < 40:
-                self._make_query(f"#(playcount > {songs[0] - 1:d})")
-            else:
-                self._make_query(f"#(playcount > {songs[-40] - 1:d})")
-        elif name == "All":
-            self._browser.unfilter()
+            self._browser.filter_on(songs, header)
+
+        return cb
+
+    def __top_rated(self, *args):
+        bg = background_filter()
+        songs = (bg and filter(bg, self._library)) or self._library
+        songs = [song.get("~#playcount", 0) for song in songs]
+        if not songs:
+            return
+        songs.sort()
+        if len(songs) < 40:
+            self._make_query(f"#(playcount > {songs[0] - 1:d})")
+        else:
+            self._make_query(f"#(playcount > {songs[-40] - 1:d})")
 
     def _make_query(self, query):
         assert isinstance(query, str)
@@ -174,60 +139,33 @@ class FilterMenu:
             self._browser.activate()
 
     def _hide_menus(self):
+        # Gio.Menu items don't support hide; instead, we disable filter
+        # actions that don't apply to the current browser.
         menus = {
-            "genre": [
-                "FilterGenre",
-                "RandomGenre",
-            ],
-            "artist": [
-                "FilterArtist",
-                "RandomArtist",
-            ],
-            "album": [
-                "FilterAlbum",
-                "RandomAlbum",
-            ],
-            None: [
-                "PlayedRecently",
-                "AddedRecently",
-                "TopRated",
-                "All",
-            ],
+            "genre": ["FilterGenre", "RandomGenre"],
+            "artist": ["FilterArtist", "RandomArtist"],
+            "album": ["FilterAlbum", "RandomAlbum"],
+            None: ["PlayedRecently", "AddedRecently", "TopRated", "All"],
         }
-
-        for key, widget_names in menus.items():
-            if self._browser:
-                can_filter = self._browser.can_filter(key)
-            else:
-                can_filter = False
-            for name in widget_names:
-                self._get_child_widget(name).set_property("visible", can_filter)
+        for key, names in menus.items():
+            can = bool(self._browser and self._browser.can_filter(key))
+            for name in names:
+                self._actions[name].set_enabled(can)
 
     def set_browser(self, browser):
         self._browser = browser
         self._hide_menus()
 
     def set_song(self, song):
-        for wid in ["FilterAlbum", "FilterArtist", "FilterGenre"]:
-            self._get_child_widget(wid).set_sensitive(bool(song))
-
+        for name in ("FilterAlbum", "FilterArtist", "FilterGenre"):
+            self._actions[name].set_enabled(bool(song))
         if song:
-            for h in ["genre", "artist", "album"]:
-                widget = self._get_child_widget(f"Filter{h.capitalize()}")
-                widget.set_sensitive(h in song)
+            for h in ("genre", "artist", "album"):
+                self._actions[f"Filter{util.capitalize(h)}"].set_enabled(h in song)
 
-    def _get_child_widget(self, name=None):
-        path = "/Menu%s/Filters" % ("" if self._standalone else "/Browse")
-        if name:
-            path += "/" + name
-        return self._ui.get_widget(path)
-
-    def get_widget(self):
-        path = "/Menu" if self._standalone else "/Menu/Browse"
-        return self._ui.get_widget(path)
-
-    def get_accel_group(self):
-        return self._ui.get_accel_group()
+    @property
+    def action_group(self):
+        return self._action_group
 
 
 class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
@@ -269,7 +207,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
         self.set_title(browser_cls.name + " - Quod Libet")
-        self.add(Gtk.VBox())
+        self.add(
+            Gtk.Box(
+                orientation=Gtk.Orientation.VERTICAL,
+            )
+        )
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_totals)
@@ -277,8 +219,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.songlist.sortable = not browser_cls.can_reorder
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.browser = browser = browser_cls(library)
@@ -290,23 +231,33 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.get_child().pack_start(self.__container, True, True, 0)
+        self.get_child().prepend(self.__container)
 
         main = self.get_child()
-        bottom = Gtk.HBox()
-        main.pack_end(bottom, False, True, 0)
+        bottom = Gtk.Box()
+        main.append(bottom)
 
         self._filter_menu = filter_menu = FilterMenu(library, player)
         filter_menu.set_browser(self.browser)
-        self.add_accel_group(filter_menu.get_accel_group())
-        bottom.pack_start(filter_menu.get_widget(), False, True, 0)
-        filter_menu.get_widget().show()
+        self.insert_action_group("win", filter_menu.action_group)
+        outer = Gio.Menu()
+        outer.append_submenu(_("_Filters"), filter_menu.menu_model)
+        filter_button = Gtk.MenuButton.new()
+        filter_button.set_menu_model(outer)
+        filter_button.set_label(_("_Filters"))
+        filter_button.set_use_underline(True)
+        bottom.prepend(filter_button)
 
         self.__statusbar = Gtk.Label()
-        self.__statusbar.set_alignment(1.0, 0.5)
-        self.__statusbar.set_padding(6, 3)
+        self.__statusbar.set_xalign(1.0)
+        self.__statusbar.set_yalign(0.5)
+        # GTK4: set_padding() removed, use margins
+        self.__statusbar.set_margin_start(6)
+        self.__statusbar.set_margin_end(6)
+        self.__statusbar.set_margin_top(3)
+        self.__statusbar.set_margin_bottom(3)
         self.__statusbar.set_ellipsize(Pango.EllipsizeMode.START)
-        bottom.pack_end(self.__statusbar, True, True, 0)
+        bottom.append(self.__statusbar)
         self.__statusbar.show()
         bottom.show()
 
@@ -320,14 +271,18 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             view.connect("columns-changed", self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         sw.show_all()
-        for c in self.get_child().get_children():
+        # GTK4: get_children() removed, use helper
+        from quodlibet.qltk import get_children
+
+        for c in get_children(self.get_child()):
             c.show()
         self.get_child().show()
 
         self.connect("destroy", self._on_destroy)
 
     def _on_destroy(self, *args):
-        self._filter_menu.destroy()
+        # GTK4: self.destroy() removed - _filter_menu cleaned up automatically
+        pass
 
     def __browser_cb(self, browser, songs, sorted):
         if browser.background:
@@ -363,7 +318,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         header = col.header_name
         menu = view.menu(header, self.browser, library)
         if menu is not None:
-            view.popup_menu(menu, 0, Gtk.get_current_event_time())
+            view.popup_menu(menu, 0, GLib.CURRENT_TIME)
         return True
 
     def __set_totals(self, info, songs):

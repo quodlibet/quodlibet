@@ -49,6 +49,7 @@ class LanguagePreference(EventPlugin):
 
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
+        # GTK4: CellLayout uses pack_start, not prepend
         combo.pack_start(render, True)
         combo.set_cell_data_func(render, cell_func)
 
@@ -61,8 +62,8 @@ class LanguagePreference(EventPlugin):
         combo.connect("changed", on_combo_changed)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.pack_start(combo, False, False, 0)
-        box.pack_start(
+        box.prepend(combo)
+        box.prepend(
             Gtk.Label(
                 label=_("A restart is required for any changes to take effect"),
                 wrap=True,

@@ -15,7 +15,7 @@ from .helper import visible
 class Notebook(TestCase):
     def test_widget_str(self):
         n = x.Notebook()
-        c = Gtk.VBox()
+        c = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         n.append_page(c, "A Test")
         self.assertEqual(n.get_tab_label(c).get_text(), "A Test")
         n.destroy()
@@ -23,14 +23,14 @@ class Notebook(TestCase):
     def test_widget_label(self):
         l = Gtk.Label(label="A Test")
         n = x.Notebook()
-        c = Gtk.VBox()
+        c = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         n.append_page(c, l)
         assert l is n.get_tab_label(c)
         c.destroy()
 
     def test_widget_error(self):
         n = x.Notebook()
-        w = Gtk.VBox()
+        w = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.assertRaises(TypeError, n.append_page, w)
         w.destroy()
         n.destroy()

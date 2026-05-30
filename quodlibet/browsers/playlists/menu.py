@@ -15,7 +15,7 @@ from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
 from quodlibet.util.collection import Playlist
 
 
-class PlaylistMenu(Gtk.Menu):
+class PlaylistMenu(Gtk.PopoverMenu):
     def __init__(self, songs, pl_lib: PlaylistLibrary):
         super().__init__()
         self.pl_lib = pl_lib
@@ -23,7 +23,9 @@ class PlaylistMenu(Gtk.Menu):
         i.connect("activate", self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
-        self.set_size_request(int(i.size_request().width * 2), -1)
+        # GTK4: size_request() removed; use measure() for size hints
+        min_w = i.measure(0, -1)[0]  # 0 = Gtk.Orientation.HORIZONTAL
+        self.set_size_request(min_w * 2, -1)
 
         for playlist in sorted(pl_lib):
             name = playlist.name
@@ -31,7 +33,9 @@ class PlaylistMenu(Gtk.Menu):
             some, all = playlist.has_songs(songs)
             i.set_active(some)
             i.set_inconsistent(some and not all)
-            i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
+            label_child = i.get_child()
+            if label_child is not None:
+                label_child.set_ellipsize(Pango.EllipsizeMode.END)
             i.connect("activate", self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 

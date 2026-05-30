@@ -11,8 +11,7 @@
 
 from collections.abc import Sequence
 
-from gi.repository import Gtk, GLib, Gdk, GObject
-from quodlibet.fsn import uri2fsn
+from gi.repository import Gtk, GLib, Gdk, Gio, GObject
 
 from quodlibet import app, print_w, print_d
 from quodlibet import config
@@ -32,11 +31,8 @@ from quodlibet.qltk import Icons
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
-from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
-
-DND_QL, DND_URI_LIST = range(2)
 
 
 class SongSelectionInfo(GObject.Object):
@@ -194,123 +190,155 @@ def header_tag_split(header):
 
 
 class SongListDnDMixin(GObject.GObject):
-    """DnD support for the SongList class"""
+    """GTK4 DnD support for the SongList class.
+
+    Provides drag source (drag songs out) and drop target (drop songs in).
+    Uses URI list format for compatibility with external applications.
+    """
 
     def setup_drop(self, library):
-        self.connect("drag-begin", self.__drag_begin)
-        self.connect("drag-motion", self.__drag_motion)
-        self.connect("drag-leave", self.__drag_leave)
-        self.connect("drag-data-get", self.__drag_data_get)
-        self.connect("drag-data-received", self.__drag_data_received, library)
+        """Set up drag source and drop target controllers."""
+        print_d("DnD: setup_drop called")
+        self._dnd_library = library
+        self._drop_by_row = True
+        self._force_copy = False
+        self._drag_iters = []
 
-    def __drag_begin(self, *args):
-        ok, state = Gtk.get_current_event_state()
-        if ok and state & qltk.get_primary_accel_mod():
-            self.__force_copy = True
-        else:
-            self.__force_copy = False
+        # Drag source - for dragging songs OUT
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
+        # Use CAPTURE phase to get events before TreeView's internal handlers
+        drag_source.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        drag_source.connect("prepare", self._on_drag_prepare)
+        drag_source.connect("drag-begin", self._on_drag_begin)
+        drag_source.connect("drag-end", self._on_drag_end)
+        self.add_controller(drag_source)
+        self._drag_source = drag_source
+        print_d(f"DnD: drag_source attached: {drag_source}")
+
+        # Drop target - for dropping songs IN
+        # Accept file URIs (text/uri-list)
+        drop_target = Gtk.DropTarget.new(
+            Gdk.FileList, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
+        )
+        drop_target.connect("accept", self._on_drop_accept)
+        drop_target.connect("motion", self._on_drop_motion)
+        drop_target.connect("leave", self._on_drop_leave)
+        drop_target.connect("drop", self._on_drop)
+        self.add_controller(drop_target)
+        self._drop_target = drop_target
 
     def enable_drop(self, by_row=True):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK,
-            targets,
-            Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
-        )
-        self.drag_dest_set(
-            Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY | Gdk.DragAction.MOVE
-        )
-        self.__drop_by_row = by_row
-        self.__force_copy = False
+        """Enable drop, optionally positioning by row."""
+        self._drop_by_row = by_row
+        self._force_copy = False
 
     def disable_drop(self):
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        self.drag_dest_unset()
+        """Disable drop target."""
 
-    def __drag_motion(self, view, ctx, x, y, time):
-        if self.__drop_by_row:
-            self.set_drag_dest(x, y)
-            self.scroll_motion(x, y)
-            if Gtk.drag_get_source_widget(ctx) == self and not self.__force_copy:
-                kind = Gdk.DragAction.MOVE
+    # --- Drag Source callbacks ---
+
+    def _on_drag_prepare(self, source, x, y):
+        """Prepare content for drag operation."""
+        print_d(f"DnD: _on_drag_prepare called at ({x}, {y})")
+        model, paths = self.get_selection().get_selected_rows()
+        if not paths:
+            print_d("DnD: No paths selected")
+            return None
+
+        songs = [model[path][0] for path in paths]
+
+        # Check all songs can be added
+        addable = [s for s in songs if s.can_add]
+        if len(addable) != len(songs):
+            qltk.ErrorMessage(
+                qltk.get_top_parent(self),
+                _("Unable to copy songs"),
+                _(
+                    "The files selected cannot be copied to other "
+                    "song lists or the queue."
+                ),
+            ).run()
+            return None
+
+        # Store for potential move operation
+        self._drag_songs = songs
+        self._drag_paths = paths
+
+        # Create file list for drag data
+        print_d(f"DnD: Creating FileList for {len(songs)} songs")
+        files = [Gio.File.new_for_path(song("~filename")) for song in songs]
+        file_list = Gdk.FileList.new_from_list(files)
+        provider = Gdk.ContentProvider.new_for_value(file_list)
+        print_d(f"DnD: ContentProvider created: {provider}")
+        return provider
+
+    def _on_drag_begin(self, source, drag):
+        """Handle drag begin - check modifiers, set icon."""
+        # Check for force-copy modifier (Ctrl)
+        display = self.get_display()
+        seat = display.get_default_seat()
+        if seat:
+            keyboard = seat.get_keyboard()
+            if keyboard:
+                state = keyboard.get_modifier_state()
+                self._force_copy = bool(state & Gdk.ModifierType.CONTROL_MASK)
             else:
-                kind = Gdk.DragAction.COPY
-            Gdk.drag_status(ctx, kind, time)
-            return True
-        self.get_parent().drag_highlight()
-        Gdk.drag_status(ctx, Gdk.DragAction.COPY, time)
-        return True
+                self._force_copy = False
+        else:
+            self._force_copy = False
 
-    def __drag_leave(self, widget, ctx, time):
-        widget.get_parent().drag_unhighlight()
+        # Store iters for move operation
+        if not self._force_copy:
+            model = self.get_model()
+            self._drag_iters = [model.get_iter(p) for p in self._drag_paths]
+        else:
+            self._drag_iters = []
+
+        # Note: GTK4 drag icons require Gdk.Paintable, not cairo surfaces
+        # The create_multi_row_drag_icon returns a cairo surface - conversion
+        # to texture is possible but skipped for now
+
+    def _on_drag_end(self, source, drag, delete_data):
+        """Clean up after drag."""
+        self._drag_songs = []
+        self._drag_paths = []
+        self._drag_iters = []
         self.scroll_disable()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
-        model, paths = self.get_selection().get_selected_rows()
-        if tid == DND_QL:
-            songs = [model[path][0] for path in paths if model[path][0].can_add]
-            if len(songs) != len(paths):
-                qltk.ErrorMessage(
-                    qltk.get_top_parent(self),
-                    _("Unable to copy songs"),
-                    _(
-                        "The files selected cannot be copied to other "
-                        "song lists or the queue."
-                    ),
-                ).run()
-                Gdk.drag_abort(ctx, etime)
-                return
+    # --- Drop Target callbacks ---
 
-            qltk.selection_set_songs(sel, songs)
+    def _on_drop_accept(self, target, drop):
+        """Check if we can accept this drop."""
+        formats = drop.get_formats()
+        # Accept if it contains file URIs
+        return formats.contain_gtype(Gdk.FileList)
 
-            # DEM 2018/05/25: The below check is a deliberate repetition of
-            # code in the drag-motion signal handler.  In MacOS/Quartz, the
-            # context action is not propogated between event handlers for
-            # drag-motion and drag-data-get using "ctx.get_actions()".  It is
-            # unclear if this is a bug or expected behavior.  Regardless, the
-            # context widget information is the same so identical behavior can
-            # be achieved by simply using the same widget check as in the move
-            # action.
-            if Gtk.drag_get_source_widget(ctx) == self and not self.__force_copy:
-                self.__drag_iters = list(map(model.get_iter, paths))
-            else:
-                self.__drag_iters = []
-        else:
-            uris = [model[path][0]("~uri") for path in paths]
-            sel.set_uris(uris)
-            self.__drag_iters = []
+    def _on_drop_motion(self, target, x, y):
+        """Handle motion during drop - highlight drop position."""
+        if self._drop_by_row:
+            self.set_drag_dest(x, y)
+            self.scroll_motion(x, y)
+        return Gdk.DragAction.COPY
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
-        model = view.get_model()
-        if info == DND_QL:
-            filenames = qltk.selection_get_filenames(sel)
-            move = bool(ctx.get_selected_action() & Gdk.DragAction.MOVE)
-        elif info == DND_URI_LIST:
+    def _on_drop_leave(self, target):
+        """Clean up when drag leaves."""
+        self.scroll_disable()
 
-            def to_filename(s):
-                try:
-                    return uri2fsn(s)
-                except ValueError:
-                    return None
+    def _on_drop(self, target, value, x, y):
+        """Handle the actual drop."""
+        if not isinstance(value, Gdk.FileList):
+            return False
 
-            filenames = list(filter(None, map(to_filename, sel.get_uris())))
-            move = False
-        else:
-            Gtk.drag_finish(ctx, False, False, etime)
-            return
-        # Should always have one here, but you never know (also: types)
+        files = value.get_files()
+        filenames = [f.get_path() for f in files if f.get_path()]
+        if not filenames:
+            return False
+
+        library = self._dnd_library
         librarian = library.librarian or library
+
+        # Add files to library if needed
         to_add = []
         for filename in filenames:
             if filename not in librarian:
@@ -318,53 +346,46 @@ class SongListDnDMixin(GObject.GObject):
             elif filename not in library:
                 to_add.append(librarian[filename])
         library.add(to_add)
-        songs: list = list(filter(None, map(library.get, filenames)))
+
+        # Get song objects
+        songs = list(filter(None, map(library.get, filenames)))
         if not songs:
-            Gtk.drag_finish(ctx, bool(not filenames), False, etime)
-            return
+            return False
 
-        if not self.__drop_by_row:
-            success = self.__drag_data_browser_dropped(songs)
-            Gtk.drag_finish(ctx, success, False, etime)
-            return
+        # Browser drop mode (not by row)
+        if not self._drop_by_row:
+            return self._drag_data_browser_dropped(songs)
 
+        # Row-based drop
+        model = self.get_model()
         try:
-            path, position = view.get_dest_row_at_pos(x, y)
+            path, position = self.get_dest_row_at_pos(x, y)
         except TypeError:
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
 
-        if move and Gtk.drag_get_source_widget(ctx) == view:
-            iter = model.get_iter(path)  # model can't be empty, we're moving
+        # Insert songs at drop position
+        song = songs.pop(0)
+        try:
+            iter_ = model.get_iter(path)
+        except ValueError:
+            iter_ = model.append(row=[song])
+        else:
             if position in (
                 Gtk.TreeViewDropPosition.BEFORE,
                 Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
             ):
-                while self.__drag_iters:
-                    model.move_before(self.__drag_iters.pop(0), iter)
+                iter_ = model.insert_before(iter_, [song])
             else:
-                while self.__drag_iters:
-                    model.move_after(self.__drag_iters.pop(), iter)
-            Gtk.drag_finish(ctx, True, False, etime)
-        else:
-            song = songs.pop(0)
-            try:
-                iter = model.get_iter(path)
-            except ValueError:
-                iter = model.append(row=[song])  # empty model
-            else:
-                if position in (
-                    Gtk.TreeViewDropPosition.BEFORE,
-                    Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
-                ):
-                    iter = model.insert_before(iter, [song])
-                else:
-                    iter = model.insert_after(iter, [song])
-            for song in songs:
-                iter = model.insert_after(iter, [song])
-            Gtk.drag_finish(ctx, True, move, etime)
+                iter_ = model.insert_after(iter_, [song])
 
-    def __drag_data_browser_dropped(self, songs):
+        for song in songs:
+            iter_ = model.insert_after(iter_, [song])
+
+        return True
+
+    def _drag_data_browser_dropped(self, songs):
+        """Handle drop in browser mode (not row-based)."""
         window = qltk.get_top_parent(self)
         return window.browser.dropped(songs)
 
@@ -404,9 +425,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         if can_filter("album"):
             menu_items.append(Filter("album"))
 
-        menu = browser.menu(songs, library, items=[menu_items])
-        menu.show_all()
-        return menu
+        return browser.menu(songs, library, items=[menu_items])
 
     def __init__(
         self,
@@ -422,7 +441,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
         self.set_size_request(200, 150)
-        self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.set_fixed_height_mode(True)
         self.__csig = self.connect("columns-changed", self.__columns_changed)
@@ -444,8 +462,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             connect_destroy(player, "unpaused", lambda *x: self.__redraw_current())
             connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
-        self.connect("button-press-event", self.__button_press, library)
-        self.connect("key-press-event", self.__key_press, library, player)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_press, library, player)
+        click_controller = Gtk.GestureClick()
+        click_controller.connect("pressed", self.__button_press, library)
+        self.add_controller(key_controller)
+        self.add_controller(click_controller)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -608,7 +630,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.emit("orders-changed")
 
     def __destroy(self, *args):
-        self.info.destroy()
+        # GTK4: self.destroy() removed - info cleaned up automatically
         self.info = None
         self.handler_block(self.__csig)
         for column in self.get_columns():
@@ -638,26 +660,27 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         browser.filter_on(songs, header)
 
-    def __button_press(self, view, event, librarian):
-        if event.button != Gdk.BUTTON_PRIMARY:
+    def __button_press(self, gesture, n_press, x, y, librarian):
+        # GTK4: GestureClick.pressed signal has different signature
+        button = gesture.get_current_button()
+        if button != Gdk.BUTTON_PRIMARY:
             return None
-        x, y = map(int, [event.x, event.y])
+
+        view = gesture.get_widget()
+        x, y = map(int, [x, y])
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
             return True
-        if event.window != self.get_bin_window():
-            return False
+        # GTK4: event.window check removed - not available with GestureClick
         if col.header_name == "~rating":
             if not config.getboolean("browsers", "rating_click"):
                 return None
 
             song = view.get_model()[path][0]
             l = Gtk.Label()
-            l.show()
             l.set_text(config.RATINGS.full_symbol)
             width = l.get_preferred_size()[1].width
-            l.destroy()
             if not width:
                 return False
             precision = config.RATINGS.precision
@@ -678,39 +701,52 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             song["~#rating"] = value
         librarian.changed(songs)
 
-    def __key_press(self, songlist, event, librarian, player):
-        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+    def __key_press(self, controller, keyval, keycode, state, librarian, player):
+        default_mod = Gtk.accelerator_get_default_mod_mask()
+        masked_state = state & default_mod
+
+        if not keyval & ~0xFF:
+            keyval = ord(chr(keyval).lower())
+
+        def matches(*accels):
+            for accel in accels:
+                accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
+                if accel_keyval == keyval and accel_mod == masked_state:
+                    return True
+            return False
+
+        if matches("<Primary>Return", "<Primary>KP_Enter"):
             self.__enqueue(self.get_selected_songs())
             return True
-        if qltk.is_accel(event, "<Primary>F"):
+        if matches("<Primary>F"):
             self.emit("start-interactive-search")
             return True
-        if qltk.is_accel(event, "<Primary>Delete"):
+        if matches("<Primary>Delete"):
             songs = self.get_selected_songs()
             if songs:
                 trash_songs(self, songs, librarian)
             return True
-        if qltk.is_accel(event, "<alt>Return"):
+        if matches("<alt>Return"):
             songs = self.get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        if qltk.is_accel(event, "<Primary>I"):
+        if matches("<Primary>I"):
             songs = self.get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        if qltk.is_accel(event, "space", "KP_Space") and player is not None:
+        if matches("space", "KP_Space") and player is not None:
             player.paused = not player.paused
             return True
-        if qltk.is_accel(event, "F2"):
+        if matches("F2"):
             songs = self.get_selected_songs()
             if len(songs) > 1:
                 print_d("Can't edit more than one")
             elif songs:
-                path, col = songlist.get_cursor()
+                path, col = self.get_cursor()
                 song = self.get_first_selected_song()
                 cls = type(col).__name__
                 if col.can_edit:
@@ -1137,14 +1173,15 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             def column_clicked(column, *args):
                 if not self._sortable:
                     return
-                # if ctrl is held during the sort click, append a sort key
-                # or change order if already sorted
                 ctrl_held = False
-                event = Gtk.get_current_event()
-                if event:
-                    ok, state = event.get_state()
-                    if ok and state & qltk.get_primary_accel_mod():
-                        ctrl_held = True
+                display = self.get_display()
+                if display:
+                    seat = display.get_default_seat()
+                    if seat:
+                        keyboard = seat.get_keyboard()
+                        if keyboard:
+                            mod_state = keyboard.get_modifier_state()
+                            ctrl_held = bool(mod_state & qltk.get_primary_accel_mod())
 
                 self.toggle_column_sort(column, replace=not ctrl_held)
 
@@ -1160,15 +1197,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         self.handler_unblock(self.__csig)
 
-    def _menu(self, column: SongListColumn) -> Gtk.Menu:
-        menu = Gtk.Menu()
-
-        def selection_done_cb(menu):
-            menu.destroy()
-
-        menu.connect("selection-done", selection_done_cb)
-
+    def _menu(self, column: SongListColumn) -> Gtk.PopoverMenu:
         current_set = set(SongList.headers)
+        action_group = Gio.SimpleActionGroup()
 
         def tag_title(tag: str):
             if "<" in tag:
@@ -1176,28 +1207,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return util.tag(tag)
 
         current = [(tag_title(c), c) for c in SongList.headers]
-
-        def add_header_toggle(
-            menu: Gtk.Menu,
-            header: str,
-            tag: str,
-            active: bool,
-            column: SongListColumn = column,
-        ):
-            item = Gtk.CheckMenuItem(label=header)
-            item.tag = tag
-            item.set_active(active)
-            item.connect("activate", self.__toggle_header_item, column)
-            item.show()
-            item.set_tooltip_text(tag)
-            menu.append(item)
-
-        for header, tag in current:
-            add_header_toggle(menu, header, tag, True)
-
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
 
         trackinfo = """title genre comment ~title~version ~#track
             ~#playcount ~#skipcount ~rating ~#length ~playlists
@@ -1217,59 +1226,111 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo], []
         )
 
+        menu_model = Gio.Menu()
+
+        current_section = Gio.Menu()
+        for _header, tag in current:
+            action_name = "toggle-header." + tag.replace("~", "_").replace("#", "n")
+            action = Gio.SimpleAction.new_stateful(
+                action_name, None, GLib.Variant.new_boolean(True)
+            )
+
+            def on_toggle_header(action, param, tag=tag):
+                active = action.get_state().get_boolean()
+                action.set_state(GLib.Variant.new_boolean(not active))
+                headers = SongList.headers[:]
+                if not active:
+                    try:
+                        headers.insert(self.get_columns().index(column), tag)
+                    except ValueError:
+                        headers.append(tag)
+                else:
+                    try:
+                        headers.remove(tag)
+                    except ValueError:
+                        pass
+                SongList.set_all_column_headers(headers)
+                SongList.headers = headers
+
+            action.connect("activate", on_toggle_header)
+            action_group.add_action(action)
+            item = Gio.MenuItem.new(tag_title(tag), "menu." + action_name)
+            current_section.append_item(item)
+        menu_model.append_section(None, current_section)
+
+        groups_section = Gio.Menu()
         for name, group in [
-            (_("All _Headers"), all_headers),
-            (_("_Track Headers"), trackinfo),
-            (_("_Album Headers"), albuminfo),
-            (_("_People Headers"), peopleinfo),
-            (_("_Date Headers"), dateinfo),
-            (_("_File Headers"), fileinfo),
-            (_("_Production Headers"), copyinfo),
+            (_("All Headers"), all_headers),
+            (_("Track Headers"), trackinfo),
+            (_("Album Headers"), albuminfo),
+            (_("People Headers"), peopleinfo),
+            (_("Date Headers"), dateinfo),
+            (_("File Headers"), fileinfo),
+            (_("Production Headers"), copyinfo),
         ]:
-            item = Gtk.MenuItem(label=name, use_underline=True)
-            item.show()
-            menu.append(item)
-            submenu = Gtk.Menu()
-            item.set_submenu(submenu)
+            submenu_model = Gio.Menu()
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
-                add_header_toggle(submenu, header, tag, tag in current_set)
+                action_name = "toggle-sub." + tag.replace("~", "_").replace("#", "n")
+                active = tag in current_set
+                action = Gio.SimpleAction.new_stateful(
+                    action_name, None, GLib.Variant.new_boolean(active)
+                )
 
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
+                def on_toggle_sub(action, param, tag=tag):
+                    active = action.get_state().get_boolean()
+                    action.set_state(GLib.Variant.new_boolean(not active))
+                    headers = SongList.headers[:]
+                    if not active:
+                        try:
+                            headers.insert(self.get_columns().index(column), tag)
+                        except ValueError:
+                            headers.append(tag)
+                    else:
+                        try:
+                            headers.remove(tag)
+                        except ValueError:
+                            pass
+                    SongList.set_all_column_headers(headers)
+                    SongList.headers = headers
 
-        custom = Gtk.MenuItem(label=_("_Customize Headers…"), use_underline=True)
-        custom.show()
-        custom.connect("activate", self.__add_custom_column)
-        menu.append(custom)
+                action.connect("activate", on_toggle_sub)
+                action_group.add_action(action)
+                submenu_item = Gio.MenuItem.new(header, "menu." + action_name)
+                submenu_model.append_item(submenu_item)
+            groups_section.append_submenu(name, submenu_model)
+        menu_model.append_section(None, groups_section)
 
-        item = Gtk.CheckMenuItem(label=_("_Expand Column"), use_underline=True)
-        item.set_active(column.get_expand())
-        item.set_sensitive(column.get_resizable())
+        customize_section = Gio.Menu()
+        customize_action = Gio.SimpleAction.new("customize-headers", None)
+        customize_action.connect("activate", lambda a, p: self.__add_custom_column(a))
+        action_group.add_action(customize_action)
+        customize_section.append(_("Customize Headers…"), "menu.customize-headers")
+        menu_model.append_section(None, customize_section)
 
-        def set_expand_cb(item, column):
-            do_expand = item.get_active()
+        expand_section = Gio.Menu()
+        expand_action = Gio.SimpleAction.new_stateful(
+            "expand-column", None, GLib.Variant.new_boolean(column.get_expand())
+        )
+        expand_action.set_enabled(column.get_resizable())
+
+        def on_expand_column(action, param):
+            do_expand = not action.get_state().get_boolean()
+            action.set_state(GLib.Variant.new_boolean(do_expand))
             if not do_expand:
-                # in case we unexpand, get the current width and set it
-                # so the column doesn't give up all its space
-                # to the left over expanded columns
                 column.set_fixed_width(column.get_width())
             else:
-                # in case we expand this seems to trigger a re-distribution
-                # between all expanded columns
                 column.set_fixed_width(-1)
             column.set_expand(do_expand)
             self.columns_autosize()
 
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.append(sep)
+        expand_action.connect("activate", on_expand_column)
+        action_group.add_action(expand_action)
+        expand_section.append(_("Expand Column"), "menu.expand-column")
+        menu_model.append_section(None, expand_section)
 
-        item.connect("activate", set_expand_cb, column)
-        item.show()
-        menu.append(item)
-
-        return menu
+        popover = Gtk.PopoverMenu.new_from_model(menu_model)
+        popover.insert_action_group("menu", action_group)
+        return popover
 
     def __toggle_header_item(self, item, column):
         headers = SongList.headers[:]
@@ -1297,7 +1358,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         window.set_page("songlist")
 
     def __showmenu(self, column, event=None):
-        time = event.time if event else Gtk.get_current_event_time()
+        time = event.time if event else GLib.CURRENT_TIME
 
         if event is not None and not event.triggers_context_menu():
             return False

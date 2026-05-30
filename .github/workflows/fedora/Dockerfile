@@ -10,8 +10,7 @@ RUN dnf -y install \
       cairo-gobject-devel \
       libsoup3 \
       Xvfb \
-      # Contains 'GdkPixbuf' namespace (used by 'gi') \
-      gtk3 \
+      gtk4 \
       # Contains 'Gst' module \
       gstreamer1 \
       # Contains GStreamer replaygain plugin \

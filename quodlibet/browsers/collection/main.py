@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Pango, Gdk
+from gi.repository import Gtk, Gdk, Gio, GLib, Pango
 
 from quodlibet import qltk
 from quodlibet import util
@@ -23,7 +23,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
-from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.image import add_border_widget
 from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
 from quodlibet.util import connect_obj, cmp
 from quodlibet.util.library import background_filter
@@ -90,8 +90,20 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "collectionbrowser_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -150,7 +162,6 @@ class CollectionBrowser(Browser, util.InstanceTracker):
             self._init_model(library)
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = CollectionView()
         view.set_headers_visible(False)
         model_sort = CollectionSortModel(model=self.__model)
@@ -213,8 +224,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 cover = get_scaled_cover(item)
                 if cover:
                     cover = add_border_widget(cover, view)
-                    surface = get_surface_for_pixbuf(self, cover)
-                    cell.set_property("surface", surface)
+                    cell.set_property("pixbuf", cover)
                 else:
                     cell.set_property("icon-name", Icons.MEDIA_OPTICAL)
 
@@ -223,18 +233,20 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if view.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)
         column.set_cell_data_func(imgrender, cell_data_pb)
         view.append_column(column)
 
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
+        sw.set_vexpand(True)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage(Icons.PREFERENCES_SYSTEM, Gtk.IconSize.MENU))
+        prefs.add(SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL))
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
@@ -245,27 +257,21 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
-        hbox.pack_start(search, True, True, 0)
-        hbox.pack_start(prefs, False, True, 0)
+        hbox.append(search)
+        hbox.append(prefs)
 
-        self.pack_start(Align(hbox, left=6, top=0), False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        self.append(Align(hbox, left=6, top=0))
+        self.append(sw)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = view.get_selection().connect("changed", self.__selection_changed)
         view.connect("row-activated", self.__play)
         connect_obj(view, "popup-menu", self.__popup, view, library)
 
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            ("text/uri-list", 0, 2),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        view.connect("drag-data-get", self.__drag_data_get)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare)
+        view.add_controller(drag_source)
 
         self.connect("destroy", self.__destroy)
         self.connect("key-press-event", self.__key_pressed, library.librarian)
@@ -313,18 +319,18 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         if not klass.instances():
             klass._destroy_model()
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_prepare(self, source, x, y):
         songs = self.__get_selected_songs()
-        if tid == 1:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs)
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __play(self, view, path, col):
         model = view.get_model()

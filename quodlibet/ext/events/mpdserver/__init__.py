@@ -77,7 +77,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.set_row_spacings(6)
 
         label = Gtk.Label(label=_("_Port:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -115,7 +116,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         port_revert = Gtk.Button()
         port_revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
 
         def port_revert_cb(button, entry):
@@ -126,7 +127,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(port_revert, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         label = Gtk.Label(label=_("Local _IP:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -137,7 +139,8 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         )
 
         label = Gtk.Label(label=_("P_assword:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         table.attach(
             label,
             0,
@@ -154,8 +157,13 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(entry, 1, 3, 2, 3)
 
         label = Gtk.Label()
-        label.set_padding(6, 6)
-        label.set_alignment(0.0, 0.5)
+        # GTK4: set_padding() removed, use margins
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
+        label.set_xalign(0.0)
+        label.set_yalign(0.5)
         label.set_selectable(True)
         label.set_label("...")
         table.attach(label, 1, 3, 0, 1)
@@ -164,20 +172,25 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         label.connect("destroy", lambda *x: cancel.cancel())
         call_async(fetch_local_ip, cancel, label.set_label)
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         clients = Gtk.Label()
-        clients.set_padding(6, 6)
+        # GTK4: set_padding() removed, use margins
+        clients.set_margin_start(6)
+        clients.set_margin_end(6)
+        clients.set_margin_top(6)
+        clients.set_margin_bottom(6)
         clients.set_markup("""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid</a> (Android)
 \u2022 <a href="https://play.google.com/store/apps/details?id=org.\
 gateshipone.malp">M.A.L.P.</a> (Android)
 """)
-        clients.set_alignment(0, 0)
+        clients.set_xalign(0)
+        clients.set_yalign(0)
 
-        box.pack_start(qltk.Frame(_("Connection"), child=table), False, True, 0)
-        box.pack_start(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
+        box.append(qltk.Frame(_("Connection"), child=table))
+        box.append(qltk.Frame(_("Tested Clients"), child=clients))
         return box
 
     def _refresh(self):

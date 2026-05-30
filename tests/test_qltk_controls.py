@@ -7,8 +7,7 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.controls import PlayControls, VolumeMenu
-from quodlibet.qltk.controls import Volume
+from quodlibet.qltk.controls import PlayControls, Volume
 from quodlibet.library import SongLibrary
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet import config
@@ -25,10 +24,6 @@ class TControls(TestCase):
 
     def test_controls(self):
         w = PlayControls(self.p, self.l)
-        w.destroy()
-
-    def test_volumemenu(self):
-        w = VolumeMenu(self.p)
         w.destroy()
 
     def test_volume(self):

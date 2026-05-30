@@ -82,7 +82,7 @@ class TQltk(TestCase):
         w = Gtk.Window()
         l = Gtk.Label()
         w.add(l)
-        m = Gtk.Menu()
+        m = Gtk.PopoverMenu()
         m.attach_to_widget(l, None)
         w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
@@ -93,30 +93,26 @@ class TQltk(TestCase):
         qltk.redraw_all_toplevels()
 
     def test_get_menu_item_top_parent(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
         window = Gtk.Window()
-        menu.attach_to_widget(window, None)
-        self.assertEqual(qltk.get_menu_item_top_parent(item), window)
+        box = Gtk.Box()
+        window.set_child(box)
+        label = Gtk.Label()
+        box.append(label)
+        self.assertEqual(qltk.get_menu_item_top_parent(label), window)
 
     def test_get_menu_item_top_parent_sub(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
         window = Gtk.Window()
-        menu.attach_to_widget(window, None)
-        sub = Gtk.Menu()
-        sub_item = Gtk.MenuItem()
-        sub.append(sub_item)
-        item.set_submenu(sub)
-        self.assertEqual(qltk.get_menu_item_top_parent(sub_item), window)
+        box = Gtk.Box()
+        window.set_child(box)
+        inner = Gtk.Box()
+        box.append(inner)
+        label = Gtk.Label()
+        inner.append(label)
+        self.assertEqual(qltk.get_menu_item_top_parent(label), window)
 
     def test_get_menu_item_top_parent_unattached(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
-        assert qltk.get_menu_item_top_parent(item) is None
+        label = Gtk.Label()
+        assert qltk.get_menu_item_top_parent(label) is None
 
     def test_show_uri_with_existing_window(self):
         PluginManager.instance = PluginManager()

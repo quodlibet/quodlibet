@@ -95,7 +95,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 cls.server.config[key] = entry.get_text()
                 config.set("plugins", "squeezebox_" + key, entry.get_text())
 
-        vb = Gtk.VBox(spacing=12)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         if not cls.server:
             cls.init_server()
         cfg = cls.server.config
@@ -144,7 +144,8 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         rows.append((lbl, ve))
 
         for row, (label, entry) in enumerate(rows):
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
@@ -157,9 +158,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         # Server settings Frame
         cfg_frame = Frame(_("Squeezebox Server"), table)
 
-        vb.pack_start(cfg_frame, True, True, 0)
+        vb.append(cfg_frame)
         debug = cls.ConfigCheckButton(_("Debug"), "debug")
-        vb.pack_start(debug, True, True, 0)
+        vb.append(debug)
         return vb
 
     @classmethod

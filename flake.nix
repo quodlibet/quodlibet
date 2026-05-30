@@ -70,24 +70,33 @@
             with pkgs;
             mkShell {
               POETRY_VIRTUALENV_CREATE = 1;
-              # Allow libpcre to... work
-              LD_LIBRARY_PATH = "${glib.out}/lib";
+              # GI typelib loader needs these libs on LD_LIBRARY_PATH to resolve symbols
+              LD_LIBRARY_PATH = lib.makeLibraryPath [
+                glib.out
+                gtk4
+                pango.out
+                fontconfig.lib
+                cairo
+                gdk-pixbuf
+                librsvg
+              ];
               GIO_MODULE_DIR = "${glib-networking}/lib/gio/modules/";
               packages = [
                 qlPoetry
                 qlPython
                 adwaita-icon-theme
                 cairo
+                fontconfig
                 file
                 gdk-pixbuf
                 glib
                 glib-networking
                 glibcLocales
                 gobject-introspection
-                gtk3
-                gtksourceview4
+                gtk4
+                gtksourceview5
                 kakasi
-                keybinder3
+                # keybinder3 and libappindicator are GTK3-only
                 libmodplug
                 libnotify
                 librsvg

@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from quodlibet import _
 from quodlibet.qltk.window import Dialog
@@ -28,28 +28,52 @@ class GetStringDialog(Dialog):
     ):
         super().__init__(title=title, transient_for=parent, use_header_bar=True)
 
-        self.set_border_width(6)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(button_label or _("_OK"), button_icon, Gtk.ResponseType.OK)
-        self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        content_area = self.get_content_area()
+        content_area.set_spacing(6)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         lab = Gtk.Label(label=text)
-        box.set_border_width(6)
+        box.set_margin_start(6)
+        box.set_margin_end(6)
+        box.set_margin_top(6)
+        box.set_margin_bottom(6)
         lab.set_line_wrap(True)
         lab.set_justify(Gtk.Justification.CENTER)
-        box.pack_start(lab, True, True, 0)
+        box.append(lab)
 
         self._val = UndoEntry()
         if tooltip:
             self._val.set_tooltip_text(tooltip)
         self._val.set_max_width_chars(50)
-        box.pack_start(self._val, True, True, 0)
+        box.append(self._val)
 
-        self.vbox.pack_start(box, True, True, 0)
+        content_area.append(box)
         self.get_child().show_all()
+
+    def _read_clipboard_text(self) -> str | None:
+        """Read text from the clipboard synchronously using a nested main loop."""
+        display = Gdk.Display.get_default()
+        if display is None:
+            return None
+        clipboard = display.get_clipboard()
+        result: list[str | None] = [None]
+        loop = GLib.MainLoop()
+
+        def on_read_done(clipboard, async_result):
+            try:
+                result[0] = clipboard.read_text_finish(async_result)
+            except Exception:
+                pass
+            loop.quit()
+
+        clipboard.read_text_async(None, on_read_done)
+        loop.run()
+        return result[0]
 
     def _verify_clipboard(self, text):
         """Return an altered text or None if the content was invalid."""
@@ -64,12 +88,11 @@ class GetStringDialog(Dialog):
 
         self.show()
         if clipboard:
-            clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-            clip = clipboard.wait_for_text()
-            if clip is not None:
-                clip = self._verify_clipboard(clip)
-            if clip is not None:
-                text = clip
+            clip_text = self._read_clipboard_text()
+            if clip_text is not None:
+                clip_text = self._verify_clipboard(clip_text)
+            if clip_text is not None:
+                text = clip_text
 
         self._val.set_text(text)
         self._val.set_activates_default(True)
@@ -81,5 +104,5 @@ class GetStringDialog(Dialog):
             value = self._val.get_text()
         else:
             value = None
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
         return value

@@ -500,7 +500,7 @@ class QLScrobbler(EventPlugin):
                     _("Authentication successful."), Gtk.MessageType.INFO
                 )
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # first frame
         table = Gtk.Table(n_rows=5, n_columns=2)
@@ -572,7 +572,7 @@ class QLScrobbler(EventPlugin):
         button.connect("clicked", check_login)
         table.attach(button, 0, 2, 4, 5)
 
-        box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Account"), child=table))
 
         # second frame
         table = Gtk.Table(n_rows=4, n_columns=2)
@@ -646,6 +646,6 @@ class QLScrobbler(EventPlugin):
         )
         table.attach(offline, 0, 2, row, row + 1)
 
-        box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)
+        box.append(qltk.Frame(_("Submission"), child=table))
 
         return box

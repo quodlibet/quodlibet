@@ -44,12 +44,15 @@ def pytest_runtest_call(item):
 def pytest_report_teststatus(report: TestReport, config: Config):
     """Spits out relevant logs only if a test fails."""
     yield
-    if report.failed:
-        msg = f"\nERROR: failed {report.nodeid}:{LOG_JOINER}" + LOG_JOINER.join(
-            _logs.get_content()
-        )
-        print(msg)
-        return report.outcome, ".", msg
+    # Only print logs for the actual test call phase, not setup/teardown
+    if report.failed and report.when == "call":
+        logs = _logs.get_content()
+        if logs:
+            msg = f"\nERROR: failed {report.nodeid}:{LOG_JOINER}" + LOG_JOINER.join(
+                logs
+            )
+            print(msg)
     # Each test should clear the logs. This won't work well if parallelised
-    _logs.clear()
+    if report.when == "call":
+        _logs.clear()
     return None

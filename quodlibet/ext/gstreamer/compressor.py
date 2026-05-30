@@ -41,13 +41,13 @@ def set_cfg(option, value):
         config.set("plugins", cfg_option, value)
 
 
-class Preferences(Gtk.VBox):
+class Preferences(Gtk.Box):
     __gsignals__: GSignals = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
-        super().__init__(spacing=12)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         table = Gtk.Table(n_rows=2, n_columns=2)
         table.set_col_spacings(6)
@@ -59,8 +59,13 @@ class Preferences(Gtk.VBox):
             label = Gtk.Label(label=text)
             labels[key] = label
             label.set_tooltip_text(tooltip)
-            label.set_alignment(0.0, 0.5)
-            label.set_padding(0, 6)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
+            # GTK4: set_padding() removed, use margins
+            label.set_margin_start(0)
+            label.set_margin_end(0)
+            label.set_margin_top(6)
+            label.set_margin_bottom(6)
             label.set_use_underline(True)
             table.attach(
                 label,
@@ -106,7 +111,7 @@ class Preferences(Gtk.VBox):
         ratio_scale.connect("value-changed", ratio_changed)
         ratio_scale.set_value(get_cfg("ratio"))
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        self.append(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
 
 class Compressor(GStreamerPlugin):

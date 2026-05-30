@@ -7,7 +7,7 @@
 
 from collections.abc import Sequence
 
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, Gdk, GObject, GLib
 
 from quodlibet.qltk import is_wayland
 
@@ -23,7 +23,7 @@ def window_grab_and_map(window, mask):
     """
 
     device = Gtk.get_current_event_device()
-    event_time = Gtk.get_current_event_time()
+    event_time = GLib.CURRENT_TIME
     if not device:
         return []
 
@@ -73,7 +73,7 @@ def window_grab_and_map(window, mask):
 def window_ungrab_and_unmap(window, devices):
     """Takes the result of window_grab_and_map() and removes the grabs"""
 
-    event_time = Gtk.get_current_event_time()
+    event_time = GLib.CURRENT_TIME
     for device in devices:
         Gtk.device_grab_remove(window, device)
         device.ungrab(event_time)
@@ -106,7 +106,8 @@ def position_window_beside_widget(window, widget, end=True, pad=3):
     w, h = widget_alloc.width, widget_alloc.height
 
     window.size_request()
-    ww, wh = window.get_size()
+    # GTK4: get_size() removed, use get_width()/get_height()
+    ww, wh = window.get_width(), window.get_height()
 
     if right:
         sx, sy = ((x + w + pad), (y + (h - wh) // 2))

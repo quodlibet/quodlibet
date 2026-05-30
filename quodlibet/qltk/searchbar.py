@@ -11,7 +11,7 @@ import operator
 import os
 from functools import reduce
 
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gio
 
 import quodlibet
 from quodlibet import config
@@ -19,9 +19,7 @@ from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel_pressed, get_children
 from quodlibet.util import limit_songs, DeferredSignal
 
 
@@ -81,25 +79,42 @@ class SearchBarBox(Gtk.Box):
         self.__sig = combo.connect("text-changed", self.__text_changed)
 
         entry.connect("clear", self._filter_changed)
-        entry.connect("backspace", self.__text_changed)
-        entry.connect("populate-popup", self.__menu)
         entry.connect("activate", self._filter_changed)
         entry.connect("activate", self.__save_search)
-        entry.connect("focus-out-event", self.__save_search)
-        entry.connect("key-press-event", self.__key_pressed)
+
+        focus_ctrl = Gtk.EventControllerFocus()
+        focus_ctrl.connect("leave", self.__on_focus_leave)
+        entry.add_controller(focus_ctrl)
+
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.__on_key_pressed)
+        entry.add_controller(key_ctrl)
+
+        eager_action = Gio.SimpleAction.new_stateful(
+            "eager-search",
+            None,
+            GLib.Variant.new_boolean(
+                config.getboolean("settings", "eager_search", True)
+            ),
+        )
+        eager_action.connect("change-state", self.__on_eager_search_changed)
+        action_group = Gio.SimpleActionGroup()
+        action_group.add_action(eager_action)
+        entry.insert_action_group("searchbar", action_group)
+
+        extra_menu = Gio.Menu()
+        extra_menu.append(_("Search after _typing"), "searchbar.eager-search")
+        entry.set_extra_menu(extra_menu)
 
         entry.set_placeholder_text(_("Search"))
         entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
 
         combo.enable_clear_button()
-        self.pack_start(combo, True, True, 0)
+        self.prepend(combo)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")
             accel_group.connect(key, mod, 0, lambda *x: entry.mnemonic_activate(True))
-
-        for child in self.get_children():
-            child.show_all()
 
     def set_enabled(self, enabled=True):
         self._entry.set_sensitive(enabled)
@@ -143,17 +158,12 @@ class SearchBarBox(Gtk.Box):
     def __uninhibit(self):
         self.__combo.handler_unblock(self.__sig)
 
-    def __menu(self, entry, menu):
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.prepend(sep)
+    def __on_eager_search_changed(self, action, new_state):
+        config.set("settings", "eager_search", str(new_state.get_boolean()).lower())
+        action.set_state(new_state)
 
-        cb = ConfigCheckMenuItem(
-            _("Search after _typing"), "settings", "eager_search", populate=True
-        )
-        cb.set_tooltip_text(_("Show search results after the user stops typing"))
-        cb.show()
-        menu.prepend(cb)
+    def __on_focus_leave(self, _controller):
+        self.__save_search(self._entry, True)
 
     def __mnemonic_activate(self, label, group_cycling):
         widget = label.get_mnemonic_widget()
@@ -180,10 +190,10 @@ class SearchBarBox(Gtk.Box):
             self.__combo.write()
             self.__uninhibit()
 
-    def __key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __on_key_pressed(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             # Save query on Primary+Return accel, even though the focus is kept
-            self.__save_search(entry)
+            self.__save_search(self._entry)
         return False
 
     def _filter_changed(self, *args):
@@ -213,15 +223,16 @@ class LimitSearchBarBox(SearchBarBox):
     """A version of `SearchBarBox` that allows specifying the limiting and
     weighting of a search."""
 
-    class Limit(Gtk.HBox):
+    class Limit(Gtk.Box):
         __gsignals__ = {
             "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
         def __init__(self):
-            super().__init__(spacing=3, no_show_all=True)
+            # GTK4: no_show_all property removed
+            super().__init__(spacing=3)
             label = Gtk.Label(label=_("_Limit:"))
-            self.pack_start(label, True, True, 0)
+            self.append(label)
 
             self.__limit = limit = Gtk.SpinButton()
             self.__limit.connect("value-changed", self.__changed)
@@ -230,14 +241,11 @@ class LimitSearchBarBox(SearchBarBox):
             limit.set_increments(5, 100)
             label.set_mnemonic_widget(limit)
             label.set_use_underline(True)
-            self.pack_start(limit, True, True, 0)
+            self.append(limit)
 
             self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
-            self.pack_start(self.__weight, True, True, 0)
-
-            for child in self.get_children():
-                child.show()
+            self.append(self.__weight)
 
         def __changed(self, *args):
             self.emit("changed")
@@ -254,7 +262,7 @@ class LimitSearchBarBox(SearchBarBox):
         super().__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
-        self.pack_start(self.__limit, False, True, 0)
+        self.append(self.__limit)
         self.__limit.connect("changed", self.__limit_changed)
 
     def __limit_changed(self, *args):
@@ -293,16 +301,14 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._old_placeholder = self._entry.get_placeholder_text()
         self._old_tooltip = self._entry.get_tooltip_text()
 
-        self._add_button = Gtk.Button.new_from_icon_name(
-            "list-add", Gtk.IconSize.BUTTON
-        )
-        self._add_button.set_no_show_all(True)
-        self.pack_start(self._add_button, False, True, 0)
+        # GTK4: Button.new_from_icon_name() only takes icon_name, not size
+        self._add_button = Gtk.Button.new_from_icon_name("list-add")
+        self.append(self._add_button)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
+        # GTK4: no_show_all property removed
         self.flow_box = Gtk.FlowBox(
-            no_show_all=True,
             max_children_per_line=99,
             selection_mode=Gtk.SelectionMode.NONE,
         )
@@ -336,11 +342,11 @@ class MultiSearchBarBox(LimitSearchBarBox):
             os.makedirs(os.path.dirname(self.multi_filename))
 
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n" for lq in self.flow_box.get_children())
+            f.writelines(lq.string + "\n" for lq in get_children(self.flow_box))
 
     def _update_query_from(self, text):
         if self.flow_box.get_visible():
-            matches = [lq.query._unpack() for lq in self.flow_box.get_children()]
+            matches = [lq.query._unpack() for lq in get_children(self.flow_box)]
 
             self._query = Query(text, star=self._star)
             self._query._match = reduce(operator.and_, matches, self._query._match)
@@ -382,19 +388,21 @@ class QueryItem(Gtk.FlowBoxChild):
         self.string = string
         self.query = Query(string)
 
-        hbox = Gtk.HBox()
-        hbox.pack_start(
-            Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0
-        )
-        btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.BUTTON)
-        btn.set_relief(Gtk.ReliefStyle.NONE)
+        hbox = Gtk.Box()
+        label = Gtk.Label(label=string, halign=Gtk.Align.START)
+        label.set_margin_start(6)
+        label.set_margin_end(6)
+        label.set_margin_top(6)
+        label.set_margin_bottom(6)
+        label.set_hexpand(True)
+        hbox.append(label)
+        btn = Gtk.Button.new_from_icon_name("window-close")
         btn.connect("clicked", self.remove)
-        hbox.pack_start(btn, False, True, 0)
+        hbox.append(btn)
         frame = Gtk.Frame()
-        frame.add(hbox)
-        self.add(frame)
-        self.show_all()
+        frame.set_child(hbox)
+        self.set_child(frame)
 
     def remove(self, _):
-        self.destroy()
+        # GTK4: destroy() removed - self cleaned up automatically
         self.changed_callback()

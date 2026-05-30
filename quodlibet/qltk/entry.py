@@ -11,11 +11,9 @@ import math
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
-from quodlibet import _, config
-from quodlibet.qltk import is_accel, add_fake_accel
+from quodlibet import config
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.color import mix
-from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.qltk import Icons
 
 
 class EditableUndo:
@@ -53,15 +51,19 @@ class EditableUndo:
         self.__handlers = [
             self.connect("insert-text", self.__insert_before),
             self.connect("delete-text", self.__delete_before),
-            self.connect("populate-popup", self.__popup),
-            self.connect("key-press-event", self.__key_press),
         ]
 
-    def __key_press(self, entry, event):
-        if is_accel(event, "<Primary>z"):
+        # GTK4: Use EventControllerKey for keyboard events
+        key_controller = Gtk.EventControllerKey()
+        self.add_controller(key_controller)
+        key_controller.connect("key-pressed", self.__key_press_gtk4)
+        self.__key_controller = key_controller
+
+    def __key_press_gtk4(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>z"):
             self.undo()
             return True
-        if is_accel(event, "<Primary><shift>z"):
+        if is_accel_pressed(keyval, state, "<Primary><shift>z"):
             self.redo()
             return True
         return False
@@ -75,25 +77,6 @@ class EditableUndo:
         del self.__last_space
         del self.__in_pos
         del self.__del_pos
-
-    def __popup(self, entry, menu):
-        undo = MenuItem(_("_Undo"), Icons.EDIT_UNDO)
-        add_fake_accel(undo, "<Primary>z")
-        redo = MenuItem(_("_Redo"), Icons.EDIT_REDO)
-        add_fake_accel(redo, "<Primary><shift>z")
-        sep = SeparatorMenuItem()
-
-        for widget in [sep, redo, undo]:
-            widget.show()
-
-        undo.connect("activate", lambda *x: self.undo())
-        redo.connect("activate", lambda *x: self.redo())
-
-        undo.set_sensitive(self.can_undo())
-        redo.set_sensitive(self.can_redo())
-
-        for item in [sep, redo, undo]:
-            menu.prepend(item)
 
     def __all(self):
         text = self.get_chars(0, -1)
@@ -163,19 +146,14 @@ class Entry(Gtk.Entry):
         self._max_width_chars = value
         self.queue_resize()
 
-    def do_get_preferred_width(self):
-        minimum, natural = Gtk.Entry.do_get_preferred_width(self)
+    def do_measure(self, orientation, for_size):
+        minimum, natural, min_baseline, nat_baseline = Gtk.Entry.do_measure(
+            self, orientation, for_size
+        )
 
-        if self._max_width_chars >= 0:
-            # based on gtkentry.c
-            style_context = self.get_style_context()
-            style_context.save()
-            style_context.set_state(Gtk.StateFlags.NORMAL)
-            border = style_context.get_border(style_context.get_state())
-            padding = style_context.get_padding(style_context.get_state())
-            style_context.restore()
+        if orientation == Gtk.Orientation.HORIZONTAL and self._max_width_chars >= 0:
+            # Compute natural width based on max_width_chars (based on gtkentry.c)
             pango_context = self.get_pango_context()
-
             metrics = pango_context.get_metrics(
                 pango_context.get_font_description(), pango_context.get_language()
             )
@@ -186,11 +164,10 @@ class Entry(Gtk.Entry):
                 math.ceil(float(max(char_width, digit_width)) / Pango.SCALE)
             )
 
-            space = border.left + border.right + padding.left + padding.right
-            nat_width = self._max_width_chars * char_pixels + space
+            nat_width = self._max_width_chars * char_pixels
             natural = max(nat_width, minimum)
 
-        return (minimum, natural)
+        return (minimum, natural, min_baseline, nat_baseline)
 
 
 class UndoEntry(Entry, EditableUndo):
@@ -251,11 +228,10 @@ class ValidatingEntryMixin(Gtk.Widget):
             self.connect("changed", self._set_color, validator)
 
     def _default_color(self) -> Gdk.RGBA:
-        # Don't use our *own* context here if possible else it changes as we mutate...
-        # Don't cache, as theme switching is async
+        # GTK4: get_color() no longer takes StateType, use get_color() directly
         parent = self.get_parent()
         ctx = parent.get_style_context() if parent else self.get_style_context()
-        return ctx.get_color(Gtk.StateType.NORMAL)
+        return ctx.get_color()
 
     def _set_color(self, _widget, validator):
         value = validator(self.get_text())
@@ -269,9 +245,18 @@ class ValidatingEntryMixin(Gtk.Widget):
             color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
         if color and self.get_property("sensitive"):
-            self.override_color(Gtk.StateType.NORMAL, color)
+            r = int(color.red * 255)
+            g = int(color.green * 255)
+            b = int(color.blue * 255)
+            css = f"* {{ color: rgba({r}, {g}, {b}, {color.alpha}); }}"
+            from quodlibet.qltk import add_css
+
+            add_css(self, css)
         else:
-            self.override_color(Gtk.StateType.NORMAL, None)
+            # Reset to default by removing custom CSS
+            from quodlibet.qltk import add_css
+
+            add_css(self, "")
 
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):

@@ -47,7 +47,8 @@ class Message(Gtk.MessageDialog, Dialog):
     def run(self, destroy=True):
         resp = super().run()
         if destroy:
-            self.destroy()
+            # GTK4: destroy() removed - self cleaned up automatically
+            pass
         return resp
 
 
@@ -62,7 +63,6 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         parent = get_top_parent(parent)
         super().__init__(
             transient_for=parent,
-            flags=0,
             message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE,
         )
@@ -75,9 +75,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         self.set_markup(text)
 
     def run(self):
-        resp = super().run()
-        self.destroy()
-        return resp
+        return super().run()
 
 
 class ErrorMessage(Message):

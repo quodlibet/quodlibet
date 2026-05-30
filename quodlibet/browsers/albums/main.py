@@ -13,8 +13,7 @@
 
 import os
 
-import cairo
-from gi.repository import Gtk, Pango, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, Pango, GLib, Gio
 
 import quodlibet
 from quodlibet import _
@@ -28,7 +27,7 @@ from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.qltk import Icons
 from quodlibet.qltk.completion import EntryWordCompletion
 from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.image import add_border_widget
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.properties import SongProperties
@@ -218,7 +217,7 @@ def compare_avgplaycount(a1, a2):
     )
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, browser, model):
         super().__init__()
 
@@ -233,10 +232,10 @@ class PreferencesButton(Gtk.HBox):
             (_("Play_count"), self.__compare_avgplaycount),
         ]
 
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
 
         sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.Menu()
+        sort_menu = Gtk.PopoverMenu()
 
         active = config.getint("browsers", "album_sort", 1)
 
@@ -262,10 +261,10 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.pack_start(button, False, False, 0)
+        self.prepend(button)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -434,8 +433,20 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
     def pack(self, songpane):
         container = qltk.ConfigRHPaned("browsers", "albumlist_pos", 0.4)
-        container.pack1(self, True, False)
-        container.pack2(songpane, True, False)
+        # GTK4: pack1() → set_start_child()
+
+        container.set_start_child(self)
+
+        container.set_resize_start_child(True)
+
+        container.set_shrink_start_child(False)
+        # GTK4: pack2() → set_end_child()
+
+        container.set_end_child(songpane)
+
+        container.set_resize_end_child(True)
+
+        container.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -452,7 +463,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
     @classmethod
     def _destroy_model(cls):
-        cls.__model.destroy()
         cls.__model = None
 
     @classmethod
@@ -472,15 +482,15 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         cls.__library = library
 
     @util.cached_property
-    def _no_cover(self) -> cairo.Surface | None:
-        """Returns a cairo surface representing a missing cover"""
+    def _no_cover(self):
+        """Returns a pixbuf representing a missing cover"""
 
         cover_size = get_cover_size()
         scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         if not pb:
             raise OSError("Can't find / scale missing art image")
-        return get_surface_for_pixbuf(self, pb)
+        return pb
 
     def __init__(self, library):
         super().__init__(spacing=6)
@@ -493,7 +503,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self._cover_cancel = Gio.Cancellable()
 
         sw = ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.IN)
         self.view = view = AllTreeView()
         view.set_headers_visible(False)
         model_sort = AlbumSortModel(model=self.__model)
@@ -515,20 +524,19 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
             item = model.get_value(iter_)
 
             if item.album is None:
-                surface = None
+                pixbuf = None
             elif item.cover:
                 pixbuf = item.cover
-                pixbuf = add_border_widget(pixbuf, self.view)
-                surface = get_surface_for_pixbuf(self, pixbuf) or no_cover
+                pixbuf = add_border_widget(pixbuf, self.view) or no_cover
                 # don't cache, too much state has an effect on the result
                 self.__last_render_surface = None
             else:
-                surface = no_cover
+                pixbuf = no_cover
 
-            if self.__last_render_surface == surface:
+            if self.__last_render_surface == pixbuf:
                 return
-            self.__last_render_surface = surface
-            cell.set_property("surface", surface)
+            self.__last_render_surface = pixbuf
+            cell.set_property("pixbuf", pixbuf)
 
         column.set_cell_data_func(render, cell_data_pb, self._no_cover)
         view.append_column(column)
@@ -559,29 +567,22 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         view.append_column(column)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        view.set_rules_hint(True)
         view.set_search_equal_func(self.__search_func, None)
         view.set_search_column(0)
         view.set_model(model_filter)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.add(view)
+        sw.set_child(view)
+        sw.set_vexpand(True)
 
         view.connect("row-activated", self.__play_selection)
         self.__sig = view.connect(
             "selection-changed", util.DeferredSignal(self.__update_songs, owner=view)
         )
 
-        targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-            ("text/uri-list", 0, 2),
-        ]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
-        view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
-        )
-        view.connect("drag-data-get", self.__drag_data_get)
-        connect_obj(view, "popup-menu", self.__popup, view, library)
+        drag_source = Gtk.DragSource()
+        drag_source.set_actions(Gdk.DragAction.COPY)
+        drag_source.connect("prepare", self.__drag_prepare)
+        view.add_controller(drag_source)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(
@@ -592,11 +593,11 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.pack_start(prefs, False, True, 0)
+        search.prepend(prefs)
         hb = Gtk.Box(spacing=3)
-        hb.pack_start(search, True, True, 6)
-        self.pack_start(hb, False, True, 0)
-        self.pack_start(sw, True, True, 0)
+        hb.prepend(search)
+        self.prepend(hb)
+        self.prepend(sw)
 
         self.connect("destroy", self.__destroy)
 
@@ -737,7 +738,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
         menu = SongsMenu(library, songs, items=[items])
         menu.show_all()
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __refresh_album(self, menuitem, view):
         items = self.__get_selected_items()
@@ -774,12 +775,12 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         albums = self.__get_selected_albums()
         return self.__get_songs_from_albums(albums, sort)
 
-    def __drag_data_get(self, view, ctx, sel, tid, etime):
+    def __drag_prepare(self, source, x, y):
         songs = self.__get_selected_songs()
-        if tid == 1:
-            qltk.selection_set_songs(sel, songs)
-        else:
-            sel.set_uris([song("~uri") for song in songs])
+        if not songs:
+            return None
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        return Gdk.ContentProvider.new_for_value(Gdk.FileList.new_from_list(files))
 
     def __play_selection(self, view, indices, col):
         self.songs_activated()

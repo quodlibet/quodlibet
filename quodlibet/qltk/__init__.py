@@ -14,7 +14,7 @@ from urllib.parse import urlparse
 
 import gi
 
-gi.require_version("Gtk", "3.0")
+gi.require_version("Gtk", "4.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -22,6 +22,30 @@ from gi.repository import GLib, GObject, PangoCairo
 from quodlibet.fsn import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx
+
+
+def get_children(widget):
+    """GTK4 compatibility wrapper for getting all children of a widget.
+
+    In GTK4, get_children() was removed. This provides a compatible
+    implementation using get_first_child() and get_next_sibling().
+
+    Args:
+        widget: A Gtk.Widget
+    Returns:
+        list: List of child widgets
+    """
+    if hasattr(widget, "get_children"):
+        # GTK3 compatibility
+        return widget.get_children()
+
+    # GTK4: iterate through children manually
+    children = []
+    child = widget.get_first_child()
+    while child:
+        children.append(child)
+        child = child.get_next_sibling()
+    return children
 
 
 def show_uri(label, uri):
@@ -81,21 +105,11 @@ def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     background color.
     """
 
-    if hasattr(Gtk.StateFlags, "LINK"):
-        # gtk+ >=3.12
-        context.save()
-        context.set_state(Gtk.StateFlags.LINK)
-        color = context.get_color(context.get_state())
-        context.restore()
-    else:
-        value = GObject.Value()
-        value.init(Gdk.Color)
-        value.set_boxed(None)
-        context.get_style_property("link-color", value)
-        color = Gdk.RGBA()
-        old_color = value.get_boxed()
-        if old_color is not None:
-            color.parse(old_color.to_string())
+    # GTK4: get_color() takes no args, uses current state
+    context.save()
+    context.set_state(Gtk.StateFlags.LINK)
+    color = context.get_color()
+    context.restore()
     return color
 
 
@@ -122,14 +136,17 @@ def redraw_all_toplevels():
         widget.set_sensitive(sensitive)
 
 
+_SONGS_CONTENT_TYPE = "text/x-quodlibet-songs"
+
+
 def selection_set_songs(selection_data, songs):
     """Stores filenames of the passed songs in a Gtk.SelectionData"""
 
     filenames = []
     for filename in (song["~filename"] for song in songs):
         filenames.append(fsn2bytes(filename, "utf-8"))
-    type_ = Gdk.atom_intern("text/x-quodlibet-songs", True)
-    selection_data.set(type_, 8, b"\x00".join(filenames))
+    # GTK4: Gdk.atom_intern() removed; content types are plain strings
+    selection_data.set(_SONGS_CONTENT_TYPE, 8, b"\x00".join(filenames))
 
 
 def selection_get_filenames(selection_data):
@@ -138,7 +155,9 @@ def selection_get_filenames(selection_data):
     """
 
     data_type = selection_data.get_data_type()
-    assert data_type.name() == "text/x-quodlibet-songs"
+    # GTK4: data_type is a string; GTK3: was a Gdk.Atom with .name()
+    type_name = data_type if isinstance(data_type, str) else data_type.name()
+    assert type_name == _SONGS_CONTENT_TYPE
 
     items = selection_data.get_data().split(b"\x00")
     return [bytes2fsn(i, "utf-8") for i in items]
@@ -149,22 +168,20 @@ def get_top_parent(widget):
     using this makes is that it will be a Gtk.Window, i.e. the widget
     is fully packed when this is called."""
 
-    parent = widget and widget.get_toplevel()
-    if parent and parent.is_toplevel():
-        return parent
+    if widget:
+        parent = widget.get_root()
+        if parent and isinstance(parent, Gtk.Window):
+            return parent
     return None
 
 
 def get_menu_item_top_parent(widget):
-    """Returns the toplevel for a menu item or None if the menu
-    and none of its parents isn't attached to a widget
+    """Returns the toplevel for a menu item or None.
+
+    In GTK4, menus are model-based so we just walk up the widget tree
+    to find the toplevel window.
     """
 
-    while isinstance(widget, Gtk.MenuItem):
-        menu = widget.get_parent()
-        if not menu:
-            return None
-        widget = menu.get_attach_widget()
     return get_top_parent(widget)
 
 
@@ -184,8 +201,8 @@ def find_widgets(widget, type_):
     if isinstance(widget, type_):
         found.append(widget)
 
-    if isinstance(widget, Gtk.Container):
-        for child in widget.get_children():
+    if isinstance(widget, Gtk.Container) or hasattr(widget, "get_first_child"):
+        for child in get_children(widget):
             found.extend(find_widgets(child, type_))
 
     return found
@@ -194,8 +211,27 @@ def find_widgets(widget, type_):
 def menu_popup(menu, shell, item, func, *args):
     """Wrapper to fix API break:
     https://git.gnome.org/browse/gtk+/commit/?id=8463d0ee62b4b22fa
+
+    GTK4: PopoverMenu uses different API, just call popup() with no args
     """
 
+    # GTK4: PopoverMenu.popup() takes no arguments
+    if isinstance(menu, Gtk.PopoverMenu):
+        # Ensure menu has a parent and parent is in a window
+        parent = menu.get_parent()
+        if parent is None:
+            print("Warning: PopoverMenu has no parent, cannot popup")
+            return None
+        root = parent.get_root()
+        if root is None:
+            print("Warning: PopoverMenu parent not in window, cannot popup")
+            return None
+        # Ensure menu box is set as child before showing (for append compat)
+        if hasattr(menu, "_menu_box") and menu.get_child() is None:
+            menu.set_child(menu._menu_box)
+        return menu.popup()
+
+    # GTK3 fallback (if Gtk.Menu exists)
     if func is not None:
 
         def wrap_pos_func(menu, *args):
@@ -207,6 +243,17 @@ def menu_popup(menu, shell, item, func, *args):
 
 
 def _popup_menu_at_widget(menu, widget, button, time, under):
+    # GTK4: PopoverMenu handles positioning automatically
+    if isinstance(menu, Gtk.PopoverMenu):
+        # PopoverMenu positions itself relative to parent
+        # Set positioning hint based on 'under' parameter
+        if hasattr(menu, "set_position"):
+            pos = Gtk.PositionType.BOTTOM if under else Gtk.PositionType.TOP
+            menu.set_position(pos)
+        menu_popup(menu, None, None, None, None, button, time)
+        return
+
+    # GTK3 fallback with manual positioning
     def pos_func(menu, data, widget=widget):
         screen = widget.get_screen()
         ref = get_top_parent(widget)
@@ -218,7 +265,6 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
         # fit menu to screen, aligned per text direction
         screen_width = screen.get_width()
         screen_height = screen.get_height()
-        menu.realize()
         ma = menu.get_allocation()
 
         menu_y_under = y + dy + wa.height
@@ -251,6 +297,16 @@ def _ensure_menu_attached(menu, widget):
     if isinstance(widget, Gtk.Button):
         widget = widget.get_parent() or widget
 
+    # GTK4: PopoverMenu uses set_parent() instead of attach_to_widget()
+    if isinstance(menu, Gtk.PopoverMenu):
+        current_parent = menu.get_parent()
+        if current_parent is not widget:
+            if current_parent is not None:
+                menu.unparent()
+            menu.set_parent(widget)
+        return
+
+    # GTK3 fallback
     attached_widget = menu.get_attach_widget()
     if attached_widget is widget:
         return
@@ -282,14 +338,18 @@ def add_fake_accel(widget, accel):
     accelgroup without any actions..
     """
 
-    if not hasattr(add_fake_accel, "_group"):
-        add_fake_accel._group = Gtk.AccelGroup()
-    group = add_fake_accel._group
+    # GTK4: Accelerators system completely redesigned
+    # For menu items, shortcuts are handled differently
+    # This function is mainly for display purposes, so we can skip it in GTK4
+    if hasattr(widget, "add_accelerator"):
+        if not hasattr(add_fake_accel, "_group"):
+            add_fake_accel._group = Gtk.AccelGroup()
+        group = add_fake_accel._group
 
-    key, val = Gtk.accelerator_parse(accel)
-    assert key is not None
-    assert val is not None
-    widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
+        key, val = Gtk.accelerator_parse(accel)
+        assert key is not None
+        assert val is not None
+        widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
 def is_accel(event, *accels):
@@ -306,39 +366,46 @@ def is_accel(event, *accels):
         ValueError: in case any of the accels could not be parsed
     """
 
-    assert accels
-
     if event.type != Gdk.EventType.KEY_PRESS:
         return False
+    return is_accel_pressed(event.keyval, event.state, *accels)
+
+
+def is_accel_pressed(keyval, state, *accels):
+    """Checks if a (keyval, state) pair from EventControllerKey matches any
+    of the accelerator strings.
+
+    Args:
+        keyval: Gdk keyval from EventControllerKey.key-pressed
+        state: Gdk.ModifierType from EventControllerKey.key-pressed
+        *accels: one or more accel strings, e.g. "<Primary>Return"
+    Returns:
+        bool
+    Raises:
+        ValueError: in case any of the accels could not be parsed
+    """
+
+    assert accels
 
     # ctrl+shift+x gives us ctrl+shift+X and accelerator_parse returns
     # lowercase values for matching, so lowercase it if possible
-    keyval = event.keyval
     if not keyval & ~0xFF:
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
-    keymap = Gdk.Keymap.get_default()
+    event_mod = state & default_mod
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
         if accel_keyval == 0 and accel_mod == 0:
             raise ValueError(f"Invalid accel: {accel}")
 
-        # If the accel contains non default modifiers matching will
-        # never work and since no one should use them, complain
         non_default = accel_mod & ~default_mod
         if non_default:
             mod = Gtk.accelerator_name(0, non_default) or ""
             print_w(f"Accelerator {accel!r} contains a non default modifier {mod!r}")
 
-        # event.state contains the real mod mask + the virtual one, while
-        # we usually pass only virtual one as text.
-        # This adds the real one so that they match in the end.
-        accel_mod = keymap.map_virtual_modifiers(accel_mod)[1]
-
-        # Remove everything except default modifiers and compare
-        if (accel_keyval, accel_mod) == (keyval, event.state & default_mod):
+        if accel_keyval == keyval and accel_mod == event_mod:
             return True
 
     return False
@@ -547,8 +614,8 @@ class ThemeOverrider:
 
         for provider in wanted_providers:
             if provider not in self._active_providers:
-                Gtk.StyleContext.add_provider_for_screen(
-                    Gdk.Screen.get_default(),
+                Gtk.StyleContext.add_provider_for_display(
+                    Gdk.Display.get_default(),
                     provider,
                     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
                 )

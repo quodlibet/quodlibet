@@ -33,7 +33,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = Gtk.VBox(spacing=10)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         vb.set_border_width(0)
 
         adj = Gtk.Adjustment.new(pconfig.getfloat("threshold"), 0, 1.0, 0.01, 0.01, 0.0)

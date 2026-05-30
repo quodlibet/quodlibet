@@ -9,7 +9,7 @@ import os
 import errno
 from urllib.parse import urlsplit
 
-from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango, GLib
 from quodlibet.fsn import uri2fsn, fsnative, fsn2text, bytes2fsn
 
 from quodlibet import formats, print_d, util
@@ -168,7 +168,7 @@ def get_gtk_bookmarks():
     if os.name == "nt":
         return []
 
-    path = os.path.join(xdg_get_config_home(), "gtk-3.0", "bookmarks")
+    path = os.path.join(xdg_get_config_home(), "gtk-4.0", "bookmarks")
     folders = []
     try:
         with open(path, "rb") as f:
@@ -204,6 +204,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         render = Gtk.CellRendererText()
         if self.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
@@ -237,30 +238,48 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if initial:
             self.go_to(initial)
 
-        menu = self._create_menu()
-        connect_obj(self, "popup-menu", self._popup_menu, menu)
+        self._action_group = self._create_actions()
+        self.insert_action_group("dirtree", self._action_group)
+        self._menu = self._create_menu()
+        connect_obj(self, "popup-menu", self._popup_menu, self._menu)
 
-        # Allow to drag and drop files from outside
-        targets = [("text/uri-list", 0, 42)]
-        targets = [Gtk.TargetEntry.new(*t) for t in targets]
-        self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect("drag-data-received", self.__drag_data_received)
+        drop_target = Gtk.DropTarget.new(Gdk.FileList, Gdk.DragAction.COPY)
+        drop_target.connect("drop", self.__on_drop)
+        self.add_controller(drop_target)
+
+    def __on_drop(self, target, value, x, y):
+        if not isinstance(value, Gdk.FileList):
+            return False
+        for f in value.get_files():
+            path = f.get_path()
+            if path:
+                self.go_to(path)
+                return True
+        return False
+
+    def _create_actions(self):
+        ag = Gio.SimpleActionGroup()
+        for name, callback in [
+            ("new-folder", self.__mkdir),
+            ("delete", self.__rmdir),
+            ("refresh", self.__refresh),
+            ("expand", self.__expand),
+        ]:
+            action = Gio.SimpleAction.new(name, None)
+            action.connect("activate", callback)
+            ag.add_action(action)
+        return ag
 
     def _create_menu(self):
-        menu = Gtk.Menu()
-        m = qltk.MenuItem(_("_New Folder…"), Icons.DOCUMENT_NEW)
-        m.connect("activate", self.__mkdir)
-        menu.append(m)
-        m = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
-        m.connect("activate", self.__rmdir)
-        menu.append(m)
-        m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
-        m.connect("activate", self.__refresh)
-        menu.append(m)
-        m = qltk.MenuItem(_("_Select all Sub-Folders"), Icons.FOLDER)
-        m.connect("activate", self.__expand)
-        menu.append(m)
-        menu.show_all()
+        model = Gio.Menu()
+        model.append(_("_New Folder…"), "dirtree.new-folder")
+        model.append(_("_Delete"), "dirtree.delete")
+        model.append(_("_Refresh"), "dirtree.refresh")
+        model.append(_("_Select all Sub-Folders"), "dirtree.expand")
+        menu = Gtk.PopoverMenu.new_from_model(model)
+        menu.set_has_arrow(False)
+        # Keep a reference to the model for label lookup
+        menu.gio_model = model
         return menu
 
     def get_selected_paths(self):
@@ -337,28 +356,28 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         Gtk.drag_finish(drag_ctx, False, False, time)
 
     def _popup_menu(self, menu):
-        model, paths = self.get_selection().get_selected_rows()
+        tree_model, paths = self.get_selection().get_selected_rows()
 
-        directories = [model[path][0] for path in paths]
-        menu_items = menu.get_children()
-        delete = menu_items[1]
+        directories = [tree_model[path][0] for path in paths]
+        ag = self._action_group
+        delete_action = ag.lookup_action("delete")
+        new_folder_action = ag.lookup_action("new-folder")
         try:
             is_empty = not any(len(os.listdir(d)) for d in directories)
-            delete.set_sensitive(is_empty)
+            delete_action.set_enabled(is_empty)
         except OSError as err:
             if err.errno == errno.ENOENT:
-                model.remove(model.get_iter(paths[0]))
+                tree_model.remove(tree_model.get_iter(paths[0]))
             return False
-        new_folder = menu_items[0]
-        new_folder.set_sensitive(len(paths) == 1)
+        new_folder_action.set_enabled(len(paths) == 1)
 
         selection = self.get_selection()
         selection.unselect_all()
         for path in paths:
             selection.select_path(path)
-        return self.popup_menu(menu, 0, Gtk.get_current_event_time())
+        return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
-    def __mkdir(self, button):
+    def __mkdir(self, action, parameter):
         model, paths = self.get_selection().get_selected_rows()
         if len(paths) != 1:
             return
@@ -387,7 +406,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         self.emit("test-expand-row", model.get_iter(path), path)
         self.expand_row(path, False)
 
-    def __rmdir(self, button):
+    def __rmdir(self, action, parameter):
         model, paths = self.get_selection().get_selected_rows()
 
         directories = [model[path][0] for path in paths]
@@ -408,7 +427,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if expanded:
             self.expand_row(ppath, False)
 
-    def __expand(self, button):
+    def __expand(self, action, parameter):
         selection = self.get_selection()
         model, paths = selection.get_selected_rows()
 
@@ -428,7 +447,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             last = self.__select_children(child, model, selection)
         return last
 
-    def __refresh(self, button):
+    def __refresh(self, action, parameter):
         model, rows = self.get_selection().get_selected_rows()
         expanded = set()
         self.map_expanded_rows(lambda s, iter, data: expanded.add(model[iter][0]), None)
@@ -452,7 +471,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         window = self.get_window()
         if window:
             window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-            Gtk.main_iteration_do(False)
+            GLib.MainContext.default().iteration(False)
         try:
             try:
                 if model is None:
@@ -530,6 +549,7 @@ class FileSelector(Paned):
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
             render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
@@ -539,7 +559,6 @@ class FileSelector(Paned):
         column.set_cell_data_func(render, cell_data)
 
         filelist.append_column(column)
-        filelist.set_rules_hint(True)
         filelist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         filelist.set_search_equal_func(search_func, False)
         filelist.set_search_column(0)
@@ -558,25 +577,25 @@ class FileSelector(Paned):
         dirlist.connect("row-activated", select_all_files, filelist.get_selection())
 
         sw = ScrolledWindow()
-        sw.add(dirlist)
+        sw.set_child(dirlist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.pack1(sw, resize=True)
+        self.set_start_child(sw)
+        self.set_resize_start_child(True)
 
         sw = ScrolledWindow()
-        sw.add(filelist)
+        sw.set_child(filelist)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.pack2(sw, resize=True)
+        self.set_end_child(sw)
+        self.set_resize_end_child(True)
 
     def go_to(self, *args, **kwargs):
-        dirlist = self.get_child1().get_child()
+        dirlist = self.get_start_child().get_child()
         dirlist.go_to(*args, **kwargs)
 
     def get_selected_paths(self):
         """A list of fs paths"""
 
-        filelist = self.get_child2().get_child()
+        filelist = self.get_end_child().get_child()
         selection = filelist.get_selection()
         model, paths = selection.get_selected_rows()
         return [model[p][0] for p in paths]
@@ -584,8 +603,8 @@ class FileSelector(Paned):
     def rescan(self):
         """Refill the file list for the current directory selection"""
 
-        dirlist = self.get_child1().get_child()
-        filelist = self.get_child2().get_child()
+        dirlist = self.get_start_child().get_child()
+        filelist = self.get_end_child().get_child()
 
         dir_selection = dirlist.get_selection()
         self.__dir_selection_changed(dir_selection, filelist)

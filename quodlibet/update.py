@@ -98,10 +98,14 @@ class UpdateDialog(Dialog):
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
         content = self.get_content_area()
-        self._stack = Gtk.Stack(border_width=10)
+        self._stack = Gtk.Stack()
+        self._stack.set_margin_start(10)
+        self._stack.set_margin_end(10)
+        self._stack.set_margin_top(10)
+        self._stack.set_margin_bottom(10)
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        content.pack_start(self._stack, True, True, 0)
+        content.append(self._stack)
         content.show_all()
 
         spinner = Gtk.Spinner()
@@ -158,11 +162,10 @@ class UpdateDialog(Dialog):
 
     def _set_widget(self, widget):
         old = self._stack.get_visible_child()
-        self._stack.add(widget)
-        widget.show()
+        self._stack.add_child(widget)
         self._stack.set_visible_child(widget)
         if old:
-            old.destroy()
+            self._stack.remove(old)
 
     def _on_response(self, dialog, response_id, cancel):
         cancel.cancel()

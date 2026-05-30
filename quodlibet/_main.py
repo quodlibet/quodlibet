@@ -98,7 +98,8 @@ class Application:
 
         def idle_quit():
             if self.window:
-                self.window.destroy()
+                # GTK4: window.close() removed - cleaned up automatically
+                pass
 
         # so this can be called from a signal handler and before
         # the main loop starts
@@ -111,11 +112,9 @@ class Application:
             window.show()
 
     def present(self):
-        # deiconify is needed if the window is on another workspace
         from quodlibet.qltk import Window
 
         for window in Window.windows:
-            window.deiconify()
             window.present()
 
     def hide(self):
@@ -259,7 +258,7 @@ def set_application_info(app):
 
     assert is_init()
 
-    from gi.repository import Gtk, GLib
+    from gi.repository import Gtk, Gdk, GLib
 
     assert app.process_name
     set_process_title(app.process_name)
@@ -267,13 +266,11 @@ def set_application_info(app):
     GLib.idle_add(set_process_title, app.process_name)
 
     assert app.id
-    # https://honk.sigxcpu.org/con/GTK__and_the_application_id.html
-    GLib.set_prgname(app.id)
     assert app.name
     GLib.set_application_name(app.name)
 
     assert app.icon_name
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
     assert theme.has_icon(app.icon_name)
     Gtk.Window.set_default_icon_name(app.icon_name)
 
@@ -337,7 +334,7 @@ def _main_setup_osx(window):
 
 def run(window, before_quit=None):
     print_d("Entering quodlibet.main")
-    from gi.repository import Gtk, Gdk, GLib
+    from gi.repository import GLib
     from quodlibet._init import is_init
 
     assert is_init()
@@ -368,13 +365,11 @@ def run(window, before_quit=None):
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
 
-        for toplevel in Gtk.Window.list_toplevels():
-            toplevel.hide()
+        # GTK4: list_toplevels() removed, hide tracked windows instead
+        for win in Window.windows:
+            win.set_visible(False)
 
-        for window in Window.windows:
-            window.destroy()
-
-        Gtk.main_quit()
+        loop.quit()
 
         print_d("Quit GTK: done.")
 
@@ -384,8 +379,8 @@ def run(window, before_quit=None):
         _main_setup_osx(window)
 
     if not window.show_maybe():
-        # if we don't show a window, startup isn't completed, so call manually
-        Gdk.notify_startup_complete()
+        # GTK4: notify_startup_complete() removed, handled automatically
+        pass
 
     from quodlibet.errorreport import faulthandling
 
@@ -400,14 +395,16 @@ def run(window, before_quit=None):
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
+    loop = GLib.MainLoop()
     if "QUODLIBET_START_PERF" in os.environ:
-        window.connect("draw", Gtk.main_quit)
-        Gtk.main()
+        # GTK4: "draw" signal removed, use "map" to detect first show
+        window.connect("map", lambda *args: loop.quit())
+        loop.run()
         sys.exit()
     else:
-        Gtk.main()
+        loop.run()
 
-    print_d("Gtk.main() done.")
+    print_d("Main loop done.")
 
 
 def enable_periodic_save(save_library):

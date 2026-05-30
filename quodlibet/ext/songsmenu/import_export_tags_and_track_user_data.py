@@ -23,7 +23,7 @@ from quodlibet.formats._audio import MIGRATE, AudioFile
 from quodlibet.plugins import BoolConfProp, FloatConfProp, PluginConfig
 from quodlibet.plugins.songshelpers import each_song, is_finite, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, SeparatorMenuItem
+from quodlibet.qltk import Icons, SeparatorMenuItem, get_children
 from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk.showfiles import show_files
@@ -182,7 +182,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
     _album_id_to_export_path: MutableMapping[AlbumId, Path]
 
     def PluginPreferences(self, *args):
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         def asd_toggled(button, *args):
             CONFIG.need_user_check_if_number_of_albums_differs = button.get_active()
@@ -202,9 +202,9 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         def ma_scale_changed(scale):
             CONFIG.max_album_similarity_to_need_user_check = scale.get_value()
 
-        info_box = Gtk.VBox(spacing=6)
+        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         info_frame = qltk.Frame(_("Further information"), child=info_box)
-        vbox.pack_start(info_frame, False, True, 0)
+        vbox.append(info_frame)
 
         meta_markup = util.monospace(", ".join(MIGRATE))
         info_text = (
@@ -225,25 +225,25 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         )
 
         info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
-        info_box.pack_start(info_lbl, True, True, 0)
+        info_box.append(info_lbl)
 
-        manual_box = Gtk.VBox(spacing=6)
+        manual_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         manual_frame = qltk.Frame(_("User interaction on import"), child=manual_box)
-        vbox.pack_start(manual_frame, False, True, 0)
+        vbox.append(manual_frame)
 
         tsd = Gtk.CheckButton(
             label=_("Require confirmation if number of tracks differs")
         )
         tsd.set_active(CONFIG.need_user_check_if_number_of_tracks_differs)
         tsd.connect("toggled", tsd_toggled)
-        manual_box.pack_start(tsd, True, True, 0)
+        manual_box.append(tsd)
 
         asd = Gtk.CheckButton(
             label=_("Require confirmation if number of albums differs")
         )
         asd.set_active(CONFIG.need_user_check_if_number_of_albums_differs)
         asd.connect("toggled", asd_toggled)
-        manual_box.pack_start(asd, True, True, 0)
+        manual_box.append(asd)
 
         desc = _(
             "Percentage below which the user will have to manually check and "
@@ -253,7 +253,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         perc_table = Gtk.Table(n_rows=2, n_columns=2)
         perc_table.set_col_spacings(6)
         perc_table.set_row_spacings(6)
-        manual_box.pack_start(perc_table, True, True, 0)
+        manual_box.prepend(perc_table)
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
@@ -268,8 +268,13 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             scale.connect("value-changed", on_change)
 
             label = Gtk.Label(label=lbl_text)
-            label.set_alignment(0.0, 0.5)
-            label.set_padding(0, 6)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
+            # GTK4: set_padding() removed, use margins
+            label.set_margin_start(0)
+            label.set_margin_end(0)
+            label.set_margin_top(6)
+            label.set_margin_bottom(6)
             label.set_mnemonic_widget(scale)
 
             xoptions = Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK
@@ -292,19 +297,19 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             ma_scale_changed,
         )
 
-        export_box = Gtk.VBox(spacing=6)
+        export_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         export_frame = qltk.Frame(_("Export files"), child=export_box)
-        vbox.pack_start(export_frame, False, True, 0)
+        vbox.append(export_frame)
 
         pp = Gtk.CheckButton(label=_("Write pretty and clear JSON (slower)"))
         pp.set_active(CONFIG.pretty_print_json)
         pp.connect("toggled", pp_toggled)
-        export_box.pack_start(pp, True, True, 0)
+        export_box.append(pp)
 
         de = Gtk.CheckButton(label=_("Delete export files after they've been imported"))
         de.set_active(CONFIG.delete_exports_after_importing)
         de.connect("toggled", de_toggled)
-        export_box.pack_start(de, True, True, 0)
+        export_box.append(de)
 
         return vbox
 
@@ -346,10 +351,10 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         self._album_id_to_export_path = {}
 
-        submenu = Gtk.Menu()
+        submenu = Gtk.PopoverMenu()
         self._init_collectors_and_menu(submenu)
 
-        if submenu.get_children():
+        if get_children(submenu):
             self.set_submenu(submenu)
         else:
             self.set_sensitive(False)

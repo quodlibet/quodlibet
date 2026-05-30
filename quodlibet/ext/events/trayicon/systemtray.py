@@ -9,7 +9,7 @@
 
 import sys
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gsk
 
 from quodlibet import _
 from quodlibet import app
@@ -39,24 +39,44 @@ def get_paused_pixbuf(boundary, diff):
     if diff < 0:
         raise ValueError("diff has to be >= 0")
 
-    names = (Icons.MEDIA_PLAYBACK_PAUSE,)
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
 
-    # Get the suggested icon
-    info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
-    if not info:
+    paintable = theme.lookup_icon(
+        Icons.MEDIA_PLAYBACK_PAUSE,
+        None,
+        size,
+        1,
+        Gtk.TextDirection.NONE,
+        Gtk.IconLookupFlags(0),
+    )
+    if not paintable:
         return None
 
     try:
-        pixbuf = info.load_icon()
-    except GLib.GError:
-        pass
-    else:
-        # In case it is too big, rescale
-        pb_size = min(pixbuf.get_height(), pixbuf.get_width())
-        if abs(pb_size - size) > diff:
-            return scale(pixbuf, boundary)
-        return pixbuf
+        # Try file-backed icon first (faster, preserves full resolution)
+        icon_file = paintable.get_file()
+        if icon_file is not None:
+            icon_path = icon_file.get_path()
+            if icon_path is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_path)
+                pb_size = min(pixbuf.get_height(), pixbuf.get_width())
+                if abs(pb_size - size) > diff:
+                    return scale(pixbuf, boundary)
+                return pixbuf
+
+        # Fallback: render the paintable to a pixbuf via snapshot
+        snapshot = Gtk.Snapshot()
+        paintable.snapshot(snapshot, size, size)
+        node = snapshot.to_node()
+        if node is None:
+            return None
+        renderer = Gsk.CairoRenderer.new()
+        renderer.realize(None)
+        texture = renderer.render_texture(node, None)
+        renderer.unrealize()
+        return Gdk.pixbuf_get_from_texture(texture)
+    except (GLib.GError, Exception):
+        return None
 
 
 def new_with_paused_emblem(icon_pixbuf):
@@ -156,7 +176,6 @@ class SystemTray(BaseIndicator):
         """
 
         if self.__menu:
-            self.__menu.destroy()
             self.__menu = None
         if self.__emb_sig:
             GLib.source_remove(self.__emb_sig)
@@ -200,9 +219,7 @@ class SystemTray(BaseIndicator):
         if not self._icon:
             return
 
-        self.__popup_menu(
-            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
-        )
+        self.__popup_menu(self._icon, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):
@@ -337,7 +354,6 @@ class SystemTray(BaseIndicator):
         """Returns True if current action should only hide the menu"""
 
         if sys.platform in ("win32", "darwin") and self.__menu:
-            self.__menu.destroy()
             self.__menu = None
             return True
         return None
