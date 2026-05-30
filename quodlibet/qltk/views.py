@@ -17,6 +17,7 @@ from quodlibet import print_e
 from quodlibet import config
 from quodlibet.qltk import (
     is_accel,
+    is_accel_pressed,
     is_wayland,
     menu_popup,
     get_primary_accel_mod,
@@ -674,21 +675,31 @@ class MultiDragTreeView(BaseView):
 
 
 class RCMTreeView(BaseView):
-    """Emits popup-menu when a row is right-clicked on."""
+    """Emits popup-menu when a row is right-clicked on, or when the menu /
+    Shift+F10 key is pressed."""
+
+    __gsignals__: GSignals = {
+        "popup-menu": (GObject.SignalFlags.RUN_LAST, bool, ()),
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        controller = Gtk.GestureClick()
-        controller.connect("pressed", self.__button_press)
-        self.add_controller(controller)
+        click_ctrl = Gtk.GestureClick()
+        click_ctrl.set_button(Gdk.BUTTON_SECONDARY)
+        click_ctrl.connect("pressed", self.__button_press)
+        self.add_controller(click_ctrl)
 
-    def __button_press(self, gesture, n_press, x, y):
-        # GTK4: GestureClick.pressed signal has different signature
-        button = gesture.get_current_button()
-        # GTK4: Right click is secondary button, used for context menu
-        if button == Gdk.BUTTON_SECONDARY:
-            return self.__check_popup(x, y)
-        return None
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.__key_pressed)
+        self.add_controller(key_ctrl)
+
+    def __button_press(self, _gesture, _n_press, x, y):
+        return self.__check_popup(x, y)
+
+    def __key_pressed(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
+            return self.emit("popup-menu")
+        return False
 
     def __check_popup(self, x, y):
         x, y = map(int, [x, y])
@@ -974,18 +985,23 @@ class TreeViewColumnButton(TreeViewColumn):
         del widget.__realize
         button = widget.get_ancestor(Gtk.Button)
         if button:
-            controller = Gtk.GestureClick()
-            controller.set_button(0)
-            controller.connect("pressed", self.__on_button_pressed)
-            button.add_controller(controller)
-            button.connect("popup-menu", self.__on_popup_menu)
+            click_ctrl = Gtk.GestureClick()
+            click_ctrl.set_button(0)
+            click_ctrl.connect("pressed", self.__on_button_pressed)
+            button.add_controller(click_ctrl)
+
+            key_ctrl = Gtk.EventControllerKey()
+            key_ctrl.connect("key-pressed", self.__on_key_pressed)
+            button.add_controller(key_ctrl)
 
     def __on_button_pressed(self, gesture, n_press, x, y):
         event = gesture.get_last_event(None)
         return self.emit("button-press-event", event)
 
-    def __on_popup_menu(self, widget):
-        return self.emit("popup-menu")
+    def __on_key_pressed(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
+            return self.emit("popup-menu")
+        return False
 
 
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
