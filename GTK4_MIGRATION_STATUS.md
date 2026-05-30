@@ -2,7 +2,7 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-05-16
+**Last Updated**: 2026-05-30
 **Test Results**: 4653 passed, 18 failed, 49 skipped (99.6%)
 
 
@@ -35,8 +35,34 @@ lifecycle / cleanup differences not yet investigated:
   not GTK-related)
 
 
-Recently Landed (2026-05-16)
+Recently Landed (2026-05-30)
 ----------------------------
+
+- Merged 4 commits from `main` (PositionColumn, unity GError handling,
+  pot refresh). Unity stub keeps disabled under GTK4.
+- `TreeViewColumn.tree-view-changed` actually fires now:
+  `parent-set` was silently shimmed, swapped for `notify::parent` with
+  explicit previous-parent tracking.
+- `SearchBarBox` migrated off four removed GTK3 signals
+  (`backspace`, `populate-popup`, `focus-out-event`, `key-press-event`)
+  using `EventControllerFocus`, `EventControllerKey`, and a
+  `Gtk.Entry.set_extra_menu()` Gio.Menu bound to a stateful
+  `Gio.SimpleAction` for the eager-search toggle.
+- `RCMTreeView` declares `popup-menu` as a custom gsignal so the dozens
+  of `view.connect("popup-menu", …)` callers in browsers / playlists /
+  edittags / paned / etc. actually run. Menu / Shift+F10 wired up via
+  `EventControllerKey`.
+- `TreeViewColumnButton`: dead `button.connect("popup-menu", …)`
+  replaced with an `EventControllerKey` on the column header button.
+- `SongListPaned` cleaned up: removed `draw` and `button-press-event`
+  no-ops; `_check_minimize` runs from `notify::expanded`.
+- `covergrid.AlbumWidget`: popup-menu keyboard binding via
+  `EventControllerKey` (Gtk.Box has no `popup-menu` in GTK4).
+- New helper `is_accel_pressed(keyval, state, *accels)` for matching
+  accels from `EventControllerKey` without fabricating a GdkEvent.
+
+Earlier (2026-05-16)
+--------------------
 
 - Merged 16 commits from `main` (mmkeys macOS overhaul, translations,
   flake.nix conflict resolved — keybinder3 stays out under GTK4).
@@ -61,3 +87,11 @@ Known Limitations (Tracked, Non-Blocking)
 - M3U/PLS URL import via DnD to playlist browser is deferred.
 - `quodlibet/_init.py` still hosts compatibility shims; each is
   documented and should be removed as call sites migrate.
+- Remaining shimmed-signal call sites (~55 connects across button-press,
+  key-press, focus-out, populate-popup, etc.) — biggest cluster is
+  `qltk/seekbutton.py` (right-click menu, scroll seek) and
+  `qltk/info.py` (song info bar context menu / clipboard middle-click).
+  Each needs a GestureClick / EventControllerKey rewrite plus a
+  Gtk.PopoverMenu replacement for any Gtk.Menu still in scope.
+- `SongListPaned` drag-to-expand-queue UX is dropped (relied on
+  `Gtk.Paned.get_handle_window()` which is gone in GTK4).
