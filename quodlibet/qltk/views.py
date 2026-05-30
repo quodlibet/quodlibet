@@ -930,14 +930,18 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         self._button = widget.get_ancestor(Gtk.Button)
         self.set_tooltip_text(self._tooltip_text)
 
-        def on_parent_set(button, old_parent):
+        self._last_parent = None
+
+        def on_notify_parent(button, _pspec):
             new_parent = button.get_parent()
             assert new_parent is None or isinstance(new_parent, Gtk.TreeView)
+            old_parent = self._last_parent
+            self._last_parent = new_parent
             self.emit("tree-view-changed", old_parent, new_parent)
 
         # parent already set, emit manually
-        on_parent_set(self._button, None)
-        self._button.connect("parent-set", on_parent_set)
+        on_notify_parent(self._button, None)
+        self._button.connect("notify::parent", on_notify_parent)
 
     def set_tooltip_text(self, text):
         if self._button:
