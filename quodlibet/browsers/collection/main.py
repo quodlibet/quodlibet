@@ -241,6 +241,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
+        sw.set_vexpand(True)
 
         hbox = Gtk.Box(spacing=6)
 

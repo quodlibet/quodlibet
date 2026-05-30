@@ -572,6 +572,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         view.set_model(model_filter)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
+        sw.set_vexpand(True)
 
         view.connect("row-activated", self.__play_selection)
         self.__sig = view.connect(

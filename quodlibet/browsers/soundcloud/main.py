@@ -243,6 +243,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         view.set_headers_visible(False)
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_child(view)
+        scrolled_window.set_vexpand(True)
         model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
         for _i, (name, data) in enumerate(filters):

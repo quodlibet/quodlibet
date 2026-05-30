@@ -424,7 +424,8 @@ class Podcasts(Browser):
         view.set_headers_visible(False)
         swin = ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        swin.add(view)
+        swin.set_child(view)
+        swin.set_vexpand(True)
         self.prepend(swin)
 
         new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)

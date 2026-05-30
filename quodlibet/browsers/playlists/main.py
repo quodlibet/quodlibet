@@ -224,7 +224,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __embed_in_scrolledwin(self, view):
         swin = ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        swin.add(view)
+        swin.set_child(view)
+        swin.set_vexpand(True)
         self.append(swin)
 
     def __configure_buttons(self, library):

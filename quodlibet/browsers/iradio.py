@@ -598,6 +598,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         view.set_headers_visible(False)
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_child(view)
+        scrolled_window.set_vexpand(True)
         model = Gtk.ListStore(int, str, str, str)
 
         model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all", _("All Stations")])
@@ -688,6 +689,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         songbox.append(self._searchbox)
         self._songpane_container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
+            vexpand=True,
         )
         songbox.append(self._songpane_container)
         songbox.append(self.qbar)

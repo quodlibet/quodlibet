@@ -109,6 +109,7 @@ class CoverGridContainer(ScrolledWindow):
         fb.set_hadjustment(self.props.hadjustment)
         fb.set_vadjustment(self.props.vadjustment)
         self.set_child(fb)
+        self.set_vexpand(True)
 
     def scroll_up(self):
         va = self.props.vadjustment

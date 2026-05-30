@@ -93,6 +93,7 @@ class FileSystem(Browser, Gtk.Box):
         super().__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_vexpand(True)
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
 
