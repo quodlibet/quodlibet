@@ -9,6 +9,7 @@
 from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Gdk, Pango
 from .models import AlbumListItem
 
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget
 
@@ -56,13 +57,15 @@ class AlbumWidget(Gtk.FlowBoxChild):
         box.append(self._label)
 
         eb = Gtk.Box()
-        eb.connect("popup-menu", lambda _: self.emit("songs-menu"))
-        # GTK4: use GestureClick instead of button-press-event
         gesture = Gtk.GestureClick()
-        gesture.set_button(0)
-        gesture.connect("pressed", self.__rightclick)
+        gesture.set_button(Gdk.BUTTON_SECONDARY)
+        gesture.connect("pressed", lambda *_: self.emit("songs-menu"))
         eb.add_controller(gesture)
         eb.append(box)
+
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.__on_menu_key)
+        self.add_controller(key_ctrl)
 
         self.set_child(eb)
 
@@ -147,9 +150,11 @@ class AlbumWidget(Gtk.FlowBoxChild):
     def __display_pattern(self, _, prop):
         self.model.format_label(self.props.display_pattern)
 
-    def __rightclick(self, gesture, n_press, x, y):
-        if gesture.get_current_button() == Gdk.BUTTON_SECONDARY:
+    def __on_menu_key(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
             self.emit("songs-menu")
+            return True
+        return False
 
     def __tooltip(self, widget, x, y, keyboard_tip, tooltip):
         label = self.model.label
