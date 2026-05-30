@@ -396,6 +396,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         sw.set_child(plv)
+        sw.set_vexpand(True)
 
         fb = Gtk.Box(spacing=6, homogeneous=True)
 
@@ -440,10 +441,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         filter_box.prepend(fe)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(Align(filter_box, border=6))
-        vbox.prepend(sw)
-        align_bbox = Align(bbox, left=3, right=3, top=0)
-        align_bbox.set_margin_top(3)
+        vbox.append(Align(filter_box, border=6))
+        vbox.append(sw)
+        align_bbox = Align(bbox, left=3, right=3, top=3)
         vbox.append(align_bbox)
         paned = Paned()
         paned.set_start_child(vbox)
