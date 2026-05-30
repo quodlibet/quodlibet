@@ -67,6 +67,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
+        sw.set_vexpand(True)
         self.get_child().prepend(sw)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)

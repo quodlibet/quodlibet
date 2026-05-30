@@ -103,7 +103,8 @@ class TrackNumbers(Gtk.Box):
         view.set_reorderable(True)
         w = Gtk.ScrolledWindow()
         w.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        w.add(view)
+        w.set_child(view)
+        w.set_vexpand(True)
         self.prepend(w)
 
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)

@@ -867,7 +867,8 @@ class PreferencesWindow(UniqueWindow):
             self.title = _("Advanced")
             scrolledwin = Gtk.ScrolledWindow()
             scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-            scrolledwin.add_with_viewport(AdvancedPreferencesPane())
+            scrolledwin.set_child(AdvancedPreferencesPane())
+            scrolledwin.set_vexpand(True)
             self.append(scrolledwin)
 
     def __init__(self, parent, open_page=None, all_pages=True):

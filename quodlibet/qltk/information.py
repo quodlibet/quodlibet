@@ -638,8 +638,7 @@ class Information(Window, PersistentWindowMixin):
             else:
                 content = ManySongs(songs)
         swin = Gtk.ScrolledWindow()
-
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        swin.add_with_viewport(content)
-        self.add(swin)
+        swin.set_child(content)
+        self.set_child(swin)
         self.set_title(content.title + " - Quod Libet")

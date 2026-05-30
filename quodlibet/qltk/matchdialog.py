@@ -94,6 +94,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_vexpand(True)
 
         vb.append(sw)
 
