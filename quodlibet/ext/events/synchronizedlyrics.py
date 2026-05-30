@@ -147,10 +147,12 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         # GTK4: add_with_viewport removed, use set_child (viewport auto-created)
         self.scrolled_window.set_child(self.textview)
+        self.scrolled_window.set_vexpand(True)
+        self.scrolled_window.set_hexpand(True)
 
         vb = Gtk.Box()
+        vb.set_vexpand(True)
         vb.append(self.scrolled_window)
-        vb.show_all()
         app.window.get_child().append(vb)
         app.window.get_child().reorder_child(vb, 2)
 

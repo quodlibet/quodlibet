@@ -321,7 +321,8 @@ class DuplicateDialog(Gtk.Window):
             view.append_column(col)
 
         view.connect("popup-menu", self.__songs_popup_menu)
-        swin.add(view)
+        swin.set_child(view)
+        swin.set_vexpand(True)
         # A basic information area
         hbox = Gtk.Box(spacing=6)
 

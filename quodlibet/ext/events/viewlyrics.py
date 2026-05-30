@@ -52,15 +52,20 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         key_ctrl.connect("key-pressed", self.key_press_event_cb)
         self.textview.add_controller(key_ctrl)
         add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
+        sw.set_child(self.textview)
+        sw.set_vexpand(True)
+        sw.set_hexpand(True)
         overlay.set_child(sw)
         self._edit_button = Button(None, Icons.EDIT)
         self._edit_button.set_tooltip_text(_("Edit Lyrics"))
-        vbox = Gtk.Box(margin_start=6, margin_end=6, margin_top=6, margin_bottom=6)
-        vbox.append(self._edit_button)
-        vbox.set_valign(Gtk.Align.END)
-        vbox.set_halign(Gtk.Align.END)
+        edit_align = Gtk.Box(
+            margin_start=6, margin_end=6, margin_top=6, margin_bottom=6
+        )
+        edit_align.append(self._edit_button)
+        edit_align.set_valign(Gtk.Align.END)
+        edit_align.set_halign(Gtk.Align.END)
+        overlay.add_overlay(edit_align)
 
-        sw.show()
         self._sig = None
         cur = app.player.info
         if cur is not None:
@@ -69,12 +74,14 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def create_sidebar(self):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.append(self.scrolled_window)
+        self.overlay.set_vexpand(True)
+        vbox.append(self.overlay)
         return vbox
 
     def disabled(self):
         self.textview = None
         self.scrolled_window = None
+        self.overlay = None
 
     def _hide_timestamps(self, lyrics: str):
         """Remove timestamps from the lyrics if they are formatted as an .lrc file."""
