@@ -444,42 +444,30 @@ class SongListPaned(RVPaned):
         self._handle_position = self.get_relative()
         qexpander.connect("notify::visible", self._expand_or)
         qexpander.connect("notify::expanded", self._expand_or)
-        qexpander.connect("draw", self._check_minimize)
 
-        self.connect("button-press-event", self._on_button_press)
-        self.connect("notify", self._moved_pane_handle)
+        self.connect("notify::position", self._moved_pane_handle)
 
     @property
     def _expander(self):
         return self.get_end_child()
 
-    def _on_button_press(self, pane, event):
-        # If we start to drag the pane handle while the
-        # queue expander is unexpanded, expand it and move the handle
-        # to the bottom, so we can 'drag' the queue out
-
-        if event.window != pane.get_handle_window():
-            return False
-
-        if not self._expander.get_expanded():
-            self._expander.set_expanded(True)
-            pane.set_relative(1.0)
-        return False
-
     def _expand_or(self, widget, prop):
         if self._expander.get_property("expanded"):
             self.set_relative(self._handle_position)
+        else:
+            self._check_minimize()
 
     def _moved_pane_handle(self, widget, prop):
         if self._expander.get_property("expanded"):
             self._handle_position = self.get_relative()
 
-    def _check_minimize(self, *args):
-        if not self._expander.get_property("expanded"):
-            p_max = self.get_property("max-position")
-            p_cur = self.get_property("position")
-            if p_max != p_cur:
-                self.set_property("position", p_max)
+    def _check_minimize(self):
+        # When the queue expander collapses, snap the handle back to the
+        # bottom so the song list reclaims the space.
+        p_max = self.get_property("max-position")
+        p_cur = self.get_property("position")
+        if p_max != p_cur:
+            self.set_property("position", p_max)
 
     def _changed(self, widget, event, section, option):
         if self._expander.get_expanded() and self.get_property("position-set"):
