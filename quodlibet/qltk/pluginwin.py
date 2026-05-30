@@ -397,15 +397,17 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
         sw.set_child(plv)
 
-        fb = Gtk.Box(spacing=6)
+        fb = Gtk.Box(spacing=6, homogeneous=True)
 
         enabled_combo = PluginEnabledFilterCombo()
+        enabled_combo.set_hexpand(True)
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
         enabled_combo.set_tooltip_text(_("Filter by plugin state / tag"))
         fb.prepend(enabled_combo)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
+        type_combo.set_hexpand(True)
         type_combo.connect("changed", lambda s: filter_model.refilter())
         type_combo.set_tooltip_text(_("Filter by plugin type"))
         fb.prepend(type_combo)
@@ -438,7 +440,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         filter_box.prepend(fe)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.prepend(Align(filter_box, border=6, right=-6))
+        vbox.prepend(Align(filter_box, border=6))
         vbox.prepend(sw)
         align_bbox = Align(bbox, left=3, right=3, top=0)
         align_bbox.set_margin_top(3)
@@ -451,10 +453,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
-        bb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        bb.set_layout(Gtk.ButtonBoxStyle.END)
+        bb = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, halign=Gtk.Align.END)
         bb.append(close)
-        bb_align.add(bb)
+        bb_align.append(bb)
 
         selection = plv.get_selection()
         selection.connect("changed", self.__selection_changed, pref_box)
