@@ -48,7 +48,9 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
-        self.textview.connect("key-press-event", self.key_press_event_cb)
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.key_press_event_cb)
+        self.textview.add_controller(key_ctrl)
         add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
         overlay.set_child(sw)
         self._edit_button = Button(None, Icons.EDIT)
@@ -68,12 +70,10 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
     def create_sidebar(self):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.append(self.scrolled_window)
-        vbox.show_all()
         return vbox
 
     def disabled(self):
         self.textview = None
-        self.scrolled_window.close()
         self.scrolled_window = None
 
     def _hide_timestamps(self, lyrics: str):
@@ -152,20 +152,20 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         else:
             self._set_italicised(_("No active song"))
 
-    def key_press_event_cb(self, widget, event):
-        """Handles up/down "key-press-event" in the lyrics view."""
+    def key_press_event_cb(self, _controller, keyval, _keycode, _state):
+        """Handles up/down keys in the lyrics view."""
         adj = self.scrolled_window.get_vadjustment().props
-        if event.keyval == Gdk.KEY_Up:
+        if keyval == Gdk.KEY_Up:
             adj.value = max(adj.value - adj.step_increment, adj.lower)
-        elif event.keyval == Gdk.KEY_Down:
+        elif keyval == Gdk.KEY_Down:
             adj.value = min(adj.value + adj.step_increment, adj.upper - adj.page_size)
-        elif event.keyval == Gdk.KEY_Page_Up:
+        elif keyval == Gdk.KEY_Page_Up:
             adj.value = max(adj.value - adj.page_increment, adj.lower)
-        elif event.keyval == Gdk.KEY_Page_Down:
+        elif keyval == Gdk.KEY_Page_Down:
             adj.value = min(adj.value + adj.page_increment, adj.upper - adj.page_size)
-        elif event.keyval == Gdk.KEY_Home:
+        elif keyval == Gdk.KEY_Home:
             adj.value = adj.lower
-        elif event.keyval == Gdk.KEY_End:
+        elif keyval == Gdk.KEY_End:
             adj.value = adj.upper - adj.page_size
         else:
             return False

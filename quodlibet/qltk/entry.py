@@ -12,7 +12,7 @@ import math
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet import config
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.color import mix
 
 
@@ -59,20 +59,11 @@ class EditableUndo:
         key_controller.connect("key-pressed", self.__key_press_gtk4)
         self.__key_controller = key_controller
 
-    def __key_press_gtk4(self, controller, keyval, keycode, state):
-        """GTK4: Handle key-pressed signal from EventControllerKey"""
-
-        # Create a fake event-like object for is_accel compatibility
-        class FakeEvent:
-            def __init__(self, keyval, state):
-                self.keyval = keyval
-                self.state = state
-
-        event = FakeEvent(keyval, state)
-        if is_accel(event, "<Primary>z"):
+    def __key_press_gtk4(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>z"):
             self.undo()
             return True
-        if is_accel(event, "<Primary><shift>z"):
+        if is_accel_pressed(keyval, state, "<Primary><shift>z"):
             self.redo()
             return True
         return False
