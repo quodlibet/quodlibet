@@ -366,37 +366,45 @@ def is_accel(event, *accels):
         ValueError: in case any of the accels could not be parsed
     """
 
-    assert accels
-
     if event.type != Gdk.EventType.KEY_PRESS:
         return False
+    return is_accel_pressed(event.keyval, event.state, *accels)
+
+
+def is_accel_pressed(keyval, state, *accels):
+    """Checks if a (keyval, state) pair from EventControllerKey matches any
+    of the accelerator strings.
+
+    Args:
+        keyval: Gdk keyval from EventControllerKey.key-pressed
+        state: Gdk.ModifierType from EventControllerKey.key-pressed
+        *accels: one or more accel strings, e.g. "<Primary>Return"
+    Returns:
+        bool
+    Raises:
+        ValueError: in case any of the accels could not be parsed
+    """
+
+    assert accels
 
     # ctrl+shift+x gives us ctrl+shift+X and accelerator_parse returns
     # lowercase values for matching, so lowercase it if possible
-    keyval = event.keyval
     if not keyval & ~0xFF:
         keyval = ord(chr(keyval).lower())
 
     default_mod = Gtk.accelerator_get_default_mod_mask()
+    event_mod = state & default_mod
 
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
         if accel_keyval == 0 and accel_mod == 0:
             raise ValueError(f"Invalid accel: {accel}")
 
-        # If the accel contains non default modifiers matching will
-        # never work and since no one should use them, complain
         non_default = accel_mod & ~default_mod
         if non_default:
             mod = Gtk.accelerator_name(0, non_default) or ""
             print_w(f"Accelerator {accel!r} contains a non default modifier {mod!r}")
 
-        # GTK4: In GTK4, event.state already contains the correct modifiers,
-        # no need for virtual modifier mapping like in GTK3
-        # Just compare keyval and masked modifier state
-        event_mod = event.state & default_mod
-
-        # Remove everything except default modifiers and compare
         if accel_keyval == keyval and accel_mod == event_mod:
             return True
 

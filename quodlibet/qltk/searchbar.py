@@ -11,7 +11,7 @@ import operator
 import os
 from functools import reduce
 
-from gi.repository import Gtk, GObject, GLib
+from gi.repository import Gtk, GObject, GLib, Gio
 
 import quodlibet
 from quodlibet import config
@@ -19,9 +19,7 @@ from quodlibet import _
 
 from quodlibet.query import Query
 from quodlibet.qltk.cbes import ComboBoxEntrySave
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import is_accel, get_children
+from quodlibet.qltk import is_accel_pressed, get_children
 from quodlibet.util import limit_songs, DeferredSignal
 
 
@@ -81,12 +79,32 @@ class SearchBarBox(Gtk.Box):
         self.__sig = combo.connect("text-changed", self.__text_changed)
 
         entry.connect("clear", self._filter_changed)
-        entry.connect("backspace", self.__text_changed)
-        entry.connect("populate-popup", self.__menu)
         entry.connect("activate", self._filter_changed)
         entry.connect("activate", self.__save_search)
-        entry.connect("focus-out-event", self.__save_search)
-        entry.connect("key-press-event", self.__key_pressed)
+
+        focus_ctrl = Gtk.EventControllerFocus()
+        focus_ctrl.connect("leave", self.__on_focus_leave)
+        entry.add_controller(focus_ctrl)
+
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.__on_key_pressed)
+        entry.add_controller(key_ctrl)
+
+        eager_action = Gio.SimpleAction.new_stateful(
+            "eager-search",
+            None,
+            GLib.Variant.new_boolean(
+                config.getboolean("settings", "eager_search", True)
+            ),
+        )
+        eager_action.connect("change-state", self.__on_eager_search_changed)
+        action_group = Gio.SimpleActionGroup()
+        action_group.add_action(eager_action)
+        entry.insert_action_group("searchbar", action_group)
+
+        extra_menu = Gio.Menu()
+        extra_menu.append(_("Search after _typing"), "searchbar.eager-search")
+        entry.set_extra_menu(extra_menu)
 
         entry.set_placeholder_text(_("Search"))
         entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
@@ -140,17 +158,12 @@ class SearchBarBox(Gtk.Box):
     def __uninhibit(self):
         self.__combo.handler_unblock(self.__sig)
 
-    def __menu(self, entry, menu):
-        sep = SeparatorMenuItem()
-        sep.show()
-        menu.prepend(sep)
+    def __on_eager_search_changed(self, action, new_state):
+        config.set("settings", "eager_search", str(new_state.get_boolean()).lower())
+        action.set_state(new_state)
 
-        cb = ConfigCheckMenuItem(
-            _("Search after _typing"), "settings", "eager_search", populate=True
-        )
-        cb.set_tooltip_text(_("Show search results after the user stops typing"))
-        cb.show()
-        menu.prepend(cb)
+    def __on_focus_leave(self, _controller):
+        self.__save_search(self._entry, True)
 
     def __mnemonic_activate(self, label, group_cycling):
         widget = label.get_mnemonic_widget()
@@ -177,10 +190,10 @@ class SearchBarBox(Gtk.Box):
             self.__combo.write()
             self.__uninhibit()
 
-    def __key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __on_key_pressed(self, _controller, keyval, _keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             # Save query on Primary+Return accel, even though the focus is kept
-            self.__save_search(entry)
+            self.__save_search(self._entry)
         return False
 
     def _filter_changed(self, *args):
