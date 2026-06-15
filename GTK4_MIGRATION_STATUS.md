@@ -2,7 +2,7 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-05-30
+**Last Updated**: 2026-06-15
 **Test Results**: 4653 passed, 18 failed, 49 skipped (99.6%)
 
 
@@ -34,6 +34,24 @@ lifecycle / cleanup differences not yet investigated:
 - MediaServer (2): test_entry_name, test_name_owner (DBus teardown,
   not GTK-related)
 
+
+Recently Landed (2026-06-15)
+----------------------------
+
+- `qltk/seekbutton.py` fully migrated off shimmed signals. HSlider's
+  `Gtk.Window(POPUP)` + manual grab slider is now a `Gtk.Popover`;
+  `Gtk.Arrow` → `Gtk.Image`; `Button.add`/`show_all` → `set_child`.
+  The four scale button/key press-release "seek lock" connects collapse
+  into one `Gtk.Range::change-value` handler (debounced seek);
+  `scroll-event` → `EventControllerScroll`; right/middle-click +
+  `popup-menu` → `GestureClick` + `EventControllerKey`. Context menu is
+  now `Gtk.Popover` + `Gtk.Box` (queue/playorder idiom) instead of a
+  shimmed `Gtk.PopoverMenu`. Removes WindowType/WindowTypeHint/EventMask/
+  add_events/Arrow/Button.add/show_all/window_grab_and_map/
+  popup_menu_at_widget shim usage. Public API unchanged.
+- Codebase-wide shimmed-signal connects: 45 → 31.
+- NOT yet visually verified at runtime (popover slider / scroll-seek /
+  right-click menu); app launches with no seekbutton errors.
 
 Recently Landed (2026-05-30)
 ----------------------------
@@ -87,11 +105,42 @@ Known Limitations (Tracked, Non-Blocking)
 - M3U/PLS URL import via DnD to playlist browser is deferred.
 - `quodlibet/_init.py` still hosts compatibility shims; each is
   documented and should be removed as call sites migrate.
-- Remaining shimmed-signal call sites (~55 connects across button-press,
-  key-press, focus-out, populate-popup, etc.) — biggest cluster is
-  `qltk/seekbutton.py` (right-click menu, scroll seek) and
-  `qltk/info.py` (song info bar context menu / clipboard middle-click).
-  Each needs a GestureClick / EventControllerKey rewrite plus a
-  Gtk.PopoverMenu replacement for any Gtk.Menu still in scope.
+- Remaining shimmed-signal call sites (31 connects across button-press,
+  key-press, focus-out, populate-popup, scroll, etc.). `seekbutton.py`
+  is done; next cluster is `qltk/info.py` (song info bar context menu /
+  clipboard middle-click, 3 connects), then the long tail across
+  `qltk/edittags.py`, `ext/songsmenu/tapbpm.py`,
+  `ext/events/waveformseekbar.py` (still on `do_button_press_event`
+  vfuncs), `ext/events/trayicon/systemtray.py`, `browsers/paned/pane.py`
+  and ~1-each across browsers/ext. Each needs a GestureClick /
+  EventControllerKey rewrite; reuse the Gtk.Popover+Gtk.Box context-menu
+  idiom (queue/playorder) rather than the shimmed Gtk.PopoverMenu.
+- The Gtk.Menu/Gtk.MenuItem subsystem is still shimmed codebase-wide
+  (~91 MenuItem usages). Full Gio.Menu migration is a separate large
+  cross-cutting effort — do not island-rewrite individual menus.
 - `SongListPaned` drag-to-expand-queue UX is dropped (relied on
   `Gtk.Paned.get_handle_window()` which is gone in GTK4).
+
+
+Test Follow-ups (from 2026-06-15 review)
+----------------------------------------
+
+A review of the branch's test changes vs `main` flagged these
+(non-blocking, but worth fixing):
+
+- Lost coverage: `tests/test_qltk_util.py` was deleted but its target
+  `position_window_beside_widget` (`quodlibet/qltk/util.py`) still ships
+  untested — re-test or delete the function.
+- Shim-coupled test: `tests/test_plugins_playlist.py` asserts
+  `menu.get_children()` length on a `Gtk.PopoverMenu` (incidental widget
+  structure via shim) — rewrite to introspect the `Gio.Menu` model like
+  `test_qltk_filesel.py` / `test_qltk_songlist.py` do.
+- `tests/test_browsers_playlists.py` `_fake_browser_pack` uses
+  `prepend(b, True, True, 0)` (GTK3 pack args via the Box.prepend shim) —
+  should be `prepend(b)`.
+- `tests/test_qltk_views.py` `test_key_events`/`test_click`/
+  `test_right_click` assert nothing now (helper event-senders stubbed to
+  no-ops) — skip-mark or add real assertions.
+- Other deletions to confirm intentional: `test_drag_data_get`
+  (playlist DnD), `test_volumemenu` (VolumeMenu), weakened
+  `test_qltk_paned.py` min-size assertion.
