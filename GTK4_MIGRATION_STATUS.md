@@ -94,6 +94,21 @@ Earlier (2026-05-16)
 - Dead VolumeMenu / Unity / Dbusmenu code removed; ruff suite clean.
 
 
+Known Broken — Visual (high priority)
+-------------------------------------
+
+- **CoverGrid covers render tiny** (~16px, pinned top-left of each
+  cell). Root cause: `browsers/covergrid/widgets.py` uses
+  `Gtk.Image` + `set_from_pixbuf` (lines ~51, 137). In GTK4 `Gtk.Image`
+  only renders at *icon size* and downscales any pixbuf — it is not for
+  arbitrary-size images. Fix: switch `self._image` to `Gtk.Picture`
+  (`set_pixbuf` / `set_paintable` with a `Gdk.Texture`, with
+  `set_content_fit`/size-request to the cover size). Check the other
+  `set_from_pixbuf` site `ext/songsmenu/cover_download.py:147` and the
+  `Image`-subclass in `qltk/x.py:410` for the same trap. The main cover
+  (`qltk/cover.py`) is fine — it draws via snapshot, not Gtk.Image.
+
+
 Known Limitations (Tracked, Non-Blocking)
 -----------------------------------------
 
