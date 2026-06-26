@@ -2214,7 +2214,7 @@ msgstr "Obaveštenje pesme"
 msgid "Displays a notification when the song changes."
 msgstr "Prikazuje obaveštenja pri promeni pesme."
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "Sledeće"
 
@@ -6256,7 +6256,7 @@ msgid "performers"
 msgstr "izvođači"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Nikad"
 
@@ -7631,11 +7631,11 @@ msgstr "Počni o_d:"
 msgid "_Total tracks:"
 msgstr "_Ukupno zapisa:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "Pusti/Pauziraj"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "Prethodno"
 
