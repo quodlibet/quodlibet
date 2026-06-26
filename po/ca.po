@@ -2225,7 +2225,7 @@ msgstr "Notificacions de les cançons"
 msgid "Displays a notification when the song changes."
 msgstr "Mostra una notificació en canviar de cançó."
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "Següent"
 
@@ -6266,7 +6266,7 @@ msgid "performers"
 msgstr "intèrprets"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Mai"
 
@@ -7645,11 +7645,11 @@ msgstr "Co_mença des de:"
 msgid "_Total tracks:"
 msgstr "Pistes en _total:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "Reprodueix/Posa en pausa"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "Anterior"
 

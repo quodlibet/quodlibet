@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-03-17 06:09+0000\n"
+"PO-Revision-Date: 2026-05-17 01:11+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.6.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2191,7 +2191,7 @@ msgstr "曲の通知"
 msgid "Displays a notification when the song changes."
 msgstr "曲が変わったときに通知を表示します。"
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "次へ"
 
@@ -3587,17 +3587,17 @@ msgid "Queue Only"
 msgstr "キューのみ再生"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
 "Select this play order in the shuffle settings of the main window and enable "
 "shuffle mode. Double-clicking any song will enqueue it instead of playing."
 msgstr ""
-"曲の再生をキューに限定します。\n"
+"再生できる曲をキュー内の曲に限定します。\n"
 "\n"
-"メインウィンドウでこの再生順序を選択し、曲をダブルクリックすると、再生する代"
-"わりにキューに追加されます。"
+"メインウィンドウのシャッフル設定でこの再生順序を選択し、シャッフルモードを有"
+"効にしてください。曲をダブルクリックすると、再生される代わりに再生キューに追"
+"加されます。"
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
@@ -6146,7 +6146,7 @@ msgid "performers"
 msgstr "演奏者"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "なし"
 
@@ -7488,11 +7488,11 @@ msgstr "開始番号(_M):"
 msgid "_Total tracks:"
 msgstr "合計トラック数(_T):"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "再生/一時停止"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "前へ"
 
