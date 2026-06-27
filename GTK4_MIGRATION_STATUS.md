@@ -97,16 +97,17 @@ Earlier (2026-05-16)
 Known Broken — Visual (high priority)
 -------------------------------------
 
-- **CoverGrid covers render tiny** (~16px, pinned top-left of each
-  cell). Root cause: `browsers/covergrid/widgets.py` uses
-  `Gtk.Image` + `set_from_pixbuf` (lines ~51, 137). In GTK4 `Gtk.Image`
+- **CoverGrid covers render tiny** — FIXED. `browsers/covergrid/widgets.py`
+  `self._image` is now a `Gtk.Picture` (`content_fit=CONTAIN`,
+  size-request to the cover size) fed via
+  `set_paintable(Gdk.Texture.new_for_pixbuf(pb))`. In GTK4 `Gtk.Image`
   only renders at *icon size* and downscales any pixbuf — it is not for
-  arbitrary-size images. Fix: switch `self._image` to `Gtk.Picture`
-  (`set_pixbuf` / `set_paintable` with a `Gdk.Texture`, with
-  `set_content_fit`/size-request to the cover size). Check the other
-  `set_from_pixbuf` site `ext/songsmenu/cover_download.py:147` and the
-  `Image`-subclass in `qltk/x.py:410` for the same trap. The main cover
-  (`qltk/cover.py`) is fine — it draws via snapshot, not Gtk.Image.
+  arbitrary-size images. Still TODO: the same trap affects the
+  `Gtk.Image` *subclasses* `WebImage` (`qltk/x.py:364`) and
+  `ResizeWebImage` (`ext/songsmenu/cover_download.py:81`), which display
+  arbitrary-size web images; converting those means reworking the base
+  class. The main cover (`qltk/cover.py`) is fine — it draws via
+  snapshot, not Gtk.Image.
 
 
 Known Limitations (Tracked, Non-Blocking)

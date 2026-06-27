@@ -48,7 +48,13 @@ class AlbumWidget(Gtk.FlowBoxChild):
         self._box = box = Gtk.Box(vexpand=False, orientation=Gtk.Orientation.VERTICAL)
 
         image_size = self.__get_image_size()
-        self._image = Gtk.Image(width_request=image_size, height_request=image_size)
+        # GTK4: Gtk.Image only renders at icon size and downscales arbitrary
+        # pixbufs; Gtk.Picture renders covers at their natural size.
+        self._image = Gtk.Picture(
+            width_request=image_size,
+            height_request=image_size,
+            content_fit=Gtk.ContentFit.CONTAIN,
+        )
         self._label = label = Gtk.Label(
             ellipsize=Pango.EllipsizeMode.END, justify=Gtk.Justification.CENTER
         )
@@ -134,7 +140,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         else:
             size = self.props.scale_factor * self.props.cover_size
             pb = _no_cover(size)
-        self._image.set_from_pixbuf(pb)
+        self._image.set_paintable(Gdk.Texture.new_for_pixbuf(pb))
 
     def _set_text(self, label: str | None = None):
         if label:
