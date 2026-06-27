@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject, Graphene
 from quodlibet.fsn import fsnative
 
 from quodlibet import qltk
@@ -18,7 +18,6 @@ from quodlibet.qltk.image import (
     calc_scale_size,
     scale,
     add_border_widget,
-    get_surface_for_pixbuf,
 )
 
 
@@ -184,55 +183,53 @@ class ResizeImage(Gtk.Widget):
             return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
         return Gtk.SizeRequestMode.CONSTANT_SIZE
 
-    def do_get_preferred_width(self):
-        if self._resize:
-            return (0, 0)
-        width, height = self._get_size(self._size, self._size)
-        return (width, width)
+    def do_measure(self, orientation, for_size):
+        if orientation == Gtk.Orientation.HORIZONTAL:
+            width, _height = self._get_size(self._size, self._size)
+            minimum = 0 if self._resize else width
+            return (minimum, max(width, 1), -1, -1)
 
-    def do_get_preferred_height(self):
-        if self._resize:
-            return (0, 0)
-        width, height = self._get_size(self._size, self._size)
-        return (height, height)
+        # vertical: derive an aspect-correct height for the given width
+        if self._resize and for_size > 0:
+            _width, height = self._get_size(for_size, for_size * 4)
+            return (0, max(height, 1), -1, -1)
+        _width, height = self._get_size(self._size, self._size)
+        minimum = 0 if self._resize else height
+        return (minimum, max(height, 1), -1, -1)
 
-    def do_get_preferred_width_for_height(self, req_height):
-        width, height = self._get_size(300, req_height)
-
-        if width > 256:
-            width = width
-
-        return (width, width)
-
-    def do_draw(self, cairo_context):
+    def do_snapshot(self, snapshot):
         pixbuf = self._get_pixbuf()
         if not pixbuf:
             return
 
-        alloc = self.get_allocation()
-        width, height = alloc.width, alloc.height
-
+        width = self.get_width()
+        height = self.get_height()
         scale_factor = self.get_scale_factor()
-
-        width *= scale_factor
-        height *= scale_factor
+        dev_width = width * scale_factor
+        dev_height = height * scale_factor
 
         if self._path:
-            if width < (2 * scale_factor) or height < (2 * scale_factor):
+            if dev_width < (2 * scale_factor) or dev_height < (2 * scale_factor):
                 return
             pixbuf = scale(
-                pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor)
+                pixbuf, (dev_width - 2 * scale_factor, dev_height - 2 * scale_factor)
             )
             pixbuf = add_border_widget(pixbuf, self)
         else:
-            pixbuf = scale(pixbuf, (width, height))
+            pixbuf = scale(pixbuf, (dev_width, dev_height))
 
-        style_context = self.get_style_context()
         if not pixbuf:
             print_w(f"Failed to scale pixbuf for {self._path}")
             return
-        surface = get_surface_for_pixbuf(self, pixbuf)
-        Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
+
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        # Centre the (aspect-preserved) cover within the allocation.
+        tex_w = texture.get_width() / scale_factor
+        tex_h = texture.get_height() / scale_factor
+        x = (width - tex_w) / 2
+        y = (height - tex_h) / 2
+        rect = Graphene.Rect().init(x, y, tex_w, tex_h)
+        snapshot.append_texture(texture, rect)
 
 
 class CoverImage(Gtk.Box):
