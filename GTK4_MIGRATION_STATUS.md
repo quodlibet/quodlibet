@@ -2,7 +2,7 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-06-15
+**Last Updated**: 2026-06-27
 **Test Results**: 4653 passed, 18 failed, 49 skipped (99.6%)
 
 
@@ -94,20 +94,114 @@ Earlier (2026-05-16)
 - Dead VolumeMenu / Unity / Dbusmenu code removed; ruff suite clean.
 
 
-Known Broken — Visual (high priority)
--------------------------------------
+Visual / Layout Regressions (2026-06-27 review)
+-----------------------------------------------
 
-- **CoverGrid covers render tiny** — FIXED. `browsers/covergrid/widgets.py`
-  `self._image` is now a `Gtk.Picture` (`content_fit=CONTAIN`,
-  size-request to the cover size) fed via
-  `set_paintable(Gdk.Texture.new_for_pixbuf(pb))`. In GTK4 `Gtk.Image`
-  only renders at *icon size* and downscales any pixbuf — it is not for
-  arbitrary-size images. Still TODO: the same trap affects the
-  `Gtk.Image` *subclasses* `WebImage` (`qltk/x.py:364`) and
-  `ResizeWebImage` (`ext/songsmenu/cover_download.py:81`), which display
-  arbitrary-size web images; converting those means reworking the base
-  class. The main cover (`qltk/cover.py`) is fine — it draws via
-  snapshot, not Gtk.Image.
+Runtime screenshot review against GTK3 `main`. Several distinct issues;
+root cause found where noted. Fixed items kept here for the audit trail.
+
+### Font / glyph rendering corruption — ENV, likely GSK renderer
+
+Symptoms: now-playing info text switches bold/large → normal *mid-word*
+even though the Pango markup is valid and wraps the whole title
+uniformly (verified: `Pango.parse_markup` succeeds, one span over the
+whole title); rating stars `★ ☆` render as `�` (U+FFFD); song list rows
+look vertically clipped / sub-pixel-mangled. Varies per song.
+
+Not app logic: markup is well-formed, fonts resolve (`fc-list` ~1157,
+`fc-match sans` → Noto Sans), and `pango`/`harfbuzz`/`freetype` resolve
+to the correct Nix store paths via RPATH. **It was fine on `main`
+(GTK3) in the same Nix shell**, so it is a GTK4-specific regression.
+
+Most likely cause: GTK4 defaults to the GPU GSK renderer (ngl/Vulkan)
+and builds glyph atlases on the GPU. This dev shell has **no GL/Vulkan
+on `LD_LIBRARY_PATH`**, so a Nix-built GTK4 ends up against the host
+`/usr/lib/libGL.so` — a mismatched GL stack that corrupts glyph
+textures. GTK3 used cairo (CPU) so `main` was unaffected.
+
+Workaround to verify, then bake into `flake.nix` if confirmed:
+`GSK_RENDERER=cairo nix develop -c -- poetry run python quodlibet.py`.
+(Running under Nix on a foreign distro is itself only semi-supported;
+the GPU renderer is the sharp edge.) If cairo fixes it, the GPU path is
+the culprit and is worth keeping native on supported setups — see the
+perf note below.
+
+### Now-playing cover missing (top-right) — FIXED
+
+`ResizeImage` (`qltk/cover.py`) still implemented GTK3 vfuncs
+(`do_draw`, `do_get_preferred_*`) that GTK4 never calls, so it measured
+0×0 and painted nothing. Ported to `do_measure` (aspect-correct,
+natural 70px / height-for-width) + `do_snapshot` (scale → border →
+`Gdk.Texture`, centred). The earlier claim in this doc that the main
+cover "draws via snapshot" was wrong — it was still on `do_draw`.
+
+### Browser search bar at the bottom of the pane — FIXED
+
+Album + CoverGrid browsers showed the search bar below the list. Cause:
+GTK3 `pack_start()` appends in document order, but the migration
+translated `pack_start()` → `prepend()`, which inserts at the *start*
+and reverses sequential packs. Canonical GTK4 mapping is
+`pack_start → append`; fixed both browsers. **Systematic risk:** this
+`pack_start → prepend` mistranslation is repeated across the codebase
+(~133 `.prepend(` call sites). Confirmed also reversed in
+`qltk/tagsfrompath.py` (124,135) and `qltk/renamefiles.py` (190,201)
+where `hbox`/`sw` are swapped. Needs a careful per-site sweep
+(cross-check each against `git show main:<file>`); not all `prepend`s
+are wrong (genuine `pack_end`/single-child cases exist).
+
+### CoverGrid lays out as a single column, not a grid — OPEN
+
+The `Gtk.FlowBox` (`browsers/covergrid/main.py:275`, `homogeneous=True`,
+`max_children_per_line=10`) renders one item per line. Hypothesis: the
+per-item label is not width-constrained, so a very long album/artist
+string blows up the child's natural width and, with `homogeneous=True`,
+forces every child to that width → one column. `AlbumWidget.do_measure`
+fixes the *horizontal* size but the label inside still wants its full
+natural width. Fix candidate: constrain the label
+(`max_width_chars`/`width_request`/`wrap`) and confirm `do_measure` is
+actually driving the child width. Horizontal-alignment oddities are
+probably the same root cause.
+
+### CoverGrid covers render tiny — FIXED
+
+`browsers/covergrid/widgets.py` `self._image` is now a `Gtk.Picture`
+(`content_fit=CONTAIN`, size-request to the cover size) fed via
+`set_paintable(Gdk.Texture.new_for_pixbuf(pb))`. In GTK4 `Gtk.Image`
+only renders at *icon size* and downscales any pixbuf — it is not for
+arbitrary-size images. Same trap still affects the `Gtk.Image`
+*subclasses* `WebImage` (`qltk/x.py:364`) and `ResizeWebImage`
+(`ext/songsmenu/cover_download.py:81`); converting those means reworking
+the base class.
+
+### Other open visual items
+
+- **"Missing cover" placeholder bitmap changed** vs `main`
+  (`get_no_cover_pixbuf` / `quodlibet-missing-cover` icon lookup in
+  `qltk/cover.py`). Confirm whether the new icon is acceptable or a
+  lookup regression.
+- **Transport / seek control too large.** The seek area
+  (`qltk/seekbutton.py`, recently rewritten) takes too much vertical
+  space vs `main`. Needs size-request / layout review.
+
+### Performance opportunity — keep rendering native
+
+The GPU renderer that's currently misbehaving under Nix is also the
+upside: on a supported GL/Vulkan stack, GTK4's GSK renderer composites
+on the GPU. For texture-heavy, scroll-heavy views like CoverGrid this
+can be a real win over GTK3's cairo software path — *provided* we stay
+native:
+
+- Hold covers as `Gdk.Texture` / `Gtk.Picture` (done for CoverGrid), so
+  each cover is uploaded once and is cheap to re-draw and scroll, rather
+  than re-blitted by cairo every frame.
+- The biggest structural win is replacing model-backed `Gtk.TreeView`
+  (song list) and the FlowBox with `Gtk.ColumnView` / `Gtk.GridView` +
+  `Gio.ListModel`, which virtualise: only visible rows/cells are
+  realised. That matters most for very large libraries.
+- Caveat: none of this lands while we're on the cairo fallback, and the
+  shim layer (fake events, `do_draw` widgets, Gtk.Menu) keeps us on
+  slow/legacy paths. The perf payoff is gated on finishing the *native*
+  migration, not just making GTK3 idioms compile.
 
 
 Known Limitations (Tracked, Non-Blocking)
