@@ -596,8 +596,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         search.prepend(prefs)
         hb = Gtk.Box(spacing=3)
         hb.prepend(search)
-        self.prepend(hb)
-        self.prepend(sw)
+        self.append(hb)
+        self.append(sw)
 
         self.connect("destroy", self.__destroy)
 

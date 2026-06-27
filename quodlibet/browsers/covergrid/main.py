@@ -308,8 +308,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         prefs = PreferencesButton(self, model_sort)
         search.prepend(prefs)
-        self.prepend(Align(search, left=6, top=0))
-        self.prepend(sw)
+        self.append(Align(search, left=6, top=0))
+        self.append(sw)
 
         self.__update_filter()
         model_filter.connect(
