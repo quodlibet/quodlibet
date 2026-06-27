@@ -1,7 +1,7 @@
 {
   description = "Development Flake for Quod Libet";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -30,14 +30,10 @@
             projectRootFile = "flake.nix";
 
             programs = {
-              nixfmt.enable = pkgs.lib.meta.availableOn pkgs.stdenv.buildPlatform pkgs.nixfmt-rfc-style.compiler;
-
-              nixfmt.package = pkgs.nixfmt-rfc-style;
+              nixfmt.enable = pkgs.lib.meta.availableOn pkgs.stdenv.buildPlatform pkgs.nixfmt.compiler;
               shellcheck.enable = true;
               shfmt.enable = true;
-              # TODO: migrate on next release (https://github.com/numtide/treefmt-nix/pull/443)
-              # shfmt.useEditorConfig = true;
-              shfmt.indent_size = 4;
+              shfmt.useEditorConfig = true;
               statix.enable = true;
               deadnix.enable = true;
               prettier.enable = true;
@@ -98,7 +94,7 @@
               ]
               ++ lib.optionals stdenv.isLinux [
                 libappindicator-gtk3
-                xorg.xvfb
+                xvfb
               ]
               ++ (with gst_all_1; [
                 gstreamer
