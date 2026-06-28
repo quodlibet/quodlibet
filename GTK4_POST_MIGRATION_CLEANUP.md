@@ -57,6 +57,21 @@ Idiomatic rewrites still pending
   needs a `Gtk.EventControllerMotion` with widget-coord translation.
 
 
+Performance / UX (high priority)
+--------------------------------
+
+- **CoverGrid cover caching.** A long-standing user pain point — CoverGrid
+  performance (and the dated UI) is a frequent reason people leave QL. Cover
+  loading still hits the filesystem on every load ("Searching for local cover"
+  spam in the logs); the per-item in-memory `_cover` only helps within a single
+  session and only once an item has been bound. Needs a **persistent, shared
+  cover/thumbnail cache** (reuse/extend `util.thumbnails`) so covers aren't
+  re-searched and re-decoded on every scroll or restart, plus a bounded
+  in-memory LRU so huge libraries stay smooth. The GridView virtualisation was
+  step one (don't realise 1800 widgets); caching is the other half. Treat this
+  as a headline item, not polish.
+
+
 Visual / rendering
 ------------------
 
