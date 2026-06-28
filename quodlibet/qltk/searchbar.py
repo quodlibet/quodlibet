@@ -275,7 +275,11 @@ class LimitSearchBarBox(SearchBarBox):
 
     def toggle_limit_widgets(self, button):
         """Toggles the visibility of the limit widget according to `button`"""
-        if button.get_active():
+        self.toggle_limit_widgets_bool(button.get_active())
+
+    def toggle_limit_widgets_bool(self, limit):
+        """Toggles the visibility of the limit widget to the given bool"""
+        if limit:
             self.__limit.show()
         else:
             self.__limit.hide()
