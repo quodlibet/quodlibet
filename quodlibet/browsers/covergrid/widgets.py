@@ -53,17 +53,21 @@ class AlbumWidget(Gtk.Box):
         # GTK4: Gtk.Image only renders at icon size and downscales arbitrary pixbufs;
         # Gtk.Picture renders covers at their natural size.
         self._image = Gtk.Picture(
-            width_request=image_size,
-            height_request=image_size,
-            content_fit=Gtk.ContentFit.CONTAIN,
+            content_fit=Gtk.ContentFit.CONTAIN, hexpand=True, vexpand=True
         )
+        # GridView stretches each column to fill the width, so keep the cover
+        # square and filling the cell instead of floating at a fixed size.
+        self._frame = frame = Gtk.AspectFrame(ratio=1.0, obey_child=False)
+        frame.set_child(self._image)
+        frame.set_size_request(image_size, image_size)
+
         self._label = label = Gtk.Label(
             ellipsize=Pango.EllipsizeMode.END,
             justify=Gtk.Justification.CENTER,
             max_width_chars=1,
         )
 
-        self.append(self._image)
+        self.append(frame)
         self.append(self._label)
 
         gesture = Gtk.GestureClick()
@@ -145,8 +149,7 @@ class AlbumWidget(Gtk.Box):
 
     def __cover_size(self, _, prop):
         size = self.__get_image_size()
-        self._image.props.width_request = size
-        self._image.props.height_request = size
+        self._frame.set_size_request(size, size)
         self._set_cover(self.model.cover if self.model else None)
         self.populate()
 
