@@ -22,4 +22,9 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix develop --command poetry --version
+      - name: Install dev + plugin deps in the Nix dev shell
+        run: nix develop --command poetry install --with dev --all-extras
+      - name: Run the test suite in the Nix dev shell
+        # Xvfb is on PATH from the flake; pyvirtualdisplay starts it headlessly.
+        run: nix develop --command poetry run pytest tests/ -rxXs -m "not quality"
       - run: nix flake check --keep-going -L
