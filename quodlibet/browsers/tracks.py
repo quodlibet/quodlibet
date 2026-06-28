@@ -28,11 +28,11 @@ class PreferencesButton(Gtk.Box):
     def __init__(self, search_bar_box):
         super().__init__()
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        box.set_margin_top(4)
-        box.set_margin_bottom(4)
-        box.set_margin_start(8)
-        box.set_margin_end(8)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        box.set_margin_top(10)
+        box.set_margin_bottom(10)
+        box.set_margin_start(10)
+        box.set_margin_end(10)
 
         def add_switch(label, section, option, on_change):
             cs = ConfigSwitch(label, section, option, populate=True)
