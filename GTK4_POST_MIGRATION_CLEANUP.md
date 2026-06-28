@@ -57,6 +57,18 @@ Idiomatic rewrites still pending
   needs a `Gtk.EventControllerMotion` with widget-coord translation.
 
 
+UX enhancements (post-fidelity)
+-------------------------------
+
+- **Inline cumulative star rating in the context menu.** Once the menu is on
+  `Gio.Menu`, an inline star row (hover-preview, click Nth star = rating N) as a
+  `PopoverMenu` custom child removes a click vs the Rating submenu and feels
+  modern. Deferred: the migration restores the original submenu first for
+  fidelity; this is an enhancement on top. (Spike proved the custom-child slot
+  and the cumulative interaction both work.) Low priority, too: the song list
+  already has a **ratings column** for click-to-rate without any right-click.
+
+
 Performance / UX (high priority)
 --------------------------------
 

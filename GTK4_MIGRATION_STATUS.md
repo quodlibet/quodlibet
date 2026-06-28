@@ -2,8 +2,41 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-06-27
+**Last Updated**: 2026-06-28
 **Test Results**: 4653 passed, 18 failed, 49 skipped (99.6%)
+
+
+SongsMenu → Gio.Menu: migration plan
+------------------------------------
+
+The blank right-click/prefs menus are the `Gtk.PopoverMenu`-renders-a-model
+(not appended widgets) gap. Approach decided (spike proved it,
+`/tmp/menu_spike.py`): rebuild on a `Gio.Menu` model + `Gio.SimpleAction`s.
+Ratings + playlists stay as native **submenus** (fidelity first; inline star
+row is a deferred enhancement — see cleanup doc). Execute as one focused run:
+
+1. **`SongsMenu`** owns a `Gio.SimpleActionGroup` (prefix e.g. `songs`).
+   Each `init_*` builds a `Gio.MenuItem` (label + detailed action) + a
+   `SimpleAction` running the existing callback; `set_sensitive` →
+   `action.set_enabled`; sections via `Gio.Menu.append_section`.
+2. **Parent window**: callbacks use `get_menu_item_top_parent(menu_item)` today;
+   actions have no widget. Capture the attach widget on the menu and resolve the
+   top parent from that instead.
+3. **Ratings**: native submenu of star-labelled radio items (stateful action) +
+   Remove. **Playlists / Plugins / Queue**: native submenus
+   (`append_submenu`). The plugin path (`SongsMenuPluginHandler.menu`) returns a
+   menu too — convert it to build a `Gio.Menu`.
+4. **`items=` API**: 13 call sites, ~6 pass widget `items=[[MenuItem]]`
+   (`browsers/_base.py`, `podcasts.py`, covergrid, albums, soundcloud,
+   `qltk/info.py`). Change to action-specs (label, icon, callback) and update
+   those callers.
+5. **Popup**: `Gtk.PopoverMenu.new_from_model` + `insert_action_group`; keep the
+   `popup_menu_at_widget` entry point working.
+6. **Tests**: `tests/test_qltk_songsmenu.py` (11) assert `menu.get_children()`
+   widget structure — rewrite to introspect the `Gio.Menu` model + action
+   enabled-state (cf. `test_qltk_filesel.py` / `test_qltk_songlist.py`).
+7. Once all menu call sites are off them, delete the `PopoverMenu` /
+   `Gtk.MenuItem` / `CheckMenuItem` shims in `_init.py`.
 
 
 Quick Summary
