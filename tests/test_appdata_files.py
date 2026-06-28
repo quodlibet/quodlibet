@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 import os
+import re
 import subprocess
 import functools
 
@@ -30,7 +31,13 @@ def get_appstream_cli_version():
         return (0, 0, 0)
 
     text = data.decode("utf-8", "replace")
-    return tuple([int(p) for p in text.rsplit()[-1].split(".")])
+    # The first line is like "AppStream version: 1.0.3"; later lines can list
+    # compiled-against paths (e.g. a Nix glibc store path) that the old
+    # last-token parsing choked on. Grab the first version-like number.
+    match = re.search(r"\d+\.\d+(?:\.\d+)*", text)
+    if match is None:
+        return (0, 0, 0)
+    return tuple(int(p) for p in match.group(0).split("."))
 
 
 def is_too_old_appstream_cli_version():
