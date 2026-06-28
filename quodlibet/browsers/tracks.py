@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from quodlibet import app
 from quodlibet import config
@@ -15,6 +15,7 @@ from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.qltk import is_accel
+from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import MultiSearchBarBox
@@ -27,42 +28,41 @@ class PreferencesButton(Gtk.Box):
     def __init__(self, search_bar_box):
         super().__init__()
 
-        actions = Gio.SimpleActionGroup()
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        box.set_margin_top(4)
+        box.set_margin_bottom(4)
+        box.set_margin_start(8)
+        box.set_margin_end(8)
 
-        def add_toggle(name, section, option, on_change):
-            state = config.getboolean(section, option, False)
-            action = Gio.SimpleAction.new_stateful(
-                name, None, GLib.Variant.new_boolean(state)
-            )
+        def add_switch(label, section, option, on_change):
+            cs = ConfigSwitch(label, section, option, populate=True)
+            cs.set_spacing(12)
+            cs.get_first_child().set_hexpand(True)
+            cs.switch.set_halign(Gtk.Align.END)
+            cs.switch.set_valign(Gtk.Align.CENTER)
+            cs.connect("notify::active", lambda sw, *a: on_change(sw.get_active()))
+            box.append(cs)
 
-            def changed(action, value):
-                action.set_state(value)
-                on = value.get_boolean()
-                config.set(section, option, str(on).lower())
-                on_change(on)
-
-            action.connect("change-state", changed)
-            actions.add_action(action)
-
-        add_toggle(
-            "limit",
+        add_switch(
+            _("_Limit Results"),
             "browsers",
             "search_limit",
             search_bar_box.toggle_limit_widgets_bool,
         )
-        add_toggle(
-            "multi", "browsers", "multiple_queries", search_bar_box.toggle_multi_bool
+        add_switch(
+            _("_Allow multiple queries"),
+            "browsers",
+            "multiple_queries",
+            search_bar_box.toggle_multi_bool,
         )
 
-        menu = Gio.Menu()
-        menu.append(_("_Limit Results"), "search-prefs.limit")
-        menu.append(_("_Allow multiple queries"), "search-prefs.multi")
+        popover = Gtk.Popover()
+        popover.set_child(box)
 
         button = MenuButton(
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
-        button.set_menu_model(menu)
-        button.insert_action_group("search-prefs", actions)
+        button.set_popover(popover)
         self.prepend(button)
 
 
