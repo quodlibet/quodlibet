@@ -60,6 +60,20 @@ Idiomatic rewrites still pending
 UX enhancements (post-fidelity)
 -------------------------------
 
+- **Boolean settings: menu checks vs switches.** GTK4 `Gio.Menu` boolean items
+  show a ✓ only when on (nothing when off) — idiomatic (Nautilus does this), but
+  it reads oddly for settings because state is hidden at rest. Modern
+  GNOME/libadwaita apps mostly move boolean options *out of menus* into a
+  preferences surface with switches (`Adw.SwitchRow`, or a popover of
+  `Gtk.Switch` rows) where on/off is always visible. Consider moving the search
+  prefs (Limit Results / Allow multiple queries) and similar toggles to a switch
+  popover, and use state-oriented labels ("Show …") where a menu check stays.
+- **libadwaita for the "antiquated UI" problem.** The broader modern-feel /
+  retention concern is really an Adwaita question (switch rows, preferences
+  windows, view toggles, header bars). Big, strategic, post-migration — but it's
+  the lever GNOME apps pull. Worth a deliberate decision rather than drifting.
+
+
 - **Inline cumulative star rating in the context menu.** Once the menu is on
   `Gio.Menu`, an inline star row (hover-preview, click Nth star = rating N) as a
   `PopoverMenu` custom child removes a click vs the Rating submenu and feels
