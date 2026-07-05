@@ -32,7 +32,7 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
@@ -729,18 +729,17 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         items = []
         if self.__cover_column.get_visible():
             num = len(albums)
-            button = MenuItem(
-                ngettext("Reload album _cover", "Reload album _covers", num),
-                Icons.VIEW_REFRESH,
+            items.append(
+                MenuItemSpec(
+                    ngettext("Reload album _cover", "Reload album _covers", num),
+                    lambda parent: self.__refresh_album(view),
+                )
             )
-            button.connect("activate", self.__refresh_album, view)
-            items.append(button)
 
         menu = SongsMenu(library, songs, items=[items])
-        menu.show_all()
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
-    def __refresh_album(self, menuitem, view):
+    def __refresh_album(self, view):
         items = self.__get_selected_items()
         for item in items:
             item.scanned = False

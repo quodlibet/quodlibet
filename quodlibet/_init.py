@@ -774,9 +774,6 @@ def _init_gtk():  # noqa: C901
 
     Gtk.Alignment = Alignment
 
-    # GTK4: CheckMenuItem removed
-    Gtk.CheckMenuItem = Gtk.CheckButton
-
     # GTK4: Arrow removed - create factory class that returns Image
     if not hasattr(Gtk, "Arrow"):
 
@@ -1050,8 +1047,13 @@ def _init_gtk():  # noqa: C901
         if self.get_root() is None:
             print_d("PopoverMenu.popup() called before parented to window, ignoring")
             return None
-        # Ensure child is set if we have a menu box
-        if hasattr(self, "_menu_box") and self.get_child() is None:
+        # Ensure child is set if we have a menu box (widget-append shim path).
+        # Model-based menus render from their model, so never clobber those.
+        if (
+            hasattr(self, "_menu_box")
+            and self.get_child() is None
+            and self.get_menu_model() is None
+        ):
             self.set_child(self._menu_box)
         return _orig_popover_popup(self)
 

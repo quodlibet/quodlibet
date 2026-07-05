@@ -24,9 +24,9 @@ from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.filesel import MainDirectoryTree
-from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.x import ScrolledWindow
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import get_children
 from quodlibet.util import copool
 from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
@@ -204,15 +204,13 @@ class FileSystem(Browser, Gtk.Box):
         copool.add(self.__songs_selected, self.get_child())
 
     def menu(self, songs, library, items):
-        i = qltk.MenuItem(_("_Add to Library"), Icons.LIST_ADD)
-        i.set_sensitive(False)
-        i.connect("activate", self.__add_songs, songs)
-        for song in songs:
-            if song not in self.__glibrary:
-                i.set_sensitive(True)
-                break
-
-        items.append([i])
+        can_add = any(song not in self.__glibrary for song in songs)
+        add = MenuItemSpec(
+            _("_Add to Library"),
+            lambda parent: self.__add_songs(None, songs),
+            enabled=can_add,
+        )
+        items.append([add])
         return SongsMenu(
             library,
             songs,

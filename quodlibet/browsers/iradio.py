@@ -36,10 +36,10 @@ from quodlibet.formats._audio import TAG_TO_SORT, MIGRATE, AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.query import Query
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
-from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
+from quodlibet.util import copool, connect_destroy, sanitize_tags
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
@@ -47,7 +47,7 @@ from quodlibet.util import print_w
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.completion import LibraryTagCompletion
-from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, Button
+from quodlibet.qltk.x import Align, ScrolledWindow, Button
 
 STATION_LIST_URL = "https://quodlibet.github.io/radio/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
@@ -909,16 +909,18 @@ class InternetRadio(Browser, util.InstanceTracker):
             if in_fav and in_all:
                 break
 
-        iradio_items = []
-        button = MenuItem(_("Add to Favorites"), Icons.LIST_ADD)
-        button.set_sensitive(in_all)
-        connect_obj(button, "activate", self.__add_fav, songs)
-        iradio_items.append(button)
-        button = MenuItem(_("Remove from Favorites"), Icons.LIST_REMOVE)
-        button.set_sensitive(in_fav)
-        connect_obj(button, "activate", self.__remove_fav, songs)
-        iradio_items.append(button)
-
+        iradio_items = [
+            MenuItemSpec(
+                _("Add to Favorites"),
+                lambda parent: self.__add_fav(songs),
+                enabled=in_all,
+            ),
+            MenuItemSpec(
+                _("Remove from Favorites"),
+                lambda parent: self.__remove_fav(songs),
+                enabled=in_fav,
+            ),
+        ]
         items.append(iradio_items)
         return SongsMenu(
             self.__librarian,

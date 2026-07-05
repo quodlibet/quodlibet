@@ -12,10 +12,13 @@ Shims to remove (`quodlibet/_init.py`)
 Each shim is technical debt; remove it once **all** call sites use the native API,
 so the tree stays runnable throughout.
 
-- `Gtk.PopoverMenu` `append`/`__init__`/`popup` shims — die with the `Gio.Menu`
-  migration (see below).
-- `Gtk.MenuItem = Button`, `Gtk.CheckMenuItem = CheckButton`, `Gtk.ImageMenuItem`
-  dummy — same migration.
+- `Gtk.PopoverMenu` `append`/`__init__`/`popup` shims — `SongsMenu` + trayicon
+  are off them (model-based), but they **stay** until the widget-based
+  plugin-menu API is migrated (see below); ~6 plugins + `exfalsowindow` + prefs
+  popovers still `Gtk.PopoverMenu().append(widget)`. The shims are now guarded to
+  not clobber model menus (`get_menu_model() is None`).
+- `Gtk.MenuItem = Button`, `Gtk.ImageMenuItem` dummy — same plugin-API blocker.
+  `Gtk.CheckMenuItem = CheckButton` shim is **removed** (was unused).
 - `Gtk.Box.prepend`/`append` arg-swallowing compat (they ignore the old
   `expand/fill/padding`) — remove after the `pack_start` sweep below.
 - `GObject.Object.connect`/`connect_after` compat that silently drops removed
@@ -43,13 +46,17 @@ Systematic sweeps
 Idiomatic rewrites still pending
 --------------------------------
 
-- **`Gio.Menu` migration** (the big one, in progress). `SongsMenu` first
-  (un-blanks right-click everywhere), then the prefs `Gtk.Menu`s. Ratings +
-  Add-to-Playlist become native submenus; custom inline widgets via
-  `PopoverMenu.add_child`.
-- **`qltk/info.py`** still uses shimmed GTK3 signal connects (`populate-popup`,
-  `key-press-event`, `button-press-event`). Migrate to `EventController*` /
-  `Gtk.Label` extra-menu once the menu story lands.
+- **`Gio.Menu` migration.** DONE for `SongsMenu`, `RatingsMenuItem`,
+  `PlaylistMenu`, the trayicon `IndicatorMenu`, and `info.py`'s context menu
+  (2026-07-05). **Remaining: the widget-based plugin-menu API** — `MenuItemPlugin`
+  is a `Gtk.Button` and ~6 plugins build submenus via `Gtk.PopoverMenu().append(
+  Gtk.MenuItem(...))`. The `SongsMenu` handler currently bridges these (reads
+  `PLUGIN_NAME`/submenu-child labels, fires `child.emit("activate")`). Fully
+  native would redesign the plugin menu as declarative data (label/icon/callback/
+  submenu specs) and migrate the plugins; that's what still blocks removing the
+  `MenuItem` / `PopoverMenu.append` / `SeparatorMenuItem` shims. Also still on the
+  shim: `exfalsowindow` app menu and the covergrid/albums/queue prefs popovers.
+  Inline star-rating row is still a deferred enhancement (below).
 - **`Gtk.Image` subclasses that show arbitrary images** — `WebImage`
   (`qltk/x.py`) and `ResizeWebImage` (`ext/songsmenu/cover_download.py`) hit the
   same tiny-render trap as CoverGrid; port to `Gtk.Picture`/snapshot.
@@ -68,6 +75,9 @@ UX enhancements (post-fidelity)
   `Gtk.Switch` rows) where on/off is always visible. Consider moving the search
   prefs (Limit Results / Allow multiple queries) and similar toggles to a switch
   popover, and use state-oriented labels ("Show …") where a menu check stays.
+  The trayicon `IndicatorMenu` toggles (Shuffle / Repeat / Stop After This Song)
+  are now Gio boolean menu items and hit exactly this "hidden state at rest"
+  issue — candidates for the same switch treatment.
 - **libadwaita for the "antiquated UI" problem.** The broader modern-feel /
   retention concern is really an Adwaita question (switch rows, preferences
   windows, view toggles, header bars). Big, strategic, post-migration — but it's

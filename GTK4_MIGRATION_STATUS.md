@@ -2,41 +2,46 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-06-28
-**Test Results**: 4653 passed, 18 failed, 49 skipped (99.6%)
+**Last Updated**: 2026-07-05
+**Test Results**: ~4655 passed; remaining failures are the pre-existing
+order-dependent set (below), all passing in isolation.
 
 
-SongsMenu → Gio.Menu: migration plan
-------------------------------------
+SongsMenu → Gio.Menu: LANDED (2026-07-05)
+-----------------------------------------
 
-The blank right-click/prefs menus are the `Gtk.PopoverMenu`-renders-a-model
-(not appended widgets) gap. Approach decided (spike proved it,
-`/tmp/menu_spike.py`): rebuild on a `Gio.Menu` model + `Gio.SimpleAction`s.
-Ratings + playlists stay as native **submenus** (fidelity first; inline star
-row is a deferred enhancement — see cleanup doc). Execute as one focused run:
+The blank right-click/prefs menus (the `Gtk.PopoverMenu`-renders-a-model,
+not-appended-widgets gap) are fixed. `SongsMenu` is now a real
+`Gtk.PopoverMenu` with `set_menu_model(Gio.Menu)` + a `songs`
+`Gio.SimpleActionGroup`; each `init_*` builds a `Gio.MenuItem` + `SimpleAction`
+(`set_sensitive` → `action.set_enabled`), grouped via `append_section`.
 
-1. **`SongsMenu`** owns a `Gio.SimpleActionGroup` (prefix e.g. `songs`).
-   Each `init_*` builds a `Gio.MenuItem` (label + detailed action) + a
-   `SimpleAction` running the existing callback; `set_sensitive` →
-   `action.set_enabled`; sections via `Gio.Menu.append_section`.
-2. **Parent window**: callbacks use `get_menu_item_top_parent(menu_item)` today;
-   actions have no widget. Capture the attach widget on the menu and resolve the
-   top parent from that instead.
-3. **Ratings**: native submenu of star-labelled radio items (stateful action) +
-   Remove. **Playlists / Plugins / Queue**: native submenus
-   (`append_submenu`). The plugin path (`SongsMenuPluginHandler.menu`) returns a
-   menu too — convert it to build a `Gio.Menu`.
-4. **`items=` API**: 13 call sites, ~6 pass widget `items=[[MenuItem]]`
-   (`browsers/_base.py`, `podcasts.py`, covergrid, albums, soundcloud,
-   `qltk/info.py`). Change to action-specs (label, icon, callback) and update
-   those callers.
-5. **Popup**: `Gtk.PopoverMenu.new_from_model` + `insert_action_group`; keep the
-   `popup_menu_at_widget` entry point working.
-6. **Tests**: `tests/test_qltk_songsmenu.py` (11) assert `menu.get_children()`
-   widget structure — rewrite to introspect the `Gio.Menu` model + action
-   enabled-state (cf. `test_qltk_filesel.py` / `test_qltk_songlist.py`).
-7. Once all menu call sites are off them, delete the `PopoverMenu` /
-   `Gtk.MenuItem` / `CheckMenuItem` shims in `_init.py`.
+- **Parent window**: actions have no widget, so callbacks resolve the toplevel
+  via `get_top_parent(self)` (the popover is parented at popup time).
+- **Ratings / Playlists**: `RatingsMenuItem` and `PlaylistMenu` are now
+  Gio-model **submenu builders** (stateful radio / per-playlist toggle actions),
+  shared by `SongsMenu` and the **trayicon** `IndicatorMenu` (also migrated).
+  `PlaylistMenu.build()` is rebuildable for the tray's per-song refresh.
+- **Plugins**: `SongsMenuPluginHandler.build_menu_item()` builds a Gio "Plugins"
+  submenu. Plugin instances are still widget-based (`MenuItemPlugin(Gtk.Button)`);
+  the handler reads `PLUGIN_NAME`/submenu children and threads the parent window
+  in via `plugin.plugin_window` (now a settable attr, set at invocation) rather
+  than walking the widget tree. Plugins with widget submenus still work.
+- **`items=` API**: now action-specs (`songsmenu.MenuItemSpec`: label, callback,
+  enabled, accel). Callers updated: songlist Filter, albums, covergrid, info,
+  queue, filesystem, iradio (podcasts/soundcloud just forward).
+- **Popup**: existing `popup_menu_at_widget` / `views.popup_menu` paths kept
+  working; info.py's context menu is a native `GestureClick` + popover.
+- **Menus stay model-safe under the shim**: the global `Gtk.PopoverMenu` compat
+  monkeypatch (`_init.py`, `qltk.menu_popup`) would clobber a model menu with an
+  empty `_menu_box` on popup — now guarded with `get_menu_model() is None`.
+- **info.py**: dead `populate-popup`/`key-press-event`/`button-press-event`
+  shim connects replaced with `GestureClick` + `EventControllerKey`.
+- **Shims**: `Gtk.CheckMenuItem` shim removed (unused). `Gtk.MenuItem` /
+  `Gtk.PopoverMenu` (append) / `SeparatorMenuItem` shims **stay** — still used by
+  the ~6 plugin widget-submenus, `exfalsowindow`, and the prefs/header popovers.
+  Removing them is gated on migrating the widget-based plugin-menu API (separate
+  effort; see cleanup doc).
 
 
 Quick Summary
@@ -248,10 +253,10 @@ Known Limitations (Tracked, Non-Blocking)
 - M3U/PLS URL import via DnD to playlist browser is deferred.
 - `quodlibet/_init.py` still hosts compatibility shims; each is
   documented and should be removed as call sites migrate.
-- Remaining shimmed-signal call sites (31 connects across button-press,
-  key-press, focus-out, populate-popup, scroll, etc.). `seekbutton.py`
-  is done; next cluster is `qltk/info.py` (song info bar context menu /
-  clipboard middle-click, 3 connects), then the long tail across
+- Remaining shimmed-signal call sites (button-press, key-press, focus-out,
+  populate-popup, scroll, etc.). `seekbutton.py` and `qltk/info.py` are done
+  (info.py: `GestureClick` + `EventControllerKey`, native popover menu). The
+  long tail remains across
   `qltk/edittags.py`, `ext/songsmenu/tapbpm.py`,
   `ext/events/waveformseekbar.py` (still on `do_button_press_event`
   vfuncs), `ext/events/trayicon/systemtray.py`, `browsers/paned/pane.py`

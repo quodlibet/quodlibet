@@ -226,8 +226,13 @@ def menu_popup(menu, shell, item, func, *args):
         if root is None:
             print("Warning: PopoverMenu parent not in window, cannot popup")
             return None
-        # Ensure menu box is set as child before showing (for append compat)
-        if hasattr(menu, "_menu_box") and menu.get_child() is None:
+        # Ensure menu box is set as child before showing (for append compat).
+        # Model-based menus render from their model, so never clobber those.
+        if (
+            hasattr(menu, "_menu_box")
+            and menu.get_child() is None
+            and menu.get_menu_model() is None
+        ):
             menu.set_child(menu._menu_box)
         return menu.popup()
 

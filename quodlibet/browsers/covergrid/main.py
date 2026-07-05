@@ -38,7 +38,7 @@ from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.query import Query
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
-from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -402,14 +402,12 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         button_label = ngettext(
             "Reload album _cover", "Reload album _covers", len(albums)
         )
-        button = MenuItem(button_label, Icons.VIEW_REFRESH)
-        button.connect("activate", self.__refresh_cover)
+        reload_cover = MenuItemSpec(button_label, lambda parent: self.__refresh_cover())
 
-        menu = SongsMenu(self.__library, songs, items=[[button]])
-        menu.show_all()
+        menu = SongsMenu(self.__library, songs, items=[[reload_cover]])
         popup_menu_at_widget(menu, widget, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
 
-    def __refresh_cover(self, menuitem):
+    def __refresh_cover(self):
         size = self.props.scale_factor * _get_cover_size()
         for item in self.__selected_items():
             item.load_cover(size, self.__cover_cancel)

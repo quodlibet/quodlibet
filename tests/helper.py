@@ -16,7 +16,7 @@ import errno
 import io
 from pathlib import Path
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Gio
 
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.fsn import fsnative
@@ -24,6 +24,23 @@ from quodlibet.fsn import fsnative
 from quodlibet.qltk import get_primary_accel_mod
 from quodlibet.util.path import normalize_path
 from tests import run_gtk_loop
+
+
+def menu_item_labels(model: Gio.MenuModel) -> list[str]:
+    """Flatten a Gio.Menu model to the list of its item labels.
+
+    Recurses into sections but not submenus.
+    """
+    labels = []
+    for i in range(model.get_n_items()):
+        section = model.get_item_link(i, Gio.MENU_LINK_SECTION)
+        if section is not None:
+            labels.extend(menu_item_labels(section))
+            continue
+        label = model.get_item_attribute_value(i, Gio.MENU_ATTRIBUTE_LABEL, None)
+        if label is not None:
+            labels.append(label.get_string())
+    return labels
 
 
 def dummy_path(path):

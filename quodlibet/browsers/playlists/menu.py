@@ -5,42 +5,84 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Gio, GLib
 
 from quodlibet import ngettext, _
 from quodlibet import qltk
 from quodlibet.browsers.playlists.util import GetPlaylistName
 from quodlibet.library.playlist import PlaylistLibrary
-from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
+from quodlibet.qltk import Icons
 from quodlibet.util.collection import Playlist
 
 
-class PlaylistMenu(Gtk.PopoverMenu):
-    def __init__(self, songs, pl_lib: PlaylistLibrary):
-        super().__init__()
+class PlaylistMenu:
+    """Builds a "Playlists" submenu on a ``Gio.Menu`` model.
+
+    Registers a "playlist-new" action plus one stateful toggle action per
+    playlist on ``action_group`` (prefixed with ``prefix``). Rebuildable via
+    :meth:`build` for callers whose song selection changes over time.
+    """
+
+    def __init__(
+        self,
+        songs,
+        pl_lib: PlaylistLibrary,
+        action_group: Gio.SimpleActionGroup,
+        prefix: str,
+        parent_getter=None,
+    ):
         self.pl_lib = pl_lib
-        i = Gtk.MenuItem(label=_("_New Playlist…"), use_underline=True)
-        i.connect("activate", self._on_new_playlist_activate, songs)
-        self.append(i)
-        self.append(SeparatorMenuItem())
-        # GTK4: size_request() removed; use measure() for size hints
-        min_w = i.measure(0, -1)[0]  # 0 = Gtk.Orientation.HORIZONTAL
-        self.set_size_request(min_w * 2, -1)
+        self._action_group = action_group
+        self._prefix = prefix
+        self._parent_getter = parent_getter or (lambda: None)
+        self._songs = songs
+        self._playlist_action_names: list[str] = []
 
-        for playlist in sorted(pl_lib):
-            name = playlist.name
-            i = Gtk.CheckMenuItem(label=name)
-            some, all = playlist.has_songs(songs)
-            i.set_active(some)
-            i.set_inconsistent(some and not all)
-            label_child = i.get_child()
-            if label_child is not None:
-                label_child.set_ellipsize(Pango.EllipsizeMode.END)
-            i.connect("activate", self._on_toggle_playlist_activate, playlist, songs)
-            self.append(i)
+        self._new_action = Gio.SimpleAction.new("playlist-new", None)
+        self._new_action.connect("activate", self._on_new_playlist)
+        action_group.add_action(self._new_action)
 
-    def _on_new_playlist_activate(self, item, songs) -> Playlist | None:
-        parent = get_menu_item_top_parent(item)
+        self._menu = Gio.Menu()
+        self.build(songs)
+        self.menu_item = Gio.MenuItem.new_submenu(_("Play_lists"), self._menu)
+
+    @property
+    def submenu(self) -> Gio.Menu:
+        return self._menu
+
+    def set_sensitive(self, sensitive: bool):
+        self._new_action.set_enabled(sensitive)
+        for name in self._playlist_action_names:
+            self._action_group.lookup_action(name).set_enabled(sensitive)
+
+    def build(self, songs):
+        """(Re)build the submenu model and per-playlist toggle actions."""
+        self._songs = songs
+
+        for name in self._playlist_action_names:
+            self._action_group.remove_action(name)
+        self._playlist_action_names = []
+        self._menu.remove_all()
+
+        new_section = Gio.Menu()
+        new_section.append(_("_New Playlist…"), f"{self._prefix}.playlist-new")
+        self._menu.append_section(None, new_section)
+
+        playlists_section = Gio.Menu()
+        for i, playlist in enumerate(sorted(self.pl_lib or [])):
+            name = f"playlist-{i}"
+            some, _all = playlist.has_songs(songs)
+            action = Gio.SimpleAction.new_stateful(name, None, GLib.Variant("b", some))
+            action.connect("change-state", self._on_toggle_playlist, playlist)
+            self._action_group.add_action(action)
+            self._playlist_action_names.append(name)
+            playlists_section.append(playlist.name, f"{self._prefix}.{name}")
+        self._menu.append_section(None, playlists_section)
+
+    def _on_new_playlist(self, action, _param):
+        self._on_new_playlist_activate(self._parent_getter(), self._songs)
+
+    def _on_new_playlist_activate(self, parent, songs) -> Playlist | None:
         title = Playlist.suggested_name_for(songs)
         title = self._get_new_name(parent, title)
         if title is None:
@@ -51,9 +93,12 @@ class PlaylistMenu(Gtk.PopoverMenu):
         """Ask the user for a name for the new playlist"""
         return GetPlaylistName(qltk.get_top_parent(parent)).run(title)
 
-    def _on_toggle_playlist_activate(self, item, playlist, songs):
-        parent = get_menu_item_top_parent(item)
+    def _on_toggle_playlist(self, action, _value, playlist):
+        self._toggle_playlist(self._parent_getter(), playlist, self._songs)
+        some, _all = playlist.has_songs(self._songs)
+        action.set_state(GLib.Variant("b", some))
 
+    def _toggle_playlist(self, parent, playlist, songs):
         has_some, has_all = playlist.has_songs(songs)
         if has_all:
             playlist.remove_songs(songs)
@@ -63,7 +108,6 @@ class PlaylistMenu(Gtk.PopoverMenu):
                 playlist.remove_songs(songs)
             elif resp == ConfirmMultipleSongsAction.ADD:
                 playlist.extend(songs)
-            return
         else:
             playlist.extend(songs)
 

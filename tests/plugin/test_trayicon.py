@@ -7,15 +7,15 @@
 
 import sys
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import GdkPixbuf
 
 from quodlibet import app
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.qltk import Icons
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from tests import skipIf, TestCase
+from tests.helper import menu_item_labels
 
 
 @skipIf(sys.platform == "darwin", "segfaults..")
@@ -83,29 +83,23 @@ class TIndicatorMenu(TestCase):
         destroy_fake_app()
         config.quit()
 
-    def test_icons(self):
+    def test_menu_has_expected_items(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
 
         menu = IndicatorMenu(app)
-        # Slightly lame way to assert here,
-        # but it does the job and is not *too* brittle
-        icons = [
-            item.get_image().get_icon_name()[0]
-            for item in menu.get_children()
-            if isinstance(item, Gtk.ImageMenuItem)
-        ]
-        assert Icons.EDIT in icons
-        assert Icons.FOLDER_DRAG_ACCEPT in icons
-        assert Icons.MEDIA_PLAYBACK_START in icons
-        assert Icons.MEDIA_SKIP_FORWARD in icons
-        assert Icons.MEDIA_SKIP_BACKWARD in icons
-        assert Icons.APPLICATION_EXIT in icons
-        assert Icons.FAVORITE in icons
+        labels = menu_item_labels(menu.get_menu_model())
+        assert "_Edit…" in labels
+        assert "Play_lists" in labels
+        assert "_Play" in labels
+        assert "_Next" in labels
+        assert "Pre_vious" in labels
+        assert "_Quit" in labels
+        assert "_Rating" in labels
 
     def test_playlist_menu_populates(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
 
         menu = IndicatorMenu(app)
         song = AudioFile({"~filename": "/dev/null"})
-        menu._new_playlist_submenu_for(song)
-        assert menu._playlists_item.get_submenu()
+        menu.set_song(song)
+        assert menu._playlists.submenu.get_n_items()

@@ -7,13 +7,12 @@
 # (at your option) any later version.
 
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, GLib
 
 from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
-from quodlibet.qltk import Icons
 from quodlibet.util import format_rating
 
 
@@ -39,47 +38,59 @@ class ConfirmRateMultipleDialog(qltk.Message):
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 
-class RatingsMenuItem(Gtk.Button):
-    def __init__(self, songs, library, label=_("_Rating")):  # noqa
-        super().__init__(use_underline=True)
-        self.add_css_class("flat")
+class RatingsMenuItem:
+    """Builds a "Rating" submenu on a ``Gio.Menu`` model.
+
+    Registers a stateful "rating" radio action plus a "rating-remove"
+    action on ``action_group`` (prefixed with ``prefix``). Expose the
+    resulting :class:`Gio.MenuItem` via :attr:`menu_item` for the owner to
+    append to its model.
+    """
+
+    def __init__(
+        self,
+        songs,
+        library,
+        action_group: Gio.SimpleActionGroup,
+        prefix: str,
+        parent_getter=None,
+        label=_("_Rating"),  # noqa: B008
+    ):
         self._songs = songs
-        # GTK4: Use Box for icon + label in button
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        icon = Gtk.Image.new_from_icon_name(Icons.FAVORITE)
-        box.append(icon)
-        box.append(Gtk.Label(label=label, use_underline=True))
-        self.set_child(box)
+        self._library = library
+        self._prefix = prefix
+        self._parent_getter = parent_getter or (lambda: None)
 
-        # GTK4: Buttons don't have submenus; use a PopoverMenu as a fake submenu.
-        # Items are appended via the shim's append() so get_children() works.
-        submenu = Gtk.PopoverMenu()
-        submenu.set_parent(self)
+        self._rating_action = Gio.SimpleAction.new_stateful(
+            "rating", GLib.VariantType.new("d"), GLib.Variant("d", -1.0)
+        )
+        self._rating_action.connect("change-state", self._on_rating_change_state)
+        self._remove_action = Gio.SimpleAction.new("rating-remove", None)
+        self._remove_action.connect("activate", self._on_rating_remove)
+        action_group.add_action(self._rating_action)
+        action_group.add_action(self._remove_action)
+
+        submenu = Gio.Menu()
+        ratings_section = Gio.Menu()
+        for value in RATINGS.all:
+            item = Gio.MenuItem.new(f"{value:0.2f}\t{format_rating(value)}", None)
+            item.set_action_and_target_value(
+                f"{prefix}.rating", GLib.Variant("d", value)
+            )
+            ratings_section.append_item(item)
+        submenu.append_section(None, ratings_section)
+
+        remove_section = Gio.Menu()
+        remove_section.append(_("_Remove Rating"), f"{prefix}.rating-remove")
+        submenu.append_section(None, remove_section)
+
         self._submenu = submenu
-
-        self._rating_menu_items = []
-        for i in RATINGS.all:
-            text = f"{i:0.2f}\t{format_rating(i)}"
-            itm = Gtk.CheckButton(label=text)
-            itm.rating = i
-            submenu.append(itm)
-            handler = itm.connect("toggled", self._on_rating_change, i, library)
-            self._rating_menu_items.append((itm, handler))
-
-        submenu.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
-
-        reset = Gtk.Button(label=_("_Remove Rating"), use_underline=True)
-        reset.add_css_class("flat")
-        reset.connect("clicked", self._on_rating_remove, library)
-        submenu.append(reset)
+        self.menu_item = Gio.MenuItem.new_submenu(label, submenu)
 
         self._select_ratings()
 
-        # Connect button to show popover
-        self.connect("clicked", lambda w: self._submenu.popup())
-
-    def get_submenu(self):
-        """Return the ratings popover for compatibility with MenuItem-style access."""
+    @property
+    def submenu(self) -> Gio.Menu:
         return self._submenu
 
     def set_songs(self, songs):
@@ -87,32 +98,29 @@ class RatingsMenuItem(Gtk.Button):
         self._songs = songs
         self._select_ratings()
 
+    def set_sensitive(self, sensitive: bool):
+        self._rating_action.set_enabled(sensitive)
+        self._remove_action.set_enabled(sensitive)
+
     def _select_ratings(self):
         ratings = [song("~#rating") for song in self._songs if song and song.has_rating]
-        song_count = len(self._songs)
-        for menu_item, handler in self._rating_menu_items:
-            rating_val = menu_item.rating
-            rated_count = ratings.count(rating_val)
-            menu_item.handler_block(handler)
-            if rated_count == 0:
-                menu_item.set_active(False)
-            elif rated_count == song_count:
-                menu_item.set_active(True)
-            else:
-                menu_item.set_inconsistent(True)
-            menu_item.handler_unblock(handler)
+        if ratings and len(set(ratings)) == 1 and len(ratings) == len(self._songs):
+            state = ratings[0]
+        else:
+            state = -1.0
+        self._rating_action.set_state(GLib.Variant("d", state))
 
-    def _on_rating_change(self, menuitem, value, library):
-        self.set_rating(value, self._songs, library)
+    def _on_rating_change_state(self, action, value):
+        action.set_state(value)
+        self.set_rating(value.get_double(), self._songs, self._library)
 
-    def _on_rating_remove(self, menutitem, library):
-        self.remove_rating(self._songs, library)
+    def _on_rating_remove(self, action, _param):
+        self.remove_rating(self._songs, self._library)
 
     def set_rating(self, value, songs, librarian):
         count = len(songs)
         if count > 1 and config.getboolean("browsers", "rating_confirm_multiple"):
-            parent = qltk.get_menu_item_top_parent(self)
-            dialog = ConfirmRateMultipleDialog(parent, count, value)
+            dialog = ConfirmRateMultipleDialog(self._parent_getter(), count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         for song in songs:
@@ -122,8 +130,7 @@ class RatingsMenuItem(Gtk.Button):
     def remove_rating(self, songs, librarian):
         count = len(songs)
         if count > 1 and config.getboolean("browsers", "rating_confirm_multiple"):
-            parent = qltk.get_menu_item_top_parent(self)
-            dialog = ConfirmRateMultipleDialog(parent, count, None)
+            dialog = ConfirmRateMultipleDialog(self._parent_getter(), count, None)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         reset = []

@@ -34,7 +34,7 @@ from quodlibet.util import (
 from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.songsmenu import SongsMenu
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
@@ -539,14 +539,18 @@ class PlayQueue(SongList):
         if not songs:
             return None
 
-        menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False, ratings=False
+        remove = MenuItemSpec(
+            _("_Remove"), lambda parent: self.__remove(), accel="Delete"
         )
-        menu.preseparate()
-        remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        qltk.add_fake_accel(remove, "Delete")
-        remove.connect("activate", self.__remove)
-        menu.prepend(remove)
+        menu = SongsMenu(
+            library,
+            songs,
+            queue=False,
+            remove=False,
+            delete=False,
+            ratings=False,
+            items=[[remove]],
+        )
         return self.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __remove(self, *args):

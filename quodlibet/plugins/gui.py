@@ -8,7 +8,6 @@
 
 from quodlibet import config, print_d, app
 from quodlibet.plugins import PluginHandler
-from quodlibet.qltk import get_menu_item_top_parent
 from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
@@ -73,6 +72,10 @@ class MenuItemPlugin(Gtk.Button):
     """This plugin will run a user interface first (e.g. dialog) requiring
        action from the user. The menu entry may be altered accordingly"""
 
+    plugin_window = None
+    """The `Gtk.Window` the plugin was invoked from. Set by the menu handler
+       just before the plugin's callbacks run."""
+
     def __init__(self):
         label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
         # GTK4: Use Button with label, not Widget
@@ -88,10 +91,6 @@ class MenuItemPlugin(Gtk.Button):
     def get_submenu(self):
         """Return stored submenu reference"""
         return getattr(self, "_submenu", None)
-
-    @property
-    def plugin_window(self):
-        return get_menu_item_top_parent(self)
 
     def __set_icon(self):
         """Sets the GTK icon for this plugin item"""
