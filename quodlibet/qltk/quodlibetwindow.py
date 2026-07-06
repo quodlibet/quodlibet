@@ -836,6 +836,14 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window.show()
 
     def __key_pressed(self, widget, event, player):
+        if qltk.is_accel(event, "space", "KP_Space"):
+            focus = self.get_focus()
+            if isinstance(focus, (Gtk.Entry, Gtk.TextView)):
+                return None
+            if player.song is not None:
+                player.paused = not player.paused
+            return True
+
         if not player.song:
             return None
 

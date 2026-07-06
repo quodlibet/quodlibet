@@ -703,7 +703,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                 window.show()
             return True
         if qltk.is_accel(event, "space", "KP_Space") and player is not None:
-            player.paused = not player.paused
+            if player.song is not None:
+                player.paused = not player.paused
             return True
         if qltk.is_accel(event, "F2"):
             songs = self.get_selected_songs()

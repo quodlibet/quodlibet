@@ -81,8 +81,11 @@ class SongInfo(Gtk.EventBox):
         self.add(align)
 
     def _on_key_press_event(self, widget, event, player: BasePlayer):
-        if qltk.is_accel(event, "space"):
-            player.playpause()
+        if qltk.is_accel(event, "space", "KP_Space"):
+            if player.song is not None:
+                player.paused = not player.paused
+            return True
+        return False
 
     def _on_button_press_event(self, widget, event, player, library):
         if event.triggers_context_menu():
