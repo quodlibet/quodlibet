@@ -64,5 +64,6 @@ venv/
 .direnv
 .env
 
+# Claude Code local config / agent state
 CLAUDE.md
 .claude/
