@@ -430,6 +430,10 @@ class SongListPaned(RVPaned):
     def __init__(self, song_scroller, qexpander):
         super().__init__()
 
+        # Fill the browser container; without this the paned stays at its
+        # natural height and the queue's slack looks like an oversized queue.
+        self.set_vexpand(True)
+
         # GTK4: pack1/pack2() → set_start_child/set_end_child() + set_resize/shrink
         self.set_start_child(song_scroller)
         self.set_resize_start_child(True)
@@ -442,9 +446,13 @@ class SongListPaned(RVPaned):
         self.connect("notify::position", self._changed, "memory", "queue_position")
 
         self._handle_position = self.get_relative()
+        self._minimize_source = 0
         qexpander.connect("notify::visible", self._expand_or)
         qexpander.connect("notify::expanded", self._expand_or)
 
+        # A collapsed queue must snap to its minimum height whenever the paned's
+        # geometry settles (first allocation, resize, or the expander toggling).
+        self.connect("notify::max-position", self._expand_or)
         self.connect("notify::position", self._moved_pane_handle)
 
     @property
@@ -462,12 +470,18 @@ class SongListPaned(RVPaned):
             self._handle_position = self.get_relative()
 
     def _check_minimize(self):
-        # When the queue expander collapses, snap the handle back to the
-        # bottom so the song list reclaims the space.
-        p_max = self.get_property("max-position")
-        p_cur = self.get_property("position")
-        if p_max != p_cur:
-            self.set_property("position", p_max)
+        # Defer to idle so max-position is read after the layout settles,
+        # rather than fighting the paned mid-allocation.
+        if not self._minimize_source:
+            self._minimize_source = GLib.idle_add(self._do_minimize)
+
+    def _do_minimize(self):
+        self._minimize_source = 0
+        if not self._expander.get_property("expanded"):
+            p_max = self.get_property("max-position")
+            if self.get_property("position") != p_max:
+                self.set_property("position", p_max)
+        return False
 
     def _changed(self, widget, event, section, option):
         if self._expander.get_expanded() and self.get_property("position-set"):

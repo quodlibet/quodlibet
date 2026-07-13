@@ -110,8 +110,18 @@ Recently Landed (2026-05-30)
   `EventControllerKey`.
 - `TreeViewColumnButton`: dead `button.connect("popup-menu", …)`
   replaced with an `EventControllerKey` on the column header button.
-- `SongListPaned` cleaned up: removed `draw` and `button-press-event`
-  no-ops; `_check_minimize` runs from `notify::expanded`.
+- Oversized-queue-at-startup bug fixed (two causes):
+  - `SongListPaned` was missing `vexpand`, so the paned stayed at its natural
+    height inside the browser's box and the slack below it looked like a huge
+    queue. Root cause: `pack_start(songpane, True, …)` → bare `append(songpane)`
+    dropped `expand`, silently swallowed by the old `Gtk.Box` shim. Now sets
+    `vexpand=True`. Other `pack_start(w, True, …)` sites likely lost `expand`
+    the same way — see the packing sweep in the cleanup doc.
+  - The collapsed-queue minimize is driven by `notify::max-position` (and the
+    expander toggling), snapping the handle to `max-position` on an idle so it
+    reads settled geometry. Keeps a collapsed queue at its minimum height at
+    startup and on resize, without fighting the paned mid-allocation. Replaces
+    the removed GTK3 per-`draw` enforcement.
 - `covergrid.AlbumWidget`: popup-menu keyboard binding via
   `EventControllerKey` (Gtk.Box has no `popup-menu` in GTK4).
 - New helper `is_accel_pressed(keyval, state, *accels)` for matching
