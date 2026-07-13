@@ -450,21 +450,6 @@ def _init_gtk():  # noqa: C901
     if not hasattr(Gtk.ScrolledWindow, "add_with_viewport"):
         Gtk.ScrolledWindow.add_with_viewport = lambda self, child: self.set_child(child)
 
-    # GTK4: Wrap Box.prepend/append to ignore GTK3 pack_start/pack_end arguments
-    _orig_box_prepend = Gtk.Box.prepend
-    _orig_box_append = Gtk.Box.append
-
-    def _box_prepend_compat(self, child, expand=None, fill=None, padding=None):
-        # GTK4: prepend only takes child, ignore expand/fill/padding
-        return _orig_box_prepend(self, child)
-
-    def _box_append_compat(self, child, expand=None, fill=None, padding=None):
-        # GTK4: append only takes child, ignore expand/fill/padding
-        return _orig_box_append(self, child)
-
-    Gtk.Box.prepend = _box_prepend_compat
-    Gtk.Box.append = _box_append_compat
-
     # GTK4: Frame.add() → Frame.set_child()
     if not hasattr(Gtk.Frame, "add"):
         Gtk.Frame.add = lambda self, child: self.set_child(child)

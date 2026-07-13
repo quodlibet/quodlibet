@@ -19,8 +19,9 @@ so the tree stays runnable throughout.
   not clobber model menus (`get_menu_model() is None`).
 - `Gtk.MenuItem = Button`, `Gtk.ImageMenuItem` dummy — same plugin-API blocker.
   `Gtk.CheckMenuItem = CheckButton` shim is **removed** (was unused).
-- `Gtk.Box.prepend`/`append` arg-swallowing compat (they ignore the old
-  `expand/fill/padding`) — remove after the `pack_start` sweep below.
+- `Gtk.Box.prepend`/`append` arg-swallowing compat — **removed**. No call site
+  passed the old `expand/fill/padding` args (verified statically), so it was dead.
+  The separate `pack_start` → `prepend` *ordering* sweep below is unaffected.
 - `GObject.Object.connect`/`connect_after` compat that silently drops removed
   event signals (`button-press-event`, `key-press-event`, …) — remove once all
   call sites use `Gtk.EventController*`. This shim hides real breakage, so it's a
@@ -32,6 +33,14 @@ so the tree stays runnable throughout.
 Systematic sweeps
 -----------------
 
+- **Dropped `expand` from `pack_start(w, True, …)`.** With the arg-swallowing
+  `Gtk.Box` shim now gone, the real breakage is call sites that translated
+  `pack_start(w, True, True, 0)` to a bare `append(w)` and never set
+  `set_hexpand`/`set_vexpand(True)`. The child then sits at natural size and its
+  container's slack looks like empty space. Confirmed + fixed: `SongListPaned`
+  (queue looked oversized). Sweep every `git show main:<file>` `pack_start`/
+  `pack_end` with `expand=True` and confirm the GTK4 side sets the matching
+  expand.
 - **`pack_start` → `prepend` mistranslation.** The canonical GTK4 mapping is
   `pack_start` → `append`; a lot of the migration used `prepend`, which reverses
   sequential packs. ~133 `.prepend(` sites to audit (cross-check each against
