@@ -33,7 +33,7 @@ Also supports setuptools but needs to be imported after setuptools
 
 import sys
 
-from distutils.core import setup
+from setuptools._distutils.core import setup
 
 from .shortcuts import BuildShortcuts, InstallShortcuts
 from .man import InstallMan
@@ -126,7 +126,7 @@ class GDistribution(Distribution):
     Using the translation features requires gettext.
 
     Example:
-      from distutils.core import setup
+      from setuptools._distutils.core import setup
       from gdist import GDistribution
 
       setup(distclass=GDistribution, ...)
