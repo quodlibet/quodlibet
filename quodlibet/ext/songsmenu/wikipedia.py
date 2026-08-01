@@ -55,12 +55,7 @@ class WikiSearch(SongsMenuPlugin):
         e.set_max_width_chars(3)
         e.set_text(get_lang())
         e.connect("changed", cls.changed)
-        hb.append(
-            Gtk.Label(label=_("Search at %(website)s") % {"website": "https://"}),
-            False,
-            True,
-            0,
-        )
+        hb.append(Gtk.Label(label=_("Search at %(website)s") % {"website": "https://"}))
         hb.append(e)
         hb.append(Gtk.Label(label=".wikipedia.org"))
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)

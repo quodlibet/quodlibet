@@ -180,9 +180,10 @@ class ExportToFolder(PlaylistPlugin):
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect("changed", changed)
+            entry.set_hexpand(True)
             hbox.append(entry)
             return hbox
 
-        vbox.append(create_pattern(), True, True, 0)
+        vbox.append(create_pattern())
 
         return vbox

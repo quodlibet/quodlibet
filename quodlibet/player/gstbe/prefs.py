@@ -126,7 +126,7 @@ class GstPlayerPreferences(Gtk.Box):
         )
         if is_windows():
             # atm this is a wasapi2sink-only feature, so only makes sense on Windows
-            self.pack_start(exclusive_button, False, False, 0)
+            self.append(exclusive_button)
 
         if debug:
 

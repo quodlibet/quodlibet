@@ -111,7 +111,9 @@ class Preferences(Gtk.Box):
         ratio_scale.connect("value-changed", ratio_changed)
         ratio_scale.set_value(get_cfg("ratio"))
 
-        self.append(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        frame = qltk.Frame(_("Preferences"), child=table)
+        frame.set_vexpand(True)
+        self.append(frame)
 
 
 class Compressor(GStreamerPlugin):

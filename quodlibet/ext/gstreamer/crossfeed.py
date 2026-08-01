@@ -159,7 +159,9 @@ class Preferences(Gtk.Box):
         preset_combo.connect("changed", combo_change, level_scale, fcut_scale)
         self.__update_combo()
 
-        self.prepend(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        frame = qltk.Frame(_("Preferences"), child=table)
+        frame.set_vexpand(True)
+        self.append(frame)
 
     def __update_combo(self):
         feed = get_cfg("feed")

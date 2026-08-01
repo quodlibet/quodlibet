@@ -59,9 +59,9 @@ class Preferences(Gtk.Box):
         scrollwheel_box.append(group)
 
         if supports_scrolling():
-            self.append(
-                qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box), True, True, 0
-            )
+            frame = qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box)
+            frame.set_vexpand(True)
+            self.append(frame)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 

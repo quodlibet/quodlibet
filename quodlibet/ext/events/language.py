@@ -62,16 +62,13 @@ class LanguagePreference(EventPlugin):
         combo.connect("changed", on_combo_changed)
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.prepend(combo)
-        box.prepend(
+        box.append(combo)
+        box.append(
             Gtk.Label(
                 label=_("A restart is required for any changes to take effect"),
                 wrap=True,
                 xalign=0,
-            ),
-            False,
-            False,
-            0,
+            )
         )
 
         return box

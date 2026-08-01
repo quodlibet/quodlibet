@@ -111,7 +111,9 @@ class Preferences(Gtk.Box):
             scale.connect("value-changed", scale_changed, key)
             scale.set_value(get_cfg(key))
 
-        self.append(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        frame = qltk.Frame(_("Preferences"), child=table)
+        frame.set_vexpand(True)
+        self.append(frame)
 
 
 class Pitch(GStreamerPlugin):

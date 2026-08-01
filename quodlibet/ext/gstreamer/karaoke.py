@@ -108,7 +108,9 @@ class Preferences(Gtk.Box):
         scales["band"].connect("format-value", format_hertz)
         scales["width"].connect("format-value", format_hertz)
 
-        self.append(qltk.Frame(_("Preferences"), child=table), True, True, 0)
+        frame = qltk.Frame(_("Preferences"), child=table)
+        frame.set_vexpand(True)
+        self.append(frame)
 
 
 class Karaoke(GStreamerPlugin):
