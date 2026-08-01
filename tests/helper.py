@@ -14,9 +14,10 @@ import shutil
 import locale
 import errno
 import io
+import time
 from pathlib import Path
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.fsn import fsnative
@@ -162,9 +163,22 @@ def realized(widget):
     run_gtk_loop()
 
 
+def run_until_allocated(widget, timeout=5.0):
+    """Iterate the main loop until `widget` has been given a size.
+
+    Layout happens on a frame clock tick,
+    so a single main loop drain isn't enough to see a real allocation.
+    """
+
+    context = GLib.MainContext.default()
+    deadline = time.monotonic() + timeout
+    while widget.get_width() == 0 and time.monotonic() < deadline:
+        context.iteration(False)
+
+
 @contextlib.contextmanager
 def visible(widget, width=None, height=None):
-    """Makes sure the widget is visible.
+    """Makes sure the widget is visible and allocated.
 
     view = Gtk.TreeView()
     with visible(view):
@@ -172,7 +186,6 @@ def visible(widget, width=None, height=None):
     """
 
     own_window = False
-    # GTK4: get_root() replaces get_toplevel()
     toplevel = widget.get_root()
     if not isinstance(toplevel, Gtk.Window):
         window = Gtk.Window()
@@ -182,11 +195,11 @@ def visible(widget, width=None, height=None):
         window = toplevel
 
     if width is not None and height is not None:
-        window.set_default_size(width, height)
+        # Size the widget itself: the window is larger by its decorations.
+        widget.set_size_request(width, height)
 
-    # GTK4: present() replaces show_all()
     window.present()
-    run_gtk_loop()
+    run_until_allocated(widget)
     assert widget.get_visible()
     assert window.get_visible()
     yield widget

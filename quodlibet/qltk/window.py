@@ -15,7 +15,7 @@ from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_wayland, is_accel
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal, print_d, print_w, InstanceTracker
-from quodlibet.util import connect_obj, connect_destroy
+from quodlibet.util import connect_destroy
 
 
 def on_first_map(window, callback, *args, **kwargs):
@@ -113,6 +113,16 @@ class Window(Gtk.Window):
         if isinstance(self, InstanceTracker):
             self._deregister_instance()
         super().destroy()
+
+    def do_close_request(self):
+        """Funnel window-manager closes through destroy().
+
+        GTK would otherwise destroy us from C,
+        skipping the bookkeeping in destroy().
+        """
+
+        self.destroy()
+        return Gdk.EVENT_STOP
 
     def _on_key_press(self, widget, event):
         is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG
@@ -400,10 +410,10 @@ class _Unique:
             return
         type(self).__window = self
         super().__init__(*args, **kwargs)
-        connect_obj(self, "destroy", self.__destroy, self)
 
-    def __destroy(self, *args):
+    def destroy(self):
         type(self).__window = None
+        super().destroy()
 
 
 class UniqueWindow(_Unique, Window):
