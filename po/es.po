@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-06-24 12:01+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"PO-Revision-Date: 2026-07-19 22:01+0000\n"
+"Last-Translator: Juan M Sevilla <jumase@disroot.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
 "Language: es\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3660,7 +3660,6 @@ msgid "Queue Only"
 msgstr "Solo en cola"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3669,9 +3668,9 @@ msgid ""
 msgstr ""
 "Limita la reproducción de canciones a la cola.\n"
 "\n"
-"Seleccione este orden de reproducción en la ventana principal y, al pulsar "
-"dos veces en una canción, esta se añadirá a la cola en vez de reproducirse "
-"de inmediato."
+"Selecciona este orden de reproducción en el modo aleatorio de la ventana "
+"principal y actívalo. Al pulsar dos veces en una canción, ésta se añadirá a "
+"la cola en vez de reproducirse de inmediato."
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
@@ -3783,9 +3782,8 @@ msgid "Skip disliked tracks"
 msgstr "Saltar pistas que no le gustan"
 
 #: quodlibet/ext/playorder/skip_disliked.py:32
-#, fuzzy
 msgid "Skip _disliked tracks"
-msgstr "Saltar pistas que no me gustan"
+msgstr "Saltar pistas que _no me gustan"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
@@ -3804,9 +3802,8 @@ msgid "Repeat each track"
 msgstr "Repetir cada pista"
 
 #: quodlibet/ext/playorder/track_repeat.py:35
-#, fuzzy
 msgid "Repeat _each track"
-msgstr "Repetir cada pista"
+msgstr "Repetir _cada pista"
 
 #: quodlibet/ext/playorder/track_repeat.py:54
 msgid "Number of times to play each song:"
@@ -3818,11 +3815,11 @@ msgstr "Consulta condicional"
 
 #: quodlibet/ext/query/conditional.py:16
 msgid "Chooses the query to match based on a condition query."
-msgstr ""
+msgstr "Elige la consulta a realizar basada en una condición."
 
 #: quodlibet/ext/query/conditional.py:18
 msgid "@(if: condition-query, then-query, else-query)"
-msgstr ""
+msgstr "@(if: condición, entonces-hacer, de-lo-contrario-hacer)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3830,7 +3827,7 @@ msgstr "Consulta faltante"
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
-msgstr ""
+msgstr "Encuentra las canciones que no tienen la etiqueta consultada."
 
 #: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
@@ -3845,9 +3842,8 @@ msgid "🐍Use Python expressions in queries."
 msgstr "🐍Utilice expresiones de Python en las consultas."
 
 #: quodlibet/ext/query/pythonexpression.py:21
-#, fuzzy
 msgid "@(python: expression)"
-msgstr "Expresión de etiqueta"
+msgstr "@(python: expresión)"
 
 #: quodlibet/ext/query/pythonexpression.py:23
 msgid ""
@@ -3858,6 +3854,12 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
+"La variable <tt>s</tt> (o <tt>a</tt>) es la canción (álbum) a encontrar.\n"
+"\n"
+"<tt>_ts</tt> es una marca de tiempo (número real) al inicio de la consulta.\n"
+"\n"
+"Los módulos <tt>time</tt> y <tt>random</tt> también están disponibles, al "
+"igual que la clase <tt>Random</tt> (==<tt>random.Random</tt>)."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -3870,9 +3872,8 @@ msgstr ""
 "consulta."
 
 #: quodlibet/ext/query/savedsearch.py:25
-#, fuzzy
 msgid "@(saved: search-name)"
-msgstr "Búsquedas guardadas"
+msgstr "@(saved: nombre-de-búsqueda)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
@@ -3880,11 +3881,11 @@ msgstr "Consulta única"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "Filtrar resultados de búsqueda por etiquetas únicas."
 
 #: quodlibet/ext/query/unique.py:19
 msgid "@(unique: tag)"
-msgstr ""
+msgstr "@(unique: etiqueta)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -4183,6 +4184,8 @@ msgid ""
 "Interactive Python console sidebar, that follows the selected songs in the "
 "main window."
 msgstr ""
+"Consola interactiva de Python en una barra lateral, la cual sigue las "
+"canciones seleccionadas en la ventana principal."
 
 #: quodlibet/ext/songsmenu/console.py:81
 msgid "You can access the following objects by default:"
@@ -4201,14 +4204,12 @@ msgid "Download Cover Art"
 msgstr "Descargar cubiertas de álbumes"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
-"Descarga cubiertas de álbumes de alta calidad mediante complementos de "
-"cubiertas."
+"Descarga cubiertas de álbumes de alta calidad mediante los complementos de "
+"cubiertas de Quod Libet."
 
 #: quodlibet/ext/songsmenu/cover_download.py:167
-#, fuzzy
 msgid "Classic"
 msgstr "Clásica"
 
@@ -4230,7 +4231,7 @@ msgstr "WQXGA"
 
 #: quodlibet/ext/songsmenu/cover_download.py:172
 msgid "4K UHD"
-msgstr ""
+msgstr "4K ultra alta definición"
 
 #: quodlibet/ext/songsmenu/cover_download.py:184
 msgid "Cover Art Download"
@@ -4329,7 +4330,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid "unique"
-msgstr ""
+msgstr "único"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:67
 msgid "If set, this will remove duplicate computed values of the pattern"
@@ -4345,6 +4346,7 @@ msgid ""
 "The maximum number of argument to pass to the command at one time (like "
 "xargs)"
 msgstr ""
+"El número máximo de argumentos para pasarle cada vez al comando (como xargs)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:76
 msgid "reverse"
@@ -4416,20 +4418,20 @@ msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
+"Acepta expresiones de etiquetas de QL como <tt>~artist~title</tt> o <tt>"
+"musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "_Group duplicates by:"
 msgstr "A_grupar duplicados por:"
 
 #: quodlibet/ext/songsmenu/duplicates.py:411
-#, fuzzy
 msgid "Duplicate Key"
-msgstr "Eliminar la etiqueta seleccionada"
+msgstr "Duplicar clave"
 
 #: quodlibet/ext/songsmenu/duplicates.py:416
-#, fuzzy
 msgid "Remove _Whitespace"
-msgstr "Eliminar la etiqueta seleccionada"
+msgstr "Quitar _espacios en blanco"
 
 #: quodlibet/ext/songsmenu/duplicates.py:417
 msgid "Remove _Diacritics"
@@ -4441,11 +4443,11 @@ msgstr "Quitar _puntuación"
 
 #: quodlibet/ext/songsmenu/duplicates.py:419
 msgid "Case _Insensitive"
-msgstr ""
+msgstr "Ignorar mayúsculas"
 
 #: quodlibet/ext/songsmenu/duplicates.py:427
 msgid "Matching options"
-msgstr ""
+msgstr "Opciones de búsqueda"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:19
 #: quodlibet/ext/songsmenu/editplaycount.py:45
@@ -4463,6 +4465,16 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
+"Edita los valores de <tt>~#playcount</tt> y <tt>~#skipcount</tt> de una "
+"canción.\n"
+"\n"
+"Cuando se seleccionen varias canciones, los contadores serán incrementados "
+"en vez de establecidos.\n"
+"\n"
+"Al establecer <tt>~#playcount</tt> a 0 en una canción, sus entradas <tt>"
+"~#lastplayed</tt> y <tt>~#laststarted</tt> serán borradas. Sin embargo, al "
+"establecer alguna canción que nunca haya sido reproducida (playcount=0) a un "
+"valor positivo, ninguna marca de tiempo será creada."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:72
 msgid "Play Count"
@@ -4509,7 +4521,7 @@ msgstr "_Incrustar imagen actual"
 
 #: quodlibet/ext/songsmenu/embedded.py:119
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Elegir imagen…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -4521,7 +4533,7 @@ msgstr "Permite definir la puntuación de las canciones con un número."
 
 #: quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr ""
+msgstr "Por favor, establece la puntuación deseada en una escala de 0.0 a 1.0"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"

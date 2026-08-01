@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-06-26 16:19+0000\n"
+"PO-Revision-Date: 2026-07-16 17:01+0000\n"
 "Last-Translator: Mona Lisa <monalisa@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sv/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -38,7 +38,7 @@ msgstr "_Datum"
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60
 msgid "_Date Added"
-msgstr "_Datum tillagt"
+msgstr "_Tilläggsdatum"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:61
@@ -206,7 +206,7 @@ msgstr "Okänd %s"
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
 msgid "Multiple %s Values"
-msgstr "Multipla %s-värden"
+msgstr "Flera %s-värden"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:92
@@ -250,7 +250,7 @@ msgstr "Slå samman"
 
 #: quodlibet/browsers/collection/prefs.py:187
 msgid "Album Collection Preferences"
-msgstr "Inställningar för skivsamling"
+msgstr "Inställningar för albumsamling"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:249
@@ -286,7 +286,7 @@ msgstr "_Tillämpa"
 #: quodlibet/qltk/quodlibetwindow.py:1500 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:97
 msgid "_Cancel"
-msgstr "_Avrbyt"
+msgstr "_Avbryt"
 
 #: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
@@ -360,7 +360,7 @@ msgstr "Lägg till stationer"
 
 #: quodlibet/browsers/iradio.py:273
 msgid "Downloading station list"
-msgstr "Ladda hem stationslista"
+msgstr "Hämtar stationslista"
 
 #: quodlibet/browsers/iradio.py:375
 msgid "New Station"
@@ -392,7 +392,7 @@ msgstr "Japanskt"
 
 #: quodlibet/browsers/iradio.py:405
 msgid "Indian"
-msgstr "indisk"
+msgstr "Indiskt"
 
 #: quodlibet/browsers/iradio.py:407
 msgid "Religious"
@@ -613,7 +613,7 @@ msgid ""
 "Tag pattern with optional markup e.g. %(short)s or\n"
 "%(long)s"
 msgstr ""
-"Taggmönster med valfri markup, t.ex. %(short)s eller\n"
+"Taggmönster med valfri formatering, t.ex. %(short)s eller\n"
 "%(long)s"
 
 #: quodlibet/browsers/paned/prefs.py:234
@@ -655,7 +655,7 @@ msgstr "_Importera…"
 
 #: quodlibet/browsers/playlists/main.py:470
 msgid "Unable to import playlist"
-msgstr "Kan inte importera spellistor"
+msgstr "Det gick inte att importera spellistan"
 
 #: quodlibet/browsers/playlists/main.py:472
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
@@ -767,7 +767,7 @@ msgstr ""
 
 #: quodlibet/browsers/podcasts.py:245
 msgid "New Feed"
-msgstr "Ny feed"
+msgstr "Nytt flöde"
 
 #: quodlibet/browsers/podcasts.py:246
 msgid "Enter the podcast / audio feed location:"
@@ -904,7 +904,7 @@ msgstr "Quod Libet körs inte (lägg till '--run' för att starta det)"
 
 #: quodlibet/cli.py:116
 msgid "a music library and player"
-msgstr "musikbibliotek och -spelare"
+msgstr "ett musikbibliotek och en musikspelare"
 
 #: quodlibet/cli.py:116
 msgid "[option]"
@@ -916,7 +916,7 @@ msgstr "Skriver ut den låt som spelas och avslutar"
 
 #: quodlibet/cli.py:120
 msgid "Begin playing immediately"
-msgstr "Börja spela omgående"
+msgstr "Börja spela upp direkt"
 
 #: quodlibet/cli.py:121
 msgid "Don't show any windows on start"
@@ -961,11 +961,11 @@ msgstr "Sänk volymen"
 
 #: quodlibet/cli.py:133
 msgid "Increase rating of playing song by one star"
-msgstr "Höj betyget för den spelande låten med en stjärna"
+msgstr "Höj betyget för låten som spelas med en stjärna"
 
 #: quodlibet/cli.py:134
 msgid "Decrease rating of playing song by one star"
-msgstr "Sänk betyget för den spelande låten med en stjärna"
+msgstr "Sänk betyget för låten som spelas med en stjärna"
 
 #: quodlibet/cli.py:135
 msgid "Print player status"
@@ -985,7 +985,7 @@ msgstr "Växla synlighet för huvudfönstret"
 
 #: quodlibet/cli.py:139
 msgid "Focus the running player"
-msgstr "Fokuserar på den spelare som körs"
+msgstr "Fokusera på spelaren som körs"
 
 #: quodlibet/cli.py:140
 msgid "Remove active browser filters"
@@ -1025,7 +1025,7 @@ msgstr "Avsluta Quod Libet"
 
 #: quodlibet/cli.py:153
 msgid "Seek within the playing song"
-msgstr "Sök innom spelande låt"
+msgstr "Spola i låten som spelas"
 
 #: quodlibet/cli.py:153
 msgid "[+|-][HH:]MM:SS"
@@ -1041,7 +1041,7 @@ msgstr "Ange typ av blandningsläge"
 
 #: quodlibet/cli.py:156
 msgid "Turn repeat off, on, or toggle it"
-msgstr "Stäng av, på eller växla repetering"
+msgstr "Stäng av, slå på eller växla upprepning"
 
 #: quodlibet/cli.py:157
 msgid "Set repeat mode type"
@@ -1071,7 +1071,7 @@ msgstr "filnamn"
 
 #: quodlibet/cli.py:161
 msgid "Set rating of playing song"
-msgstr "Ange betyg för den spelande låten"
+msgstr "Ange betyg för låten som spelas"
 
 #: quodlibet/cli.py:162
 msgid "Set the current browser"
@@ -1079,7 +1079,7 @@ msgstr "Ange nuvarande bläddrare"
 
 #: quodlibet/cli.py:163
 msgid "Stop after the playing song"
-msgstr "Stoppa efter den spelande låten"
+msgstr "Stoppa efter låten som spelas"
 
 #: quodlibet/cli.py:164
 msgid "Open a new browser"
@@ -1087,7 +1087,7 @@ msgstr "Öppna ny bläddrare"
 
 #: quodlibet/cli.py:165
 msgid "Show or hide the queue"
-msgstr "Visa eller dölj bläddraren"
+msgstr "Visa eller dölj kön"
 
 #: quodlibet/cli.py:166
 msgid "Filter on a random value"
@@ -1112,7 +1112,7 @@ msgstr "Kölägg en fil eller fråga"
 
 #: quodlibet/cli.py:175
 msgid "Enqueue comma-separated files"
-msgstr "Kölägg kommaseparerad lista"
+msgstr "Kölägg kommaseparerade filer"
 
 #: quodlibet/cli.py:176 quodlibet/util/tags.py:156
 msgid "filename"
@@ -1124,7 +1124,7 @@ msgstr "Skriv ut filnamnen på sökresultatet till stdout"
 
 #: quodlibet/cli.py:181
 msgid "Unqueue a file or query"
-msgstr "Ta bort fil eller fråga från kö"
+msgstr "Ta bort en fil eller sökfråga från kön"
 
 #: quodlibet/cli.py:184
 msgid "Add a file or directory to the library"
@@ -1226,7 +1226,7 @@ msgstr "Ljudmetadataredigerare"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr "Omslagskälla från Artwork-URL"
+msgstr "Omslagskälla via URL"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
@@ -1302,15 +1302,15 @@ msgstr ""
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
-msgstr "Rubrikskiftning"
+msgstr "Rubrikstil"
 
 #: quodlibet/ext/editing/titlecase.py:21
 msgid "Title-cases tag values in the tag editor."
-msgstr "Sätter taggvärden i rubrikstil i taggredigeraren."
+msgstr "Använder rubrikstil för taggvärden i taggredigeraren."
 
 #: quodlibet/ext/editing/titlecase.py:39
 msgid "Title-_case Value"
-msgstr "Sätt värde i _rubrikstil"
+msgstr "Använd _rubrikstil för värdet"
 
 #: quodlibet/ext/editing/titlecase.py:50
 msgid "Allow _ALL-CAPS in tags"
@@ -1318,14 +1318,14 @@ msgstr "Tillåt _ENBART VERSALER i taggar"
 
 #: quodlibet/ext/editing/titlecase.py:53
 msgid "_Human title case"
-msgstr "_Naturlig rubrikskiftning"
+msgstr "_Naturlig rubrikstil"
 
 #: quodlibet/ext/editing/titlecase.py:55
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
-"Använder vanliga engelska regler för rubrikskiftning, som i ”Dark Night of "
-"the Soul”"
+"Använder vanliga engelska regler för rubrikstil, som i ”Dark Night of the "
+"Soul”"
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1420,7 +1420,7 @@ msgstr "Programinformation"
 
 #: quodlibet/ext/events/appinfo.py:34
 msgid "Various information about the application and its environment."
-msgstr "Diverse information om programmet och dess miljö."
+msgstr "Olika uppgifter om programmet och dess miljö."
 
 #: quodlibet/ext/events/appinfo.py:80
 msgid "Supported Formats"
@@ -1501,10 +1501,10 @@ msgid ""
 "listened to (%s)."
 msgstr ""
 "När insticksmodulen skriver taggarna för ett album sätter den först "
-"spelningsantalet för låtar som har noll till ett.\n"
-"Ibland vet du redan att du inte gillar en låt, så att sätta det till ett vid "
-"sparning kan vara användbart senare när du söker efter album som du har "
-"lyssnat på helt (%s)."
+"spelningsantalet till ett för låtar vars spelningsantal är noll.\n"
+"Ibland vet du redan att du inte gillar en låt. Att sätta spelningsantalet "
+"till ett vid sparning kan då vara användbart senare när du söker efter album "
+"som du har lyssnat igenom (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:76
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:599
@@ -1634,7 +1634,7 @@ msgstr "Väckarklocka"
 
 #: quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
-msgstr "Väcker dig med hög musik."
+msgstr "Väcker dig med musik på hög volym."
 
 #: quodlibet/ext/events/clock.py:118
 msgid "Lullaby"
@@ -1736,20 +1736,20 @@ msgstr "Bärbar dator"
 
 #: quodlibet/ext/events/equalizer.py:334
 msgid "Equalizer"
-msgstr "Frekvenskorrigering"
+msgstr "Equalizer"
 
 #: quodlibet/ext/events/equalizer.py:336
 msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
-"Styr musikens klang med frekvenskorrigering.\n"
-"Klicka eller använd tangenter för att anpassa nivåerna (högerklick "
-"återställer bandet)."
+"Styr musikens klang med en equalizer.\n"
+"Klicka eller använd tangenter för att anpassa nivåerna (högerklicka för att "
+"återställa frekvensbandet)."
 
 #: quodlibet/ext/events/equalizer.py:373
 msgid "The current backend does not support equalization."
-msgstr "Den aktuella bakänden stöder inte frekvenskorrigering."
+msgstr "Den aktuella bakänden stöder inte equalizer."
 
 #: quodlibet/ext/events/equalizer.py:379
 #, python-format
@@ -1791,7 +1791,7 @@ msgstr "_Ta bort markerade"
 
 #: quodlibet/ext/events/equalizer.py:549
 msgid "Preset name for saving:"
-msgstr "Förvalsnamn att spara:"
+msgstr "Namn på förvalet som ska sparas:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:559
@@ -1813,11 +1813,11 @@ msgstr "_Spara"
 
 #: quodlibet/ext/events/gajim_status.py:30
 msgid "online"
-msgstr "online"
+msgstr "ansluten"
 
 #: quodlibet/ext/events/gajim_status.py:31
 msgid "offline"
-msgstr "offline"
+msgstr "frånkopplad"
 
 #: quodlibet/ext/events/gajim_status.py:32
 msgid "chat"
@@ -1876,7 +1876,7 @@ msgstr "Om markerat läggs '[pausad]' till i statusmeddelandet vid paus"
 
 #: quodlibet/ext/events/gajim_status.py:202
 msgid "Statuses for which message will be changed"
-msgstr "Statusar vars meddelande ska ändras"
+msgstr "Statuslägen vars meddelande ska ändras"
 
 #: quodlibet/ext/events/headphonemon.py:162
 msgid "Pause on Headphone Unplug"
@@ -1926,8 +1926,8 @@ msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
 msgstr ""
-"Registrerar de 10 senaste låtarna som spelats på radiostationer och listar "
-"dem i sökmenyn."
+"Registrerar de tio senaste låtarna som spelats på radiostationer och visar "
+"dem i positionsreglagets snabbmeny."
 
 #: quodlibet/ext/events/jep118.py:29
 msgid "JEP-118"
@@ -2041,7 +2041,7 @@ msgstr "Publicerar statusmeddelanden till ett MQTT-ämne."
 
 #: quodlibet/ext/events/mqtt.py:143
 msgid "Broker hostname / IP"
-msgstr "Mäklarens värdnamn/IP"
+msgstr "MQTT-brokerns värdnamn/IP-adress"
 
 #: quodlibet/ext/events/mqtt.py:143
 msgid "Defaults to localhost"
@@ -2049,7 +2049,7 @@ msgstr "Standardvärdet är localhost"
 
 #: quodlibet/ext/events/mqtt.py:144
 msgid "Broker port"
-msgstr "Mäklarport"
+msgstr "MQTT-brokerns port"
 
 #: quodlibet/ext/events/mqtt.py:144
 msgid "Defaults to 1883"
@@ -2057,11 +2057,11 @@ msgstr "Standardvärdet är 1883"
 
 #: quodlibet/ext/events/mqtt.py:145
 msgid "Broker username"
-msgstr "Mäklaranvändarnamn"
+msgstr "MQTT-brokerns användarnamn"
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Broker password"
-msgstr "Mäklarlösenord"
+msgstr "MQTT-brokerns lösenord"
 
 #: quodlibet/ext/events/mqtt.py:147
 msgid "Topic"
@@ -2085,7 +2085,7 @@ msgstr "Text när en låt pausas."
 
 #: quodlibet/ext/events/mqtt.py:159
 msgid "No-song Text"
-msgstr "Text när ingen låt finns"
+msgstr "Text när ingen låt spelas"
 
 #: quodlibet/ext/events/mqtt.py:161
 msgid "Plain text for when there is no current song"
@@ -2361,19 +2361,19 @@ msgstr "Spelad oftare"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Skipped more often"
-msgstr "Hoppats över oftare"
+msgstr "Överhoppad oftare"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Played more recently"
-msgstr "Spelad senare"
+msgstr "Spelad nyligen"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Started more recently"
-msgstr "Startad senare"
+msgstr "Startad nyligen"
 
 #: quodlibet/ext/events/randomalbum.py:43
 msgid "Added more recently"
-msgstr "Tillagd senare"
+msgstr "Tillagd nyligen"
 
 #: quodlibet/ext/events/randomalbum.py:44
 msgid "Longer albums"
@@ -2448,15 +2448,15 @@ msgstr "Tillåter GNOME Shell att söka i biblioteket."
 
 #: quodlibet/ext/events/seekbar.py:118
 msgid "Alternative Seek Bar"
-msgstr "Alternativt sökfält"
+msgstr "Alternativt positionsreglage"
 
 #: quodlibet/ext/events/seekbar.py:120
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
 msgstr ""
-"Alternativt sökfält som alltid är synligt och sträcker sig över hela "
-"fönsterbredden."
+"Alternativt positionsreglage som alltid är synligt och sträcker sig över "
+"hela fönsterbredden."
 
 #: quodlibet/ext/events/seekpoints.py:20
 msgid "Seekpoint Bookmarks"
@@ -2499,9 +2499,9 @@ msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
-"Bokmärkesnamn att använda vid varje tick under uppspelning av ett spår om "
-"det finns. Om den aktuella positionen överskrider tidsstämpeln söks till "
-"slutet av spåret."
+"Bokmärkesnamn som ska kontrolleras vid varje uppdatering under uppspelningen "
+"av ett spår, om det finns. Om den aktuella positionen passerar tidsstämpeln "
+"spolas uppspelningen till spårets slut."
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2605,7 +2605,7 @@ msgstr "MISSLYCKADES"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "Skipped existing file"
-msgstr "Skipped befintlig fil"
+msgstr "Hoppade över befintlig fil"
 
 #: quodlibet/ext/events/synchronize_to_device.py:80
 msgid "Cannot set the filename of a song."
@@ -2769,8 +2769,8 @@ msgstr "Synkroniseringen kommer att:"
 #, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
-msgstr[0] "försöker skriva {count} fil"
-msgstr[1] "försöker skriva {count} filer"
+msgstr[0] "försöka skriva {count} fil"
+msgstr[1] "försöka skriva {count} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:826
 #, python-brace-format
@@ -2920,43 +2920,43 @@ msgstr "Synkroniseringen har:"
 #, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
-msgstr[0] "skrev {count}/{total} fil"
-msgstr[1] "skrev {count}/{total} filer"
+msgstr[0] "skrivit {count}/{total} fil"
+msgstr[1] "skrivit {count}/{total} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1206
 #, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
-msgstr[0] "(hoppade över {count} befintlig fil)"
-msgstr[1] "(hoppade över {count} befintliga filer)"
+msgstr[0] "(hoppat över {count} befintlig fil)"
+msgstr[1] "(hoppat över {count} befintliga filer)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1218
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
-msgstr[0] "hoppade över {count}/{total} dubblettfil"
-msgstr[1] "hoppade över {count}/{total} dubblettfiler"
+msgstr[0] "hoppat över {count}/{total} dubblettfil"
+msgstr[1] "hoppat över {count}/{total} dubblettfiler"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1228
 #, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
-msgstr[0] "tog bort {count}/{total} fil"
-msgstr[1] "tog bort {count}/{total} filer"
+msgstr[0] "tagit bort {count}/{total} fil"
+msgstr[1] "tagit bort {count}/{total} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1238
 #, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
-msgstr[0] "misslyckades med att synkronisera {count} fil"
-msgstr[1] "misslyckades med att synkronisera {count} filer"
+msgstr[0] "misslyckats med att synkronisera {count} fil"
+msgstr[1] "misslyckats med att synkronisera {count} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1248
 #, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
-msgstr[0] "hoppade över {count} fil som synkroniserats tidigare"
-msgstr[1] "hoppade över {count} filer som synkroniserats tidigare"
+msgstr[0] "hoppat över {count} fil som synkroniserats tidigare"
+msgstr[1] "hoppat över {count} filer som synkroniserats tidigare"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:27
 msgid "Synchronized Lyrics"
@@ -3077,7 +3077,7 @@ msgstr "Spelar inte"
 
 #: quodlibet/ext/events/trayicon/__init__.py:50
 msgid "Tray Icon"
-msgstr "Aktivitetsfältsikon"
+msgstr "Systemfältsikon"
 
 #: quodlibet/ext/events/trayicon/__init__.py:51
 msgid "Controls Quod Libet from the system tray."
@@ -3162,7 +3162,7 @@ msgstr "Mushjulet byter låt"
 
 #: quodlibet/ext/events/trayicon/prefs.py:63
 msgid "Scroll _Wheel"
-msgstr "Rull_hjul"
+msgstr "_Mushjul"
 
 #: quodlibet/ext/events/trayicon/prefs.py:94
 msgid "Tooltip Display"
@@ -3225,11 +3225,11 @@ msgstr "Läs in igen"
 
 #: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
-msgstr "Vågforms-sökfält"
+msgstr "Vågformsbaserat positionsreglage"
 
 #: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
-msgstr "∿ Ett sökfält i form av vågformen för den aktuella låten."
+msgstr "∿ Ett positionsreglage som visar vågformen för den aktuella låten."
 
 #: quodlibet/ext/events/waveformseekbar.py:735
 msgid "Foreground color"
@@ -3253,7 +3253,7 @@ msgstr "Visa tidsetiketter"
 
 #: quodlibet/ext/events/waveformseekbar.py:763
 msgid "Seek amount when scrolling (milliseconds):"
-msgstr "Söksteg vid rullning (millisekunder):"
+msgstr "Spolningssteg vid rullning (millisekunder):"
 
 #: quodlibet/ext/events/waveformseekbar.py:774
 msgid "Waveform height (pixels):"
@@ -3308,7 +3308,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "_Preset:"
-msgstr "_Påterställ:"
+msgstr "_Förval:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "Filter preset"
@@ -3417,7 +3417,7 @@ msgstr "Mixar ned ljudkanaler till mono."
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "R_ate:"
-msgstr "H_astighet:"
+msgstr "_Hastighet:"
 
 #: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Tempo:"
@@ -3560,7 +3560,7 @@ msgstr[1] "Är du säker på att du vill ta bort %d låtdubbletter?"
 #: quodlibet/ext/playlist/remove_duplicates.py:58
 #, python-format
 msgid "The duplicate songs will be removed from the playlist '%s'."
-msgstr "Dubletter kommer att tas bort från spellistan '%s'."
+msgstr "Dubblettlåtarna tas bort från spellistan ”%s”."
 
 #: quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
@@ -3602,15 +3602,15 @@ msgstr ""
 
 #: quodlibet/ext/playorder/playcounteq.py:27
 msgid "Prefer less played"
-msgstr "Föredra mindre spelade"
+msgstr "Föredra mer sällan spelade"
 
 #: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer _less played"
-msgstr "Föredra _mindre spelade"
+msgstr "Föredra mer _sällan spelade"
 
 #: quodlibet/ext/playorder/playcounteq.py:78
 msgid "Priority for less played tracks"
-msgstr "Prioritet för mindre spelade spår"
+msgstr "Prioritet för mer sällan spelade spår"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -3639,7 +3639,7 @@ msgstr "_Endast kö"
 
 #: quodlibet/ext/playorder/queue.py:38
 msgid "Automatically start playing double-clicked songs"
-msgstr "Automatiskt starta spelar double-clicked låtar"
+msgstr "Spela automatiskt upp dubbelklickade låtar"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:17
 msgid "Reverse"
@@ -3888,7 +3888,7 @@ msgstr "Squeezebox Server"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:161
 msgid "Debug"
-msgstr "Avlusa"
+msgstr "Felsökning"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
@@ -4297,7 +4297,7 @@ msgstr "Om angivet tas dubbletter av beräknade värden för mönstret bort"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "max args"
-msgstr "max argument"
+msgstr "högsta antal argument"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:72
 msgid ""
@@ -4356,7 +4356,7 @@ msgstr[1] "%d dubblettgrupper"
 
 #: quodlibet/ext/songsmenu/duplicates.py:338
 msgid "Collapse / Expand all"
-msgstr "Komprimera/expandera alla"
+msgstr "Fäll ihop/expandera alla"
 
 #: quodlibet/ext/songsmenu/duplicates.py:343
 #, python-format
@@ -4553,7 +4553,7 @@ msgstr "AcoustID-webbtjänst"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:36
 msgid "Queued"
-msgstr "Köad"
+msgstr "I kö"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:38
 msgid "Analyzing"
@@ -4597,7 +4597,7 @@ msgstr "Genererar fingeravtryck:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:63
 msgid "_Details"
-msgstr "_Information"
+msgstr "_Detaljer"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:87
 msgid "_Submit"
@@ -4724,7 +4724,7 @@ msgstr "Exportera filstammar, taggar och användardata"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:176
 msgid "Import / Export"
-msgstr "Import / export"
+msgstr "Import/export"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:177
 msgid "Imports and exports tags and track user data."
@@ -5008,7 +5008,7 @@ msgstr "alltid"
 
 #: quodlibet/ext/songsmenu/replaygain.py:621
 msgid "if <b>any</b> RG tags are missing"
-msgstr "om <b>några</b> RG-taggar saknas"
+msgstr "om <b>någon</b> RG-tagg saknas"
 
 #: quodlibet/ext/songsmenu/replaygain.py:624
 msgid "if <b>album</b> RG tags are missing"
@@ -5150,12 +5150,12 @@ msgstr "Kontrollerar monteringspunkter"
 
 #: quodlibet/library/file.py:165
 msgid "Scanning library"
-msgstr "Kontrollerar bibliotek"
+msgstr "Skannar biblioteket"
 
 #: quodlibet/library/file.py:227
 #, python-format
 msgid "Scanning %s"
-msgstr "Kontrollerar %s"
+msgstr "Skannar %s"
 
 #: quodlibet/library/file.py:247
 msgid "Loading files"
@@ -5210,13 +5210,13 @@ msgstr "Lista taggar"
 #: quodlibet/operon/commands.py:40 quodlibet/operon/commands.py:84
 #: quodlibet/operon/commands.py:521
 msgid "Print terse output"
-msgstr "Koncis utmatning"
+msgstr "Skriv ut kortfattad utdata"
 
 #: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:90
 #: quodlibet/operon/commands.py:527
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
-msgstr "Vilka kolumner som syns och i vilken ordning i koncist läge (%s)"
+msgstr "Kolumner att visa och deras ordning i kortfattat läge (%s)"
 
 #: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:93
 msgid "Also list programmatic tags"
@@ -5230,7 +5230,7 @@ msgstr "Lista även programmatiska taggar"
 #: quodlibet/operon/commands.py:586 quodlibet/operon/commands.py:622
 #: quodlibet/operon/commands.py:670
 msgid "Not enough arguments"
-msgstr "Inte nog många argument"
+msgstr "För få argument"
 
 #: quodlibet/operon/commands.py:57 quodlibet/operon/commands.py:98
 #: quodlibet/operon/commands.py:143 quodlibet/operon/commands.py:534
@@ -5328,7 +5328,7 @@ msgstr "Lägg till ett taggvärde"
 #: quodlibet/operon/commands.py:505 quodlibet/operon/commands.py:763
 #, python-format
 msgid "Can not set %r"
-msgstr "Kunde inte sätta %r"
+msgstr "Det går inte att ange %r"
 
 #: quodlibet/operon/commands.py:517
 msgid "List file information"
@@ -5691,7 +5691,7 @@ msgstr "_Filter"
 
 #: quodlibet/qltk/browser.py:60
 msgid "Recently _Played"
-msgstr "Nyligen _spelad"
+msgstr "Nyligen _spelade"
 
 #: quodlibet/qltk/browser.py:66
 msgid "Recently _Added"
@@ -5699,7 +5699,7 @@ msgstr "Nyligen _tillagda"
 
 #: quodlibet/qltk/browser.py:69
 msgid "_Top 40"
-msgstr "40 _högsta"
+msgstr "_Topp 40"
 
 #: quodlibet/qltk/browser.py:70
 msgid "All _Songs"
@@ -5707,11 +5707,11 @@ msgstr "Alla _låtar"
 
 #: quodlibet/qltk/browser.py:78
 msgid "On Current _Genre(s)"
-msgstr "För aktuell(a) _genre(r)"
+msgstr "För aktuella _genrer"
 
 #: quodlibet/qltk/browser.py:79
 msgid "On Current _Artist(s)"
-msgstr "För aktuell(a) _artist(er)"
+msgstr "För aktuella _artister"
 
 #: quodlibet/qltk/browser.py:80
 msgid "On Current Al_bum"
@@ -5734,8 +5734,8 @@ msgid ""
 "The 40 songs you've played most (more than 40 may be chosen if there are "
 "ties)"
 msgstr ""
-"De 40 mesta spelade låtarna (mer än 40 kan väljas om flera låtar är spelade "
-"lika mycket)"
+"De 40 låtar du har spelat mest (fler än 40 kan väljas om flera har spelats "
+"lika många gånger)"
 
 #: quodlibet/qltk/cbes.py:41
 msgid "_Name:"
@@ -5896,15 +5896,15 @@ msgstr "Hämtar filer"
 #, python-format
 msgid "missing from %d song"
 msgid_plural "missing from %d songs"
-msgstr[0] "saknas från %d låt"
-msgstr[1] "saknas från %d låtar"
+msgstr[0] "saknas i %d låt"
+msgstr[1] "saknas i %d låtar"
 
 #: quodlibet/qltk/edittags.py:71 quodlibet/qltk/edittags.py:74
 #, python-format
 msgid "different across %d song"
 msgid_plural "different across %d songs"
-msgstr[0] "skiljer sig mellan %d låt"
-msgstr[1] "skiljer sig mellan %d låtar"
+msgstr[0] "skiljer sig för %d låt"
+msgstr[1] "skiljer sig för %d låtar"
 
 #: quodlibet/qltk/edittags.py:199
 msgid "Split into _Multiple Values"
@@ -5984,7 +5984,7 @@ msgstr "_Dela tagg"
 
 #: quodlibet/qltk/edittags.py:760
 msgid "_Copy Value(s)"
-msgstr "_Kopiera Värde(s)"
+msgstr "_Kopiera värde(n)"
 
 #: quodlibet/qltk/edittags.py:791
 msgid "Unable to add tag"
@@ -6124,7 +6124,7 @@ msgstr "Ny mapp"
 
 #: quodlibet/qltk/filesel.py:370
 msgid "Enter a name for the new folder:"
-msgstr "Namn på den nya mappen:"
+msgstr "Ange ett namn på den nya mappen:"
 
 #: quodlibet/qltk/filesel.py:383
 msgid "Unable to create folder"
@@ -6165,7 +6165,7 @@ msgstr "_Redigera visning…"
 
 #: quodlibet/qltk/information.py:98
 msgid "No songs are selected."
-msgstr "Inga låtar är valda."
+msgstr "Inga låtar är markerade."
 
 #: quodlibet/qltk/information.py:99
 msgid "No Songs"
@@ -6242,7 +6242,7 @@ msgstr "format"
 
 #: quodlibet/qltk/information.py:264 quodlibet/util/tags.py:173
 msgid "codec"
-msgstr "codec"
+msgstr "kodek"
 
 #: quodlibet/qltk/information.py:265 quodlibet/util/tags.py:174
 msgid "encoding"
@@ -6250,7 +6250,7 @@ msgstr "kodning"
 
 #: quodlibet/qltk/information.py:266 quodlibet/util/tags.py:170
 msgid "bitrate"
-msgstr "bitrate"
+msgstr "bithastighet"
 
 #: quodlibet/qltk/information.py:267 quodlibet/util/tags.py:171
 msgid "file size"
@@ -6262,7 +6262,7 @@ msgstr "ändrad"
 
 #: quodlibet/qltk/information.py:296
 msgid "Additional"
-msgstr "Lägg tillitional"
+msgstr "Ytterligare"
 
 #: quodlibet/qltk/information.py:342
 #, python-format
@@ -6335,11 +6335,11 @@ msgstr "De markerade låtarna tas bort från biblioteket."
 
 #: quodlibet/qltk/maskedbox.py:42
 msgid "Unhide"
-msgstr "Undölj"
+msgstr "Visa igen"
 
 #: quodlibet/qltk/maskedbox.py:84
 msgid "_Unhide"
-msgstr "_Undölj"
+msgstr "_Visa igen"
 
 #: quodlibet/qltk/matchdialog.py:25
 msgid ""
@@ -6353,7 +6353,7 @@ msgstr ""
 
 #: quodlibet/qltk/matchdialog.py:87
 msgid "Right side order:"
-msgstr "Höger side order:"
+msgstr "Ordning på höger sida:"
 
 #: quodlibet/qltk/msg.py:56
 msgid "Discard tag changes?"
@@ -6364,7 +6364,7 @@ msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr ""
-"Taggar har ändrats men inte sparats.. Spara filerna eller återgå och "
+"Taggar har ändrats men inte sparats. Spara filerna eller återställ och "
 "förkasta ändringarna?"
 
 #: quodlibet/qltk/msg.py:72 quodlibet/qltk/textedit.py:62
@@ -6374,7 +6374,7 @@ msgstr "_Återställ"
 
 #: quodlibet/qltk/msg.py:122
 msgid "File exists"
-msgstr "Filen existerar"
+msgstr "Filen finns redan"
 
 #: quodlibet/qltk/msg.py:124
 #, python-format
@@ -6396,7 +6396,7 @@ msgstr "%d uppgifter körs"
 
 #: quodlibet/qltk/playorder.py:269
 msgid "Toggle shuffle mode"
-msgstr "Växla slumpuppspelning"
+msgstr "Växla blandningsläge"
 
 #: quodlibet/qltk/playorder.py:285
 msgid "Toggle repeat mode"
@@ -6420,7 +6420,7 @@ msgstr "Namnbyte"
 
 #: quodlibet/qltk/pluginwin.py:42
 msgid "Querying"
-msgstr "Söker"
+msgstr "Sökning"
 
 #: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
@@ -6432,7 +6432,7 @@ msgstr "Insticksmodulfel"
 
 #: quodlibet/qltk/pluginwin.py:143
 msgid "Any state"
-msgstr "Alla tillstånd"
+msgstr "Valfri status"
 
 #: quodlibet/qltk/pluginwin.py:145
 msgid "Enabled"
@@ -6464,7 +6464,7 @@ msgstr "Insticksmoduler"
 
 #: quodlibet/qltk/pluginwin.py:399
 msgid "Filter by plugin state / tag"
-msgstr "Filtrera efter insticksmodulens status/tagg"
+msgstr "Filtrera efter insticksmodulstatus/tagg"
 
 #: quodlibet/qltk/pluginwin.py:405
 msgid "Filter by plugin type"
@@ -6508,11 +6508,11 @@ msgstr "_Längd"
 
 #: quodlibet/qltk/prefs.py:69
 msgid "_Jump to playing song automatically"
-msgstr "_Hoppa automatiskt till spelande låt"
+msgstr "_Hoppa automatiskt till låten som spelas"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr "När en låt spelas, skrolla till den i låtlistan"
+msgstr "När låten som spelas ändras, rulla till den i låtlistan"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "_Sort songs when tags are modified"
@@ -6604,13 +6604,12 @@ msgstr "Bläddrare"
 
 #: quodlibet/qltk/prefs.py:333
 msgid "Confirm _multiple ratings"
-msgstr "Bekräfta _multipla betyg"
+msgstr "Bekräfta betyg för _flera låtar"
 
 #: quodlibet/qltk/prefs.py:338
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
-msgstr ""
-"Fråga om man är helt säker innan betygen ändras på flera låtar samtidigt"
+msgstr "Be om bekräftelse innan betyget för flera låtar ändras samtidigt"
 
 #: quodlibet/qltk/prefs.py:344
 msgid "Enable _one-click ratings"
@@ -6618,8 +6617,7 @@ msgstr "Aktivera betyg med _ett klick"
 
 #: quodlibet/qltk/prefs.py:349
 msgid "Enable rating by clicking on the rating column in the song list"
-msgstr ""
-"Möjliggör betygssättning genom att klicka på betygskolumnen i spellistan"
+msgstr "Aktivera betygssättning genom att klicka på betygskolumnen i låtlistan"
 
 #: quodlibet/qltk/prefs.py:356 quodlibet/qltk/prefs.py:752
 msgid "Ratings"
@@ -6634,8 +6632,8 @@ msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
-"Välj att använda grafik inbäddad i ljudet (om tillgängligt) framför andra "
-"källor"
+"Använd i första hand omslagsbilder som är inbäddade i ljudfilerna, när "
+"sådana finns"
 
 #: quodlibet/qltk/prefs.py:375
 msgid ""
@@ -6663,7 +6661,7 @@ msgstr "Uppspelning"
 
 #: quodlibet/qltk/prefs.py:441
 msgid "Output Configuration"
-msgstr "Utkonfiguration"
+msgstr "Utgångskonfiguration"
 
 #: quodlibet/qltk/prefs.py:450
 msgid ""
@@ -6731,7 +6729,7 @@ msgstr "_Bayesisk medelvärdesfaktor:"
 
 #: quodlibet/qltk/prefs.py:662
 msgid "_Email:"
-msgstr "_Epost:"
+msgstr "_E-post:"
 
 #: quodlibet/qltk/prefs.py:666
 msgid "Ratings and play counts will be saved in tags for this email address"
@@ -6739,7 +6737,7 @@ msgstr "Betyg och spelningsantal sparas i taggar för den här e-postadressen"
 
 #: quodlibet/qltk/prefs.py:687
 msgid "_Auto-save tag changes"
-msgstr "_Auto-spara tagg changes"
+msgstr "_Spara taggändringar automatiskt"
 
 #: quodlibet/qltk/prefs.py:692
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -6805,7 +6803,7 @@ msgstr "Dolda låtar"
 
 #: quodlibet/qltk/prefs.py:818
 msgid "Scan library _on start"
-msgstr "Sök igenom biblioteket vid _start"
+msgstr "_Skanna biblioteket vid start"
 
 #: quodlibet/qltk/prefs.py:825
 msgid "_Watch directories for changes"
@@ -6919,7 +6917,7 @@ msgstr "%s använder ett protokoll som inte stöds."
 
 #: quodlibet/qltk/quodlibetwindow.py:926
 msgid "_Jump to Playing Song"
-msgstr "_Hoppa till spelande låt"
+msgstr "_Hoppa till låten som spelas"
 
 #: quodlibet/qltk/quodlibetwindow.py:933
 msgid "_File"
@@ -6939,7 +6937,7 @@ msgstr "_Bläddra"
 
 #: quodlibet/qltk/quodlibetwindow.py:937
 msgid "_Control"
-msgstr "_Kontroll"
+msgstr "_Styrning"
 
 #: quodlibet/qltk/quodlibetwindow.py:938
 msgid "_Help"
@@ -6975,7 +6973,7 @@ msgstr "_Tangentbordsgenvägar"
 
 #: quodlibet/qltk/quodlibetwindow.py:1026
 msgid "Online Help"
-msgstr "Onlinehjälp"
+msgstr "Hjälp online"
 
 #: quodlibet/qltk/quodlibetwindow.py:1035
 msgid "Search Help"
@@ -7199,7 +7197,7 @@ msgstr "Ta bort {dir!r} och alla dess spår?"
 #: quodlibet/qltk/scanbox.py:128
 #, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "Ta bort {n} bibliotekssökvägar och their spår?"
+msgstr "Ta bort {n} bibliotekssökvägar och deras spår?"
 
 #: quodlibet/qltk/scanbox.py:130
 msgid "Remove library path?"
@@ -7221,7 +7219,7 @@ msgstr "Välj den här mappen"
 
 #: quodlibet/qltk/scanbox.py:156
 msgid "Select Actual / New Directory for {dir!r}"
-msgstr "Välj aktuell/ny katalog för {dir!r}"
+msgstr "Välj aktuell/ny mapp för {dir!r}"
 
 #: quodlibet/qltk/scanbox.py:166
 msgid ""
@@ -7306,7 +7304,7 @@ msgstr "Fokusera sökfältet"
 
 #: quodlibet/qltk/shortcuts.py:27
 msgid "Reset filters and jump to the playing song"
-msgstr "Återställ filter och hoppa till den spelande låten"
+msgstr "Återställ filtren och hoppa till låten som spelas"
 
 #: quodlibet/qltk/shortcuts.py:33
 msgid "Open the information window for the selected songs"
@@ -7350,7 +7348,7 @@ msgstr "Expanderar elementet"
 
 #: quodlibet/qltk/shortcuts.py:58
 msgid "Text Entries"
-msgstr "Textposter"
+msgstr "Textfält"
 
 #: quodlibet/qltk/shortcuts.py:60
 msgid "Undo the last change"
@@ -7410,7 +7408,7 @@ msgstr "_Expandera kolumn"
 #: quodlibet/qltk/songsmenu.py:44
 #, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "Ta bort spår: ”%(title)s” från biblioteket?"
+msgstr "Ta bort spåret ”%(title)s” från biblioteket?"
 
 #: quodlibet/qltk/songsmenu.py:48
 #, python-format
@@ -7561,7 +7559,7 @@ msgstr "_Antal spår:"
 
 #: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
-msgstr "Spela upp/pausera"
+msgstr "Spela upp/pausa"
 
 #: quodlibet/qltk/unity.py:78
 msgid "Previous"
@@ -7592,7 +7590,7 @@ msgstr "%(current)s av %(all)s"
 
 #: quodlibet/update.py:89
 msgid "Checking for Updates"
-msgstr "Checking för Uppdateras"
+msgstr "Söker efter uppdateringar"
 
 #: quodlibet/update.py:127
 msgid "Connection failed"
@@ -7641,13 +7639,13 @@ msgstr "Använder omslag inbäddade i ljudfiler."
 
 #: quodlibet/util/cover/built_in.py:63
 msgid "Filesystem cover"
-msgstr "Filsystemsomslag"
+msgstr "Omslag från filsystemet"
 
 #: quodlibet/util/cover/built_in.py:65
 msgid ""
 "Uses commonly named images found in common directories alongside the song."
 msgstr ""
-"Använder bilder med vanliga namn som hittas i vanliga mappar bredvid låten."
+"Använder bilder med vanliga filnamn som finns i mappar tillsammans med låten."
 
 #: quodlibet/util/cover/manager.py:237
 msgid "Cover Art"
