@@ -620,8 +620,6 @@ class Information(Window, PersistentWindowMixin):
 
     def __update(self, library):
         songs = self.__songs
-        if self.get_child():
-            self.get_child().destroy()
         self.__songs = songs
 
         if not songs:

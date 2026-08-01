@@ -130,7 +130,7 @@ class BrowserError(Exception):
     pass
 
 
-class Browser(Gtk.Box, Filter):
+class Browser(qltk.Destroyable, Gtk.Box, Filter):
     """Browsers are how the audio library is presented to the user; they
     create the list of songs that MainSongList is filled with, and pass
     them back via a callback function.

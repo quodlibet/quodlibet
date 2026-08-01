@@ -50,7 +50,6 @@ class TValidatingEntry(TestCase):
         assert isinstance(x[0], str)
 
     def tearDown(self):
-        self.entry.destroy()
         quodlibet.config.quit()
 
 
@@ -158,6 +157,3 @@ class TUndoEntry(TestCase):
         self.__delete_right(2, 3)
         entry.undo()
         self.__equal("foob")
-
-    def tearDown(self):
-        self.entry.destroy()

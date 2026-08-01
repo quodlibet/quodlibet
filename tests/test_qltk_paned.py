@@ -24,7 +24,7 @@ class TRPaned:
     Kind = None
 
     def test_ctr(self):
-        self.Kind().destroy()
+        self.Kind()
 
     def test_pre_alloc(self):
         p = self.Kind()

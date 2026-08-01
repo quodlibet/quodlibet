@@ -575,9 +575,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         sw.set_vexpand(True)
 
         view.connect("row-activated", self.__play_selection)
-        self.__sig = view.connect(
-            "selection-changed", util.DeferredSignal(self.__update_songs, owner=view)
-        )
+        self.__songs_deferred = util.DeferredSignal(self.__update_songs, owner=view)
+        self.__sig = view.connect("selection-changed", self.__songs_deferred)
 
         drag_source = Gtk.DragSource()
         drag_source.set_actions(Gdk.DragAction.COPY)
@@ -663,6 +662,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self._cover_cancel.cancel()
         self.disable_row_update()
 
+        self.view.disconnect(self.__sig)
+        self.__songs_deferred.abort()
         self.view.set_model(None)
 
         klass = type(browser)

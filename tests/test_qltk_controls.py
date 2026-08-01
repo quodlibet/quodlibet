@@ -23,9 +23,7 @@ class TControls(TestCase):
         config.quit()
 
     def test_controls(self):
-        w = PlayControls(self.p, self.l)
-        w.destroy()
+        PlayControls(self.p, self.l)
 
     def test_volume(self):
-        w = Volume(self.p)
-        w.destroy()
+        Volume(self.p)

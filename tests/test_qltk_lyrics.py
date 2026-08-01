@@ -34,8 +34,6 @@ class TLyricsPane(TestCase):
         destroy_fake_app()
         self.library.destroy()
         quodlibet.config.quit()
-        if self.pane:
-            self.pane.destroy()
 
     def test_save_lyrics(self):
         af = self.temp_mp3()

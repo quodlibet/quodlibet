@@ -16,6 +16,7 @@ import cairo
 from quodlibet import print_e
 from quodlibet import config
 from quodlibet.qltk import (
+    Destroyable,
     is_accel,
     is_accel_pressed,
     is_wayland,
@@ -267,7 +268,7 @@ class DragScroll:
             self.__enable_scroll()
 
 
-class BaseView(Gtk.TreeView):
+class BaseView(Destroyable, Gtk.TreeView):
     __gsignals__: GSignals = {
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated

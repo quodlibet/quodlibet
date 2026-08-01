@@ -68,7 +68,6 @@ class TPluginWindow(TestCase):
         combo = PluginEnabledFilterCombo()
         combo.refill(["a", "b", "c"], True)
         self.assertEqual(combo.get_active_row()[1], EnabledType.ALL)
-        combo.destroy()
 
     def test_type_filter_combo(self):
         combo = PluginTypeFilterCombo()
@@ -77,7 +76,6 @@ class TPluginWindow(TestCase):
         # Check we have a few types (including separator)
         combo.set_active(5)
         assert combo.get_active_type()
-        combo.destroy()
 
     def test_plugin_prefs(self):
         cont = PluginPreferencesContainer()

@@ -35,7 +35,6 @@ class TReplayGain(PluginTestCase):
         self.plugin = self.kind([self.song], None)
 
     def tearDown(self):
-        self.plugin.destroy()
         del self.plugin
         del self.song
 

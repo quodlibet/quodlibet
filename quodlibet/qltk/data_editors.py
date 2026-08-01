@@ -83,7 +83,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
         view.connect("key-press-event", self.__view_key_press)
-        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.Widget.unparent, menu)
 
         # New and Close buttons
         bbox = Gtk.Box()

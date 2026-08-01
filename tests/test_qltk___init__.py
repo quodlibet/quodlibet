@@ -39,7 +39,6 @@ class TQltk(TestCase):
         self.assertEqual(qltk.get_top_parent(w), w)
         self.assertEqual(qltk.get_top_parent(l), None)
         w.destroy()
-        l.destroy()
 
     def test_gtp_packed(self):
         w = Gtk.Window()
@@ -48,7 +47,6 @@ class TQltk(TestCase):
         self.assertEqual(qltk.get_top_parent(w), w)
         self.assertEqual(qltk.get_top_parent(l), w)
         w.destroy()
-        l.destroy()
 
     def test_is_accel(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
@@ -87,7 +85,6 @@ class TQltk(TestCase):
         w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
-        m.destroy()
 
     def test_redraw_all(self):
         qltk.redraw_all_toplevels()

@@ -65,7 +65,7 @@ class ColumnModeSelection(Gtk.Box):
         self.browser.set_all_column_mode(selected_mode)
 
 
-class PatternEditor(Gtk.Box):
+class PatternEditor(qltk.Destroyable, Gtk.Box):
     PRESETS = [
         ["genre", "~people", "album"],
         ["~people", "album"],
@@ -195,7 +195,7 @@ class PatternEditor(Gtk.Box):
         edit_widget.set_sensitive(button.get_active() and button is self.__custom)
 
 
-class PreferencesButton(Gtk.Box):
+class PreferencesButton(qltk.Destroyable, Gtk.Box):
     def __init__(self, browser):
         super().__init__()
 

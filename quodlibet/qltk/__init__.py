@@ -21,7 +21,7 @@ from gi.repository import Gdk
 from gi.repository import GLib, GObject, PangoCairo
 from quodlibet.fsn import fsn2bytes, bytes2fsn, uri2fsn
 
-from quodlibet.util import print_d, print_w, is_windows, is_osx
+from quodlibet.util import print_d, print_w, is_windows, is_osx, InstanceTracker
 
 
 def get_children(widget):
@@ -161,6 +161,26 @@ def selection_get_filenames(selection_data):
 
     items = selection_data.get_data().split(b"\x00")
     return [bytes2fsn(i, "utf-8") for i in items]
+
+
+class Destroyable:
+    """Adds explicit teardown to a widget that isn't a Gtk.Window.
+
+    GTK4 only offers Gtk.Window.destroy();
+    everything else is torn down by dropping it from its parent and disposing,
+    which is what emits ::destroy for any cleanup handlers.
+    """
+
+    def destroy(self):
+        if isinstance(self, InstanceTracker):
+            # Before dispose, so ::destroy handlers see an accurate instance list
+            self._deregister_instance()
+        parent = self.get_parent()
+        if isinstance(parent, Gtk.Window):
+            parent.set_child(None)
+        elif parent is not None:
+            self.unparent()
+        self.run_dispose()
 
 
 def get_top_parent(widget):

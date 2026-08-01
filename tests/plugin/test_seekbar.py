@@ -7,9 +7,6 @@
 
 from tests.plugin import PluginTestCase
 
-from quodlibet.player.nullbe import NullPlayer
-from quodlibet.library import SongLibrary
-
 
 class TSeekBar(PluginTestCase):
     def setUp(self):
@@ -19,5 +16,4 @@ class TSeekBar(PluginTestCase):
         del self.mod
 
     def test_create(self):
-        SeekBar = self.mod.SeekBar
-        SeekBar(NullPlayer(), SongLibrary()).destroy()
+        self.mod.SeekBar()

@@ -114,7 +114,7 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(rem_b, "clicked", self.__remove, view)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         view.connect("key-press-event", self.__view_key_press)
-        connect_obj(self, "destroy", Gtk.PopoverMenu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.Widget.unparent, menu)
 
         name.grab_focus()
         self.get_child().show_all()

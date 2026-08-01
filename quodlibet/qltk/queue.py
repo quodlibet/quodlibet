@@ -92,7 +92,7 @@ class ExpandBoxHack(Gtk.Box):
         return (min_, nat)
 
 
-class QueueExpander(Gtk.Expander):
+class QueueExpander(qltk.Destroyable, Gtk.Expander):
     def __init__(self, library, player):
         super().__init__()
         self._library = library

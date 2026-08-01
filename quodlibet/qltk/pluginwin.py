@@ -345,8 +345,7 @@ class PluginPreferencesContainer(Gtk.Box):
 
         frame = self.prefs
 
-        if frame.get_child():
-            frame.get_child().destroy()
+        frame.set_child(None)
 
         if plugin is None:
             frame.hide()

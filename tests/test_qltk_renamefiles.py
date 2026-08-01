@@ -30,9 +30,6 @@ class TFilter(TestCase):
     def setUp(self):
         self.c = self.Kind()
 
-    def tearDown(self):
-        self.c.destroy()
-
 
 class TFilterMixin:
     def test_mix_empty(self):
@@ -198,9 +195,6 @@ class TMoveArt(TestCase):
     def setUp(self):
         self.renamer = self.Kind()
         self.reset_environment()
-
-    def tearDown(self):
-        self.renamer.destroy()
 
     def reset_environment(self):
         config.init()

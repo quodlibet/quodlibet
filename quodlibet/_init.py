@@ -268,9 +268,6 @@ def _init_gtk():  # noqa: C901
         Gtk.Widget.hide_all = lambda self: self.set_visible(False)
     if not hasattr(Gtk.Widget, "set_no_show_all"):
         Gtk.Widget.set_no_show_all = lambda self, value: None
-    if not hasattr(Gtk.Widget, "destroy"):
-        # GTK4: Widgets no longer have destroy(), they're auto-destroyed
-        Gtk.Widget.destroy = lambda self: None
     if not hasattr(Gtk.Widget, "get_toplevel"):
         Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
     if not hasattr(Gtk.Widget, "get_window"):

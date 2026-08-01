@@ -39,5 +39,4 @@ class TSongInfo(TestCase):
 
     def tearDown(self):
         destroy_fake_app()
-        self.info.destroy()
         os.unlink(self.filename)

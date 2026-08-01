@@ -94,6 +94,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def _destroy(cls):
         cls.__librarian = None
         cls.filters = {}
+        cls.library.destroy()
         cls.library = None
 
     def __inhibit(self):

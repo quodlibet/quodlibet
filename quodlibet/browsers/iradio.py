@@ -539,10 +539,12 @@ class InternetRadio(Browser, util.InstanceTracker):
     def _destroy(cls):
         if cls.__stations.dirty:
             cls.__stations.save()
+        cls.__stations.destroy()
         cls.__stations = None
 
         if cls.__fav_stations.dirty:
             cls.__fav_stations.save()
+        cls.__fav_stations.destroy()
         cls.__fav_stations = None
 
         cls.__librarian = None

@@ -100,9 +100,11 @@ class TrackList(Browser):
             show_multi=show_multi,
         )
 
-        sbb.connect("query-changed", self.__text_parse)
-        sbb.connect("focus-out", self.__focus)
-        sbb.connect("key-press-event", self.__sb_key_pressed)
+        self.__sb_sigs = [
+            sbb.connect("query-changed", self.__text_parse),
+            sbb.connect("focus-out", self.__focus),
+            sbb.connect("key-press-event", self.__sb_key_pressed),
+        ]
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
@@ -120,6 +122,10 @@ class TrackList(Browser):
         self._sb_box.set_text(text)
 
     def __destroy(self, *args):
+        # The search bar emits its query change from an idle callback,
+        # which can still be pending
+        for sig in self.__sb_sigs:
+            self._sb_box.disconnect(sig)
         self._sb_box = None
 
     def __focus(self, widget, *args):

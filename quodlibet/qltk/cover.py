@@ -125,7 +125,7 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
         return None
 
 
-class ResizeImage(Gtk.Widget):
+class ResizeImage(qltk.Destroyable, Gtk.Widget):
     def __init__(self, resize=False, size=1):
         super().__init__()
         self._dirty = True
@@ -232,7 +232,7 @@ class ResizeImage(Gtk.Widget):
         snapshot.append_texture(texture, rect)
 
 
-class CoverImage(Gtk.Box):
+class CoverImage(qltk.Destroyable, Gtk.Box):
     __gsignals__ = {
         # We do not necessarily display cover at the same instant this widget
         # is created or set_song is called. This signal allows callers know

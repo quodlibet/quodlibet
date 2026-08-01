@@ -160,7 +160,6 @@ class TFileSelector(TestCase):
         self.fs.rescan()
 
     def tearDown(self):
-        self.fs.destroy()
         quodlibet.config.quit()
 
         for file_ in self.PATHS:
