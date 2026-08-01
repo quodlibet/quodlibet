@@ -966,44 +966,6 @@ class TreeViewColumn(Gtk.TreeViewColumn):
             widget.set_use_markup(value)
 
 
-class TreeViewColumnButton(TreeViewColumn):
-    """A TreeViewColumn that forwards its header events:
-    button-press-event and popup-menu"""
-
-    __gsignals__: GSignals = {
-        "button-press-event": (GObject.SignalFlags.RUN_LAST, bool, (object,)),
-        "popup-menu": (GObject.SignalFlags.RUN_LAST, bool, ()),
-    }
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        label = self.get_widget()
-        label.__realize = label.connect("realize", self.__connect_menu_event)
-
-    def __connect_menu_event(self, widget):
-        widget.disconnect(widget.__realize)
-        del widget.__realize
-        button = widget.get_ancestor(Gtk.Button)
-        if button:
-            click_ctrl = Gtk.GestureClick()
-            click_ctrl.set_button(0)
-            click_ctrl.connect("pressed", self.__on_button_pressed)
-            button.add_controller(click_ctrl)
-
-            key_ctrl = Gtk.EventControllerKey()
-            key_ctrl.connect("key-pressed", self.__on_key_pressed)
-            button.add_controller(key_ctrl)
-
-    def __on_button_pressed(self, gesture, n_press, x, y):
-        event = gesture.get_last_event(None)
-        return self.emit("button-press-event", event)
-
-    def __on_key_pressed(self, _controller, keyval, _keycode, state):
-        if is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
-            return self.emit("popup-menu")
-        return False
-
-
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
 

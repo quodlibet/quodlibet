@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gio, Gtk
+from gi.repository import Gdk, Gio, Gtk
 
 from quodlibet import config
 from quodlibet.browsers.tracks import TrackList
@@ -18,6 +18,7 @@ from quodlibet.qltk.songlist import (
 )
 from quodlibet.qltk.songlistcolumns import SongListColumn
 from tests import TestCase, run_gtk_loop
+from tests.helper import visible
 
 
 class TSongList(TestCase):
@@ -228,6 +229,23 @@ class TSongList(TestCase):
         assert self.songlist.menu("foo", browser, library)
         librarian.destroy()
         self.lib.librarian = None
+
+    def test_column_header_has_context_menu_gesture(self):
+        self.songlist.set_column_headers(["artist", "title"])
+        for column in self.songlist.get_columns():
+            gestures = [
+                c
+                for c in column.get_button().observe_controllers()
+                if isinstance(c, Gtk.GestureClick)
+                and c.get_button() == Gdk.BUTTON_SECONDARY
+            ]
+            assert len(gestures) == 1, f"{column.header_name} has {len(gestures)}"
+
+    def test_column_header_menu_pops_up(self):
+        self.songlist.set_column_headers(["artist"])
+        column = self.songlist.get_columns()[0]
+        with visible(self.songlist):
+            self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
 
     def test_get_columns_migrated(self):
         assert not config.get("settings", "headers", None)

@@ -17,7 +17,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet import app
 from quodlibet.pattern import Pattern
-from quodlibet.qltk.views import TreeViewColumnButton
+from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
@@ -104,7 +104,7 @@ class SongListCellAreaBox(Gtk.CellAreaBox):
         )
 
 
-class SongListColumn(TreeViewColumnButton):
+class SongListColumn(TreeViewColumn):
     can_edit = False
     """Whether this column can support editing"""
 

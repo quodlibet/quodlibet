@@ -28,6 +28,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songsmenu import MenuItemSpec
 from quodlibet.qltk.songmodel import PlaylistModel
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
@@ -1187,11 +1188,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                 self.toggle_column_sort(column, replace=not ctrl_held)
 
             column.connect("clicked", column_clicked)
-            column.connect("button-press-event", self.__showmenu)
-            column.connect("popup-menu", self.__showmenu)
             column.connect("notify::width", self.__column_width_changed)
             column.set_reorderable(True)
             self.append_column(column)
+            self.__connect_header_menu(column)
 
         self.set_sort_orders(old_sort)
         self.columns_autosize()
@@ -1358,22 +1358,42 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         window.show()
         window.set_page("songlist")
 
-    def __showmenu(self, column, event=None):
-        time = event.time if event else GLib.CURRENT_TIME
+    def __connect_header_menu(self, column):
+        """Offer the header menu on the column's header button.
 
-        if event is not None and not event.triggers_context_menu():
-            return False
+        The column itself isn't a widget,
+        so the controllers go on the button the tree view builds for it.
+        """
 
+        button = column.get_button()
+
+        click = Gtk.GestureClick(button=Gdk.BUTTON_SECONDARY)
+        click.connect("pressed", self.__header_pressed, column)
+        button.add_controller(click)
+
+        keys = Gtk.EventControllerKey()
+        keys.connect("key-pressed", self.__header_key_pressed, column)
+        button.add_controller(keys)
+
+    def __header_pressed(self, gesture, n_press, x, y, column):
+        self._popup_header_menu(gesture.get_widget(), column, x, y)
+        return Gdk.EVENT_STOP
+
+    def __header_key_pressed(self, controller, keyval, keycode, state, column):
+        if not is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
+            return Gdk.EVENT_PROPAGATE
+        button = controller.get_widget()
+        self._popup_header_menu(button, column, button.get_width() / 2, 0)
+        return Gdk.EVENT_STOP
+
+    def _popup_header_menu(self, button, column, x, y):
         menu = self._menu(column)
-        menu.attach_to_widget(self, None)
-
-        if event:
-            menu.popup(None, None, None, None, event.button, time)
-            return True
-
-        widget = column.get_widget()
-        qltk.popup_menu_under_widget(menu, widget, 3, time)
-        return True
+        menu.set_parent(button)
+        menu.set_has_arrow(False)
+        menu.set_halign(Gtk.Align.START)
+        menu.set_pointing_to(Gdk.Rectangle(x=int(x), y=int(y), width=1, height=1))
+        menu.connect("closed", lambda popover: popover.unparent())
+        menu.popup()
 
 
 @config.register_upgrade_function
