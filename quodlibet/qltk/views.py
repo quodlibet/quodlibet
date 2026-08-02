@@ -273,6 +273,10 @@ class BaseView(Destroyable, Gtk.TreeView):
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated
         "selection-changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        # Emitted by RCMTreeView, but declared here because a GType has one
+        # parent: views mixing RCMTreeView with a sibling (AllTreeView) would
+        # otherwise not inherit it. BaseView is the shared GType root.
+        "popup-menu": (GObject.SignalFlags.RUN_LAST, bool, ()),
     }
 
     def __init__(self, *args, **kwargs):
@@ -678,10 +682,6 @@ class MultiDragTreeView(BaseView):
 class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on, or when the menu /
     Shift+F10 key is pressed."""
-
-    __gsignals__: GSignals = {
-        "popup-menu": (GObject.SignalFlags.RUN_LAST, bool, ()),
-    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
