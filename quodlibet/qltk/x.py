@@ -20,7 +20,7 @@ from quodlibet.util.dprint import print_d
 from quodlibet import util
 from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
-from quodlibet.qltk import add_css, is_accel
+from quodlibet.qltk import add_css, is_accel_pressed
 
 from .paned import (
     Paned,
@@ -57,28 +57,29 @@ class Notebook(Gtk.Notebook):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         event_controller = Gtk.EventControllerKey()
+        # Capture, so ctrl+tab reaches us before Notebook's own focus handling
+        event_controller.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         event_controller.connect("key-pressed", self.__key_pressed)
         self.add_controller(event_controller)
 
-    def __key_pressed(self, _widget: Gtk.Widget, event: Gdk.Event):
+    def __key_pressed(self, _controller, keyval, _keycode, state):
         # alt+X switches to page X
         for i in range(self.get_n_pages()):
-            if is_accel(event, "<alt>%d" % (i + 1)):
+            if is_accel_pressed(keyval, state, "<alt>%d" % (i + 1)):
                 self.set_current_page(i)
                 return Gdk.EVENT_STOP
 
-        state = event.state & self._KEY_MODS
-        # Use hardware, as Gtk+ seems to special-case tab for itself
-        if event.hardware_keycode == 23:
+        if keyval in (Gdk.KEY_Tab, Gdk.KEY_ISO_Left_Tab):
             total = self.get_n_pages()
             current = self.get_current_page()
-            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.SUPER_MASK):
+            mods = state & self._KEY_MODS
+            if mods == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + total - 1) % total)
                 return Gdk.EVENT_STOP
-            if state == (MT.CONTROL_MASK | MT.SUPER_MASK):
+            if mods == (MT.CONTROL_MASK | MT.SUPER_MASK):
                 self.set_current_page((current + 1) % total)
                 return Gdk.EVENT_STOP
-            print_d(f"Unhandled tab key combo: {event.state}")
+            print_d(f"Unhandled tab key combo: {mods}")
         return Gdk.EVENT_PROPAGATE
 
     def do_size_allocate(self, width, height, baseline):
