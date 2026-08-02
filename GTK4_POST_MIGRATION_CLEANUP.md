@@ -358,17 +358,35 @@ warnings. Three distinct signatures, in order of usefulness:
    no `measure()` of its own, so it is relaying a child's inconsistency, not
    causing it.
 
-Working hypothesis: that box now holds **two children with opposite size request
-modes** — `SongInfo`, a wrapping label, is height-for-width, while
-`ResizeImage(resize=True)` is width-for-height. GTK cannot reconcile the two in
-one box, and the numbers above are what that looks like. `main` has the same
-`ResizeImage` request mode, but its top bar was a `Gtk.Toolbar` whose height was
-fixed, so the height-for-width path was never exercised.
+**Root cause: the song info label wraps where `main` ellipsizes.** `qltk/info.py`
+replaced `set_ellipsize(MIDDLE)` with `set_wrap(True)` to dodge the Pango 1.57
+mixed-size-markup bug noted above. An ellipsizing label has a fixed one-line
+height; a wrapping one is height-for-width and asks for more height as it
+narrows. So the top bar's horizontal box ends up holding a height-for-width
+child (the label) next to a width-for-height child (`ResizeImage(resize=True)`),
+which GTK cannot reconcile — hence the inconsistent min/natural pairs.
 
-If that holds, the fix is to stop the cover measuring orthogonally: give it a
-constant size in the top bar and cap it, rather than deriving width from the row
-height. That also matches the view that the cover changing size as the window
-resizes is not wanted anyway (the reason `MAX_SIZE` exists).
+The same wrapping is why the cover ran away before `MAX_SIZE` was added (taller
+text row, and a width-for-height cover chasing it), and why the title takes
+eight lines in a narrow window.
+
+`main` avoids all of this twice over: the label does not wrap, and its top bar
+was a `Gtk.Toolbar` with a fixed height, so the height-for-width path was never
+exercised anyway.
+
+Options, in order of preference:
+
+1. **Bound the label's height.** Keep `set_wrap(True)` for text correctness but
+   add `set_lines(2)` so it cannot grow without limit. Note GTK only honours
+   `lines` when an ellipsize mode is also set, so this may reintroduce the Pango
+   bug on the final line — needs testing against Pango 1.57.
+2. **Go back to ellipsizing** once the Pango bug is fixed or its version range
+   can be detected, which restores `main`'s behaviour exactly.
+3. **Make the top-bar cover a constant size**, removing the width-for-height
+   side of the conflict. This alone will not stop the label demanding unbounded
+   height, so it treats the symptom rather than the cause.
+
+1 and 3 are complementary and could both be done.
 
 **Not reproducible in the offscreen test harness** — a scripted resize of the
 fake app produces zero warnings, because it lacks the real browser and
