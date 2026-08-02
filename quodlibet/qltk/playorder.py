@@ -10,11 +10,11 @@ from gi.repository import Gtk, GObject
 
 from quodlibet import _
 from quodlibet import config
-from quodlibet import qltk
 from quodlibet.order import Order, OrderInOrder
 from quodlibet.order.reorder import OrderShuffle, OrderWeighted, Reorder
 from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, Repeat, OneSong
 from quodlibet.qltk import Icons
+from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.x import (
     SymbolicIconImage,
     RadioMenuItem,
@@ -130,18 +130,15 @@ class ToggledPlayOrderMenu(Gtk.Box):
         super().__init__()
         self.__inhibit = True
 
-        context = self.get_style_context()
-        context.add_class(Gtk.STYLE_CLASS_LINKED)
+        self.add_css_class("linked")
 
         self._toggle_button = toggle = HighlightToggleButton(
-            image=SymbolicIconImage(icon_name, Gtk.IconSize.SMALL_TOOLBAR)
+            image=SymbolicIconImage(icon_name, Gtk.IconSize.NORMAL)
         )
 
         if tooltip:
             toggle.set_tooltip_text(tooltip)
         toggle.set_active(enabled)
-        qltk.remove_padding(toggle)
-        toggle.set_size_request(26, 26)
         self.append(toggle)
 
         def forward_signal(*args):
@@ -151,11 +148,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         toggle.connect("toggled", forward_signal)
         self._toggle_button = toggle
 
-        from quodlibet.qltk.menubutton import MenuButton
-
         arrow = MenuButton(arrow=True, down=arrow_down)
-        arrow.set_size_request(20, 26)
-        qltk.remove_padding(arrow)
         self.prepend(arrow)
         self._menu_button = arrow
         self.__current = current_order

@@ -861,10 +861,6 @@ def _init_gtk():  # noqa: C901
         Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
         Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
 
-    # GTK4: CSS class constants removed - add them back
-    if not hasattr(Gtk, "STYLE_CLASS_LINKED"):
-        Gtk.STYLE_CLASS_LINKED = "linked"
-
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 

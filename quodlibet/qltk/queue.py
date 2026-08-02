@@ -80,18 +80,6 @@ class PlaybackStatusIcon(Gtk.Box):
         self._set("media-playback-pause")
 
 
-class ExpandBoxHack(Gtk.Box):
-    def do_get_preferred_width(self):
-        # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
-        # set_label_fill() no longer works since GTK 3.20. Fake a natural size
-        # which is larger than the expander can be to force the parent to
-        # allocate to us the whole space.
-        min_, nat = Gtk.Box.do_get_preferred_width(self)
-        # GTK4: if we get too large gtk calcs will overflow..
-        nat = max(nat, 2**16)
-        return (min_, nat)
-
-
 class QueueExpander(qltk.Destroyable, Gtk.Expander):
     def __init__(self, library, player):
         super().__init__()
@@ -106,16 +94,17 @@ class QueueExpander(qltk.Destroyable, Gtk.Expander):
 
         add_css(self, ".ql-expanded title { margin-bottom: 5px; }")
 
-        outer = ExpandBoxHack()
+        # An expander sizes its label widget to its natural width,
+        # so expand to claim the rest of the title row for the buttons
+        outer = Gtk.Box(hexpand=True)
 
-        left = Gtk.Box(spacing=12)
+        left = Gtk.Box(spacing=12, hexpand=True)
 
         hb2 = Gtk.Box(spacing=3)
         state_icon = PlaybackStatusIcon()
         state_icon.stop()
         hb2.append(state_icon)
         name_label = Gtk.Label(label=_("_Queue"), use_underline=True)
-        name_label.set_size_request(-1, 24)
         hb2.append(name_label)
         left.append(hb2)
 
