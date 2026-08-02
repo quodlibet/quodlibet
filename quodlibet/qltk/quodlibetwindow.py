@@ -294,14 +294,13 @@ class TopBar(Gtk.Box):
         connect_destroy(player, "notify::volume", self._on_volume_changed)
         self.append(t)
 
-        spacer = Gtk.Box()
-        spacer.set_hexpand(True)
-        self.append(spacer)
-
         info_item = Gtk.Box()
+        # The info area takes the slack, as the expanding ToolItem used to
+        info_item.set_hexpand(True)
         self.append(info_item)
 
         box = Gtk.Box(spacing=6)
+        box.set_hexpand(True)
         info_item.append(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
@@ -311,6 +310,7 @@ class TopBar(Gtk.Box):
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
         self._pattern_box.append(text)
+        self._pattern_box.set_hexpand(True)
         box.append(self._pattern_box)
 
         # cover image
