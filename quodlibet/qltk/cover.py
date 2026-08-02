@@ -29,8 +29,9 @@ class BigCenteredImage(qltk.Window):
     """Load an image and display it, scaling it down to the parent window size."""
 
     def __init__(self, title, fileobj, parent, scale=0.5):
-        super().__init__(type=Gtk.WindowType.POPUP)
-        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
+        super().__init__()
+        # A bare frame, as the GTK3 popup window was
+        self.set_decorated(False)
 
         assert parent
         parent = qltk.get_top_parent(parent)
@@ -71,9 +72,10 @@ class BigCenteredImage(qltk.Window):
         if not pixbuf:
             return False
 
-        self.__image = Gtk.Image()
+        # Picture, not Image: an Image draws its paintable at icon size
         texture = Gdk.Texture.new_for_pixbuf(pixbuf)
-        self.__image.set_from_paintable(texture)
+        self.__image = Gtk.Picture.new_for_paintable(texture)
+        self.__image.set_can_shrink(False)
 
         return True
 
@@ -180,22 +182,20 @@ class ResizeImage(qltk.Destroyable, Gtk.Widget):
 
     def do_get_request_mode(self):
         if self._resize:
-            return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
+            return Gtk.SizeRequestMode.WIDTH_FOR_HEIGHT
         return Gtk.SizeRequestMode.CONSTANT_SIZE
 
     def do_measure(self, orientation, for_size):
-        if orientation == Gtk.Orientation.HORIZONTAL:
-            width, _height = self._get_size(self._size, self._size)
-            minimum = 0 if self._resize else width
-            return (minimum, max(width, 1), -1, -1)
+        if self._resize:
+            # Take whatever height is going; the width follows the aspect ratio
+            if orientation == Gtk.Orientation.HORIZONTAL and for_size > 0:
+                width, _height = self._get_size(300, for_size)
+                return (width, width, -1, -1)
+            return (0, 0, -1, -1)
 
-        # vertical: derive an aspect-correct height for the given width
-        if self._resize and for_size > 0:
-            _width, height = self._get_size(for_size, for_size * 4)
-            return (0, max(height, 1), -1, -1)
-        _width, height = self._get_size(self._size, self._size)
-        minimum = 0 if self._resize else height
-        return (minimum, max(height, 1), -1, -1)
+        width, height = self._get_size(self._size, self._size)
+        size = width if orientation == Gtk.Orientation.HORIZONTAL else height
+        return (size, size, -1, -1)
 
     def do_snapshot(self, snapshot):
         pixbuf = self._get_pixbuf()
