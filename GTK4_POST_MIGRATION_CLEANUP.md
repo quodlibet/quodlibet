@@ -161,3 +161,40 @@ To restore the feature, implement the `org.kde.StatusNotifierItem` D-Bus spec
 directly — that is what AppIndicator wraps, and it needs no GTK.
 `tests/plugin/test_trayicon.py` was removed with the backend and should return
 alongside it.
+
+
+Context menus scroll when they use Gio.Menu sections
+----------------------------------------------------
+
+**Open bug, root cause found, not yet fixed** (2026-08-02).
+
+A `Gtk.PopoverMenu` built from a model containing `append_section()` is granted
+less height than its content needs, so even a short menu gets a scrollbar and
+clips its top items. Measured with a `RCMTreeView` in a 400x700 window:
+
+| menu model                          | granted | wanted |     |
+|-------------------------------------|---------|--------|-----|
+| 4 flat items                        | 120     | 120    | ok  |
+| 4 items + 2 submenus                | 180     | 180    | ok  |
+| 4 items + 2 submenus, in sections   | 180     | 193    | scrolls |
+| 4 sections of 2 items               | 240     | 279    | scrolls |
+
+The shortfall is one section separator (~13px) per section, which is why the
+clipping grows with the number of sections — `SongsMenu` uses several, so it
+loses around three rows.
+
+Ruled out: submenu size (a 40-item submenu measures the same as a 3-item one,
+and the stack is not vhomogeneous); construction order (`new_from_model` with a
+fully built model scrolls identically to `set_menu_model` followed by
+`append_section`); the choice of parent widget (view vs toplevel); and
+`queue_resize()` after popup, which does not recover the height.
+
+So GTK appears to size the popup surface from a measurement that excludes the
+section separators. Next steps: check the installed GTK version against
+upstream `GtkPopoverMenu` bugs, and try building the menu without
+`append_section` (plain items plus explicit separators) to confirm.
+
+Reproduce by popping a menu up on a realized view and comparing the inner
+`Gtk.ScrolledWindow`'s `get_height()` against its natural height — note popovers
+only allocate their contents once genuinely mapped, so a bare harness that never
+maps them reports zeros and tells you nothing.

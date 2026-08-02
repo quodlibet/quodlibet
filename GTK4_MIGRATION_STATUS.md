@@ -3,9 +3,34 @@ GTK4 Migration Status
 
 **Branch**: `gtk4`
 **Last Updated**: 2026-08-02
-**Test Results**: 4665 passed, 2 failed. Both remaining failures are
+**Test Results**: 4664 passed, 3 failed. Both remaining failures are
 `tests/plugin/test_mediaserver.py`, whose tearDown asserts the D-Bus name is
 released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
+
+
+Manual-test round, 2026-08-02
+-----------------------------
+
+Fixed: song and queue context menus (missing `popup-menu` signal, GTK3 handler
+signatures, menus positioned at the view's centre, right-click hitting the row
+below), the column header menu doing nothing, prefs keypresses, missing
+repeat/shuffle icons, and every `Gtk-CRITICAL` allocation warning at startup.
+`is_accel` and the three fake key-event objects that kept it alive are gone.
+
+Still open, in rough priority order:
+
+- **Context menus scroll and clip** — root cause found (`Gio.Menu` sections),
+  see `GTK4_POST_MIGRATION_CLEANUP.md`.
+- Scrobbler prefs are too wide; its own widget measures only ~312px, so the
+  problem is likely how plugin prefs are embedded.
+- Plugin list checkboxes all dim together on row selection.
+- `Align needs at least 498` for a 285px allocation, in the `PlaylistsBrowser`
+  with a real user config; not reproducible on a fresh one.
+- `gtk_css_node_insert_after` critical whenever a popover is parented to a
+  `Gtk.TreeView`. Reproduces with stock widgets, so likely a GTK complaint
+  rather than ours.
+- `tests/test_qltk_views.py` and `test_qltk_queue.py` hang when run standalone
+  (pre-existing); they only pass as part of the full suite.
 
 
 Gotchas found while fixing manual-test regressions (2026-08-02)
