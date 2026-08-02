@@ -1053,8 +1053,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __show_about(self, *args):
         about = AboutDialog(self, app)
-        about.run()
-        # GTK4: destroy() removed - about cleaned up automatically
+        about.present()
 
     def select_browser(self, browser_key, library, player):
         """Given a browser name (see browsers.get()) changes the current

@@ -88,8 +88,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
         def about_cb(*args):
             about = AboutDialog(self, app)
-            about.run()
-            # GTK4: destroy() removed - about cleaned up automatically
+            about.present()
 
         def update_cb(*args):
             d = UpdateDialog(self)
