@@ -249,6 +249,7 @@ class TSongList(TestCase):
 
     def test_column_header_menu_actions_toggle_headers(self):
         self.addCleanup(setattr, SongList, "headers", SongList.headers)
+        self.addCleanup(set_columns, get_columns())
         SongList.headers = ["~#track", "title", "artist"]
         self.songlist.set_column_headers(SongList.headers)
         popover = self.songlist._menu(self.songlist.get_columns()[1])
