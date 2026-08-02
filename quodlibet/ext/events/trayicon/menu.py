@@ -37,6 +37,7 @@ class IndicatorMenu(Gtk.PopoverMenu):
         self._model = Gio.Menu()
         self._actions = Gio.SimpleActionGroup()
         self.set_menu_model(self._model)
+        self.set_flags(Gtk.PopoverMenuFlags.NESTED)
         self.insert_action_group("tray", self._actions)
 
         show_item_bottom = is_plasma()

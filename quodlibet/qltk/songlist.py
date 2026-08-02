@@ -1342,7 +1342,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         expand_section.append(_("Expand Column"), "menu.expand-column")
         menu_model.append_section(None, expand_section)
 
-        popover = Gtk.PopoverMenu.new_from_model(menu_model)
+        popover = Gtk.PopoverMenu.new_from_model_full(
+            menu_model, Gtk.PopoverMenuFlags.NESTED
+        )
         popover.insert_action_group("menu", action_group)
         return popover
 

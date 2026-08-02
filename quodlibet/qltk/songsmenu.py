@@ -362,6 +362,9 @@ class SongsMenu(Gtk.PopoverMenu):
         self._model = Gio.Menu()
         self._actions = Gio.SimpleActionGroup()
         self.set_menu_model(self._model)
+        # Submenus as their own popovers, as in GTK3: a sliding stack keeps the
+        # height of the tallest page, leaving a short submenu mostly blank
+        self.set_flags(Gtk.PopoverMenuFlags.NESTED)
         self.insert_action_group("songs", self._actions)
         self._accels = accels
         # Keep submenu builders alive for the lifetime of the menu.

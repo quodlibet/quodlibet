@@ -276,7 +276,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         model.append(_("_Delete"), "dirtree.delete")
         model.append(_("_Refresh"), "dirtree.refresh")
         model.append(_("_Select all Sub-Folders"), "dirtree.expand")
-        menu = Gtk.PopoverMenu.new_from_model(model)
+        menu = Gtk.PopoverMenu.new_from_model_full(model, Gtk.PopoverMenuFlags.NESTED)
         menu.set_has_arrow(False)
         # Keep a reference to the model for label lookup
         menu.gio_model = model
