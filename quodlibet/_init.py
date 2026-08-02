@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler, print_d
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_cache_dir
+from ._main import get_base_dir, get_image_dir, is_release, get_cache_dir
 
 
 _cli_initialized = False
@@ -253,13 +253,19 @@ def _init_gtk():  # noqa: C901
     gi.require_version("Soup", "3.0")
     gi.require_version("PangoCairo", "1.0")
 
-    from gi.repository import Gtk
+    from gi.repository import Gdk, Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # PyGObject doesn't fail any more when init fails, so do it ourselves
     initialized = Gtk.init_check()
     if not initialized:
         raise SystemExit("Gtk.init failed")
+
+    # include our own icon theme directory
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+    theme_search_path = get_image_dir()
+    assert os.path.exists(theme_search_path)
+    theme.add_search_path(theme_search_path)
 
     # GTK4 compatibility: Add show_all/hide_all/set_no_show_all as no-ops
     if not hasattr(Gtk.Widget, "show_all"):
