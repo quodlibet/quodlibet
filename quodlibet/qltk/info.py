@@ -99,7 +99,7 @@ class SongInfo(Gtk.Box):
             self._menu.unparent()
         self._menu = menu = self._get_menu(self._player, self._library)
         menu.set_parent(self)
-        menu.set_pointing_to(Gdk.Rectangle(x=int(x), y=int(y), width=1, height=1))
+        menu.set_pointing_to(qltk.point_rect(x, y))
         menu.popup()
 
     def _get_menu(self, player, library):

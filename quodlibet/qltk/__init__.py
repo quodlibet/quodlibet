@@ -228,6 +228,18 @@ def find_widgets(widget, type_):
     return found
 
 
+def point_rect(x, y):
+    """A 1x1 Gdk.Rectangle at (x, y), for Gtk.Popover.set_pointing_to().
+
+    Gdk.Rectangle is a boxed type, so constructor arguments are silently
+    ignored and the fields have to be assigned.
+    """
+
+    rect = Gdk.Rectangle()
+    rect.x, rect.y, rect.width, rect.height = int(x), int(y), 1, 1
+    return rect
+
+
 def menu_popup(menu, shell, item, func, *args):
     """Wrapper to fix API break:
     https://git.gnome.org/browse/gtk+/commit/?id=8463d0ee62b4b22fa

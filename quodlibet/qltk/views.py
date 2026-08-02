@@ -18,8 +18,8 @@ from quodlibet.qltk import (
     Destroyable,
     is_accel,
     is_accel_pressed,
-    is_wayland,
     menu_popup,
+    point_rect,
     get_primary_accel_mod,
 )
 
@@ -684,6 +684,9 @@ class RCMTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.__popup_point = None
+        """Where the menu was invoked, if by pointer rather than keyboard"""
+
         click_ctrl = Gtk.GestureClick()
         click_ctrl.set_button(Gdk.BUTTON_SECONDARY)
         # On release: a popover popped up during the press takes a grab, and
@@ -716,94 +719,47 @@ class RCMTreeView(BaseView):
             self.set_cursor(path, col, 0)
         else:
             col.focus_cell(col.get_cells()[0])
-        self.__position_at_mouse = True
+        self.__popup_point = (x, y)
         self.emit("popup-menu")
         return True
 
     def ensure_popup_selection(self):
-        try:
-            self.__position_at_mouse  # noqa
-        except AttributeError:
-            path, col = self.get_cursor()
-            if path is None:
-                return False
-            self.scroll_to_cell(path, col)
-            # ensure current cursor path is selected, just like right-click
-            selection = self.get_selection()
-            if not selection.path_is_selected(path):
-                selection.unselect_all()
-                selection.select_path(path)
-            return True
+        path, col = self.get_cursor()
+        if path is None:
+            return False
+        self.scroll_to_cell(path, col)
+        # ensure current cursor path is selected, just like right-click
+        selection = self.get_selection()
+        if not selection.path_is_selected(path):
+            selection.unselect_all()
+            selection.select_path(path)
+        return True
 
     def popup_menu(self, menu, button, time):
-        try:
-            del self.__position_at_mouse
-        except AttributeError:
+        point, self.__popup_point = self.__popup_point, None
+        if point is None:
             # suppress menu if the cursor isn't on a real path
             if not self.ensure_popup_selection():
                 return False
-            pos_func = self.__popup_position
-        else:
-            pos_func = None
+            point = self.__cursor_point()
 
-        # GTK4: PopoverMenu uses set_parent() instead of attach_to_widget()
-        if isinstance(menu, Gtk.PopoverMenu):
-            current_parent = menu.get_parent()
-            if current_parent != self:
-                if current_parent is not None:
-                    menu.unparent()
-                menu.set_parent(self)
-            # GTK4: PopoverMenus position automatically, ignore pos_func
-            menu_popup(menu, None, None, None, None, button, time)
-        else:
-            # GTK3 fallback
-            attached_widget = menu.get_attach_widget()
-            if attached_widget != self:
-                if attached_widget is not None:
-                    menu.detach()
-                menu.attach_to_widget(self, None)
-            menu_popup(menu, None, None, pos_func, None, button, time)
+        if menu.get_parent() is not self:
+            if menu.get_parent() is not None:
+                menu.unparent()
+            menu.set_parent(self)
+        menu.set_has_arrow(False)
+        menu.set_halign(Gtk.Align.START)
+        x, y = point
+        menu.set_pointing_to(point_rect(x, y))
+        menu_popup(menu, None, None, None, None, button, time)
         return True
 
-    def __popup_position(self, menu, *args):
+    def __cursor_point(self):
+        """Where to aim a keyboard-invoked menu: below the cursor row."""
+
         path, col = self.get_cursor()
-
-        # get a rectangle describing the cell render area (assume 3 px pad)
-        rect = self.get_cell_area(path, col)
-        padding = 3
-        rect.x += padding
-        rect.width = max(rect.width - padding * 2, 0)
-        rect.y += padding
-        rect.height = max(rect.height - padding * 2, 0)
-
-        x, y = self.get_window().get_origin()[1:]
-        x, y = self.convert_bin_window_to_widget_coords(x + rect.x, y + rect.y)
-
-        ma = menu.get_allocation()
-        menu_y = rect.height + y
-        if self.get_direction() == Gtk.TextDirection.LTR:
-            menu_x = x
-        else:
-            menu_x = x - ma.width + rect.width
-
-        # on X11/win32 we can use the screen size
-        if not is_wayland():
-            # fit menu to screen, aligned per text direction
-            screen = self.get_screen()
-            screen_width = screen.get_width()
-            screen_height = screen.get_height()
-
-            # show above row if no space below and enough above
-            if menu_y + ma.height > screen_height and y - ma.height > 0:
-                menu_y = y - ma.height
-
-            # make sure it's not outside of the screen
-            if self.get_direction() == Gtk.TextDirection.LTR:
-                menu_x = max(0, min(menu_x, screen_width - ma.width))
-            else:
-                menu_x = min(max(0, menu_x), screen_width)
-
-        return (menu_x, menu_y, True)  # x, y, move_within_screen
+        rect = self.get_background_area(path, col)
+        return self.convert_bin_window_to_widget_coords(rect.x, rect.y + rect.height)
 
 
 class HintedTreeView(BaseView):

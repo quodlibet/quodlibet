@@ -243,6 +243,19 @@ class TRCMTreeView(TestCase):
             selection.select_all()
             assert self.c.popup_menu(menu, Gdk.BUTTON_SECONDARY, 0)
 
+    def test_popup_points_at_the_cursor_row(self):
+        menu = Gtk.PopoverMenu()
+        with visible(self.c, 200, 200):
+            self.c.set_cursor(Gtk.TreePath((2,)))
+            assert self.c.popup_menu(menu, Gdk.BUTTON_SECONDARY, 0)
+            assert menu.get_parent() is self.c
+            # not the view's centre, which is where an unpositioned popover goes
+            rect = menu.get_pointing_to()[1]
+            assert (rect.width, rect.height) == (1, 1)
+            row = self.c.get_background_area(Gtk.TreePath((2,)), None)
+            below = self.c.convert_bin_window_to_widget_coords(0, row.y + row.height)
+            assert (rect.x, rect.y) == below
+
 
 class TDragIconTreeView(TestCase):
     def setUp(self):
