@@ -325,3 +325,18 @@ through it per file, checking the orientation of the box each child goes into.
 Regenerate with the same technique: regex `pack_start` with a `True` expand
 argument out of `git show main:<file>`, then look for a matching
 `set_hexpand`/`set_vexpand` in the branch.
+
+
+Known broken, found in manual testing
+-------------------------------------
+
+- **AnimOSD** (`ext/events/animosd/osdwindow.py:52`) — `self.get_screen()`;
+  GTK4 has no screens. Use `Gdk.Display` / `Gtk.Widget.get_display()` and
+  `display.get_monitor_at_surface()`.
+- **Saved-search combo shows two entries** — see its section above.
+- **Covergrid's three-dots menu is empty**, and probably other browsers' too.
+- **Song list column headers can no longer be dragged** to reorder.
+
+The waveform seek bar is fixed: it needed the top bar's info area to expand,
+the scale to expand within the bar, and `do_draw` porting to `do_snapshot`
+(GTK4 never called `do_draw`, so it drew nothing at all).
