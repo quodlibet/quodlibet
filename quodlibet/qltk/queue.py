@@ -31,7 +31,7 @@ from quodlibet.util import (
     print_exc,
     DeferredSignal,
 )
-from quodlibet.qltk import Icons, add_css
+from quodlibet.qltk import Icons, add_css, is_accel_pressed
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
@@ -447,8 +447,8 @@ class PlayQueue(SongList):
             print_d("Stopped autosave")
         super().destroy()
 
-    def __delete_key_pressed(self, widget, event):
-        if qltk.is_accel(event, "Delete"):
+    def __delete_key_pressed(self, controller, keyval, keycode, state):
+        if is_accel_pressed(keyval, state, "Delete"):
             self.__remove()
             return True
         return False
