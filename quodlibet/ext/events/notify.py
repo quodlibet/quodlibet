@@ -495,7 +495,7 @@ class Notify(EventPlugin):
             pconfig.gettext("show_notifications") in [typ, "all"]
             and not (
                 pconfig.getboolean("show_only_when_unfocused")
-                and app.window.has_toplevel_focus()
+                and app.window.is_active()
             )
             or self.__force_notification
         ):
