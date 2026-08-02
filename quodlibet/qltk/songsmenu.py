@@ -96,18 +96,6 @@ def confirm_multi_album_invoke(parent, plugin_name, count):
     return prompt == ConfirmationPrompt.RESPONSE_INVOKE
 
 
-def append_flat(menu: Gio.Menu, group: Gio.Menu) -> None:
-    """Append a group's items to `menu` directly, without a section.
-
-    GTK 4.22 sizes a popover menu as if its section separators weren't there,
-    so a sectioned menu is allocated too little height and scrolls. See
-    GTK4_POST_MIGRATION_CLEANUP.md.
-    """
-
-    for i in range(group.get_n_items()):
-        menu.append_item(Gio.MenuItem.new_from_model(group, i))
-
-
 class SongsMenuPluginHandler(PluginHandler):
     def __init__(self, song_confirmer=None, album_confirmer=None):
         """custom confirmers for testing"""
@@ -195,14 +183,14 @@ class SongsMenuPluginHandler(PluginHandler):
                     bool(songs),
                 )
                 plugins_section.append(plugin.PLUGIN_NAME, f"{prefix}.{name}")
-        append_flat(submenu, plugins_section)
+        submenu.append_section(None, plugins_section)
 
         config_section = Gio.Menu()
         cfg = Gio.SimpleAction.new("plugin-configure", None)
         cfg.connect("activate", lambda a, p: PluginWindow().show())
         action_group.add_action(cfg)
         config_section.append(_("Configure Plugins…"), f"{prefix}.plugin-configure")
-        append_flat(submenu, config_section)
+        submenu.append_section(None, config_section)
 
         return Gio.MenuItem.new_submenu(_("_Plugins"), submenu)
 
@@ -397,7 +385,7 @@ class SongsMenu(Gtk.PopoverMenu):
             self._keepalive.append(rating)
             section = Gio.Menu()
             section.append_item(rating.menu_item)
-            append_flat(self._model, section)
+            self._model.append_section(None, section)
 
         # external item groups
         for group_idx, subitems in enumerate(items or []):
@@ -407,7 +395,7 @@ class SongsMenu(Gtk.PopoverMenu):
                 self._add_spec_action(name, spec)
                 section.append_item(self._menu_item(spec.label, name, spec.accel))
             if section.get_n_items():
-                append_flat(self._model, section)
+                self._model.append_section(None, section)
 
         if plugins:
             plugin_item = self.plugins.build_menu_item(
@@ -416,7 +404,7 @@ class SongsMenu(Gtk.PopoverMenu):
             if plugin_item is not None:
                 section = Gio.Menu()
                 section.append_item(plugin_item)
-                append_flat(self._model, section)
+                self._model.append_section(None, section)
 
         in_lib = True
         can_add = True
@@ -435,7 +423,7 @@ class SongsMenu(Gtk.PopoverMenu):
         if queue:
             self.init_queue(add_section, can_add, songs)
         if add_section.get_n_items():
-            append_flat(self._model, add_section)
+            self._model.append_section(None, add_section)
 
         rm_section = Gio.Menu()
         if remove:
@@ -443,7 +431,7 @@ class SongsMenu(Gtk.PopoverMenu):
         if delete:
             self.init_delete(rm_section, delete, is_file, songs, librarian)
         if rm_section.get_n_items():
-            append_flat(self._model, rm_section)
+            self._model.append_section(None, rm_section)
 
         edit_section = Gio.Menu()
         if edit:
@@ -451,17 +439,17 @@ class SongsMenu(Gtk.PopoverMenu):
         if info:
             self.init_info(edit_section, songs, librarian)
         if edit_section.get_n_items():
-            append_flat(self._model, edit_section)
+            self._model.append_section(None, edit_section)
 
         if show_files and any(is_a_file(s) for s in songs):
             section = Gio.Menu()
             self.init_show_files(section, songs)
-            append_flat(self._model, section)
+            self._model.append_section(None, section)
 
         if download:
             section = Gio.Menu()
             self.init_download(section, songs)
-            append_flat(self._model, section)
+            self._model.append_section(None, section)
 
     def _top_parent(self):
         return get_top_parent(self)

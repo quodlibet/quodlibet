@@ -28,7 +28,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songsmenu import MenuItemSpec
 from quodlibet.qltk.songmodel import PlaylistModel
-from quodlibet.qltk import is_accel_pressed, point_rect
+from quodlibet.qltk import is_accel_pressed, menu_popup, point_rect
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
@@ -1414,7 +1414,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         menu.set_has_arrow(False)
         menu.set_halign(Gtk.Align.START)
         menu.set_pointing_to(point_rect(point.x, point.y) if ok else point_rect(x, y))
-        menu.popup()
+        menu_popup(menu, None, None, None)
 
 
 @config.register_upgrade_function

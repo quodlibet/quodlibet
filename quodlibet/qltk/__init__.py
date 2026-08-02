@@ -266,7 +266,11 @@ def menu_popup(menu, shell, item, func, *args):
             and menu.get_menu_model() is None
         ):
             menu.set_child(menu._menu_box)
-        return menu.popup()
+        # On idle, not now: popping up synchronously sizes the popover's
+        # surface before its section separators are laid out, and it ends up
+        # a separator too short per section, scrolling and clipping its items
+        GLib.idle_add(menu.popup)
+        return None
 
     # GTK3 fallback (if Gtk.Menu exists)
     if func is not None:
