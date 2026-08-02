@@ -15,7 +15,7 @@
 from functools import lru_cache
 from math import ceil, floor
 
-from gi.repository import Gtk, Gdk, Gst
+from gi.repository import Gtk, Gdk, Graphene, Gst
 import cairo
 
 from quodlibet import _, app
@@ -523,22 +523,22 @@ class WaveformScale(Gtk.Box):
         height_px = int(height * pixel_ratio)
         return (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
 
-    def do_draw(self, cr):
+    def do_snapshot(self, snapshot):
+        width, height = self.get_width(), self.get_height()
+        if width <= 0 or height <= 0:
+            return
+        cr = snapshot.append_cairo(Graphene.Rect().init(0, 0, width, height))
+        self._draw(cr, width, height)
+
+    def _draw(self, cr, width, height):
         context = self.get_style_context()
 
-        # Get colors
-        context.save()
-        context.set_state(Gtk.StateFlags.NORMAL)
-        bg_color = context.get_background_color(context.get_state())
-        context.restore()
-
-        # Paint the background
-        cr.set_source_rgba(*list(bg_color))
-        cr.paint()
-
-        allocation = self.get_allocation()
-        width = allocation.width
-        height = allocation.height
+        # Paint the background. GTK4 dropped get_background_color(), as
+        # backgrounds come from CSS, so ask the theme for the colour by name
+        found, bg_color = context.lookup_color("theme_bg_color")
+        if found:
+            cr.set_source_rgba(*list(bg_color))
+            cr.paint()
 
         if self._rms_vals:
             self.draw_waveform(
