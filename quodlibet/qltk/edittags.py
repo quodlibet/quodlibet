@@ -826,7 +826,7 @@ class EditTags(Gtk.Box):
                 self.__add_new_tag(model, tag, value)
                 break
 
-        # GTK4: destroy() removed - add cleaned up automatically
+        add.destroy()
 
     def __remove_tag(self, activator, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -954,7 +954,7 @@ class EditTags(Gtk.Box):
         else:
             all_done = True
 
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()
         library.changed(was_changed)
         for b in [save, revert]:
             b.set_sensitive(not all_done)

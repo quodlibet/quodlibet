@@ -401,7 +401,7 @@ class RenameFiles(Gtk.Box):
                 break
 
         self.view.thaw_child_notify()
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()
         library.changed(was_changed)
         self.save.set_sensitive(False)
 

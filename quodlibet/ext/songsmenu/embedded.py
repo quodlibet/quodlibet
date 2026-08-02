@@ -86,7 +86,7 @@ class EditEmbedded(SongsMenuPlugin):
         dialog.set_title(msg)
         response = dialog.run()
         path = chooser_path(dialog)
-        # GTK4: destroy() removed - dialog cleaned up automatically
+        dialog.destroy()
         if response != Gtk.ResponseType.ACCEPT:
             print_d("User cancelled image embedding")
             return
@@ -103,7 +103,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()
         self.plugin_finish()
 
     def _init_submenu_items(self, menu, songs):

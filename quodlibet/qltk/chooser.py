@@ -133,7 +133,7 @@ def _run_chooser(parent, chooser):
             set_current_dir(path2fsn(current_dir.get_path()))
     else:
         result = []
-    # GTK4: destroy() removed - chooser cleaned up automatically
+    chooser.destroy()
     return result
 
 

@@ -44,11 +44,10 @@ class IFPUpload(SongsMenuPlugin):
 
         for _i, song in enumerate(songs):
             if self.__upload(song) or w.step():
-                # GTK4: destroy() removed - w cleaned up automatically
+                w.destroy()
                 return True
         else:
-            # GTK4: destroy() removed - w cleaned up automatically
-            pass
+            w.destroy()
         return None
 
     def __upload(self, song):

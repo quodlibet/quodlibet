@@ -327,7 +327,7 @@ class TagsFromPath(Gtk.Box):
         else:
             all_done = True
 
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()
         library.changed(was_changed)
         self.save.set_sensitive(not all_done)
 

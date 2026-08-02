@@ -104,7 +104,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
             self.lastfolder = os.path.dirname(file_path)
 
-        # GTK4: destroy() removed - dialog cleaned up automatically
+        dialog.destroy()
 
     def save_playlist(self, songs, file_path, file_format, relative):
         dir_path = os.path.dirname(file_path)

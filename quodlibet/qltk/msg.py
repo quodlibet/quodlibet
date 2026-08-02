@@ -47,8 +47,7 @@ class Message(Gtk.MessageDialog, Dialog):
     def run(self, destroy=True):
         resp = super().run()
         if destroy:
-            # GTK4: destroy() removed - self cleaned up automatically
-            pass
+            self.destroy()
         return resp
 
 

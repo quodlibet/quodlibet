@@ -199,4 +199,4 @@ class TapBpm(SongsMenuPlugin):
 
         win.hide()
         win.disconnect(self.__resp_sig)
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()

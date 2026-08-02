@@ -170,7 +170,7 @@ def _do_trash_songs(parent, songs, librarian):
         else:
             ok.append(song)
         w.step()
-    # GTK4: destroy() removed - w cleaned up automatically
+    w.destroy()
 
     if failed:
         ErrorMessage(
@@ -212,7 +212,7 @@ def _do_trash_files(parent, paths):
         else:
             ok.append(path)
         w.step()
-    # GTK4: destroy() removed - w cleaned up automatically
+    w.destroy()
 
     if failed:
         ErrorMessage(
@@ -245,7 +245,7 @@ def _do_delete_songs(parent, songs, librarian):
         else:
             ok.append(song)
         w.step()
-    # GTK4: destroy() removed - w cleaned up automatically
+    w.destroy()
 
     if failed:
         ErrorMessage(
@@ -277,7 +277,7 @@ def _do_delete_files(parent, paths):
         else:
             ok.append(path)
         w.step()
-    # GTK4: destroy() removed - w cleaned up automatically
+    w.destroy()
 
     if failed:
         ErrorMessage(

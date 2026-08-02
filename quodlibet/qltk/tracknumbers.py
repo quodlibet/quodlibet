@@ -181,7 +181,7 @@ class TrackNumbers(Gtk.Box):
             all_done = True
 
         library.changed(was_changed)
-        # GTK4: destroy() removed - win cleaned up automatically
+        win.destroy()
         self.save.set_sensitive(not all_done)
         self.revert.set_sensitive(not all_done)
 

@@ -128,8 +128,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         self.show_all()
         resp = super().run()
         if destroy:
-            # GTK4: destroy() removed - self cleaned up automatically
-            pass
+            self.destroy()
         return self.order if resp == Gtk.ResponseType.OK else []
 
     @property

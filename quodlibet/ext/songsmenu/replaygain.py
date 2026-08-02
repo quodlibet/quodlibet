@@ -525,12 +525,11 @@ class RGDialog(Dialog):
 
     def __response(self, win, response):
         if response == Gtk.ResponseType.CANCEL:
-            # GTK4: destroy() removed - self cleaned up automatically
-            pass
+            self.destroy()
         elif response == Gtk.ResponseType.OK:
             for album in self._done:
                 album.write()
-            # GTK4: destroy() removed - self cleaned up automatically
+            self.destroy()
 
     def __destroy(self, *args):
         # shut down any active processing and clean up resources, timeouts

@@ -280,7 +280,7 @@ class LastFMSync(SongsMenuPlugin):
         if resp == Gtk.ResponseType.ACCEPT:
             cache.update_songs(songs)
         self.running = False
-        # GTK4: self.destroy() removed - dialog cleaned up automatically
+        self.destroy()
 
     @classmethod
     def PluginPreferences(cls, win):

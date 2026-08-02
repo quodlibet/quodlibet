@@ -104,5 +104,5 @@ class GetStringDialog(Dialog):
             value = self._val.get_text()
         else:
             value = None
-        # GTK4: destroy() removed - self cleaned up automatically
+        self.destroy()
         return value
