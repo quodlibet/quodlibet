@@ -8,6 +8,30 @@ GTK4 Migration Status
 released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
 
 
+Gotchas found while fixing manual-test regressions (2026-08-02)
+--------------------------------------------------------------
+
+- **Don't call `set_widget()` on a `qltk.views.TreeViewColumn`.** It already
+  installs its own label and hangs the `_button` lookup (and therefore the
+  `tree-view-changed` signal and tooltips) off that label's `realize`. Replacing
+  the label silently kills all of it: `TextColumn`'s deferred width checks simply
+  stop running. Configure `_TreeViewColumnLabel` instead.
+- **A GType has one parent.** Signals declared on a class that a widget inherits
+  from *via a sibling branch* (e.g. `RCMTreeView` under `AllTreeView`) are not
+  visible. Declare them on the shared GType root. GTK3 hid several of these
+  because the signal was a built-in `Gtk.Widget` one.
+- **Dots in Gio action names** are valid for the action, but a menu item's
+  detailed action name won't resolve them, so the item silently does nothing.
+- **Pop context menus on `released`, not `pressed`**: a popover that grabs during
+  the press treats the release as a click-outside and hides itself.
+- **Surviving GTK3 vfuncs are dead code**: `do_draw`, `do_get_preferred_width`,
+  `do_get_preferred_height` are never called under GTK4. Grep for them; each one
+  is a workaround that is no longer running and may be masking the real fix.
+- Widget size requests below the theme's minimum (the old 26x26 button idiom) are
+  refused by GTK4 with `Gtk-CRITICAL` allocation warnings, and the child can be
+  clipped to nothing. Let the theme size buttons.
+
+
 Tray icon: no GTK4 backend (2026-08-02)
 ---------------------------------------
 
