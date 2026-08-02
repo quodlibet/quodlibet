@@ -115,6 +115,9 @@ class Window(Gtk.Window):
         if isinstance(self, InstanceTracker):
             self._deregister_instance()
         super().destroy()
+        # GTK4 emits ::destroy from dispose, and any Python reference keeps the
+        # window alive, so cleanup handlers would otherwise never run
+        self.run_dispose()
 
     def do_close_request(self):
         """Funnel window-manager closes through destroy().
