@@ -181,6 +181,13 @@ class _MenuItemButton(Gtk.Button):
 
     _submenu: Gtk.Widget | None = None
 
+    _label: str = ""
+    """The text, kept because an item with an icon has a box for a child,
+    which leaves Gtk.Button's own label unset."""
+
+    def get_label(self) -> str:
+        return super().get_label() or self._label
+
     def set_submenu(self, menu: Gtk.Widget | None) -> None:
         self._submenu = menu
 
@@ -205,6 +212,7 @@ def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
         item.set_child(box)
     else:
         item = _MenuItemButton(label=label, use_underline=True)
+    item._label = label
 
     if tooltip:
         item.set_tooltip_text(tooltip)
