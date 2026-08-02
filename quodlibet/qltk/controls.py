@@ -130,7 +130,6 @@ class PlayControls(Gtk.Box):
         lower.append(self.volume)
 
         seekbutton = SeekButton(player, library)
-        seekbutton.set_hexpand(True)
         lower.append(seekbutton)
 
         self.append(upper)
