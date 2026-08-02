@@ -257,7 +257,7 @@ class TRCMTreeView(TestCase):
         with visible(self.c, 200, 200):
             self.c.set_cursor(Gtk.TreePath((2,)))
             assert self.c.popup_menu(menu, Gdk.BUTTON_SECONDARY, 0)
-            assert menu.get_parent() is self.c
+            assert menu.get_parent() is self.c.get_root()
             # not the view's centre, which is where an unpositioned popover goes
             rect = menu.get_pointing_to()[1]
             assert (rect.width, rect.height) == (1, 1)

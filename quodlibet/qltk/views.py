@@ -17,6 +17,7 @@ from quodlibet import config
 from quodlibet.qltk import (
     Destroyable,
     is_accel_pressed,
+    get_top_parent,
     menu_popup,
     point_rect,
     get_primary_accel_mod,
@@ -668,6 +669,9 @@ class RCMTreeView(BaseView):
         self.__popup_point = None
         """Where the menu was invoked, if by pointer rather than keyboard"""
 
+        self.__menu = None
+        """The menu currently parented to the toplevel, if any"""
+
         click_ctrl = Gtk.GestureClick()
         click_ctrl.set_button(Gdk.BUTTON_SECONDARY)
         # On release: a popover popped up during the press takes a grab, and
@@ -725,14 +729,20 @@ class RCMTreeView(BaseView):
                 return False
             point = self.__cursor_point()
 
-        if menu.get_parent() is not self:
+        # Parented to the toplevel rather than the view: callers build a fresh
+        # menu each time, and a popover is only kept alive by its parent
+        window = get_top_parent(self) or self
+        if self.__menu is not None and self.__menu is not menu:
+            self.__menu.unparent()
+        self.__menu = menu
+        if menu.get_parent() is not window:
             if menu.get_parent() is not None:
                 menu.unparent()
-            menu.set_parent(self)
+            menu.set_parent(window)
+
+        ok, at = self.compute_point(window, Graphene.Point().init(*point))
         menu.set_has_arrow(False)
-        menu.set_halign(Gtk.Align.START)
-        x, y = point
-        menu.set_pointing_to(point_rect(x, y))
+        menu.set_pointing_to(point_rect(at.x, at.y) if ok else point_rect(*point))
         menu_popup(menu, None, None, None, None, button, time)
         return True
 
