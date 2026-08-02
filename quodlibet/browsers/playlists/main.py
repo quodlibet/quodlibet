@@ -23,6 +23,7 @@ from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
+from quodlibet.qltk.songsmenu import MenuItemSpec
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
@@ -170,11 +171,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def menu(self, songs, library, items):
         model, iters = self.__get_selected_songs()
-        remove = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
-        qltk.add_fake_accel(remove, "Delete")
-        connect_obj(remove, "activate", self.__remove_songs, iters, model)
         playlist_iter = self.__selected_playlists()[1]
-        remove.set_sensitive(bool(playlist_iter))
+        remove = MenuItemSpec(
+            _("_Remove from Playlist"),
+            lambda parent: self.__remove_songs(iters, model),
+            enabled=bool(playlist_iter),
+            accel="Delete",
+        )
         items.append([remove])
         return super().menu(songs, library, items)
 
