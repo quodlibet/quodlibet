@@ -18,8 +18,7 @@ from quodlibet.qltk import (
     Destroyable,
     is_accel_pressed,
     get_top_parent,
-    menu_popup,
-    point_rect,
+    popup_menu_at,
     get_primary_accel_mod,
 )
 
@@ -735,15 +734,7 @@ class RCMTreeView(BaseView):
         if self.__menu is not None and self.__menu is not menu:
             self.__menu.unparent()
         self.__menu = menu
-        if menu.get_parent() is not window:
-            if menu.get_parent() is not None:
-                menu.unparent()
-            menu.set_parent(window)
-
-        ok, at = self.compute_point(window, Graphene.Point().init(*point))
-        menu.set_has_arrow(False)
-        menu.set_pointing_to(point_rect(at.x, at.y) if ok else point_rect(*point))
-        menu_popup(menu, None, None, None, None, button, time)
+        popup_menu_at(menu, self, *point, parent=window)
         return True
 
     def __cursor_point(self):

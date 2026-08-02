@@ -98,9 +98,7 @@ class SongInfo(Gtk.Box):
         if self._menu is not None:
             self._menu.unparent()
         self._menu = menu = self._get_menu(self._player, self._library)
-        menu.set_parent(self)
-        menu.set_pointing_to(qltk.point_rect(x, y))
-        menu.popup()
+        qltk.popup_menu_at(menu, self, x, y)
 
     def _get_menu(self, player, library):
         edit_display = MenuItemSpec(

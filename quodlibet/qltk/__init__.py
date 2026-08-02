@@ -18,7 +18,7 @@ gi.require_version("Gtk", "4.0")
 
 from gi.repository import Gtk
 from gi.repository import Gdk
-from gi.repository import GLib, GObject, PangoCairo
+from gi.repository import GLib, GObject, Graphene, PangoCairo
 from quodlibet.fsn import fsn2bytes, bytes2fsn, uri2fsn
 
 from quodlibet.util import print_d, print_w, is_windows, is_osx, InstanceTracker
@@ -281,6 +281,26 @@ def menu_popup(menu, shell, item, func, *args):
         wrap_pos_func = None
 
     return menu.popup(shell, item, wrap_pos_func, *args)
+
+
+def popup_menu_at(menu, widget, x, y, parent=None):
+    """Pop `menu` up pointing at (x, y) in `widget`'s coordinates.
+
+    `parent` is what the popover hangs from, `widget` by default. It owns the
+    menu, so it has to outlive the popup, and callers usually want to keep a
+    reference of their own too.
+    """
+
+    parent = widget if parent is None else parent
+    if menu.get_parent() is not parent:
+        if menu.get_parent() is not None:
+            menu.unparent()
+        menu.set_parent(parent)
+
+    ok, at = widget.compute_point(parent, Graphene.Point().init(x, y))
+    menu.set_has_arrow(False)
+    menu.set_pointing_to(point_rect(at.x, at.y) if ok else point_rect(x, y))
+    menu_popup(menu, None, None, None)
 
 
 def _popup_menu_at_widget(menu, widget, button, time, under):

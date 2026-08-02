@@ -11,7 +11,7 @@
 
 from collections.abc import Sequence
 
-from gi.repository import Gtk, GLib, Gdk, Gio, GObject, Graphene
+from gi.repository import Gtk, GLib, Gdk, Gio, GObject
 
 from quodlibet import app, print_w, print_d
 from quodlibet import config
@@ -28,7 +28,7 @@ from quodlibet.qltk.views import AllTreeView, DragScroll
 from quodlibet.qltk.ratingsmenu import ConfirmRateMultipleDialog
 from quodlibet.qltk.songsmenu import MenuItemSpec
 from quodlibet.qltk.songmodel import PlaylistModel
-from quodlibet.qltk import is_accel_pressed, menu_popup, point_rect
+from quodlibet.qltk import is_accel_pressed, popup_menu_at
 from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
@@ -1411,12 +1411,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         # toggling a header rebuilds every column, so the button the menu hung
         # from is destroyed mid-activation and the menu goes with it
         self._header_menu = menu = self._menu(column)
-        ok, point = button.compute_point(self, Graphene.Point().init(x, y))
-        menu.set_parent(self)
-        menu.set_has_arrow(False)
-        menu.set_halign(Gtk.Align.START)
-        menu.set_pointing_to(point_rect(point.x, point.y) if ok else point_rect(x, y))
-        menu_popup(menu, None, None, None)
+        popup_menu_at(menu, button, x, y, parent=self)
 
 
 @config.register_upgrade_function
