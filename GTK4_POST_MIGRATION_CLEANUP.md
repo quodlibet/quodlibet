@@ -189,10 +189,42 @@ fully built model scrolls identically to `set_menu_model` followed by
 `append_section`); the choice of parent widget (view vs toplevel); and
 `queue_resize()` after popup, which does not recover the height.
 
-So GTK appears to size the popup surface from a measurement that excludes the
-section separators. Next steps: check the installed GTK version against
-upstream `GtkPopoverMenu` bugs, and try building the menu without
-`append_section` (plain items plus explicit separators) to confirm.
+**Confirmed a GTK bug, not our misuse** (GTK 4.22.4). It reproduces with no Quod
+Libet code in the picture at all:
+
+```python
+win = Gtk.Window(); win.set_default_size(400, 700)
+label = Gtk.Label(label="x"); label.set_vexpand(True); label.set_hexpand(True)
+win.set_child(label); win.present()
+
+model = Gio.Menu()
+for s in range(4):                       # 4 sections of 2 items
+    section = Gio.Menu()
+    for i in range(2):
+        section.append(f"S{s} item {i}", None)
+    model.append_section(None, section)
+
+pop = Gtk.PopoverMenu.new_from_model(model)
+pop.set_parent(label)
+pop.set_has_arrow(False)
+pop.set_pointing_to(rect_at(20, 40))     # a 1x1 Gdk.Rectangle
+pop.popup()
+# inner Gtk.ScrolledWindow: get_height() == 240, natural height == 279
+```
+
+240 is exactly 8 items x 30px: the three separators are missing from the
+allocation. The window is 700px tall and the menu wants 279px, so this is *not*
+about running out of room — GTK derives the popup surface height from a measure
+that omits section separators. `set_pointing_to()` is needed only to make the
+popover map at all in a headless harness.
+
+Workarounds that do **not** work: `set_size_request()` on the popover or
+`set_min_content_height()` on the inner scroller, applied either before or after
+`popup()`. GTK ignores both and keeps the items-only height.
+
+That leaves a choice, which needs a decision: live with the scrollbar, or drop
+`append_section()` from `SongsMenu` and lose the visual grouping. Worth reporting
+upstream with the snippet above first.
 
 Reproduce by popping a menu up on a realized view and comparing the inner
 `Gtk.ScrolledWindow`'s `get_height()` against its natural height — note popovers
