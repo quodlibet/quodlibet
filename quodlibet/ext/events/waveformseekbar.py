@@ -81,6 +81,7 @@ class WaveformSeekBar(Gtk.Box):
         self._waveform_scale = WaveformScale(player)
 
         self.append(Align(self._elapsed_label, border=6))
+        self._waveform_scale.set_hexpand(True)
         self.append(self._waveform_scale)
         self.append(Align(self._remaining_label, border=6))
 
