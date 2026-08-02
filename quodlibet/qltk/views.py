@@ -11,7 +11,6 @@ import contextlib
 import os
 
 from gi.repository import Gtk, Gdk, GObject, Graphene, Pango, GLib
-import cairo
 
 from quodlibet import print_e
 from quodlibet import config
@@ -844,78 +843,11 @@ class HintedTreeView(BaseView):
 
 
 class _TreeViewColumnLabel(Gtk.Label):
-    """A label which fades  into the background at the end; for use
-    only in TreeViewColumns.
+    """A column header label that ellipsizes rather than forcing the column
+    at least as wide as its own title."""
 
-    The hackery with using the parent's allocation is needed because
-    the label always gets the allocation it has requested, ignoring
-    the actual width of the column header.
-    """
-
-    def do_draw(self, ctx):
-        alloc = self.get_allocation()
-        # in case there are no parents use the same alloc which should
-        # result in no custom drawing.
-        p1 = self.get_parent() or self
-        p2 = p1.get_parent() or p1
-        p3 = p2.get_parent() or p2
-        p2_alloc = p2.get_allocation()
-        p3_alloc = p3.get_allocation()
-
-        # remove the space needed by the arrow and add the space
-        # added by the padding so we only start drawing when we clip
-        # the text directly
-        available_width = (
-            p2_alloc.width - abs(p2_alloc.x - alloc.x) + (p2_alloc.x - p3_alloc.x)
-        )
-
-        if alloc.width <= available_width:
-            return Gtk.Label.do_draw(self, ctx)
-
-        req_height = self.get_requisition().height
-        w, h = alloc.width, alloc.height
-        aw = available_width
-
-        # possible when adding new columns.... create_similar will fail
-        # in this case below, so just skip.
-        if min(w, h) < 0:
-            return Gtk.Label.do_draw(self, ctx)
-
-        surface = ctx.get_target()
-
-        # draw label to image surface
-        label_surface = surface.create_similar(cairo.CONTENT_COLOR_ALPHA, w, h)
-        label_ctx = cairo.Context(label_surface)
-        res = Gtk.Label.do_draw(self, label_ctx)
-
-        # create a gradient.
-        # make the gradient width depend roughly on the font size
-        gradient_width = min(req_height * 0.8, aw)
-
-        if self.get_direction() == Gtk.TextDirection.RTL:
-            start = w - aw
-            end = start + gradient_width
-        else:
-            end = aw - gradient_width
-            start = end + gradient_width
-
-        pat = cairo.LinearGradient(start, 0, end, 0)
-        pat.add_color_stop_rgba(0, 0, 0, 0, 0)
-        pat.add_color_stop_rgba(gradient_width, 1, 1, 1, 1)
-
-        # gradient surface
-        grad_surface = surface.create_similar(cairo.CONTENT_COLOR_ALPHA, w, h)
-        imgctx = cairo.Context(grad_surface)
-        imgctx.set_source(pat)
-        imgctx.paint()
-
-        # draw label using the gradient as the alpha channel mask
-        ctx.save()
-        ctx.set_source_surface(label_surface)
-        ctx.mask_surface(grad_surface)
-        ctx.restore()
-
-        return res
+    def __init__(self, **kwargs):
+        super().__init__(ellipsize=Pango.EllipsizeMode.END, **kwargs)
 
 
 class TreeViewColumn(Gtk.TreeViewColumn):
