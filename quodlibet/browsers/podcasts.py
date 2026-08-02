@@ -426,7 +426,7 @@ class Podcasts(Browser):
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.set_child(view)
         swin.set_vexpand(True)
-        self.prepend(swin)
+        self.append(swin)
 
         new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
         new.connect("clicked", self.__new_feed)

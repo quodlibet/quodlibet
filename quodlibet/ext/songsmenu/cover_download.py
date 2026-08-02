@@ -419,7 +419,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
             save_filename.connect("changed", changed)
             select_value(save_filename, self.config.save_pattern)
-            hbox.prepend(save_filename)
+            hbox.append(save_filename)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
                 "If not already a JPEG, convert the image to "

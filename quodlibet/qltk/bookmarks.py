@@ -120,7 +120,7 @@ class EditBookmarksPane(Gtk.Box):
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.remove = remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_sensitive(False)
-        hbox.prepend(remove)
+        hbox.append(remove)
         if close:
             self.close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
             hbox.append(self.close)

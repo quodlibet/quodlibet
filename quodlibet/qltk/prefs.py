@@ -98,9 +98,9 @@ class PreferencesWindow(UniqueWindow):
                     app.window.set_sortability()
 
                 always_sortable.connect("notify::active", refresh_browser)
-                vbox.prepend(jump_button)
-                vbox.prepend(always_sortable)
-                vbox.prepend(autosort_button)
+                vbox.append(jump_button)
+                vbox.append(always_sortable)
+                vbox.append(autosort_button)
                 return qltk.Frame(_("Behavior"), child=vbox)
 
             def create_visible_columns_widgets():
@@ -110,7 +110,7 @@ class PreferencesWindow(UniqueWindow):
                 for _i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                     buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
                     grid.add(buttons[k])
-                vbox.prepend(grid)
+                vbox.append(grid)
                 # Other columns
                 hbox = Gtk.Box(spacing=12)
                 l = Gtk.Label(label=_("_Others:"), use_underline=True)
@@ -125,12 +125,12 @@ class PreferencesWindow(UniqueWindow):
                 )
                 l.set_mnemonic_widget(edit_button)
                 l.set_use_underline(True)
-                hbox.prepend(others)
-                vbox.prepend(hbox)
+                hbox.append(others)
+                vbox.append(hbox)
                 b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.prepend(edit_button)
-                vbox.prepend(b)
+                b.append(edit_button)
+                vbox.append(b)
                 return qltk.Frame(_("Visible Columns"), child=vbox), buttons
 
             def create_columns_prefs_frame():
@@ -172,7 +172,7 @@ class PreferencesWindow(UniqueWindow):
                 self.connect("destroy", self.__apply, buttons)
                 b = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 b.set_layout(Gtk.ButtonBoxStyle.END)
-                b.prepend(apply)
+                b.append(apply)
                 return b
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -186,13 +186,13 @@ class PreferencesWindow(UniqueWindow):
             self.prepend(behavior)
 
             visible_columns_frame.set_margin_top(MARGIN)
-            self.prepend(visible_columns_frame)
+            self.append(visible_columns_frame)
 
             columns_prefs = create_columns_prefs_frame()
             columns_prefs.set_margin_top(MARGIN)
             self.prepend(columns_prefs)
 
-            self.prepend(create_update_columns_button())
+            self.append(create_update_columns_button())
 
             # Run it now
             self.__update(buttons, self._toggle_data, get_columns())
@@ -308,7 +308,7 @@ class PreferencesWindow(UniqueWindow):
                 hbox = Gtk.Box(spacing=MARGIN)
                 label = Gtk.Label(label=_("Duration totals") + ":", use_underline=True)
                 label.set_mnemonic_widget(duration)
-                hbox.prepend(label)
+                hbox.append(label)
                 hbox.append(duration)
 
                 vbox.append(hbox)
@@ -362,11 +362,11 @@ class PreferencesWindow(UniqueWindow):
             )
 
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
-            vbox.prepend(c1)
-            vbox.prepend(c2)
+            vbox.append(c1)
+            vbox.append(c2)
             f = qltk.Frame(_("Ratings"), child=vbox)
             f.set_margin_top(MARGIN)
-            self.prepend(f)
+            self.append(f)
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
 
@@ -512,7 +512,7 @@ class PreferencesWindow(UniqueWindow):
             vb.append(hb)
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
             f.set_margin_top(MARGIN)
-            self.prepend(f)
+            self.append(f)
 
         def create_behavior_frame(self):
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -634,7 +634,7 @@ class PreferencesWindow(UniqueWindow):
             grid.add(scale_combo)
             grid.attach(default_align, 0, 1, 1, 1)
             grid.attach(default_combo, 1, 1, 1, 1)
-            vb.prepend(grid)
+            vb.append(grid)
 
             # Bayesian Factor
             bayesian_factor = config.getfloat("settings", "bayesian_rating_factor", 0.0)
@@ -951,7 +951,7 @@ def create_grid(column_spacing: int = 12, row_spacing: int = 6):
 
 def hbox_for(label: Gtk.Label, entry: Gtk.Entry, expand_entry: bool = True) -> Gtk.Box:
     hb = Gtk.Box(spacing=12)
-    hb.prepend(label)
+    hb.append(label)
     if expand_entry:
         entry.set_hexpand(True)
     hb.append(entry)

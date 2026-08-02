@@ -253,7 +253,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         perc_table = Gtk.Table(n_rows=2, n_columns=2)
         perc_table.set_col_spacings(6)
         perc_table.set_row_spacings(6)
-        manual_box.prepend(perc_table)
+        manual_box.append(perc_table)
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)

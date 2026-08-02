@@ -231,7 +231,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             self.add_accel_group(browser.accelerators)
 
         self.__container = browser.pack(sw)
-        self.get_child().prepend(self.__container)
+        self.get_child().append(self.__container)
 
         main = self.get_child()
         bottom = Gtk.Box()

@@ -264,7 +264,7 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button)
+        self.append(button)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -592,9 +592,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.prepend(prefs)
+        search.append(prefs)
         hb = Gtk.Box(spacing=3)
-        hb.prepend(search)
+        hb.append(search)
         self.append(hb)
         self.append(sw)
 

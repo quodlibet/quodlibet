@@ -86,7 +86,7 @@ class PatternEditor(Gtk.Box):
         ctrl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         add = Button(_("_Add"), Icons.LIST_ADD)
-        ctrl_box.prepend(add)
+        ctrl_box.append(add)
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)

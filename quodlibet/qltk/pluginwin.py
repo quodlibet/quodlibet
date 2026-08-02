@@ -409,14 +409,14 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         enabled_combo.set_hexpand(True)
         enabled_combo.connect("changed", lambda s: filter_model.refilter())
         enabled_combo.set_tooltip_text(_("Filter by plugin state / tag"))
-        fb.prepend(enabled_combo)
+        fb.append(enabled_combo)
         self._enabled_combo = enabled_combo
 
         type_combo = PluginTypeFilterCombo()
         type_combo.set_hexpand(True)
         type_combo.connect("changed", lambda s: filter_model.refilter())
         type_combo.set_tooltip_text(_("Filter by plugin type"))
-        fb.prepend(type_combo)
+        fb.append(type_combo)
         self._type_combo = type_combo
 
         self._filter_entry = fe = UndoSearchEntry()
@@ -429,7 +429,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         errors.show()
         errors = Align(errors, top=6, bottom=6)
         bbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        bbox.prepend(errors)
+        bbox.append(errors)
 
         pref_box = PluginPreferencesContainer()
 
@@ -439,11 +439,11 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             refresh.connect(
                 "clicked", self.__refresh, plv, pref_box, errors, enabled_combo
             )
-            bbox.prepend(refresh)
+            bbox.append(refresh)
 
         filter_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        filter_box.prepend(fb)
-        filter_box.prepend(fe)
+        filter_box.append(fb)
+        filter_box.append(fe)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox.append(Align(filter_box, border=6))

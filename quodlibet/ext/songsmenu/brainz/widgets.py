@@ -390,17 +390,17 @@ class SearchWindow(Dialog):
 
         self.result_combo = ResultComboBox(self._resultlist)
         self.result_combo.connect("changed", self._result_changed)
-        vb.prepend(self.result_combo)
+        vb.append(self.result_combo)
 
         rhb = Gtk.Box()
         rl = Gtk.Label()
         rl.set_markup(_("Results <i>(drag to reorder)</i>"))
         rl.set_xalign(0)
         rl.set_yalign(0.5)
-        rhb.prepend(rl)
+        rhb.append(rl)
         rl = self.result_label = Gtk.Label(label="")
         rhb.append(rl)
-        vb.prepend(rhb)
+        vb.append(rhb)
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
@@ -411,7 +411,7 @@ class SearchWindow(Dialog):
         # TODO: remove deprecated get_action_area
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
         self.get_action_area().set_border_width(4)
-        self.get_content_area().prepend(vb)
+        self.get_content_area().append(vb)
         self.connect("response", self._on_response)
         self.connect("destroy", self._on_destroy)
 

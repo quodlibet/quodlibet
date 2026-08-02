@@ -232,7 +232,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2.insert(pref, 0)
 
         hb = Gtk.Box()
-        hb.prepend(fb)
+        hb.append(fb)
         hb.append(fb2)
         self.append(hb)
 
@@ -671,4 +671,4 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button)
+        self.append(button)

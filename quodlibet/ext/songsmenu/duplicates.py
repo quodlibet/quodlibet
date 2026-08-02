@@ -337,7 +337,7 @@ class DuplicateDialog(Gtk.Window):
 
         expand = Gtk.Button(_("Collapse / Expand all"))
         connect_obj(expand, "clicked", expand_all, view)
-        hbox.prepend(expand)
+        hbox.append(expand)
 
         label = Gtk.Label(
             label=_("Duplicate key expression is '%s'")

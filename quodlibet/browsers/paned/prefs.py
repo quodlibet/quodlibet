@@ -47,7 +47,7 @@ class ColumnModeSelection(Gtk.Box):
             group = Gtk.CheckButton(group=group, label=lbl)
             if mode == config.getint("browsers", "pane_mode", ColumnMode.SMALL):
                 group.set_active(True)
-            self.prepend(group)
+            self.append(group)
             self.buttons.append(group)
 
         # Connect to signal after the correct radio button has been
@@ -119,7 +119,7 @@ class PatternEditor(qltk.Destroyable, Gtk.Box):
         ctrl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         add = Button(_("_Add"), Icons.LIST_ADD)
-        ctrl_box.prepend(add)
+        ctrl_box.append(add)
         add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
@@ -217,7 +217,7 @@ class PreferencesButton(qltk.Destroyable, Gtk.Box):
         )
         button.set_menu(menu)
         button.show()
-        self.prepend(button)
+        self.append(button)
 
 
 class Preferences(qltk.UniqueWindow):
@@ -262,9 +262,9 @@ class Preferences(qltk.UniqueWindow):
         if not self.has_close_button():
             box.append(cancel)
 
-        vbox.prepend(column_mode_frame)
+        vbox.append(column_mode_frame)
         vbox.append(editor_frame)
-        vbox.prepend(box)
+        vbox.append(box)
 
         self.add(vbox)
 

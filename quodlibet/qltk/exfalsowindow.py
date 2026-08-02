@@ -124,12 +124,12 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             down=False,
         )
         menu_button.set_menu(menu)
-        bbox.prepend(menu_button)
+        bbox.append(menu_button)
 
         statusbox = StatusBarBox()
         self.statusbar = statusbox.statusbar
 
-        bbox.prepend(statusbox)
+        bbox.append(statusbox)
 
         l = Gtk.Label()
         l.set_xalign(1.0)
@@ -184,7 +184,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         # keep a placeholder so set_as_osx_window() has something to pass.
         self._dummy_osx_menu_bar = Gtk.Box()
         self._dummy_osx_menu_bar.set_visible(False)
-        vb.prepend(self._dummy_osx_menu_bar)
+        vb.append(self._dummy_osx_menu_bar)
 
     def __library_changed(self, library, songs, fs):
         fs.rescan()

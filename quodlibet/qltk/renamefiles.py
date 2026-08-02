@@ -183,11 +183,11 @@ class RenameFiles(Gtk.Box):
             edit_title=_("Edit saved patterns…"),
         )
         self.combo.show_all()
-        hbox.prepend(self.combo)
+        hbox.append(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
-        hbox.prepend(self.preview)
-        self.prepend(hbox)
+        hbox.append(self.preview)
+        self.append(hbox)
         self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
@@ -198,7 +198,7 @@ class RenameFiles(Gtk.Box):
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(self.view)
         sw.set_vexpand(True)
-        self.prepend(sw)
+        self.append(sw)
 
         # rename options
         rename_options = Gtk.Box()

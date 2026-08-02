@@ -219,7 +219,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         export_pattern_entry.connect("changed", self._export_pattern_changed)
         self.export_pattern_entry = export_pattern_entry
         frame = qltk.Frame(label=_("Export pattern:"), child=export_pattern_combo)
-        main_vbox.prepend(frame)
+        main_vbox.append(frame)
 
         # Start preview button
         preview_start_button = qltk.Button(

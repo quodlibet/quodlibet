@@ -20,7 +20,7 @@ class MenuButton(Gtk.MenuButton):
 
         bbox = Gtk.Box(spacing=3)
         if widget:
-            bbox.prepend(widget)
+            bbox.append(widget)
         if arrow:
             # GTK4: Gtk.Arrow is removed, MenuButton has built-in arrow support
             # Just use the icon-name property instead

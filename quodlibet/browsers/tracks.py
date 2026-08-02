@@ -63,7 +63,7 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_popover(popover)
-        self.prepend(button)
+        self.append(button)
 
 
 class TrackList(Browser):

@@ -514,16 +514,16 @@ class Equalizer(EventPlugin):
         padboxv = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        padboxv.prepend(combo)
+        padboxv.append(combo)
         padboxh = Gtk.Box()
-        padboxh.prepend(padboxv)
+        padboxh.append(padboxv)
         frame.add(padboxh)
 
         main_middle_hbox.append(frame)
 
         reset = Button(_("_Reset EQ"), Icons.EDIT_UNDO)
         reset.connect("clicked", clicked_rb)
-        main_middle_hbox.prepend(reset)
+        main_middle_hbox.append(reset)
 
         main_vbox.append(main_middle_hbox)
 
@@ -543,17 +543,17 @@ class Equalizer(EventPlugin):
             combo.append_text(key)
         combo.connect("changed", custom_combo_changed)
         hb = Gtk.Box(spacing=6)
-        hb.prepend(combo)
+        hb.append(combo)
 
         delete = Button(_("_Delete selected"), Icons.EDIT_DELETE)
         delete.connect("clicked", clicked_db)
         delete.set_sensitive(False)
         self._delete_button = delete
-        hb.prepend(delete)
+        hb.append(delete)
 
-        main_bottom_vbox.prepend(hb)
+        main_bottom_vbox.append(hb)
         hs = Gtk.HSeparator()
-        main_bottom_vbox.prepend(hs)
+        main_bottom_vbox.append(hs)
 
         hb = Gtk.Box()
         l = Gtk.Label(label=_("Preset name for saving:"))

@@ -651,7 +651,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         )
 
         box = Gtk.Box(spacing=6)
-        box.prepend(search)
+        box.append(search)
         self._searchbox = Align(box, left=0, right=6, top=0)
         self._searchbox.show_all()
 

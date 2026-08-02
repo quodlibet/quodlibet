@@ -149,7 +149,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self._toggle_button = toggle
 
         arrow = MenuButton(arrow=True, down=arrow_down)
-        self.prepend(arrow)
+        self.append(arrow)
         self._menu_button = arrow
         self.__current = current_order
         self.__orders = orders

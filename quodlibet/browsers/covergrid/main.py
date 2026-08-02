@@ -96,7 +96,7 @@ class PreferencesButton(AlbumPreferencesButton):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        self.prepend(button)
+        self.append(button)
 
 
 class CoverGridContainer(ScrolledWindow):
@@ -281,7 +281,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
-        search.prepend(prefs)
+        search.append(prefs)
         self.append(Align(search, left=6, top=0))
         self.append(sw)
 

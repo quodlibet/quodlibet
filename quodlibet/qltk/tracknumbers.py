@@ -71,7 +71,7 @@ class TrackNumbers(Gtk.Box):
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.prepend(grid)
+        self.append(grid)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
@@ -105,7 +105,7 @@ class TrackNumbers(Gtk.Box):
         w.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         w.set_child(view)
         w.set_vexpand(True)
-        self.prepend(w)
+        self.append(w)
 
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_spacing(6)

@@ -81,7 +81,7 @@ class RandomAlbum(EventPlugin):
         spin.connect("value-changed", delay_changed_cb)
         hbox.append(spin)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
-        hbox.prepend(lbl)
+        hbox.append(lbl)
         vbox.append(hbox)
 
         frame = Gtk.Frame(label=_("Weights"))

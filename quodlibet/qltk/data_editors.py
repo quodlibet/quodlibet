@@ -68,12 +68,12 @@ class JSONBasedEditor(qltk.UniqueWindow):
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
         sw.set_vexpand(True)
-        self.get_child().prepend(sw)
+        self.get_child().append(sw)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         # Input for new ones.
         frame = self.__build_input_frame()
-        vbox.prepend(frame)
+        vbox.append(frame)
 
         # Add context menu
         menu = Gtk.PopoverMenu()
@@ -93,13 +93,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.remove_but.set_sensitive(False)
         self.new_but = Button(_("_New"), Icons.DOCUMENT_NEW)
         self.new_but.connect("clicked", self._new_item)
-        bbox.prepend(self.new_but)
+        bbox.append(self.new_but)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.append(close)
         vbox.append(bbox)
 
-        self.get_child().prepend(vbox)
+        self.get_child().append(vbox)
         # Initialise
         self.selection = view.get_selection()
 
@@ -293,7 +293,7 @@ class TagListEditor(qltk.Window):
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
         sw.set_size_request(-1, max(sw.get_size_request().height, 100))
-        hbox.prepend(sw)
+        hbox.append(sw)
 
         self.__setup_column(view)
 
@@ -311,7 +311,7 @@ class TagListEditor(qltk.Window):
         vbbox.set_spacing(6)
         add = Button(_("_Add…"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
-        vbbox.prepend(add)
+        vbbox.append(add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
         vbbox.append(remove)

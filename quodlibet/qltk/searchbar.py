@@ -110,7 +110,7 @@ class SearchBarBox(Gtk.Box):
         entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
 
         combo.enable_clear_button()
-        self.prepend(combo)
+        self.append(combo)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")

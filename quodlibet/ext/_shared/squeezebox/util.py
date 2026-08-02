@@ -33,8 +33,8 @@ class GetPlayerDialog(Gtk.Dialog):
             player_combo.append_text(player["name"])
         player_combo.set_active(current)
         self._val = player_combo
-        box.prepend(self._val)
-        self.vbox.prepend(box)
+        box.append(self._val)
+        self.vbox.append(box)
         self.get_child().show_all()
 
     def run(self, text=""):
