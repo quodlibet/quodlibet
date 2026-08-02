@@ -8,6 +8,38 @@ GTK4 Migration Status
 released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
 
 
+DRY: when to extract, and when to leave it
+------------------------------------------
+
+There is a lot of copy-and-paste in this codebase and so a lot of room for
+extraction — but that pulls against keeping the diff against `main` small, and
+against not disturbing rarely trodden UI paths. The working rule:
+
+**Extract when the repetition is new.** If a migration introduces a pattern that
+now has to be written out in three places, and a simple helper removes it, do it
+then — the diff is already being touched, and a single copy is one place to get
+it right rather than three to get it wrong. `qltk.popup_menu_at()` came from
+exactly this: three near-identical popover setups, one of which had silently
+missed the idle deferral and mis-sized itself.
+
+**Leave pre-existing duplication alone** unless a bug forces you into it.
+De-duplicating code that `main` also has buys nothing for the migration and
+costs review surface.
+
+Candidates noted for *after* the migration lands, when the diff no longer
+matters:
+
+- The `init_*` methods in `songsmenu.py` are near-identical section builders.
+- Every browser repeats the same key-handler / context-menu / filter plumbing
+  (`browsers/albums`, `collection`, `covergrid`, `paned`, `playlists` all have
+  matching `__key_pressed` and popup code).
+- The `WaitLoadWindow` / `WritingWindow` create-step-destroy dance is written out
+  at each call site (`tracknumbers`, `tagsfrompath`, `renamefiles`, `edittags`,
+  `embedded`, `ifp`) and wants a context manager.
+- `qltk/x.py` has several near-duplicate small-button classes differing only in
+  padding and size.
+
+
 Keep the diff against `main` small
 ----------------------------------
 
