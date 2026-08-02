@@ -465,7 +465,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
                 style_context.remove_provider(self._provider)
 
             provider = Gtk.CssProvider()
-            provider.load_from_data((f"* {{color: {self._color}}}").encode("ascii"))
+            provider.load_from_data((f"* {{color: {self._color};}}").encode("ascii"))
             style_context.add_provider(
                 provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )

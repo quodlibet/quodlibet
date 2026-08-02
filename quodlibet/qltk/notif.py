@@ -254,7 +254,7 @@ class TaskWidget(Gtk.Box):
         self.append(self.label)
         self.progress = Gtk.ProgressBar()
         self.progress.set_size_request(200, 12)
-        add_css(self.progress, "progress, trough { min-height: 12px }")
+        add_css(self.progress, "progress, trough { min-height: 12px; }")
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, valign=Gtk.Align.CENTER)
         vb.append(self.progress)
         self.append(vb)

@@ -893,7 +893,7 @@ class PreferencesWindow(UniqueWindow):
             page.show()
             notebook.append_page(page)
         if len(pages) > 1:
-            add_css(notebook, "tab { padding: 6px 24px } ")
+            add_css(notebook, "tab { padding: 6px 24px; }")
         else:
             notebook.set_show_tabs(False)
 

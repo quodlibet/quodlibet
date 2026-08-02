@@ -89,7 +89,7 @@ class EditBookmarksPane(Gtk.Box):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(RCMHintedTreeView(model=model))
-        add_css(sw, "* { padding: 12px } ")
+        add_css(sw, "* { padding: 12px; }")
 
         render = Gtk.CellRendererText()
 
@@ -114,7 +114,7 @@ class EditBookmarksPane(Gtk.Box):
         # GTK4: Use append() with vexpand for scrolled window
         sw.set_vexpand(True)
         self.append(sw)
-        add_css(self, "* { margin: 12px } ")
+        add_css(self, "* { margin: 12px; }")
         self.accels = Gtk.AccelGroup()
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)

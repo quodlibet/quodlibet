@@ -302,7 +302,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         use_mono = config.getboolean("settings", "monospace_query")
         font = "font-family: monospace; " if use_mono else ""
         size = escape(config.gettext("settings", "query_font_size"))
-        add_css(new_entry, f"entry {{ {font} font-size: {size} }}")
+        add_css(new_entry, f"entry {{ {font} font-size: {size}; }}")
         self.add(new_entry)
         if validator:
             # Call once more to ensure correct theme colours
