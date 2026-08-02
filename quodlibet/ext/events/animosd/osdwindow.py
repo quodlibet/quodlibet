@@ -28,6 +28,16 @@ from quodlibet import app
 from quodlibet import pattern
 
 
+def _monitor_geometry(index):
+    """The geometry of monitor `index`, or of the first one."""
+
+    monitors = Gdk.Display.get_default().get_monitors()
+    count = monitors.get_n_items()
+    if not count:
+        raise ValueError("no monitors")
+    return monitors.get_item(min(index, count - 1)).get_geometry()
+
+
 class OSDWindow(Gtk.Window):
     __gsignals__ = {
         "fade-finished": (GObject.SignalFlags.RUN_LAST, None, (bool,)),
@@ -46,20 +56,16 @@ class OSDWindow(Gtk.Window):
     """wait this many milliseconds between steps"""
 
     def __init__(self, conf, song):
-        Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
-        self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
-
-        screen = self.get_screen()
-        rgba = screen.get_rgba_visual()
-        if rgba is not None:
-            self.set_visual(rgba)
+        Gtk.Window.__init__(self)
+        # GTK4 has no window type hints; surfaces are RGBA-capable already
+        self.set_decorated(False)
 
         self.conf = conf
         self.iteration_source = None
         self.fading_in = False
         self.fade_start_time = 0
 
-        mgeo = screen.get_monitor_geometry(conf.monitor)
+        mgeo = _monitor_geometry(conf.monitor)
         textwidth = mgeo.width - 2 * (self.BORDER + self.MARGIN)
 
         scale_factor = self.get_scale_factor()
@@ -109,14 +115,12 @@ class OSDWindow(Gtk.Window):
 
         self.cover_rectangle = rect
 
-        winx = int((mgeo.width - winw) * conf.pos_x)
-        winx = max(self.MARGIN, min(mgeo.width - self.MARGIN - winw, winx))
-        winy = int((mgeo.height - winh) * conf.pos_y)
-        winy = max(self.MARGIN, min(mgeo.height - self.MARGIN - winh, winy))
-        self.move(winx + mgeo.x, winy + mgeo.y)
+        # TODO GTK4: a client can no longer place its own toplevel, so the
+        # position preferences have nowhere to go. Needs a layer-shell surface
+        # (wlr-layer-shell / gtk4-layer-shell) to honour them again.
 
     def do_draw(self, cr):
-        if self.is_composited():
+        if self.get_display().is_composited():
             self.draw_title_info(cr)
         else:
             # manual transparency rendering follows
@@ -325,7 +329,7 @@ class OSDWindow(Gtk.Window):
         else:
             self.set_opacity(1.0 - fraction)
 
-        if not self.is_composited():
+        if not self.get_display().is_composited():
             self.queue_draw()
 
         if fraction >= 1.0:

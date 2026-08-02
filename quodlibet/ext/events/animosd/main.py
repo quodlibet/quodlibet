@@ -39,7 +39,7 @@ class AnimOsd(EventPlugin):
 
     def plugin_on_song_started(self, song):
         if self.__current_window is not None:
-            if self.__current_window.is_composited():
+            if self.__current_window.get_display().is_composited():
                 self.__current_window.fade_out()
             else:
                 self.__current_window.hide()
