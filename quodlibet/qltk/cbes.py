@@ -60,7 +60,7 @@ class _KeyValueEditor(qltk.Window):
         add.set_sensitive(False)
         t.attach(add, 2, 1, 1, 1)
 
-        self.get_child().prepend(t)
+        self.get_child().append(t)
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str, str)
@@ -82,7 +82,7 @@ class _KeyValueEditor(qltk.Window):
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.set_child(view)
         sw.set_vexpand(True)
-        self.get_child().prepend(sw)
+        self.get_child().append(sw)
 
         menu = Gtk.PopoverMenu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
@@ -94,11 +94,11 @@ class _KeyValueEditor(qltk.Window):
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         rem_b.set_sensitive(False)
-        bbox.prepend(rem_b)
+        bbox.append(rem_b)
         self.use_header_bar()
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
         if not self.has_close_button():
-            bbox.prepend(close)
+            bbox.append(close)
         else:
             bbox.set_layout(Gtk.ButtonBoxStyle.START)
         self.get_child().append(bbox)
@@ -332,8 +332,10 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.__last = new
 
     def __focus_entry(self):
-        self.get_child().grab_focus()
-        self.get_child().emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS, 0, False)
+        entry = self.get_child()
+        entry.grab_focus()
+        # GTK4 moved ::move-cursor to the Gtk.Text inside the entry
+        entry.set_position(-1)
 
     def __fill(
         self, filename: str | os.PathLike, initial: list[str] | None, edit_title: str
