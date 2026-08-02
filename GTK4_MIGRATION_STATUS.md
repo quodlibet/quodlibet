@@ -2,9 +2,21 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-07-05
-**Test Results**: ~4655 passed; remaining failures are the pre-existing
-order-dependent set (below), all passing in isolation.
+**Last Updated**: 2026-08-02
+**Test Results**: 4665 passed, 2 failed. Both remaining failures are
+`tests/plugin/test_mediaserver.py`, whose tearDown asserts the D-Bus name is
+released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
+
+
+Tray icon: no GTK4 backend (2026-08-02)
+---------------------------------------
+
+`Gtk.StatusIcon` is gone in GTK4 and AppIndicator3 / AyatanaAppIndicator3 are
+GTK3-only, so both backends are unusable. `systemtray.py` and the `Gtk.StatusIcon`
+stub in `_init.py` are deleted and the plugin raises `PluginNotSupportedError` at
+import. `IndicatorMenu` is ported and kept. Restoring the feature means
+implementing `org.kde.StatusNotifierItem` over D-Bus directly — see
+`GTK4_POST_MIGRATION_CLEANUP.md`.
 
 
 SongsMenu → Gio.Menu: LANDED (2026-07-05)

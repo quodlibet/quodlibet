@@ -868,41 +868,6 @@ def _init_gtk():  # noqa: C901
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 
-    # GTK4: StatusIcon removed - system tray APIs changed
-    if not hasattr(Gtk, "StatusIcon"):
-        from gi.repository import GObject
-
-        class StatusIcon(GObject.Object):
-            """Stub StatusIcon for GTK4 - supports signals but no tray functionality"""
-
-            embedded = GObject.Property(type=bool, default=False)
-
-            def __init__(self):
-                super().__init__()
-                print_d("GTK4: StatusIcon not supported, plugin may not work")
-
-            def set_from_pixbuf(self, pixbuf):
-                pass
-
-            def set_tooltip_text(self, text):
-                pass
-
-            def set_tooltip_markup(self, markup):
-                """GTK4: tooltip markup not supported in stub"""
-
-            def set_visible(self, visible):
-                pass
-
-            def get_size(self):
-                """Return a default icon size since tray is not available"""
-                return 24
-
-            def is_embedded(self):
-                """Return False since tray is not available in GTK4"""
-                return False
-
-        Gtk.StatusIcon = StatusIcon
-
     # GTK4: IconTheme.get_default() changed to get_for_display()
     if not hasattr(Gtk.IconTheme, "get_default"):
 

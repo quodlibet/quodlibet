@@ -148,3 +148,16 @@ Tests
   `GTK4_MIGRATION_STATUS.md` "Test Follow-ups"): deleted `test_qltk_util.py`,
   shim-coupled `test_plugins_playlist.py`, stubbed `test_qltk_views.py` event
   senders, weakened `test_qltk_paned.py`, etc.
+
+Tray icon has no GTK4 backend
+-----------------------------
+
+`Gtk.StatusIcon` is gone in GTK4 and `AppIndicator3` / `AyatanaAppIndicator3` are
+GTK3-only libraries, so both former backends are unusable. `systemtray.py` and the
+`Gtk.StatusIcon` stub in `_init.py` are deleted; the plugin now raises
+`PluginNotSupportedError` at import. `menu.py` (`IndicatorMenu`) is ported and kept.
+
+To restore the feature, implement the `org.kde.StatusNotifierItem` D-Bus spec
+directly — that is what AppIndicator wraps, and it needs no GTK.
+`tests/plugin/test_trayicon.py` was removed with the backend and should return
+alongside it.
