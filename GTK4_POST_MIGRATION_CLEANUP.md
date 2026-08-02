@@ -236,3 +236,34 @@ Reproduce by popping a menu up on a realized view and comparing the inner
 `Gtk.ScrolledWindow`'s `get_height()` against its natural height — note popovers
 only allocate their contents once genuinely mapped, so a bare harness that never
 maps them reports zeros and tells you nothing.
+
+
+89 destroy() calls were deleted branch-wide
+-------------------------------------------
+
+**Partly fixed, mostly outstanding** (2026-08-02). The migration deleted
+`destroy()` calls wholesale, leaving comments like
+`# GTK4: destroy() removed - win cleaned up automatically`. The premise is only
+half true: `Gtk.Widget.destroy()` went in GTK4, but **`Gtk.Window.destroy()` and
+`Gtk.NativeDialog.destroy()` did not**. The visible symptom was dialogs and
+progress windows that never closed — the tag editor's save window in particular
+could not be dismissed at all.
+
+21 window/dialog calls have been restored, each checked against `main`. Counting
+`.destroy()` per file across `main` vs this branch shows **89 lost in total**,
+concentrated in:
+
+    6  quodlibet/qltk/quodlibetwindow.py
+    5  quodlibet/main.py
+    5  quodlibet/errorreport/main.py
+    4  quodlibet/ext/events/waveformseekbar.py
+    3  quodlibet/qltk/exfalsowindow.py, ext/songsmenu/cover_download.py,
+       ext/songsmenu/console.py, qltk/seekbutton.py, ext/events/animosd/main.py
+
+Not all should come back: some were `Gtk.Menu` teardown (menus are Gio models
+now) and some were `Gtk.Widget.destroy()` on non-window widgets, which is
+genuinely gone and is what `qltk.Destroyable` now covers. Each needs checking
+against `main` individually — a plain "restore everything" sweep would be wrong.
+
+Regenerate the list by comparing `.destroy()` counts per file between
+`git show main:<file>` and the working tree.

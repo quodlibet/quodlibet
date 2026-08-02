@@ -8,6 +8,20 @@ GTK4 Migration Status
 released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
 
 
+Keep the diff against `main` small
+----------------------------------
+
+An explicit goal of this migration: **minimise the diff against `main`**. Quod
+Libet has a lot of rarely trodden UI paths, and bugs in them are hard to find,
+so gratuitous rewrites cost more than they look. Before changing something,
+check what `main` does (`git show main:<file>`) and prefer restoring its
+behaviour over inventing new behaviour. Less is more.
+
+This is not just style: the two worst regressions found in manual testing —
+dialogs that never close, and menu items with no labels — were both introduced
+by rewriting working code rather than porting it.
+
+
 Manual-test round, 2026-08-02
 -----------------------------
 
