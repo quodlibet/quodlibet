@@ -340,6 +340,10 @@ class WaveformScale(Gtk.Box):
 
     def __init__(self, player):
         super().__init__()
+        click = Gtk.GestureClick(button=Gdk.BUTTON_PRIMARY)
+        click.connect("pressed", self._on_pressed)
+        click.connect("released", self._on_released)
+        self.add_controller(click)
         self._player = player
         self.set_size_request(40, CONFIG.height_px)
         self.position = 0
@@ -595,22 +599,19 @@ class WaveformScale(Gtk.Box):
         default.alpha = 0.35
         return default
 
-    def do_button_press_event(self, event):
-        # Left mouse button
-        if event.button == 1 and self._player:
+    def _on_pressed(self, gesture, n_press, x, y):
+        if self._player:
             self._seeking = True
             self.queue_draw()
 
-    def do_button_release_event(self, event):
-        # Left mouse button
-        if event.button == 1 and self._player:
-            ratio = event.x / self.get_allocation().width
-            length = self._player.info("~#length")
-            self._player.seek(ratio * length * 1000)
-            self._seeking = False
-            self.queue_draw()
-            return True
-        return None
+    def _on_released(self, gesture, n_press, x, y):
+        if not self._player:
+            return
+        ratio = x / self.get_width()
+        length = self._player.info("~#length")
+        self._player.seek(ratio * length * 1000)
+        self._seeking = False
+        self.queue_draw()
 
     def do_scroll_event(self, event):
         if event.direction == Gdk.ScrollDirection.UP:
