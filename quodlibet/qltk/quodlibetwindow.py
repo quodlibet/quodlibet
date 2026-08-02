@@ -294,6 +294,12 @@ class TopBar(Gtk.Box):
         connect_destroy(player, "notify::volume", self._on_volume_changed)
         self.append(t)
 
+        # main had a SeparatorToolItem between the controls and the info area
+        separator = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+        separator.set_margin_start(6)
+        separator.set_margin_end(6)
+        self.append(separator)
+
         info_item = Gtk.Box()
         # The info area takes the slack, as the expanding ToolItem used to
         info_item.set_hexpand(True)
