@@ -222,9 +222,11 @@ Workarounds that do **not** work: `set_size_request()` on the popover or
 `set_min_content_height()` on the inner scroller, applied either before or after
 `popup()`. GTK ignores both and keeps the items-only height.
 
-That leaves a choice, which needs a decision: live with the scrollbar, or drop
-`append_section()` from `SongsMenu` and lose the visual grouping. Worth reporting
-upstream with the snippet above first.
+**Worked around** by `songsmenu.append_flat()`, which splices a group's items
+straight into the menu instead of `append_section()`. `SongsMenu` went from
+`got=210 nat=262` (scrolling) to `got=210 nat=210`. The cost is the loss of the
+separator lines between groups; the ordering is unchanged. Revert to sections
+once GTK is fixed — worth reporting upstream with the snippet above.
 
 Reproduce by popping a menu up on a realized view and comparing the inner
 `Gtk.ScrolledWindow`'s `get_height()` against its natural height — note popovers
