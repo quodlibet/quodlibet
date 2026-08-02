@@ -128,6 +128,9 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
 
 
 class ResizeImage(qltk.Destroyable, Gtk.Widget):
+    MAX_SIZE = 128
+    """Largest a resizing cover will grow to, however tall its row gets"""
+
     def __init__(self, resize=False, size=1):
         super().__init__()
         self._dirty = True
@@ -187,9 +190,10 @@ class ResizeImage(qltk.Destroyable, Gtk.Widget):
 
     def do_measure(self, orientation, for_size):
         if self._resize:
-            # Take whatever height is going; the width follows the aspect ratio
+            # Follow the row height, but only so far: the song info wraps in a
+            # narrow window, and without a cap the cover chases it and grows
             if orientation == Gtk.Orientation.HORIZONTAL and for_size > 0:
-                width, _height = self._get_size(300, for_size)
+                width, _height = self._get_size(300, min(for_size, self.MAX_SIZE))
                 return (width, width, -1, -1)
             return (0, 0, -1, -1)
 
@@ -204,6 +208,9 @@ class ResizeImage(qltk.Destroyable, Gtk.Widget):
 
         width = self.get_width()
         height = self.get_height()
+        if self._resize:
+            width = min(width, self.MAX_SIZE)
+            height = min(height, self.MAX_SIZE)
         scale_factor = self.get_scale_factor()
         dev_width = width * scale_factor
         dev_height = height * scale_factor
@@ -226,8 +233,8 @@ class ResizeImage(qltk.Destroyable, Gtk.Widget):
         # Centre the (aspect-preserved) cover within the allocation.
         tex_w = texture.get_width() / scale_factor
         tex_h = texture.get_height() / scale_factor
-        x = (width - tex_w) / 2
-        y = (height - tex_h) / 2
+        x = (self.get_width() - tex_w) / 2
+        y = (self.get_height() - tex_h) / 2
         rect = Graphene.Rect().init(x, y, tex_w, tex_h)
         snapshot.append_texture(texture, rect)
 
