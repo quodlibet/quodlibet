@@ -247,6 +247,19 @@ class TSongList(TestCase):
         with visible(self.songlist):
             self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
 
+    def test_column_header_menu_actions_toggle_headers(self):
+        self.addCleanup(setattr, SongList, "headers", SongList.headers)
+        SongList.headers = ["~#track", "title", "artist"]
+        self.songlist.set_column_headers(SongList.headers)
+        popover = self.songlist._menu(self.songlist.get_columns()[1])
+
+        assert popover.activate_action("menu.toggle-header-artist", None)
+        assert "artist" not in SongList.headers
+
+        # a tied tag, whose ~ has to survive the action name round trip
+        assert popover.activate_action("menu.toggle-sub-_7ealbum_7ediscsubtitle", None)
+        assert "~album~discsubtitle" in SongList.headers
+
     def test_get_columns_migrated(self):
         assert not config.get("settings", "headers", None)
         columns = "~album,~#replaygain_track_gain,foobar"

@@ -190,6 +190,17 @@ def header_tag_split(header):
         return util.tagsplit(header)
 
 
+def _action_name(prefix: str, tag: str) -> str:
+    """A Gio action name for `tag`.
+
+    Only [a-zA-Z0-9_-] survives a menu item's detailed action name,
+    so anything else in a tag or pattern is hex-escaped.
+    """
+
+    escaped = "".join(c if c.isalnum() or c in "-_" else f"_{ord(c):x}" for c in tag)
+    return f"{prefix}-{escaped}"
+
+
 class SongListDnDMixin(GObject.GObject):
     """GTK4 DnD support for the SongList class.
 
@@ -1231,7 +1242,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         current_section = Gio.Menu()
         for _header, tag in current:
-            action_name = "toggle-header." + tag.replace("~", "_").replace("#", "n")
+            action_name = _action_name("toggle-header", tag)
             action = Gio.SimpleAction.new_stateful(
                 action_name, None, GLib.Variant.new_boolean(True)
             )
@@ -1271,7 +1282,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         ]:
             submenu_model = Gio.Menu()
             for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
-                action_name = "toggle-sub." + tag.replace("~", "_").replace("#", "n")
+                action_name = _action_name("toggle-sub", tag)
                 active = tag in current_set
                 action = Gio.SimpleAction.new_stateful(
                     action_name, None, GLib.Variant.new_boolean(active)
@@ -1367,17 +1378,19 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         button = column.get_button()
 
+        # On release: a popover popped up during the press takes a grab, and
+        # then treats the release over the header as a click-outside and hides
         click = Gtk.GestureClick(button=Gdk.BUTTON_SECONDARY)
-        click.connect("pressed", self.__header_pressed, column)
+        click.connect("released", self.__header_released, column)
         button.add_controller(click)
 
         keys = Gtk.EventControllerKey()
         keys.connect("key-pressed", self.__header_key_pressed, column)
         button.add_controller(keys)
 
-    def __header_pressed(self, gesture, n_press, x, y, column):
+    def __header_released(self, gesture, n_press, x, y, column):
+        gesture.set_state(Gtk.EventSequenceState.CLAIMED)
         self._popup_header_menu(gesture.get_widget(), column, x, y)
-        return Gdk.EVENT_STOP
 
     def __header_key_pressed(self, controller, keyval, keycode, state, column):
         if not is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):

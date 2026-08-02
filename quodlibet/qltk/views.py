@@ -687,15 +687,18 @@ class RCMTreeView(BaseView):
         super().__init__(*args, **kwargs)
         click_ctrl = Gtk.GestureClick()
         click_ctrl.set_button(Gdk.BUTTON_SECONDARY)
-        click_ctrl.connect("pressed", self.__button_press)
+        # On release: a popover popped up during the press takes a grab, and
+        # then treats the release over the row as a click-outside and hides
+        click_ctrl.connect("released", self.__button_released)
         self.add_controller(click_ctrl)
 
         key_ctrl = Gtk.EventControllerKey()
         key_ctrl.connect("key-pressed", self.__key_pressed)
         self.add_controller(key_ctrl)
 
-    def __button_press(self, _gesture, _n_press, x, y):
-        return self.__check_popup(x, y)
+    def __button_released(self, gesture, _n_press, x, y):
+        gesture.set_state(Gtk.EventSequenceState.CLAIMED)
+        self.__check_popup(x, y)
 
     def __key_pressed(self, _controller, keyval, _keycode, state):
         if is_accel_pressed(keyval, state, "Menu", "<Shift>F10"):
