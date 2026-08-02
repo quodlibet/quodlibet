@@ -243,6 +243,15 @@ class TRCMTreeView(TestCase):
             selection.select_all()
             assert self.c.popup_menu(menu, Gdk.BUTTON_SECONDARY, 0)
 
+    def test_right_click_targets_the_row_under_the_pointer(self):
+        with visible(self.c, 200, 200):
+            row = self.c.get_background_area(Gtk.TreePath((3,)), None)
+            # a gesture reports widget coords, offset from the bin window
+            # by the header, which is about one row high
+            point = self.c.convert_bin_window_to_widget_coords(2, row.y + 2)
+            self.c._RCMTreeView__check_popup(*point)
+            assert self.c.get_cursor()[0] == Gtk.TreePath((3,))
+
     def test_popup_points_at_the_cursor_row(self):
         menu = Gtk.PopoverMenu()
         with visible(self.c, 200, 200):

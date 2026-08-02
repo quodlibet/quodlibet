@@ -645,7 +645,8 @@ class MultiDragTreeView(BaseView):
         return None
 
     def __block_selection(self, gesture, x, y):
-        x, y = map(int, [x, y])
+        # A gesture reports widget coords; get_path_at_pos wants bin window ones
+        x, y = self.convert_widget_to_bin_window_coords(int(x), int(y))
         try:
             path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
@@ -708,9 +709,10 @@ class RCMTreeView(BaseView):
         return False
 
     def __check_popup(self, x, y):
-        x, y = map(int, [x, y])
+        # A gesture reports widget coords; get_path_at_pos wants bin window ones
+        bx, by = self.convert_widget_to_bin_window_coords(int(x), int(y))
         try:
-            path, col, cellx, celly = self.get_path_at_pos(x, y)
+            path, col, cellx, celly = self.get_path_at_pos(bx, by)
         except TypeError:
             return True
         self.grab_focus()

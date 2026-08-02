@@ -680,7 +680,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return None
 
         view = gesture.get_widget()
-        x, y = map(int, [x, y])
+        # A gesture reports widget coords; get_path_at_pos wants bin window ones
+        x, y = view.convert_widget_to_bin_window_coords(int(x), int(y))
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
