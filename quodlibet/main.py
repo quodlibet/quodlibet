@@ -221,19 +221,19 @@ def main(argv=None):
             pass
 
         print_d(f"Shutting down player device {player.version_info!r}.")
-        # GTK4: destroy() removed - player cleaned up automatically
+        player.destroy()
 
     quodlibet.run(window, before_quit=before_quit)
 
-    # GTK4: destroy() removed - player_options cleaned up automatically
+    app.player_options.destroy()
     quodlibet.finish_first_session("quodlibet")
     mmkeys_handler.quit()
     remote.stop()
-    # GTK4: destroy() removed - fsiface cleaned up automatically
+    fsiface.destroy()
 
-    # GTK4: destroy() removed - tracker cleaned up automatically
+    tracker.destroy()
     quodlibet.library.save()
-    # GTK4: destroy() removed - library cleaned up automatically
+    quodlibet.library.destroy()
     config.save()
 
     session_client.close()

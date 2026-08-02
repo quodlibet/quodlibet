@@ -64,8 +64,7 @@ def destroy() -> None:
     if librarian:
         for lib in list(librarian.libraries.values()):
             try:
-                # GTK4: destroy() removed - lib cleaned up automatically
-                pass
+                lib.destroy()
             except Exception as e:
                 print_w(f"Couldn't destroy {lib} ({e!r})")
-        # GTK4: destroy() removed - librarian cleaned up automatically
+        librarian.destroy()

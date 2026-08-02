@@ -40,11 +40,9 @@ class SongLibrary(Library[K, V], PicklingMixin):
     def destroy(self):
         super().destroy()
         if "albums" in self.__dict__:
-            # GTK4: self.destroy() removed - albums cleaned up automatically
-            pass
+            self.albums.destroy()
         if "playlists" in self.__dict__:
-            # GTK4: self.destroy() removed - playlists cleaned up automatically
-            pass
+            self.playlists.destroy()
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""

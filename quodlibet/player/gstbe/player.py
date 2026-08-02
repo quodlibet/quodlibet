@@ -603,7 +603,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.__atf_id = None
 
         if self._seeker is not None:
-            # GTK4: self.destroy() removed - _seeker cleaned up automatically
+            self._seeker.destroy()
             self._seeker = None
             self.notify("seekable")
 
@@ -611,7 +611,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.set_state(Gst.State.NULL)
             self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
             # BufferingWrapper cleanup
-            # GTK4: self.destroy() removed - bin cleaned up automatically
+            self.bin.destroy()
             self.bin = None
 
         self._in_gapless_transition = False

@@ -139,8 +139,7 @@ class QuodLibetUnixRemote(RemoteBase):
             raise RemoteError(e) from e
 
     def stop(self):
-        # GTK4: self.destroy() removed - _fifo cleaned up automatically
-        pass
+        self._fifo.destroy()
 
     def _callback(self, data):
         try:

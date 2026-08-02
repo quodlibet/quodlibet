@@ -131,7 +131,7 @@ class PlaylistPluginHandler(PluginHandler):
                         item.connect("activate", self.__on_activate, item, *args)
                 except Exception:
                     print_exc()
-                    # GTK4: destroy() removed - item cleaned up automatically
+                    item.destroy()
 
     def handle(self, plugin_id, library, browser, playlists):
         """Start a plugin directly without a menu"""
