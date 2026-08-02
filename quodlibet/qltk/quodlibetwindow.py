@@ -617,7 +617,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         if config.getboolean("library", "refresh_on_start"):
             self.__rebuild(None, False)
 
-        self.connect("key-press-event", self.__key_pressed, player)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_pressed, player)
+        self.add_controller(key_controller)
 
         self.connect("destroy", self.__destroy)
 
@@ -727,7 +729,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window = EditBookmarks(self, librarian, player)
             window.show()
 
-    def __key_pressed(self, widget, event, player):
+    def __key_pressed(self, controller, keyval, keycode, state, player):
         if not player.song:
             return None
 
@@ -738,10 +740,10 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             current = max(0, current)
             player.seek(current)
 
-        if qltk.is_accel(event, "<alt>Right"):
+        if qltk.is_accel_pressed(keyval, state, "<alt>Right"):
             seek_relative(10)
             return True
-        if qltk.is_accel(event, "<alt>Left"):
+        if qltk.is_accel_pressed(keyval, state, "<alt>Left"):
             seek_relative(-10)
             return True
         return None
@@ -800,20 +802,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         return True
 
     def __songlist_key_press(self, controller, keyval, keycode, state):
-        # GTK4: EventControllerKey.key-pressed has different signature
-        # Create a simple event-like object for compatibility with browser.key_pressed()
-        class KeyEvent:
-            def __init__(self, keyval, keycode, state):
-                self.type = Gdk.EventType.KEY_PRESS
-                self.keyval = keyval
-                self.keycode = keycode
-                self.state = state
-
-            def get_state(self):
-                return self.state
-
-        event = KeyEvent(keyval, keycode, state)
-        return self.browser.key_pressed(event)
+        return self.browser.key_pressed(keyval, state)
 
     def __songlist_drag_data_recv(self, view, *args):
         if self.browser.can_reorder:

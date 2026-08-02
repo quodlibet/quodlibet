@@ -610,7 +610,9 @@ class EditTags(Gtk.Box):
 
         view.connect("popup-menu", self._popup_menu, parent)
         view.connect("button-press-event", self.__button_press)
-        view.connect("key-press-event", self.__view_key_press_event)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__view_key_press_event, view)
+        view.add_controller(key_controller)
         selection.connect("changed", self.__tag_select, remove)
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -619,16 +621,16 @@ class EditTags(Gtk.Box):
     def __checkbox_toggled(self, *args):
         self._update()
 
-    def __view_key_press_event(self, view, event):
-        if qltk.is_accel(event, "Delete"):
+    def __view_key_press_event(self, controller, keyval, keycode, state, view):
+        if qltk.is_accel_pressed(keyval, state, "Delete"):
             self.__remove_tag(view, view)
             return Gdk.EVENT_STOP
-        if qltk.is_accel(event, "<Primary>s"):
+        if qltk.is_accel_pressed(keyval, state, "<Primary>s"):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit("clicked")
             return Gdk.EVENT_STOP
-        if qltk.is_accel(event, "<Primary>c"):
-            self.__copy_tag_value(event, view)
+        if qltk.is_accel_pressed(keyval, state, "<Primary>c"):
+            self.__copy_tag_value(controller, view)
             return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
 

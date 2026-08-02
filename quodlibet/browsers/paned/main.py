@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk import is_accel, get_children
+from quodlibet.qltk import is_accel_pressed, get_children
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -83,7 +83,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
         sbb = SearchBarBox(completion=completion, accel_group=self.accelerators)
         sbb.connect("query-changed", self.__text_parse)
         sbb.connect("focus-out", self.__focus)
-        sbb.connect("key-press-event", self.__sb_key_pressed)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__sb_key_pressed)
+        sbb.add_controller(key_controller)
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=0)
@@ -143,8 +145,8 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __text_parse(self, bar, text):
         self.activate()
 
-    def __sb_key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __sb_key_pressed(self, controller, keyval, keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)

@@ -14,7 +14,7 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
@@ -103,8 +103,10 @@ class TrackList(Browser):
         self.__sb_sigs = [
             sbb.connect("query-changed", self.__text_parse),
             sbb.connect("focus-out", self.__focus),
-            sbb.connect("key-press-event", self.__sb_key_pressed),
         ]
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__sb_key_pressed)
+        sbb.add_controller(key_controller)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
@@ -144,8 +146,8 @@ class TrackList(Browser):
     def __text_parse(self, bar, text):
         self.activate()
 
-    def __sb_key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __sb_key_pressed(self, controller, keyval, keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)

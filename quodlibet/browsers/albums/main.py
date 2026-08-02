@@ -602,7 +602,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
         self.enable_row_update(view, sw, self.__cover_column)
 
-        self.connect("key-press-event", self.__key_pressed, library.librarian)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_pressed, library.librarian)
+        self.add_controller(key_controller)
 
         if app.cover_manager:
             connect_destroy(app.cover_manager, "cover-changed", self._cover_changed)
@@ -618,17 +620,17 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
                 item.scanned = False
                 model.row_changed(model.get_path(iter_), iter_)
 
-    def __key_pressed(self, widget, event, librarian):
-        if qltk.is_accel(event, "<Primary>I"):
+    def __key_pressed(self, controller, keyval, keycode, state, librarian):
+        if qltk.is_accel_pressed(keyval, state, "<Primary>I"):
             songs = self.__get_selected_songs()
             if songs:
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
-        if qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel_pressed(keyval, state, "<alt>Return"):
             songs = self.__get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, self)

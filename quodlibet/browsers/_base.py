@@ -247,9 +247,9 @@ class Browser(qltk.Destroyable, Gtk.Box, Filter):
 
         return False
 
-    def key_pressed(self, event):
-        """Gets called with a key pressed event from the song list.
-        Should return True if the key was handled.
+    def key_pressed(self, keyval, state):
+        """Gets called with the keyval and modifier state of a key press
+        in the song list. Should return True if the key was handled.
         """
         return False
 

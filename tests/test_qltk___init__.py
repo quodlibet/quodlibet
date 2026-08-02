@@ -48,33 +48,23 @@ class TQltk(TestCase):
         self.assertEqual(qltk.get_top_parent(l), w)
         w.destroy()
 
-    def test_is_accel(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
-        assert not qltk.is_accel(e, "a")
+    def test_is_accel_pressed(self):
+        keyval = Gdk.KEY_Return
+        state = Gdk.ModifierType.CONTROL_MASK
+        assert qltk.is_accel_pressed(keyval, state, "<ctrl>Return")
+        assert qltk.is_accel_pressed(keyval, state, "a", "<ctrl>Return")
+        assert qltk.is_accel_pressed(keyval, state, "<ctrl>Return", "b")
+        assert not qltk.is_accel_pressed(keyval, state, "a", "b")
 
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
-        assert qltk.is_accel(e, "<ctrl>Return")
-
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
-        assert qltk.is_accel(e, "a", "<ctrl>Return")
-        assert qltk.is_accel(e, "<ctrl>Return", "b")
-        assert not qltk.is_accel(e, "a", "b")
-
-    def test_is_accel_invalid(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+    def test_is_accel_pressed_invalid(self):
         with self.assertRaises(ValueError):
-            qltk.is_accel(e, "NOPE")
+            qltk.is_accel_pressed(Gdk.KEY_Return, Gdk.ModifierType(0), "NOPE")
 
-    def test_is_accel_primary(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
+    def test_is_accel_pressed_primary(self):
         if not util.is_osx():
-            assert qltk.is_accel(e, "<Primary>Return")
+            assert qltk.is_accel_pressed(
+                Gdk.KEY_Return, Gdk.ModifierType.CONTROL_MASK, "<Primary>Return"
+            )
 
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()

@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 
 import pytest
-from gi.repository import Gdk, Gtk
+from gi.repository import Gtk
 
 import quodlibet.config
 from quodlibet import app
@@ -357,7 +357,7 @@ class TPlaylistsBrowser(TestCase):
         app.window.songlist.set_songs(first_pl)
         app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)
         original_length = len(first_pl)
-        ret = b.key_pressed(self._make_key_event(keyval, state))
+        ret = b.key_pressed(keyval, state)
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
 
@@ -423,18 +423,6 @@ class TPlaylistsBrowser(TestCase):
         keyval, accel_mod = Gtk.accelerator_parse("Delete")
         state = Gtk.accelerator_get_default_mod_mask() & accel_mod
         return keyval, state
-
-    @staticmethod
-    def _make_key_event(keyval, state):
-        """Build a key-event-like object for qltk.is_accel."""
-
-        class _KeyEvent:
-            type = Gdk.EventType.KEY_PRESS
-
-        ev = _KeyEvent()
-        ev.keyval = keyval
-        ev.state = state
-        return ev
 
     @staticmethod
     def _fake_browser_pack(b):

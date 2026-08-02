@@ -12,7 +12,7 @@ import os
 from gi.repository import Gtk, Gdk
 
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_wayland, is_accel
+from quodlibet.qltk import get_top_parent, is_wayland, is_accel_pressed
 from quodlibet.qltk.x import Button
 from quodlibet.util import DeferredSignal, print_d, print_w, InstanceTracker
 from quodlibet.util import connect_destroy
@@ -95,16 +95,18 @@ class Window(Gtk.Window):
 
     def __init__(self, *args, **kwargs):
         self._header_bar = None
-        dialog = kwargs.pop("dialog", True)
+        self._is_dialog = kwargs.pop("dialog", True)
         super().__init__(*args, **kwargs)
         type(self).windows.append(self)
-        if dialog:
+        if self._is_dialog and is_wayland():
             # Modal is the only way to center the window on the parent
             # with wayland atm
-            if is_wayland():
-                self.set_modal(True)
-            self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
+            self.set_modal(True)
         self.set_destroy_with_parent(True)
+
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self._on_key_press)
+        self.add_controller(key_controller)
 
     def destroy(self):
         windows = type(self).windows
@@ -124,11 +126,11 @@ class Window(Gtk.Window):
         self.destroy()
         return Gdk.EVENT_STOP
 
-    def _on_key_press(self, widget, event):
-        is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG
+    def _on_key_press(self, controller, keyval, keycode, state):
+        is_dialog = self._is_dialog
 
-        if (is_dialog and is_accel(event, "Escape")) or (
-            not is_dialog and is_accel(event, "<Primary>w")
+        if (is_dialog and is_accel_pressed(keyval, state, "Escape")) or (
+            not is_dialog and is_accel_pressed(keyval, state, "<Primary>w")
         ):
             # Do not close the window if we edit a Gtk.CellRendererText.
             # Focus the treeview instead.
@@ -140,7 +142,7 @@ class Window(Gtk.Window):
             self.close()
             return Gdk.EVENT_STOP
 
-        if not is_dialog and is_accel(event, "F11"):
+        if not is_dialog and is_accel_pressed(keyval, state, "F11"):
             self.toggle_fullscreen()
             return Gdk.EVENT_STOP
 

@@ -17,7 +17,7 @@ from quodlibet.formats import AudioFile
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk import Icons, add_css, get_children
+from quodlibet.qltk import Icons, add_css, get_children, is_accel_pressed
 
 
 def MenuItems(marks, player, seekable):
@@ -158,7 +158,9 @@ class EditBookmarksPane(Gtk.Box):
         menu.append(remove)
         menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
-        sw.get_child().connect("key-press-event", self.__view_key_press, remove)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__view_key_press, remove)
+        sw.get_child().add_controller(key_controller)
         # GTK4: Gtk.Menu removed, use PopoverMenu
         self.connect("destroy", lambda _: menu.destroy())
         if parent:
@@ -185,8 +187,8 @@ class EditBookmarksPane(Gtk.Box):
         self.set_sensitive(value)
         self.set_tooltip_text(_("Select a single track to edit its bookmarks"))
 
-    def __view_key_press(self, view, event, remove):
-        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
+    def __view_key_press(self, controller, keyval, keycode, state, remove):
+        if is_accel_pressed(keyval, state, "Delete"):
             remove.activate()
 
     def __popup(self, view, menu):

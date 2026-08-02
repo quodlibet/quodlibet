@@ -23,7 +23,7 @@ from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.plugins.playorder import PlayOrderPlugin
 from quodlibet.plugins.query import QueryPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, is_accel, show_uri
+from quodlibet.qltk import Icons, is_accel_pressed, show_uri
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.views import HintedTreeView
@@ -212,6 +212,10 @@ class PluginListView(HintedTreeView):
         super().__init__()
         self.set_headers_visible(False)
 
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_pressed)
+        self.add_controller(key_controller)
+
         render = Gtk.CellRendererToggle()
         render.set_padding(6, 3)
 
@@ -256,16 +260,18 @@ class PluginListView(HintedTreeView):
         column.set_expand(True)
         self.append_column(column)
 
-    def do_key_press_event(self, event):
-        if is_accel(event, "space", "KP_Space"):
-            selection = self.get_selection()
-            fmodel, fiter = selection.get_selected()
-            plugin = fmodel.get_value(fiter)
-            if plugin.can_enable:
-                self._emit_toggled(fmodel.get_path(fiter), not plugin_enabled(plugin))
-            self.get_model().iter_changed(fiter)
-        else:
-            Gtk.TreeView.do_key_press_event(self, event)
+    def __key_pressed(self, controller, keyval, keycode, state):
+        if not is_accel_pressed(keyval, state, "space", "KP_Space"):
+            return Gdk.EVENT_PROPAGATE
+        selection = self.get_selection()
+        fmodel, fiter = selection.get_selected()
+        if fiter is None:
+            return Gdk.EVENT_PROPAGATE
+        plugin = fmodel.get_value(fiter)
+        if plugin.can_enable:
+            self._emit_toggled(fmodel.get_path(fiter), not plugin_enabled(plugin))
+        self.get_model().iter_changed(fiter)
+        return Gdk.EVENT_STOP
 
     def __toggled(self, render, path):
         render.set_active(not render.get_active())

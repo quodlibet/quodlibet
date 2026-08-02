@@ -389,25 +389,6 @@ def add_fake_accel(widget, accel):
         widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
-def is_accel(event, *accels):
-    """Checks if the given keypress Gdk.Event matches
-    any of accelerator strings.
-
-    example: is_accel(event, "<shift><ctrl>z")
-
-    Args:
-        *accels: one ore more `str`
-    Returns:
-        bool
-    Raises:
-        ValueError: in case any of the accels could not be parsed
-    """
-
-    if event.type != Gdk.EventType.KEY_PRESS:
-        return False
-    return is_accel_pressed(event.keyval, event.state, *accels)
-
-
 def is_accel_pressed(keyval, state, *accels):
     """Checks if a (keyval, state) pair from EventControllerKey matches any
     of the accelerator strings.

@@ -46,23 +46,6 @@ from .util import (
 )
 
 
-def _make_key_event(keyval, state):
-    """Build a minimal key-event-like object for use with qltk.is_accel.
-
-    EventControllerKey.key-pressed provides (keyval, keycode, state) rather
-    than a Gdk.Event, so we wrap them in a lightweight object that satisfies
-    the qltk.is_accel interface.
-    """
-
-    class _KeyEvent:
-        type = Gdk.EventType.KEY_PRESS
-
-    ev = _KeyEvent()
-    ev.keyval = keyval
-    ev.state = state
-    return ev
-
-
 class PlaylistsBrowser(Browser, DisplayPatternMixin):
     name = _("Playlists")
     accelerated_name = _("_Playlists")
@@ -300,8 +283,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         render.connect("edited", self.__edited)
         return render
 
-    def key_pressed(self, event):
-        if qltk.is_accel(event, "Delete"):
+    def key_pressed(self, keyval, state):
+        if qltk.is_accel_pressed(keyval, state, "Delete"):
             self.__handle_songlist_delete()
             return True
         return False
@@ -311,8 +294,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.__remove_songs(iters, model)
 
     def __key_pressed(self, controller, keyval, keycode, state):
-        event = _make_key_event(keyval, state)
-        if qltk.is_accel(event, "Delete"):
+        if qltk.is_accel_pressed(keyval, state, "Delete"):
             model, iter = self.__selected_playlists()
             if not iter:
                 return False
@@ -323,21 +305,21 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             else:
                 print_d("Playlist removal cancelled through prompt")
             return True
-        if qltk.is_accel(event, "F2"):
+        if qltk.is_accel_pressed(keyval, state, "F2"):
             model, iter = self.__selected_playlists()
             if iter:
                 self._start_rename(model.get_path(iter))
             return True
-        if qltk.is_accel(event, "<Primary>I"):
+        if qltk.is_accel_pressed(keyval, state, "<Primary>I"):
             songs = self._get_playlist_songs()
             if songs:
                 window = Information(self.songs_lib.librarian, songs, self)
                 window.show()
             return True
-        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self._get_playlist_songs())
             return True
-        if qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel_pressed(keyval, state, "<alt>Return"):
             songs = self._get_playlist_songs()
             if songs:
                 window = SongProperties(self.songs_lib.librarian, songs, self)

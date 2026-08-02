@@ -15,7 +15,7 @@ from quodlibet.qltk.views import AllTreeView, TreeViewColumn
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.information import Information
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.util import connect_obj
 
 from .models import PaneModel
@@ -95,23 +95,25 @@ class Pane(AllTreeView):
         self.add_controller(drag_source)
 
         librarian = library.librarian or library
-        self.connect("key-press-event", self.__key_pressed, librarian)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__key_pressed, librarian)
+        self.add_controller(key_controller)
 
-    def __key_pressed(self, view, event, librarian):
+    def __key_pressed(self, controller, keyval, keycode, state, librarian):
         # if ctrl+a is pressed, intercept and select the All entry instead
-        if is_accel(event, "<Primary>a"):
+        if is_accel_pressed(keyval, state, "<Primary>a"):
             self.set_selected([])
             return True
-        if is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
-        if is_accel(event, "<alt>Return"):
+        if is_accel_pressed(keyval, state, "<alt>Return"):
             songs = self.__get_selected_songs(sort=True)
             if songs:
                 window = SongProperties(librarian, songs, parent=self)
                 window.show()
             return True
-        if is_accel(event, "<Primary>I"):
+        if is_accel_pressed(keyval, state, "<Primary>I"):
             songs = self.__get_selected_songs(sort=True)
             if songs:
                 window = Information(librarian, songs, self)

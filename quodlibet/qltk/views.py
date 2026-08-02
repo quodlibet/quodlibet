@@ -16,7 +16,6 @@ from quodlibet import print_e
 from quodlibet import config
 from quodlibet.qltk import (
     Destroyable,
-    is_accel,
     is_accel_pressed,
     menu_popup,
     point_rect,
@@ -330,36 +329,17 @@ class BaseView(Destroyable, Gtk.TreeView):
             except Exception:
                 pass
 
-    def do_key_press_event(self, event):
-        if is_accel(event, "space", "KP_Space"):
-            return False
-        return Gtk.TreeView.do_key_press_event(self, event)
-
     def __key_pressed(self, controller, keyval, keycode, state):
-        # GTK4: EventControllerKey.key-pressed has different signature
-        # Create event-like object for compatibility
-        class KeyEvent:
-            def __init__(self, keyval, keycode, state):
-                self.type = Gdk.EventType.KEY_PRESS
-                self.keyval = keyval
-                self.keycode = keycode
-                self.state = state
-
-            def get_state(self):
-                return self.state
-
-        event = KeyEvent(keyval, keycode, state)
-
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
             return paths and paths[0] or None
 
-        if is_accel(event, "Right") or is_accel(event, "<Primary>Right"):
+        if is_accel_pressed(keyval, state, "Right", "<Primary>Right"):
             first = get_first_selected()
             if first:
                 self.expand_row(first, False)
-        elif is_accel(event, "Left") or is_accel(event, "<Primary>Left"):
+        elif is_accel_pressed(keyval, state, "Left", "<Primary>Left"):
             first = get_first_selected()
             if first:
                 if self.row_expanded(first):

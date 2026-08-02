@@ -14,7 +14,7 @@ from quodlibet import qltk, util
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
 from quodlibet.qltk.x import MenuItem, Button, Align
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, is_accel_pressed
 from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
@@ -82,7 +82,9 @@ class JSONBasedEditor(qltk.UniqueWindow):
         menu.append(rem)
         menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
-        view.connect("key-press-event", self.__view_key_press)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__view_key_press, view)
+        view.add_controller(key_controller)
         connect_obj(self, "destroy", Gtk.Widget.unparent, menu)
 
         # New and Close buttons
@@ -238,8 +240,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
-    def __view_key_press(self, view, event):
-        if event.keyval == Gtk.accelerator_parse("Delete")[0]:
+    def __view_key_press(self, controller, keyval, keycode, state, view):
+        if is_accel_pressed(keyval, state, "Delete"):
             self.__remove(view)
 
     def __cdf(self, column, cell, model, iter, data):

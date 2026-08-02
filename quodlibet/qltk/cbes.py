@@ -113,7 +113,9 @@ class _KeyValueEditor(qltk.Window):
         view.connect("popup-menu", self.__popup, menu)
         connect_obj(rem_b, "clicked", self.__remove, view)
         connect_obj(close, "clicked", qltk.Window.destroy, self)
-        view.connect("key-press-event", self.__view_key_press)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__view_key_press, view)
+        view.add_controller(key_controller)
         connect_obj(self, "destroy", Gtk.Widget.unparent, menu)
 
         name.grab_focus()
@@ -123,8 +125,8 @@ class _KeyValueEditor(qltk.Window):
         """Responsible for populating self.model (eg with values from disk)"""
         raise NotImplementedError
 
-    def __view_key_press(self, view, event):
-        if qltk.is_accel(event, "Delete"):
+    def __view_key_press(self, controller, keyval, keycode, state, view):
+        if qltk.is_accel_pressed(keyval, state, "Delete"):
             self.__remove(view)
 
     def __popup(self, view, menu):
