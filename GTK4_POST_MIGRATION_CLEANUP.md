@@ -267,3 +267,30 @@ against `main` individually — a plain "restore everything" sweep would be wron
 
 Regenerate the list by comparing `.destroy()` counts per file between
 `git show main:<file>` and the working tree.
+
+
+Two entries in the saved-search combo
+-------------------------------------
+
+**Open.** `ComboBoxEntrySave` (`qltk/cbes.py`) renders a search entry *and* a
+second empty entry with the dropdown arrow. `main` builds its own
+`ValidatingEntry`, adds it to the combo and calls `old_entry.destroy()` on the
+one `Gtk.ComboBox(has_entry=True)` made. That `destroy()` was dropped in the
+port, and `Gtk.Widget.destroy()` really is gone in GTK4, so both remain.
+
+`old_entry.unparent()` does not work, in either order: a `Gtk.ComboBox` with an
+entry owns that child and recreates it when it is removed. Confirmed by walking
+the widget tree — the internal `Box` ends up holding both a `ValidatingEntry`
+and a plain `Entry`.
+
+So swapping the child is not viable on GTK4. Options, none tried yet:
+
+- Attach the validation and CSS to the combo's own entry
+  (`combo.get_child()`) instead of substituting a `ValidatingEntry`. This is
+  probably the smallest change, but `ValidatingEntry` is a class with behaviour,
+  so it would need to become a mixin or a set of functions applied to an entry.
+- Stop using the deprecated `Gtk.ComboBox` here and build the control from a
+  `Gtk.Entry` plus a `Gtk.MenuButton`, which is what modern GTK4 apps do.
+
+Note `Gtk.ComboBox` is deprecated as of GTK 4.10, so the second option is where
+this ends up eventually anyway.
