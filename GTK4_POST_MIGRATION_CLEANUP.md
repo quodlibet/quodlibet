@@ -294,3 +294,34 @@ So swapping the child is not viable on GTK4. Options, none tried yet:
 
 Note `Gtk.ComboBox` is deprecated as of GTK 4.10, so the second option is where
 this ends up eventually anyway.
+
+
+Dropped expand flags: ~195 candidates
+-------------------------------------
+
+**Open.** GTK3's `pack_start(child, True, ...)` means "give this child the
+slack"; the GTK4 equivalent is `child.set_hexpand(True)` (or `vexpand`, per the
+box orientation). The port translated `pack_start` to `append` and lost the flag
+in a lot of places, so widgets sit at their natural size and the layout bunches
+up at one end.
+
+Two fixed so far, both found from manual testing rather than by sweep:
+
+- The top bar's info area (`main` used an expanding `Gtk.ToolItem`; the port
+  substituted an hexpand spacer, so the song info and any seekbar widget only
+  ever got their natural width).
+- The waveform seek bar's scale, which left the time labels bunched together.
+
+A rough count of `pack_start(child, True, ...)` in `main` with no matching
+`set_hexpand`/`set_vexpand` on the branch gives **195 candidates**, concentrated
+in `qltk/prefs.py` (8), `ext/events/equalizer.py` (7), `ext/events/notify.py` (7),
+`qltk/edittags.py` (7), `ext/songsmenu/albumart.py` (6), `qltk/pluginwin.py` (6).
+
+The count is approximate — it can't tell which axis, and a widget already given
+`hexpand=True` at construction is missed. Unlike the `prepend` sweep this can't
+be applied mechanically: the right axis depends on the box's orientation. Work
+through it per file, checking the orientation of the box each child goes into.
+
+Regenerate with the same technique: regex `pack_start` with a `True` expand
+argument out of `git show main:<file>`, then look for a matching
+`set_hexpand`/`set_vexpand` in the branch.
