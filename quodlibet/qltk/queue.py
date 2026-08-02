@@ -420,11 +420,7 @@ class PlayQueue(SongList):
 
         connect_after_destroy(player, "song-started", reset_activated)
 
-        # For right-click context menu
-        click_controller = Gtk.GestureClick()
-        click_controller.set_button(3)  # Right mouse button
-        click_controller.connect("pressed", self.__popup)
-        self.add_controller(click_controller)
+        self.connect("popup-menu", self.__popup, library)
         self.enable_drop()
 
         def write(*args, **kwargs):
