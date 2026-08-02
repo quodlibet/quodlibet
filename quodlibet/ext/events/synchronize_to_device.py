@@ -33,6 +33,7 @@ from quodlibet.query import Query
 from quodlibet.util import print_d, print_e, print_exc
 from quodlibet.util.enum import enum
 from quodlibet.util.path import strip_win32_incompat_from_path
+from quodlibet.qltk.chooser import chooser_path
 
 PLUGIN_CONFIG_SECTION = "synchronize_to_device"
 
@@ -455,7 +456,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
 
         # Show the dialog and get the selected path
         response = dialog.run()
-        response_path = dialog.get_filename()
+        response_path = chooser_path(dialog)
 
         # Close the dialog and save the selected path
         dialog.close()

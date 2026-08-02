@@ -12,7 +12,7 @@ from quodlibet import _, print_d, ngettext
 from quodlibet import app
 from quodlibet import util
 from quodlibet.plugins.songshelpers import any_song, has_writable_image
-from quodlibet.qltk.chooser import _get_chooser
+from quodlibet.qltk.chooser import _get_chooser, chooser_path
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
@@ -85,7 +85,7 @@ class EditEmbedded(SongsMenuPlugin):
         )
         dialog.set_title(msg)
         response = dialog.run()
-        path = dialog.get_filename()
+        path = chooser_path(dialog)
         # GTK4: destroy() removed - dialog cleaned up automatically
         if response != Gtk.ResponseType.ACCEPT:
             print_d("User cancelled image embedding")

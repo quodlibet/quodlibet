@@ -18,6 +18,7 @@ from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
+from quodlibet.qltk.chooser import chooser_path
 
 from shutil import copyfile
 
@@ -72,7 +73,7 @@ class ExportToFolderDialog(Dialog):
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
 
         def changed(*args):
-            has_directory = self.directory_chooser.get_filename() is not None
+            has_directory = chooser_path(self.directory_chooser) is not None
             self.set_response_sensitive(Gtk.ResponseType.OK, has_directory)
 
             pattern_text = self.pattern_entry.get_text()
@@ -146,7 +147,7 @@ class ExportToFolder(PlaylistPlugin):
         pattern_text = CONFIG.default_pattern
         dialog = ExportToFolderDialog(self.plugin_window, pattern_text)
         if dialog.run() == Gtk.ResponseType.OK:
-            directory = dialog.directory_chooser.get_filename()
+            directory = chooser_path(dialog.directory_chooser)
             pattern = FileFromPattern(dialog.pattern_entry.get_text())
 
             task = Task(

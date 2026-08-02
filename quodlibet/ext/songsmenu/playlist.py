@@ -22,6 +22,7 @@ from quodlibet.util.path import get_home_dir
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk.chooser import chooser_path
 
 
 FORMAT_M3U = "m3u"
@@ -86,7 +87,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            file_path = dialog.get_filename()
+            file_path = chooser_path(dialog)
             file_format = dialog.get_filter().get_name()
             extension = "." + file_format
             if not file_path.endswith(extension):

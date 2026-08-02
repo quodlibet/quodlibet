@@ -65,6 +65,42 @@ def with_response(resp):
     _response = None
 
 
+def chooser_path(chooser):
+    """The chooser's selected path, or None.
+
+    GTK4 dropped `get_filename()` in favour of `Gio.File`s.
+
+    Args:
+        chooser (Gtk.FileChooser)
+    Returns:
+        fsnative or None
+    """
+
+    gfile = chooser.get_file()
+    path = gfile.get_path() if gfile is not None else None
+    return path2fsn(path) if path else None
+
+
+def chooser_paths(chooser):
+    """The chooser's selected paths.
+
+    GTK4 dropped `get_filenames()` in favour of a `Gio.ListModel` of `Gio.File`s.
+
+    Args:
+        chooser (Gtk.FileChooser)
+    Returns:
+        List[fsnative]
+    """
+
+    files = chooser.get_files()
+    paths = []
+    for i in range(files.get_n_items()):
+        path = files.get_item(i).get_path()
+        if path:
+            paths.append(path2fsn(path))
+    return paths
+
+
 def _run_chooser(parent, chooser):
     """Run the chooser ("blocking") and return a list of paths.
 
@@ -90,11 +126,11 @@ def _run_chooser(parent, chooser):
         response = chooser.run()
 
     if response == Gtk.ResponseType.ACCEPT:
-        result = list(chooser.get_filenames())
+        result = chooser_paths(chooser)
 
         current_dir = chooser.get_current_folder()
-        if current_dir:
-            set_current_dir(current_dir)
+        if current_dir is not None and current_dir.get_path():
+            set_current_dir(path2fsn(current_dir.get_path()))
     else:
         result = []
     # GTK4: destroy() removed - chooser cleaned up automatically
