@@ -105,12 +105,13 @@ def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     background color.
     """
 
-    # GTK4: get_color() takes no args, uses current state
-    context.save()
-    context.set_state(Gtk.StateFlags.LINK)
-    color = context.get_color()
-    context.restore()
-    return color
+    # GTK4 ignores StyleContext state changes, so ask the theme for its accent
+    # colour by name rather than reading the colour of a link
+    for name in ("accent_color", "theme_selected_bg_color"):
+        found, color = context.lookup_color(name)
+        if found:
+            return color
+    return context.get_color()
 
 
 def get_primary_accel_mod():
