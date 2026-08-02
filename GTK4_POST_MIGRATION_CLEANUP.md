@@ -340,3 +340,37 @@ Known broken, found in manual testing
 The waveform seek bar is fixed: it needed the top bar's info area to expand,
 the scale to expand within the bar, and `do_draw` porting to `do_snapshot`
 (GTK4 never called `do_draw`, so it drew nothing at all).
+
+
+Layout warning storm when resizing the window
+---------------------------------------------
+
+**Open**, reported 2026-08-02. Resizing the main window emits hundreds of
+warnings. Three distinct signatures, in order of usefulness:
+
+1. `GtkBox (box) reported min height 137 and natural height 119 in measure()
+   with for_size=1196; natural size must be >= min size` — the TopBar's inner
+   box, the one holding the song info and the cover.
+2. `Widget reports min height of 366 for width of 819, but min width of 285 for
+   height of 329` — measuring the same widget along the two axes disagrees.
+3. `quodlibet+qltk+x+Align reports a minimum width of 3, but minimum width for
+   height of 1048576 is 131` — `Align` is a plain `Gtk.Box` with margins and has
+   no `measure()` of its own, so it is relaying a child's inconsistency, not
+   causing it.
+
+Working hypothesis: that box now holds **two children with opposite size request
+modes** — `SongInfo`, a wrapping label, is height-for-width, while
+`ResizeImage(resize=True)` is width-for-height. GTK cannot reconcile the two in
+one box, and the numbers above are what that looks like. `main` has the same
+`ResizeImage` request mode, but its top bar was a `Gtk.Toolbar` whose height was
+fixed, so the height-for-width path was never exercised.
+
+If that holds, the fix is to stop the cover measuring orthogonally: give it a
+constant size in the top bar and cap it, rather than deriving width from the row
+height. That also matches the view that the cover changing size as the window
+resizes is not wanted anyway (the reason `MAX_SIZE` exists).
+
+**Not reproducible in the offscreen test harness** — a scripted resize of the
+fake app produces zero warnings, because it lacks the real browser and
+`ConfigRHPaned` that appear in the reported log. It needs checking in the real
+app, which is why it has not been attempted yet.
