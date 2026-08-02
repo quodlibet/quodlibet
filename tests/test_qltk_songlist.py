@@ -247,6 +247,21 @@ class TSongList(TestCase):
         with visible(self.songlist):
             self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
 
+    def test_column_header_menu_survives_the_column_rebuild_it_causes(self):
+        self.addCleanup(setattr, SongList, "headers", SongList.headers)
+        self.addCleanup(set_columns, get_columns())
+        SongList.headers = ["~#track", "title", "artist"]
+        self.songlist.set_column_headers(SongList.headers)
+        column = self.songlist.get_columns()[1]
+
+        with visible(self.songlist):
+            self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
+            menu = self.songlist._header_menu
+            # not the header button, which a rebuild destroys
+            assert menu.get_parent() is self.songlist
+            assert menu.activate_action("menu.toggle-header-artist", None)
+            assert menu.get_parent() is self.songlist
+
     def test_column_header_menu_actions_toggle_headers(self):
         self.addCleanup(setattr, SongList, "headers", SongList.headers)
         self.addCleanup(set_columns, get_columns())

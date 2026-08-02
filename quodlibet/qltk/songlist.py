@@ -11,7 +11,7 @@
 
 from collections.abc import Sequence
 
-from gi.repository import Gtk, GLib, Gdk, Gio, GObject
+from gi.repository import Gtk, GLib, Gdk, Gio, GObject, Graphene
 
 from quodlibet import app, print_w, print_d
 from quodlibet import config
@@ -458,6 +458,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_fixed_height_mode(True)
         self.__csig = self.connect("columns-changed", self.__columns_changed)
         self._first_column = None
+        self._header_menu = None
         # A priority list of how to apply the sort keys.
         # might contain column header names not present...
         self._sort_sequence: list[str] = []
@@ -1401,12 +1402,18 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         return Gdk.EVENT_STOP
 
     def _popup_header_menu(self, button, column, x, y):
-        menu = self._menu(column)
-        menu.set_parent(button)
+        if self._header_menu is not None:
+            self._header_menu.unparent()
+
+        # Parented to the view rather than the header button, and held onto:
+        # toggling a header rebuilds every column, so the button the menu hung
+        # from is destroyed mid-activation and the menu goes with it
+        self._header_menu = menu = self._menu(column)
+        ok, point = button.compute_point(self, Graphene.Point().init(x, y))
+        menu.set_parent(self)
         menu.set_has_arrow(False)
         menu.set_halign(Gtk.Align.START)
-        menu.set_pointing_to(point_rect(x, y))
-        menu.connect("closed", lambda popover: popover.unparent())
+        menu.set_pointing_to(point_rect(point.x, point.y) if ok else point_rect(x, y))
         menu.popup()
 
 
