@@ -54,10 +54,10 @@ class SongInfo(Gtk.Box):
         self._pattern_filename = pattern_filename
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
-        # Pango 1.57 mis-maps font-size attributes when it ellipsizes mixed-size
-        # markup in the middle, mangling the now-playing text. Ellipsizing at
-        # the end is unaffected, and keeps the label one line per pattern line.
-        label.set_ellipsize(Pango.EllipsizeMode.END)
+        # Pango 1.57 mis-maps font-size attributes whenever it ellipsizes
+        # mixed-size markup, mangling the now-playing text; wrap instead.
+        label.set_wrap(True)
+        label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         label.set_selectable(True)
         align.add(label)
         # GTK4: set_alignment removed - use xalign/yalign properties

@@ -122,10 +122,15 @@ Visual / rendering
 
 - **Song list text** looks slightly clipped / sub-pixel-mangled (cell renderer,
   separate from the Pango ellipsize bug) — investigate row height / baseline.
-- **Pango ellipsize + mixed-size markup bug** (Pango 1.57). Only
-  `ELLIPSIZE_MIDDLE` is affected, so `info.py` ellipsizes at the end instead.
+- **Pango ellipsize + mixed-size markup bug** (Pango 1.57). Affects *any*
+  ellipsize mode in the real app, so `info.py` wraps instead of ellipsizing.
   Revisit if Pango fixes it upstream. Also ship the same fix to `main` (GTK3) —
   it'll hit the same bug on Pango ≥ 1.57 (tracked as a separate small PR).
+  **Not reproducible outside the app**: rendering the user's own `songinfo`
+  pattern, with the same curly quotes and rating stars, through a real
+  `Gtk.Label` and the GSK renderer at several widths comes out correct every
+  time. Whatever the trigger is, it is something the running app supplies that
+  a standalone label does not — find it before trusting any ellipsize fix.
 - **CoverGrid**: `max_columns=24` is a magic number; consider deriving it.
   Cover-size "zoom" is just the existing magnification config — wire it into the
   prefs menu once menus render.
@@ -345,9 +350,8 @@ the scale to expand within the bar, and `do_draw` porting to `do_snapshot`
 Layout warning storm when resizing the window
 ---------------------------------------------
 
-**Fix applied 2026-08-07, needs confirming in the real app.** Reported
-2026-08-02: resizing the main window emits hundreds of warnings. Three distinct
-signatures, in order of usefulness:
+**Open.** Reported 2026-08-02: resizing the main window emits hundreds of
+warnings. Three distinct signatures, in order of usefulness:
 
 1. `GtkBox (box) reported min height 137 and natural height 119 in measure()
    with for_size=1196; natural size must be >= min size` — the TopBar's inner
@@ -375,20 +379,25 @@ eight lines in a narrow window.
 was a `Gtk.Toolbar` with a fixed height, so the height-for-width path was never
 exercised anyway.
 
-**Fix: ellipsize at the end, not the middle.** The Pango 1.57 bug turns out to
-be specific to `ELLIPSIZE_MIDDLE`; `ELLIPSIZE_END` maps the attributes correctly.
-Checked by rendering the real info pattern's markup through PangoCairo at a
-range of widths and reading the output: `MIDDLE` renders "Name" on the album
-line at the title's `large` size, `END` is clean at every width tried. So
-`info.py` ellipsizes at the end. That restores `main`'s fixed-height,
-constant-size label — one line per pattern line, no height-for-width — which is
-the side of the conflict that produced the warnings.
+**Ellipsizing at the end was tried on 2026-08-07 and reverted.** In isolation
+`ELLIPSIZE_END` looks clean where `ELLIPSIZE_MIDDLE` mangles the attributes, but
+in the real app END mangles them too: the title went xx-large for eleven
+characters and then dropped to normal mid-word, and the album line lost its
+italics entirely. Treat the whole ellipsize path as unusable on Pango 1.57 until
+someone reproduces the corruption outside the app.
 
-`set_lines()` was the other candidate and is a dead end: GTK only honours it
-alongside an ellipsize mode (measured — a wrapping label with `lines=2` still
-reports its full 106px height), so it cannot bound a purely wrapping label.
+`set_lines()` is also a dead end: GTK only honours it alongside an ellipsize
+mode (measured — a wrapping label with `lines=2` still reports its full 106px
+height), so it cannot bound a purely wrapping label without dragging ellipsize
+back in.
+
+That leaves **making the top-bar cover a constant size** as the way to fix the
+warnings without touching the label. It removes the width-for-height child, so
+the box is uniformly height-for-width and has nothing to reconcile. The earlier
+note that this "treats the symptom" understated it: an unbounded label height is
+ugly, but it is the *mix* of request modes that GTK warns about, not the height.
 
 **Not reproducible in the offscreen test harness** — a scripted resize of the
-fake app produced zero warnings even before the fix, because it lacks the real
-browser and `ConfigRHPaned` that appear in the reported log. Confirm in the real
-app that the warnings are gone.
+fake app produces zero warnings, because it lacks the real browser and
+`ConfigRHPaned` that appear in the reported log. It needs checking in the real
+app.
