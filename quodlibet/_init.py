@@ -870,22 +870,6 @@ def _init_gtk():  # noqa: C901
     # GTK4: Container removed - all widgets are now containers
     Gtk.Container = Gtk.Widget
 
-    # GTK4: IconTheme.get_default() changed to get_for_display()
-    if not hasattr(Gtk.IconTheme, "get_default"):
-
-        @staticmethod
-        def _icon_theme_get_default():
-            # GTK4: Use get_for_display with default display
-            from gi.repository import Gdk
-
-            display = Gdk.Display.get_default()
-            if display:
-                return Gtk.IconTheme.get_for_display(display)
-            # Fallback to creating new instance
-            return Gtk.IconTheme()
-
-        Gtk.IconTheme.get_default = _icon_theme_get_default
-
     # GTK4: RC file system removed - themes work differently
     if not hasattr(Gtk, "rc_get_theme_dir"):
         # Return empty string instead of None to avoid path.join errors

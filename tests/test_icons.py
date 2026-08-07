@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 from tests import TestCase
 import quodlibet
@@ -13,7 +13,7 @@ import quodlibet
 
 class TIconTheme(TestCase):
     def test_icon_theme(self):
-        theme = Gtk.IconTheme.get_default()
+        theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
         theme.add_search_path(quodlibet.get_image_dir())
 
         for i in [

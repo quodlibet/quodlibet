@@ -103,7 +103,10 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
     height *= scale_factor
 
     size = max(width, height)
-    theme = Gtk.IconTheme.get_default()
+    display = Gdk.Display.get_default()
+    if display is None:
+        return None
+    theme = Gtk.IconTheme.get_for_display(display)
     icon_paintable = theme.lookup_icon(
         "quodlibet-missing-cover",
         None,  # fallbacks
