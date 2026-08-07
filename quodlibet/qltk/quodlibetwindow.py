@@ -278,6 +278,9 @@ class MainSongList(SongList):
 
 
 class TopBar(Gtk.Box):
+    COVER_SIZE = 80
+    """Height of the now-playing cover, and so a floor on the top bar's"""
+
     def __init__(self, parent, player, library):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.add_css_class("toolbar")
@@ -319,8 +322,10 @@ class TopBar(Gtk.Box):
         self._pattern_box.set_hexpand(True)
         box.append(self._pattern_box)
 
-        # cover image
-        self.image = CoverImage(resize=True)
+        # Cover image, at a constant size. A resizing cover measures
+        # width-for-height, which the wrapping song info label next to it
+        # cannot be reconciled with, and the box warns on every resize.
+        self.image = CoverImage(size=self.COVER_SIZE)
         connect_destroy(player, "song-started", self.__new_song)
 
         # FIXME: makes testing easier

@@ -391,11 +391,16 @@ mode (measured — a wrapping label with `lines=2` still reports its full 106px
 height), so it cannot bound a purely wrapping label without dragging ellipsize
 back in.
 
-That leaves **making the top-bar cover a constant size** as the way to fix the
-warnings without touching the label. It removes the width-for-height child, so
-the box is uniformly height-for-width and has nothing to reconcile. The earlier
-note that this "treats the symptom" understated it: an unbounded label height is
-ugly, but it is the *mix* of request modes that GTK warns about, not the height.
+**Fix applied 2026-08-07: the top-bar cover is a constant 80px.** That removes
+the width-for-height child, so the box is uniformly height-for-width and has
+nothing to reconcile — measured min == natural at every width, where a resizing
+cover gave the mismatched pairs above. The earlier note that this "treats the
+symptom" understated it: an unbounded label height is ugly, but it is the *mix*
+of request modes that GTK warns about, not the height.
+
+Side effect: `ResizeImage`'s `resize=True` path now has no callers, and with it
+`MAX_SIZE`. Left in place rather than deleted, since `main` has the parameter —
+one for the post-migration cull.
 
 **Not reproducible in the offscreen test harness** — a scripted resize of the
 fake app produces zero warnings, because it lacks the real browser and
