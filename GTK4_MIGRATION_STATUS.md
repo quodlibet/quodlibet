@@ -2,10 +2,16 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-08-02
-**Test Results**: 4664 passed, 3 failed. Both remaining failures are
-`tests/plugin/test_mediaserver.py`, whose tearDown asserts the D-Bus name is
-released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
+**Last Updated**: 2026-08-07
+**Test Results**: 4664 passed, 3 failed. Two are `tests/plugin/test_mediaserver.py`,
+whose tearDown asserts the D-Bus name is released on `disabled()` — a D-Bus
+lifecycle issue, not a GTK4 one. The third, `test_qltk_cover.test_big_window`,
+is the long-standing order-dependent one and passes in isolation.
+
+Run the suite with the app closed: a running Quod Libet owns
+`org.mpris.MediaPlayer2.quodlibet` and `net.sacredchao.QuodLibet`, and
+`test_mpris` / `test_mediaserver` then fail on the name being taken. That looks
+like six new regressions and is nothing of the sort.
 
 
 DRY: when to extract, and when to leave it
@@ -52,6 +58,33 @@ behaviour over inventing new behaviour. Less is more.
 This is not just style: the two worst regressions found in manual testing —
 dialogs that never close, and menu items with no labels — were both introduced
 by rewriting working code rather than porting it.
+
+
+Resize warning storm: fixed, 2026-08-07
+---------------------------------------
+
+The top bar's cover is a constant 80px (`TopBar.COVER_SIZE`) instead of
+resizing. A resizing cover measures width-for-height and the song info label
+next to it wraps, so measures height-for-width; a box cannot reconcile the two,
+which is what the hundreds of warnings on every resize were. With the cover
+fixed, the box is uniformly height-for-width and reports min == natural at every
+width. Needs confirming in the real app — the offscreen harness emits no
+warnings either way.
+
+**Ellipsizing the label was the tempting fix and it does not work.** It would
+have restored `main`'s constant-size label exactly, and `ELLIPSIZE_END` looks
+clean where `ELLIPSIZE_MIDDLE` visibly mangles the markup. But in the running
+app END mangles it too: the title went xx-large for eleven characters and then
+dropped to normal mid-word, and the album line lost its italics. None of this
+reproduces standalone — the same pattern, rendered through a real `Gtk.Label`
+and the GSK renderer at widths from 120px to 1350px, comes out correct every
+time. So the label keeps wrapping, and **no ellipsize fix should be believed
+until someone reproduces the corruption outside the app.**
+
+Also removed: the `Gtk.IconTheme.get_default` shim. Its last caller was
+`get_no_cover_pixbuf`, which raised inside `do_measure` when the shim was not
+loaded — leaving the cover measuring 0×0 and warning about a horizontal
+baseline.
 
 
 Manual-test round, 2026-08-02
