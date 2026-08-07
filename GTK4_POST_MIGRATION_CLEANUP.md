@@ -122,10 +122,10 @@ Visual / rendering
 
 - **Song list text** looks slightly clipped / sub-pixel-mangled (cell renderer,
   separate from the Pango ellipsize bug) — investigate row height / baseline.
-- **Pango ellipsize + mixed-size markup bug** (Pango 1.57). Worked around in
-  `info.py` by wrapping instead of ellipsizing. Revisit if Pango fixes it
-  upstream. Also ship the same fix to `main` (GTK3) — it'll hit the same bug on
-  Pango ≥ 1.57 (tracked as a separate small PR).
+- **Pango ellipsize + mixed-size markup bug** (Pango 1.57). Only
+  `ELLIPSIZE_MIDDLE` is affected, so `info.py` ellipsizes at the end instead.
+  Revisit if Pango fixes it upstream. Also ship the same fix to `main` (GTK3) —
+  it'll hit the same bug on Pango ≥ 1.57 (tracked as a separate small PR).
 - **CoverGrid**: `max_columns=24` is a magic number; consider deriving it.
   Cover-size "zoom" is just the existing magnification config — wire it into the
   prefs menu once menus render.
@@ -345,8 +345,9 @@ the scale to expand within the bar, and `do_draw` porting to `do_snapshot`
 Layout warning storm when resizing the window
 ---------------------------------------------
 
-**Open**, reported 2026-08-02. Resizing the main window emits hundreds of
-warnings. Three distinct signatures, in order of usefulness:
+**Fix applied 2026-08-07, needs confirming in the real app.** Reported
+2026-08-02: resizing the main window emits hundreds of warnings. Three distinct
+signatures, in order of usefulness:
 
 1. `GtkBox (box) reported min height 137 and natural height 119 in measure()
    with for_size=1196; natural size must be >= min size` — the TopBar's inner
@@ -374,21 +375,20 @@ eight lines in a narrow window.
 was a `Gtk.Toolbar` with a fixed height, so the height-for-width path was never
 exercised anyway.
 
-Options, in order of preference:
+**Fix: ellipsize at the end, not the middle.** The Pango 1.57 bug turns out to
+be specific to `ELLIPSIZE_MIDDLE`; `ELLIPSIZE_END` maps the attributes correctly.
+Checked by rendering the real info pattern's markup through PangoCairo at a
+range of widths and reading the output: `MIDDLE` renders "Name" on the album
+line at the title's `large` size, `END` is clean at every width tried. So
+`info.py` ellipsizes at the end. That restores `main`'s fixed-height,
+constant-size label — one line per pattern line, no height-for-width — which is
+the side of the conflict that produced the warnings.
 
-1. **Bound the label's height.** Keep `set_wrap(True)` for text correctness but
-   add `set_lines(2)` so it cannot grow without limit. Note GTK only honours
-   `lines` when an ellipsize mode is also set, so this may reintroduce the Pango
-   bug on the final line — needs testing against Pango 1.57.
-2. **Go back to ellipsizing** once the Pango bug is fixed or its version range
-   can be detected, which restores `main`'s behaviour exactly.
-3. **Make the top-bar cover a constant size**, removing the width-for-height
-   side of the conflict. This alone will not stop the label demanding unbounded
-   height, so it treats the symptom rather than the cause.
-
-1 and 3 are complementary and could both be done.
+`set_lines()` was the other candidate and is a dead end: GTK only honours it
+alongside an ellipsize mode (measured — a wrapping label with `lines=2` still
+reports its full 106px height), so it cannot bound a purely wrapping label.
 
 **Not reproducible in the offscreen test harness** — a scripted resize of the
-fake app produces zero warnings, because it lacks the real browser and
-`ConfigRHPaned` that appear in the reported log. It needs checking in the real
-app, which is why it has not been attempted yet.
+fake app produced zero warnings even before the fix, because it lacks the real
+browser and `ConfigRHPaned` that appear in the reported log. Confirm in the real
+app that the warnings are gone.
