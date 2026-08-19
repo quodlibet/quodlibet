@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-03-31 07:09+0000\n"
+"PO-Revision-Date: 2026-08-08 18:51+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3659,7 +3659,6 @@ msgid "Queue Only"
 msgstr "Només cua"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3668,9 +3667,9 @@ msgid ""
 msgstr ""
 "Limita la reproducció de cançons a la cua.\n"
 "\n"
-"Si seleccioneu aquest ordre de reproducció a la finestra principal i després "
-"feu doble clic en qualsevol cançó, s'afegirà a la cua en comptes de "
-"reproduir-la."
+"Seleccioneu aquest ordre de reproducció a la finestra principal i habiliteu "
+"el mode aleatori. Quan feu doble clic en qualsevol cançó, s'afegirà a la cua "
+"en comptes de reproduir-la."
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
