@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #             2020-23 Nick Boultbee
+#                2026 Gwyneth Morgan
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -367,6 +368,7 @@ class RenameFiles(Gtk.VBox):
                         "new-name": util.bold(new_name),
                     },
                     buttons=Gtk.ButtonsType.NONE,
+                    escape_desc=False,
                 )
                 msg.add_button(_("Ignore _All Errors"), RESPONSE_SKIP_ALL)
                 msg.add_icon_button(
@@ -490,6 +492,7 @@ class RenameFiles(Gtk.VBox):
                     "root your pattern by starting it with / or ~/."
                 )
                 % (util.bold(pattern_text)),
+                escape_desc=False,
             ).run()
             return
         else:
