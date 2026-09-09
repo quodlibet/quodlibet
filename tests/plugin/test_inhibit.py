@@ -5,6 +5,17 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
+import sys
+
+import pytest
+
+if os.name == "nt" or sys.platform == "darwin":
+    pytest.skip(
+        "inhibit plugin is not supported on this platform",
+        allow_module_level=True,
+    )
+
 from gi.repository import GLib
 
 from quodlibet import config
