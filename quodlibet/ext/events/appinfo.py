@@ -36,7 +36,9 @@ class AppInformation(EventPlugin):
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def PluginPreferences(self, *args):
-        vb = Gtk.VBox()
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
 
         row = 0
         grid = Gtk.Grid(column_spacing=12, row_spacing=6)
@@ -50,7 +52,7 @@ class AppInformation(EventPlugin):
                 justify=Gtk.Justification.RIGHT,
                 selectable=True,
             )
-            l.get_style_context().add_class(Gtk.STYLE_CLASS_DIM_LABEL)
+            l.add_css_class("dim-label")
             return l
 
         def label_value(text):
@@ -135,7 +137,7 @@ class AppInformation(EventPlugin):
         grid.attach(v, 1, row, 1, 1)
         row += 1
 
-        vb.pack_start(grid, True, True, 0)
+        vb.append(grid)
         vb.show_all()
 
         return vb

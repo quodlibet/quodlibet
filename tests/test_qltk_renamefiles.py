@@ -30,9 +30,6 @@ class TFilter(TestCase):
     def setUp(self):
         self.c = self.Kind()
 
-    def tearDown(self):
-        self.c.destroy()
-
 
 class TFilterMixin:
     def test_mix_empty(self):
@@ -152,7 +149,7 @@ class TLowercase(TFilter, TFilterMixin):
         assert isinstance(v, fsnative)
 
 
-class Renamer(Gtk.EventBox):
+class Renamer(Gtk.Box):
     __gsignals__ = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
@@ -163,7 +160,7 @@ class Renamer(Gtk.EventBox):
         from quodlibet.library import SongLibrary
 
         self.library = SongLibrary()
-        box = Gtk.EventBox()
+        box = Gtk.Box()
         self.renamer = RenameFiles(self.library, box)
         box.add(self.renamer)
 
@@ -198,9 +195,6 @@ class TMoveArt(TestCase):
     def setUp(self):
         self.renamer = self.Kind()
         self.reset_environment()
-
-    def tearDown(self):
-        self.renamer.destroy()
 
     def reset_environment(self):
         config.init()

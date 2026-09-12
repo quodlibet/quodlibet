@@ -12,7 +12,7 @@ from quodlibet import _, print_d, ngettext
 from quodlibet import app
 from quodlibet import util
 from quodlibet.plugins.songshelpers import any_song, has_writable_image
-from quodlibet.qltk.chooser import _get_chooser
+from quodlibet.qltk.chooser import _get_chooser, chooser_path
 from quodlibet.qltk.x import MenuItem
 from quodlibet.qltk import Icons
 from quodlibet.qltk.wlw import WritingWindow
@@ -32,7 +32,7 @@ class EditEmbedded(SongsMenuPlugin):
 
     def __init__(self, songs, *args, **kwargs):
         super().__init__(songs, *args, **kwargs)
-        self.__menu = Gtk.Menu()
+        self.__menu = Gtk.PopoverMenu()
         self._init_submenu_items(self.__menu, songs)
         self.set_submenu(self.__menu)
 
@@ -51,7 +51,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        win.destroy()
+        win.close()
         self.plugin_finish()
 
     def __set_image(self, menu_item, songs):
@@ -69,7 +69,7 @@ class EditEmbedded(SongsMenuPlugin):
             if win.step():
                 break
 
-        win.destroy()
+        win.close()
         self.plugin_finish()
 
     def __choose_image(self, menu_item, songs):
@@ -85,7 +85,7 @@ class EditEmbedded(SongsMenuPlugin):
         )
         dialog.set_title(msg)
         response = dialog.run()
-        path = dialog.get_filename()
+        path = chooser_path(dialog)
         dialog.destroy()
         if response != Gtk.ResponseType.ACCEPT:
             print_d("User cancelled image embedding")

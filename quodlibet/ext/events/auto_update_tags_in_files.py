@@ -193,7 +193,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
             desc_label = Gtk.Label(label=desc, wrap=True)
 
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-            box.pack_start(desc_label, False, False, 0)
+            box.append(desc_label)
 
             strategy_boxes.append(box)
 
@@ -211,7 +211,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         ensure_play_count_checkbutton.connect("toggled", ensure_play_count_toggled)
 
         album_box = strategy_boxes[UpdateStrategy.ONCE_ALBUM_RATED]
-        album_box.pack_start(ensure_play_count_checkbutton, False, False, 0)
+        album_box.append(ensure_play_count_checkbutton)
 
         def show_only_current_box():
             current = CONFIG.update_strategy
@@ -240,17 +240,14 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         grid_add(0, 0, update_lbl)
         grid_add(1, 0, update_combobox)
         for box in strategy_boxes:
-            # show_all will be called on the plugin preference interface, so
-            # without the following that would result in overlapping text
-            box.show_all()
-            box.props.no_show_all = True
-
+            # GTK4: no_show_all removed, show_all is a no-op
+            # Visibility controlled by show_only_current_box()
             grid_add(1, 1, box)
 
         show_only_current_box()
 
         frame = qltk.Frame(label=_("Preferences"), child=grid)
-        self.pack_start(frame, False, False, 0)
+        self.append(frame)
 
 
 class ConfigLabel(Gtk.Label):
@@ -259,4 +256,5 @@ class ConfigLabel(Gtk.Label):
     def __init__(self, text, widget):
         super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
-        self.set_alignment(0.0, 0.5)
+        self.set_xalign(0.0)
+        self.set_yalign(0.5)

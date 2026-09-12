@@ -8,7 +8,6 @@
 
 from quodlibet import config, print_d, app
 from quodlibet.plugins import PluginHandler
-from quodlibet.qltk import get_menu_item_top_parent
 from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
@@ -54,7 +53,7 @@ class UserInterfacePluginHandler(PluginHandler):
         self.__plugins.pop(plugin.cls)
 
 
-class MenuItemPlugin(Gtk.ImageMenuItem):
+class MenuItemPlugin(Gtk.Button):
     """
     A base plugin that appears in a menu, typically.
 
@@ -73,23 +72,41 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
     """This plugin will run a user interface first (e.g. dialog) requiring
        action from the user. The menu entry may be altered accordingly"""
 
+    plugin_window = None
+    """The `Gtk.Window` the plugin was invoked from. Set by the menu handler
+       just before the plugin's callbacks run."""
+
     def __init__(self):
         label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
-        super().__init__(label=label)
+        # GTK4: Use Button with label, not Widget
+        super().__init__(label=label, use_underline=True)
+        self.add_css_class("flat")  # Menu-like appearance
         self.__set_icon()
         self.__initialized = True
 
-    @property
-    def plugin_window(self):
-        return get_menu_item_top_parent(self)
+    def set_submenu(self, menu):
+        """Store submenu reference for GTK4 compatibility"""
+        self._submenu = menu
+
+    def get_submenu(self):
+        """Return stored submenu reference"""
+        return getattr(self, "_submenu", None)
 
     def __set_icon(self):
         """Sets the GTK icon for this plugin item"""
         icon = getattr(self, "PLUGIN_ICON", Icons.SYSTEM_RUN)
 
-        image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.MENU)
-        self.set_always_show_image(True)
-        self.set_image(image)
+        # GTK4: Buttons use set_child() with a Box containing icon+label
+        image = Gtk.Image.new_from_icon_name(icon)
+        label_text = self.get_label()
+        if label_text:
+            box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+            box.append(image)
+            label = Gtk.Label(label=label_text, use_underline=True)
+            box.append(label)
+            self.set_child(box)
+        else:
+            self.set_child(image)
 
     @property
     def initialized(self):

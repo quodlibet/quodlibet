@@ -18,6 +18,7 @@ from quodlibet.qltk.window import Dialog
 from quodlibet.qltk.msg import ErrorMessage
 from quodlibet.util import copool
 from quodlibet.util.dprint import print_d
+from quodlibet.qltk.chooser import chooser_path
 
 from shutil import copyfile
 
@@ -41,12 +42,12 @@ class ExportToFolderDialog(Dialog):
         self.add_button(_("_Export"), Gtk.ResponseType.OK)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         destination_label = Gtk.Label(_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
-        box.pack_start(destination_label, False, False, 0)
+        box.append(destination_label)
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
@@ -55,25 +56,24 @@ class ExportToFolderDialog(Dialog):
         self.directory_chooser.set_select_multiple(False)
         self.directory_chooser.set_border_width(1)
         frame.add(self.directory_chooser)
-        frame.set_shadow_type(Gtk.ShadowType.IN)
         frame.set_border_width(0)
-        box.pack_start(frame, True, True, 0)
+        box.append(frame)
 
         pattern_label = Gtk.Label(_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
-        box.pack_start(pattern_label, False, False, 0)
+        box.append(pattern_label)
 
         self.pattern_entry = UndoEntry()
         self.pattern_entry.set_text(pattern)
-        box.pack_start(self.pattern_entry, False, False, 0)
+        box.append(self.pattern_entry)
 
-        self.vbox.pack_start(box, True, True, 0)
+        self.vbox.append(box)
 
         self.set_response_sensitive(Gtk.ResponseType.OK, False)
 
         def changed(*args):
-            has_directory = self.directory_chooser.get_filename() is not None
+            has_directory = chooser_path(self.directory_chooser) is not None
             self.set_response_sensitive(Gtk.ResponseType.OK, has_directory)
 
             pattern_text = self.pattern_entry.get_text()
@@ -147,7 +147,7 @@ class ExportToFolder(PlaylistPlugin):
         pattern_text = CONFIG.default_pattern
         dialog = ExportToFolderDialog(self.plugin_window, pattern_text)
         if dialog.run() == Gtk.ResponseType.OK:
-            directory = dialog.directory_chooser.get_filename()
+            directory = chooser_path(dialog.directory_chooser)
             pattern = FileFromPattern(dialog.pattern_entry.get_text())
 
             task = Task(
@@ -163,27 +163,28 @@ class ExportToFolder(PlaylistPlugin):
                 funcid="export-playlist-folder",
             )
 
-        dialog.destroy()
+        dialog.close()
 
     @classmethod
     def PluginPreferences(cls, parent):
         def changed(entry):
             CONFIG.default_pattern = entry.get_text()
 
-        vbox = Gtk.VBox(spacing=6)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         def create_pattern():
-            hbox = Gtk.HBox(spacing=6)
+            hbox = Gtk.Box(spacing=6)
             hbox.set_border_width(6)
             label = Gtk.Label(label=_("Default filename pattern:"))
-            hbox.pack_start(label, False, True, 0)
+            hbox.append(label)
             entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
             entry.connect("changed", changed)
-            hbox.pack_start(entry, True, True, 0)
+            entry.set_hexpand(True)
+            hbox.append(entry)
             return hbox
 
-        vbox.pack_start(create_pattern(), True, True, 0)
+        vbox.append(create_pattern())
 
         return vbox

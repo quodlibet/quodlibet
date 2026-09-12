@@ -14,8 +14,8 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
-from quodlibet.qltk import is_accel
-from quodlibet.qltk.ccb import ConfigCheckMenuItem
+from quodlibet.qltk import is_accel_pressed
+from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import MultiSearchBarBox
@@ -24,30 +24,46 @@ from quodlibet.qltk.x import SymbolicIconImage, Align
 from quodlibet.qltk import Icons
 
 
-class PreferencesButton(Gtk.HBox):
+class PreferencesButton(Gtk.Box):
     def __init__(self, search_bar_box):
         super().__init__()
-        menu = Gtk.Menu()
 
-        limit_item = ConfigCheckMenuItem(
-            _("_Limit Results"), "browsers", "search_limit", True
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_margin_top(6)
+        box.set_margin_bottom(6)
+        box.set_margin_start(6)
+        box.set_margin_end(6)
+
+        def add_switch(label, section, option, on_change):
+            cs = ConfigSwitch(label, section, option, populate=True)
+            cs.set_spacing(12)
+            cs.get_first_child().set_hexpand(True)
+            cs.switch.set_halign(Gtk.Align.END)
+            cs.switch.set_valign(Gtk.Align.CENTER)
+            cs.connect("notify::active", lambda sw, *a: on_change(sw.get_active()))
+            box.append(cs)
+
+        add_switch(
+            _("_Limit Results"),
+            "browsers",
+            "search_limit",
+            search_bar_box.toggle_limit_widgets_bool,
         )
-        limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
-        menu.append(limit_item)
-
-        multi_item = ConfigCheckMenuItem(
-            _("_Allow multiple queries"), "browsers", "multiple_queries", True
+        add_switch(
+            _("_Allow multiple queries"),
+            "browsers",
+            "multiple_queries",
+            search_bar_box.toggle_multi_bool,
         )
-        multi_item.connect("toggled", search_bar_box.toggle_multi)
-        menu.append(multi_item)
 
-        menu.show_all()
+        popover = Gtk.Popover()
+        popover.set_child(box)
 
         button = MenuButton(
-            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.MENU), arrow=True
+            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
-        button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        button.set_popover(popover)
+        self.append(button)
 
 
 class TrackList(Browser):
@@ -57,9 +73,9 @@ class TrackList(Browser):
     priority = 1
 
     def pack(self, songpane):
-        container = Gtk.VBox(spacing=6)
-        container.pack_start(self, False, True, 0)
-        container.pack_start(songpane, True, True, 0)
+        container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        container.append(self)
+        container.append(songpane)
         return container
 
     def unpack(self, container, songpane):
@@ -84,16 +100,20 @@ class TrackList(Browser):
             show_multi=show_multi,
         )
 
-        sbb.connect("query-changed", self.__text_parse)
-        sbb.connect("focus-out", self.__focus)
-        sbb.connect("key-press-event", self.__sb_key_pressed)
+        self.__sb_sigs = [
+            sbb.connect("query-changed", self.__text_parse),
+            sbb.connect("focus-out", self.__focus),
+        ]
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__sb_key_pressed)
+        sbb.add_controller(key_controller)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
-        sbb.pack_start(prefs, False, True, 0)
+        sbb.append(prefs)
 
-        self.pack_start(Align(sbb, left=6, right=6), False, True, 0)
-        self.pack_start(sbb.flow_box, False, True, 0)
+        self.append(Align(sbb, left=6, right=6))
+        self.append(sbb.flow_box)
         self.connect("destroy", self.__destroy)
         self.show_all()
 
@@ -104,6 +124,10 @@ class TrackList(Browser):
         self._sb_box.set_text(text)
 
     def __destroy(self, *args):
+        # The search bar emits its query change from an idle callback,
+        # which can still be pending
+        for sig in self.__sb_sigs:
+            self._sb_box.disconnect(sig)
         self._sb_box = None
 
     def __focus(self, widget, *args):
@@ -122,8 +146,8 @@ class TrackList(Browser):
     def __text_parse(self, bar, text):
         self.activate()
 
-    def __sb_key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __sb_key_pressed(self, controller, keyval, keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)

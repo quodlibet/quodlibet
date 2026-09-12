@@ -1000,6 +1000,8 @@ class TMainRunner(TestCase):
 
 class Tconnect_destroy(TestCase):
     def test_main(self):
+        import gc
+        import weakref
         from gi.repository import Gtk
 
         b = Gtk.Button()
@@ -1011,9 +1013,14 @@ class Tconnect_destroy(TestCase):
         a = A()
         ref = sys.getrefcount(a)
         util.connect_destroy(b, "clicked", a.foo)
-        self.assertEqual(sys.getrefcount(a), ref + 1)
-        a.destroy()
+        # GTK4: connect_destroy uses a weak-ref wrapper so it does NOT hold
+        # a strong reference to a; the refcount stays the same as before.
         self.assertEqual(sys.getrefcount(a), ref)
+        # Dropping the strong ref allows a to be GC'd.
+        a_ref = weakref.ref(a)
+        del a
+        gc.collect()
+        self.assertIsNone(a_ref())
 
 
 class Tcached_property(TestCase):

@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk import is_accel
+from quodlibet.qltk import is_accel_pressed, get_children
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -44,10 +44,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
     priority = 3
 
     def pack(self, songpane):
-        container = Gtk.HBox()
+        container = Gtk.Box()
         self.show()
-        container.pack_start(self, True, True, 0)
-        self.main_box.pack2(songpane, True, False)
+        container.append(self)
+        # GTK4: pack2() → set_end_child()
+        self.main_box.set_end_child(songpane)
+        self.main_box.set_resize_end_child(True)
+        self.main_box.set_shrink_end_child(False)
         return container
 
     def unpack(self, container, songpane):
@@ -80,20 +83,22 @@ class PanedBrowser(Browser, util.InstanceTracker):
         sbb = SearchBarBox(completion=completion, accel_group=self.accelerators)
         sbb.connect("query-changed", self.__text_parse)
         sbb.connect("focus-out", self.__focus)
-        sbb.connect("key-press-event", self.__sb_key_pressed)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect("key-pressed", self.__sb_key_pressed)
+        sbb.add_controller(key_controller)
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=0)
-        self.pack_start(align, False, True, 0)
+        self.append(align)
 
         keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
         select.connect("clicked", self.__select_all)
-        sbb.pack_start(select, False, True, 0)
+        sbb.append(select)
 
         prefs = PreferencesButton(self)
-        sbb.pack_start(prefs, False, True, 0)
+        sbb.append(prefs)
 
         connect_destroy(library, "changed", self.__changed)
         connect_destroy(library, "added", self.__added)
@@ -103,12 +108,12 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         # contains the panes and the song list
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
-        self.pack_start(self.main_box, True, True, 0)
+        self.append(self.main_box)
 
         self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
 
     def __destroy(self, *args):
@@ -140,8 +145,8 @@ class PanedBrowser(Browser, util.InstanceTracker):
     def __text_parse(self, bar, text):
         self.activate()
 
-    def __sb_key_pressed(self, entry, event):
-        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
+    def __sb_key_pressed(self, controller, keyval, keycode, state):
+        if is_accel_pressed(keyval, state, "<Primary>Return", "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)
@@ -207,8 +212,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
             pane.scroll(song)
 
     def refresh_panes(self):
-        self.multi_paned.destroy()
-
         # Fill in the pane list. The last pane reports back to us.
         self._panes = [self]
         for header in reversed(get_headers()):
@@ -222,13 +225,16 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             sw = ScrolledWindow()
             sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-            sw.set_shadow_type(Gtk.ShadowType.IN)
-            sw.add(pane)
+            # GTK4: ScrolledWindow.add() → set_child()
+            sw.set_child(pane)
             sws.append(sw)
 
         self.multi_paned.set_widgets(sws)
         self.multi_paned.show_all()
-        self.main_box.pack1(self.multi_paned.get_paned(), True, False)
+        # GTK4: pack1() → set_start_child()
+        self.main_box.set_start_child(self.multi_paned.get_paned())
+        self.main_box.set_resize_start_child(True)
+        self.main_box.set_shrink_start_child(False)
 
         self.__star = {}
         for p in self._panes:

@@ -13,7 +13,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
     raise PluginNotSupportedError
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gdk, Gtk, GdkPixbuf
 from quodlibet.fsn import fsn2uri
 
 import dbus
@@ -42,7 +42,7 @@ class MediaServer(EventPlugin):
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
-        vbox = Gtk.VBox(spacing=12)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         conf_exp = _(
             "Ensure the following is in your rygel config file "
@@ -65,8 +65,8 @@ class MediaServer(EventPlugin):
         conf_lbl.set_alignment(0, 0)
         conf_lbl.set_markup(f"<span font='mono'>{conf_cont}</span>")
 
-        vbox.pack_start(exp_lbl, True, False, 0)
-        vbox.pack_start(conf_lbl, True, False, 0)
+        vbox.append(exp_lbl)
+        vbox.append(conf_lbl)
         return vbox
 
     def enabled(self):
@@ -86,10 +86,6 @@ class MediaServer(EventPlugin):
     def disabled(self):
         for obj in self.objects:
             obj.remove_from_connection()
-
-        for obj in self.objects:
-            obj.destroy()
-
         del self.objects
 
         import gc
@@ -683,8 +679,26 @@ class Icon(
         self.implement_interface("org.gnome.UPnP.MediaItem1", MediaItem.IFACE)
 
         # load into a pixbuf
-        theme = Gtk.IconTheme.get_default()
-        pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
+        # GTK4: IconTheme.get_default() → get_for_display()
+        # GTK4: load_icon() → lookup_icon() + load via file
+        display = Gdk.Display.get_default()
+        theme = Gtk.IconTheme.get_for_display(display)
+        icon_paintable = theme.lookup_icon(
+            Icons.QUODLIBET,
+            None,
+            Icon.SIZE,
+            1,
+            Gtk.TextDirection.NONE,
+            Gtk.IconLookupFlags.FORCE_REGULAR,
+        )
+        icon_file = icon_paintable.get_file()
+        if icon_file:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_file.get_path())
+        else:
+            # Fallback: create empty pixbuf
+            pixbuf = GdkPixbuf.Pixbuf.new(
+                GdkPixbuf.Colorspace.RGB, True, 8, Icon.SIZE, Icon.SIZE
+            )
 
         # make sure the size is right
         pixbuf = pixbuf.scale_simple(

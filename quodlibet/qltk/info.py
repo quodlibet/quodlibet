@@ -9,23 +9,21 @@
 
 import os
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import _
 
 from quodlibet import print_w
 from quodlibet import qltk
-from quodlibet.player._base import BasePlayer
-from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.x import SeparatorMenuItem, Align
-from quodlibet.qltk import Icons
+from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
+from quodlibet.qltk.x import Align
 from quodlibet.util import connect_destroy
 
 from quodlibet.pattern import XMLFromMarkupPattern
 from quodlibet.qltk.textedit import PatternEdit
 
 
-class SongInfo(Gtk.EventBox):
+class SongInfo(Gtk.Box):
     """A widget for showing information about the currently playing song.
 
     Provides a way to change the display pattern for formatting the
@@ -54,21 +52,32 @@ class SongInfo(Gtk.EventBox):
     def __init__(self, library, player, pattern_filename):
         super().__init__()
         self._pattern_filename = pattern_filename
-        self.set_visible_window(False)
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)
         label = Gtk.Label()
-        label.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        label.set_track_visited_links(False)
+        # Pango 1.57 mis-maps font-size attributes whenever it ellipsizes
+        # mixed-size markup, mangling the now-playing text; wrap instead.
+        label.set_wrap(True)
+        label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         label.set_selectable(True)
         align.add(label)
-        label.set_alignment(0.0, 0.0)
+        # GTK4: set_alignment removed - use xalign/yalign properties
+        label.set_xalign(0.0)
+        label.set_yalign(0.0)
         self._label = label
+        self._library = library
+        self._player = player
+        self._menu = None
         connect_destroy(library, "changed", self._on_library_changed, player)
         connect_destroy(player, "song-started", self._on_song_started)
 
-        label.connect("populate-popup", self._on_label_popup, player, library)
-        self.connect("key-press-event", self._on_key_press_event, player)
-        self.connect("button-press-event", self._on_button_press_event, player, library)
+        click = Gtk.GestureClick()
+        click.set_button(Gdk.BUTTON_SECONDARY)
+        click.connect("pressed", self._on_secondary_click)
+        self.add_controller(click)
+
+        key = Gtk.EventControllerKey()
+        key.connect("key-pressed", self._on_key_pressed)
+        self.add_controller(key)
 
         try:
             with open(self._pattern_filename, "rb") as h:
@@ -77,55 +86,35 @@ class SongInfo(Gtk.EventBox):
             pass
 
         self._compiled = XMLFromMarkupPattern(self._pattern)
-        align.show_all()
-        self.add(align)
+        self.append(align)
 
-    def _on_key_press_event(self, widget, event, player: BasePlayer):
-        if qltk.is_accel(event, "space"):
-            player.playpause()
-
-    def _on_button_press_event(self, widget, event, player, library):
-        if event.triggers_context_menu():
-            menu = self._get_menu(player, library)
-            menu.attach_to_widget(widget, None)
-            menu.popup(None, None, None, None, event.button, event.time)
+    def _on_key_pressed(self, controller, keyval, keycode, state):
+        if qltk.is_accel_pressed(keyval, state, "space"):
+            self._player.playpause()
             return True
         return False
 
-    def _on_label_popup(self, label, menu, player, library):
-        song_menu = self._get_menu(player, library)
-
-        has_selection = label.get_selection_bounds()[0]
-
-        if not has_selection:
-            for child in menu.get_children():
-                child.destroy()
-            for item in song_menu:
-                song_menu.remove(item)
-                menu.append(item)
-        else:
-            sub = Gtk.MenuItem.new_with_mnemonic(_("Current _Song"))
-            sub.set_submenu(song_menu)
-            sub.set_sensitive(player.song is not None)
-            sub.show_all()
-            sep = SeparatorMenuItem()
-            sep.show()
-            menu.append(sep)
-            menu.append(sub)
+    def _on_secondary_click(self, gesture, n_press, x, y):
+        if self._menu is not None:
+            self._menu.unparent()
+        self._menu = menu = self._get_menu(self._player, self._library)
+        qltk.popup_menu_at(menu, self, x, y)
 
     def _get_menu(self, player, library):
-        item = qltk.MenuItem(_("_Edit Display…"), Icons.EDIT)
-        item.connect("activate", self._on_edit_display, player)
-
+        edit_display = MenuItemSpec(
+            _("_Edit Display…"), lambda parent: self._on_edit_display(player)
+        )
         songs = [player.song] if player.song else []
-        song_menu = SongsMenu(
-            library, songs, remove=False, delete=True, accels=False, items=[[item]]
+        return SongsMenu(
+            library,
+            songs,
+            remove=False,
+            delete=True,
+            accels=False,
+            items=[[edit_display]],
         )
 
-        song_menu.show_all()
-        return song_menu
-
-    def _on_edit_display(self, menu_item, player):
+    def _on_edit_display(self, player):
         editor = PatternEdit(
             self, SongInfo._pattern, alternative_markup=True, links=True
         )

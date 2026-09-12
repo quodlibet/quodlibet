@@ -177,6 +177,9 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
 
     def __fill_tag(self, tag, library):
         model = self.get_model()
+        if model is None:
+            # disposed before the copool got round to us
+            return
         model.clear()
         yield True
 

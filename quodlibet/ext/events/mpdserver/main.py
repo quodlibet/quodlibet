@@ -404,7 +404,6 @@ class MPDServer(BaseTCPServer):
 
     def handle_idle(self):
         print_d("Destroying the MPD service")
-        self.service.destroy()
         del self.service
 
     def log(self, msg):

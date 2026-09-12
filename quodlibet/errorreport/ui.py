@@ -36,14 +36,16 @@ class TextExpander(Gtk.Expander):
             tv.set_bottom_margin(6)
 
         label = self.get_label_widget()
-        label.props.margin = 4
+        label.set_margin_start(4)
+        label.set_margin_end(4)
+        label.set_margin_top(4)
+        label.set_margin_bottom(4)
 
         win = Gtk.ScrolledWindow()
-        win.add(tv)
+        win.set_child(tv)
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        win.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         win.set_size_request(-1, 175)
-        self.add(win)
+        self.set_child(win)
         win.show_all()
 
 
@@ -71,7 +73,7 @@ class ErrorDialog(Gtk.MessageDialog):
 
         area = self.get_message_area()
         expand = TextExpander(_("Error details:"), error_text)
-        area.pack_start(expand, False, True, 0)
+        area.append(expand)
         area.show_all()
 
 
@@ -110,10 +112,10 @@ class SubmitErrorDialog(Gtk.MessageDialog):
 
         self._entry = UndoEntry()
         self._entry.set_placeholder_text(_("Short description…"))
-        area.pack_start(self._entry, False, True, 0)
+        area.append(self._entry)
 
         expand = TextExpander(_("Data to be sent:"), error_text)
-        area.pack_start(expand, False, True, 0)
+        area.append(expand)
         area.show_all()
 
         self.get_widget_for_response(Gtk.ResponseType.CANCEL).grab_focus()

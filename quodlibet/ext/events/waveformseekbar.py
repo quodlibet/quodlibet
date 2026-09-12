@@ -15,7 +15,7 @@
 from functools import lru_cache
 from math import ceil, floor
 
-from gi.repository import Gtk, Gdk, Gst
+from gi.repository import Gtk, Gdk, Graphene, Gst
 import cairo
 
 from quodlibet import _, app
@@ -29,7 +29,7 @@ from quodlibet.plugins import (
     MissingGstreamerElementPluginError,
 )
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Align, add_css
+from quodlibet.qltk import Align, add_css, get_children
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
@@ -80,11 +80,12 @@ class WaveformSeekBar(Gtk.Box):
         self._remaining_label = TimeLabel()
         self._waveform_scale = WaveformScale(player)
 
-        self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
-        self.pack_start(self._waveform_scale, True, True, 0)
-        self.pack_start(Align(self._remaining_label, border=6), False, True, 0)
+        self.append(Align(self._elapsed_label, border=6))
+        self._waveform_scale.set_hexpand(True)
+        self.append(self._waveform_scale)
+        self.append(Align(self._remaining_label, border=6))
 
-        for child in self.get_children():
+        for child in get_children(self):
             child.show_all()
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
@@ -203,8 +204,8 @@ class WaveformSeekBar(Gtk.Box):
 
     def _on_destroy(self, *args):
         self._clean_pipeline()
-        self._label_tracker.destroy()
-        self._redraw_tracker.destroy()
+        self._label_tracker = None
+        self._redraw_tracker = None
 
     def _on_tick_label(self, tracker, player):
         self._update_label(player)
@@ -286,8 +287,7 @@ class WaveformSeekBar(Gtk.Box):
             if position == 0 or full_redraw:
                 self._waveform_scale.queue_draw()
             else:
-                (x, y, w, h) = self._waveform_scale.compute_redraw_area()
-                self._waveform_scale.queue_draw_area(x, y, w, h)
+                self._waveform_scale.queue_draw()
         else:
             self._rms_vals.clear()
             self._waveform_scale.queue_draw()
@@ -300,11 +300,7 @@ class WaveformSeekBar(Gtk.Box):
         width = self._waveform_scale.get_allocation().width
         self._waveform_scale.set_mouse_x_position(clamp(0, event.x, width))
 
-        if self._hovering:
-            (x, y, w, h) = self._waveform_scale.compute_hover_redraw_area()
-            self._waveform_scale.queue_draw_area(x, y, w, h)
-        else:
-            self._waveform_scale.queue_draw()
+        self._waveform_scale.queue_draw()
 
         self._update_label(self._player)
         self._hovering = True
@@ -336,7 +332,7 @@ class WaveformSeekBar(Gtk.Box):
         self._elapsed_label.set_size_request(width, -1)
 
 
-class WaveformScale(Gtk.EventBox):
+class WaveformScale(Gtk.Box):
     """The waveform widget."""
 
     _rms_vals: list[int] = []
@@ -344,11 +340,16 @@ class WaveformScale(Gtk.EventBox):
 
     def __init__(self, player):
         super().__init__()
+        click = Gtk.GestureClick(button=Gdk.BUTTON_PRIMARY)
+        click.connect("pressed", self._on_pressed)
+        click.connect("released", self._on_released)
+        self.add_controller(click)
         self._player = player
         self.set_size_request(40, CONFIG.height_px)
         self.position = 0
         self._last_drawn_position = 0
-        self.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
+        # GTK4: Use CSS instead of override_background_color
+        add_css(self, "* { background-color: transparent; }")
 
         self.mouse_position = -1
         self._last_mouse_position = -1
@@ -526,22 +527,22 @@ class WaveformScale(Gtk.EventBox):
         height_px = int(height * pixel_ratio)
         return (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
 
-    def do_draw(self, cr):
+    def do_snapshot(self, snapshot):
+        width, height = self.get_width(), self.get_height()
+        if width <= 0 or height <= 0:
+            return
+        cr = snapshot.append_cairo(Graphene.Rect().init(0, 0, width, height))
+        self._draw(cr, width, height)
+
+    def _draw(self, cr, width, height):
         context = self.get_style_context()
 
-        # Get colors
-        context.save()
-        context.set_state(Gtk.StateFlags.NORMAL)
-        bg_color = context.get_background_color(context.get_state())
-        context.restore()
-
-        # Paint the background
-        cr.set_source_rgba(*list(bg_color))
-        cr.paint()
-
-        allocation = self.get_allocation()
-        width = allocation.width
-        height = allocation.height
+        # Paint the background. GTK4 dropped get_background_color(), as
+        # backgrounds come from CSS, so ask the theme for the colour by name
+        found, bg_color = context.lookup_color("theme_bg_color")
+        if found:
+            cr.set_source_rgba(*list(bg_color))
+            cr.paint()
 
         if self._rms_vals:
             self.draw_waveform(
@@ -594,26 +595,23 @@ class WaveformScale(Gtk.EventBox):
     def remaining_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         if CONFIG.remaining_color:
             return parse_color(CONFIG.remaining_color)
-        default = context.get_color(context.get_state())
+        default = context.get_color()
         default.alpha = 0.35
         return default
 
-    def do_button_press_event(self, event):
-        # Left mouse button
-        if event.button == 1 and self._player:
+    def _on_pressed(self, gesture, n_press, x, y):
+        if self._player:
             self._seeking = True
             self.queue_draw()
 
-    def do_button_release_event(self, event):
-        # Left mouse button
-        if event.button == 1 and self._player:
-            ratio = event.x / self.get_allocation().width
-            length = self._player.info("~#length")
-            self._player.seek(ratio * length * 1000)
-            self._seeking = False
-            self.queue_draw()
-            return True
-        return None
+    def _on_released(self, gesture, n_press, x, y):
+        if not self._player:
+            return
+        ratio = x / self.get_width()
+        length = self._player.info("~#length")
+        self._player.seek(ratio * length * 1000)
+        self._seeking = False
+        self.queue_draw()
 
     def do_scroll_event(self, event):
         if event.direction == Gdk.ScrollDirection.UP:
@@ -656,7 +654,6 @@ class WaveformSeekBarPlugin(EventPlugin):
 
     def disabled(self):
         app.window.set_seekbar_widget(None)
-        self._bar.destroy()
         self._bar = None
 
     def PluginPreferences(self, parent):
@@ -686,13 +683,15 @@ class WaveformSeekBarPlugin(EventPlugin):
                 self._bar._waveform_scale.set_size_request(40, CONFIG.height_px)
 
         def create_color(label_text, config_item):
-            hbox = Gtk.HBox(spacing=6)
+            hbox = Gtk.Box(spacing=6)
             label = Gtk.Label(label=label_text)
-            label.set_alignment(0.0, 0.5)
-            hbox.pack_start(label, False, True, 0)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
+            hbox.append(label)
             colour = getattr(CONFIG, config_item)
             colour_label = Gtk.Label()
-            colour_label.set_alignment(0.0, 0.5)
+            colour_label.set_xalign(0.0)
+            colour_label.set_yalign(0.5)
             colour_label.set_size_request(160, -1)
 
             def colour_updated(_widget, c: Gdk.RGBA):
@@ -713,11 +712,11 @@ class WaveformSeekBarPlugin(EventPlugin):
 
             def on_exited(dialog: Gtk.ColorChooserDialog, code):
                 colour_updated(dialog, dialog.get_rgba())
-                dialog.destroy()
+                dialog.close()
 
             button = Gtk.Button()
             button.connect("clicked", on_clicked)
-            button.add(SymbolicIconImage(Icons.EDIT, Gtk.IconSize.MENU))
+            button.add(SymbolicIconImage(Icons.EDIT, Gtk.IconSize.NORMAL))
             if colour:
                 add_css(
                     colour_label,
@@ -727,59 +726,73 @@ class WaveformSeekBarPlugin(EventPlugin):
                    border: 1px solid rgba(128,128,128,0.5);
                 }}""",
                 )
-            hbox.pack_end(button, False, False, 0)
-            hbox.pack_end(colour_label, False, True, 0)
+            hbox.append(button)
+            hbox.append(colour_label)
             return hbox
 
-        vbox = Gtk.VBox(spacing=9)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=9)
         box = create_color(_("Foreground color"), "elapsed_color")
-        vbox.pack_start(box, True, True, 0)
+        vbox.append(box)
 
         box = create_color(_("Hover color"), "hover_color")
-        vbox.pack_start(box, True, True, 0)
+        vbox.append(box)
 
         box = create_color(_("Remaining color"), "remaining_color")
-        vbox.pack_start(box, True, True, 0)
+        vbox.append(box)
 
         sw = Gtk.Switch()
         label = Gtk.Label(_("Show current position whilst hovering"))
         sw.set_active(CONFIG.show_current_pos)
         sw.connect("notify::active", on_show_pos_toggled)
-        hbox = Gtk.HBox(spacing=6)
-        hbox.pack_start(label, False, True, 0)
-        hbox.pack_end(sw, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox = Gtk.Box(spacing=6)
+        hbox.append(label)
+        hbox.append(sw)
+        vbox.append(hbox)
 
         sw = Gtk.Switch()
         label = Gtk.Label(_("Show time labels"))
         sw.set_active(CONFIG.show_time_labels)
         sw.connect("notify::active", on_show_time_labels_toggled)
-        hbox = Gtk.HBox(spacing=6)
-        hbox.pack_start(label, False, True, 0)
-        hbox.pack_end(sw, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox = Gtk.Box(spacing=6)
+        hbox.append(label)
+        hbox.append(sw)
+        vbox.append(hbox)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
-        hbox.pack_start(label, False, True, 0)
+        hbox.append(label)
         seek_amount = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(CONFIG.seek_amount, 0, 60000, 1000, 1000, 0)
+            adjustment=Gtk.Adjustment(
+                value=CONFIG.seek_amount,
+                lower=0,
+                upper=60000,
+                step_increment=1000,
+                page_increment=1000,
+                page_size=0,
+            )
         )
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
-        hbox.pack_end(seek_amount, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox.append(seek_amount)
+        vbox.append(hbox)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         label = Gtk.Label(label=_("Waveform height (pixels):"))
-        hbox.pack_start(label, False, True, 0)
+        hbox.append(label)
         height_px = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
+            adjustment=Gtk.Adjustment(
+                value=CONFIG.height_px,
+                lower=40,
+                upper=400,
+                step_increment=10,
+                page_increment=10,
+                page_size=0,
+            )
         )
         height_px.set_numeric(True)
         height_px.connect("changed", on_height_px_changed)
-        hbox.pack_end(height_px, False, True, 0)
-        vbox.pack_start(hbox, True, True, 0)
+        hbox.append(height_px)
+        vbox.append(hbox)
 
         return vbox
 

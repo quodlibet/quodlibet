@@ -39,7 +39,6 @@ class TQltk(TestCase):
         self.assertEqual(qltk.get_top_parent(w), w)
         self.assertEqual(qltk.get_top_parent(l), None)
         w.destroy()
-        l.destroy()
 
     def test_gtp_packed(self):
         w = Gtk.Window()
@@ -48,75 +47,59 @@ class TQltk(TestCase):
         self.assertEqual(qltk.get_top_parent(w), w)
         self.assertEqual(qltk.get_top_parent(l), w)
         w.destroy()
-        l.destroy()
 
-    def test_is_accel(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
-        assert not qltk.is_accel(e, "a")
+    def test_is_accel_pressed(self):
+        keyval = Gdk.KEY_Return
+        state = Gdk.ModifierType.CONTROL_MASK
+        assert qltk.is_accel_pressed(keyval, state, "<ctrl>Return")
+        assert qltk.is_accel_pressed(keyval, state, "a", "<ctrl>Return")
+        assert qltk.is_accel_pressed(keyval, state, "<ctrl>Return", "b")
+        assert not qltk.is_accel_pressed(keyval, state, "a", "b")
 
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
-        assert qltk.is_accel(e, "<ctrl>Return")
-
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
-        assert qltk.is_accel(e, "a", "<ctrl>Return")
-        assert qltk.is_accel(e, "<ctrl>Return", "b")
-        assert not qltk.is_accel(e, "a", "b")
-
-    def test_is_accel_invalid(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
+    def test_is_accel_pressed_invalid(self):
         with self.assertRaises(ValueError):
-            qltk.is_accel(e, "NOPE")
+            qltk.is_accel_pressed(Gdk.KEY_Return, Gdk.ModifierType(0), "NOPE")
 
-    def test_is_accel_primary(self):
-        e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
-        e.keyval = Gdk.KEY_Return
-        e.state = Gdk.ModifierType.CONTROL_MASK
+    def test_is_accel_pressed_primary(self):
         if not util.is_osx():
-            assert qltk.is_accel(e, "<Primary>Return")
+            assert qltk.is_accel_pressed(
+                Gdk.KEY_Return, Gdk.ModifierType.CONTROL_MASK, "<Primary>Return"
+            )
 
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()
         l = Gtk.Label()
         w.add(l)
-        m = Gtk.Menu()
+        m = Gtk.PopoverMenu()
         m.attach_to_widget(l, None)
         w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
-        m.destroy()
 
     def test_redraw_all(self):
         qltk.redraw_all_toplevels()
 
     def test_get_menu_item_top_parent(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
         window = Gtk.Window()
-        menu.attach_to_widget(window, None)
-        self.assertEqual(qltk.get_menu_item_top_parent(item), window)
+        box = Gtk.Box()
+        window.set_child(box)
+        label = Gtk.Label()
+        box.append(label)
+        self.assertEqual(qltk.get_menu_item_top_parent(label), window)
 
     def test_get_menu_item_top_parent_sub(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
         window = Gtk.Window()
-        menu.attach_to_widget(window, None)
-        sub = Gtk.Menu()
-        sub_item = Gtk.MenuItem()
-        sub.append(sub_item)
-        item.set_submenu(sub)
-        self.assertEqual(qltk.get_menu_item_top_parent(sub_item), window)
+        box = Gtk.Box()
+        window.set_child(box)
+        inner = Gtk.Box()
+        box.append(inner)
+        label = Gtk.Label()
+        inner.append(label)
+        self.assertEqual(qltk.get_menu_item_top_parent(label), window)
 
     def test_get_menu_item_top_parent_unattached(self):
-        item = Gtk.MenuItem()
-        menu = Gtk.Menu()
-        menu.append(item)
-        assert qltk.get_menu_item_top_parent(item) is None
+        label = Gtk.Label()
+        assert qltk.get_menu_item_top_parent(label) is None
 
     def test_show_uri_with_existing_window(self):
         PluginManager.instance = PluginManager()

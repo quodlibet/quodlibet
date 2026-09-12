@@ -12,9 +12,9 @@ from quodlibet.qltk import Icons, ToggleButton
 from quodlibet.plugins.gui import UserInterfacePlugin
 
 
-class RatingBox(Gtk.VBox):
+class RatingBox(Gtk.Box):
     def __init__(self):
-        super().__init__(self)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.thumb_ups = 1
         self.thumb_downs = 1
@@ -23,7 +23,7 @@ class RatingBox(Gtk.VBox):
         self.title.set_line_wrap(True)
         self.title.set_lines(2)
 
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box()
         self.upvote = ToggleButton("👍")
         self.downvote = ToggleButton("👎")
         self.upvote.connect("toggled", self.__thumb_toggled)
@@ -31,13 +31,13 @@ class RatingBox(Gtk.VBox):
         self.score_label = Gtk.Label("----")
         self.upvote.set_property("height-request", 50)
         self.downvote.set_property("height-request", 50)
-        hbox.pack_start(self.upvote, True, True, 5)
-        hbox.pack_start(self.downvote, True, True, 5)
+        hbox.append(self.upvote)
+        hbox.append(self.downvote)
 
         self.hbox = hbox
-        self.pack_start(self.title, False, False, 10)
-        self.pack_start(self.score_label, True, True, 5)
-        self.pack_start(self.hbox, False, False, 5)
+        self.append(self.title)
+        self.append(self.score_label)
+        self.append(self.hbox)
 
     def set_current_title(self, title):
         self.title.set_text(title)
@@ -103,13 +103,15 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
         self.rating_box = RatingBox()
 
     def create_sidebar(self):
-        vbox = Gtk.VBox()
-        vbox.pack_start(self.rating_box, False, False, 0)
+        vbox = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
+        vbox.append(self.rating_box)
         vbox.show_all()
         return vbox
 
     def disabled(self):
-        self.rating_box.destroy()
+        self.rating_box = None
 
     def plugin_on_song_ended(self, song, stopped):
         if song is not None:

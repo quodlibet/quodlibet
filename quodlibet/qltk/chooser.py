@@ -8,7 +8,7 @@
 import os
 import contextlib
 
-from gi.repository import Gtk
+from gi.repository import Gio, Gtk, GLib
 from quodlibet.fsn import fsnative, path2fsn, fsn2bytes, bytes2fsn
 
 from quodlibet import _
@@ -65,6 +65,42 @@ def with_response(resp):
     _response = None
 
 
+def chooser_path(chooser):
+    """The chooser's selected path, or None.
+
+    GTK4 dropped `get_filename()` in favour of `Gio.File`s.
+
+    Args:
+        chooser (Gtk.FileChooser)
+    Returns:
+        fsnative or None
+    """
+
+    gfile = chooser.get_file()
+    path = gfile.get_path() if gfile is not None else None
+    return path2fsn(path) if path else None
+
+
+def chooser_paths(chooser):
+    """The chooser's selected paths.
+
+    GTK4 dropped `get_filenames()` in favour of a `Gio.ListModel` of `Gio.File`s.
+
+    Args:
+        chooser (Gtk.FileChooser)
+    Returns:
+        List[fsnative]
+    """
+
+    files = chooser.get_files()
+    paths = []
+    for i in range(files.get_n_items()):
+        path = files.get_item(i).get_path()
+        if path:
+            paths.append(path2fsn(path))
+    return paths
+
+
 def _run_chooser(parent, chooser):
     """Run the chooser ("blocking") and return a list of paths.
 
@@ -75,22 +111,26 @@ def _run_chooser(parent, chooser):
         List[fsnative]
     """
 
-    chooser.set_current_folder(get_current_dir())
+    # GTK4: set_current_folder takes Gio.File instead of string
+    chooser.set_current_folder(Gio.File.new_for_path(get_current_dir()))
     chooser.set_transient_for(get_top_parent(parent))
 
     if _response is not None:
+        # For testing - use injected response
         response = _response
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        # Process any pending events
+        context = GLib.MainContext.default()
+        while context.pending():
+            context.iteration(False)
     else:
         response = chooser.run()
 
     if response == Gtk.ResponseType.ACCEPT:
-        result = list(chooser.get_filenames())
+        result = chooser_paths(chooser)
 
         current_dir = chooser.get_current_folder()
-        if current_dir:
-            set_current_dir(current_dir)
+        if current_dir is not None and current_dir.get_path():
+            set_current_dir(path2fsn(current_dir.get_path()))
     else:
         result = []
     chooser.destroy()
@@ -257,7 +297,8 @@ def choose_target_folder(parent, title, action_title, name_suggestion=None):
 
     chooser = _get_chooser(action_title, _("_Cancel"))
     chooser.set_title(title)
-    chooser.set_action(Gtk.FileChooserAction.CREATE_FOLDER)
+    # GTK4: CREATE_FOLDER removed - use SELECT_FOLDER with set_current_name
+    chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
     chooser.set_local_only(True)
     if name_suggestion is not None:
         chooser.set_current_name(name_suggestion)

@@ -12,7 +12,7 @@ from gi.repository import GObject, Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import Align
@@ -30,10 +30,10 @@ class SeekBar(Gtk.Box):
         scale.set_draw_value(False)
         self._scale = scale
 
-        self.pack_start(Align(self._elapsed_label, border=6), False, True, 0)
-        self.pack_start(scale, True, True, 0)
-        self.pack_start(Align(self._remaining_label, border=6), False, True, 0)
-        for child in self.get_children():
+        self.append(Align(self._elapsed_label, border=6))
+        self.append(scale)
+        self.append(Align(self._remaining_label, border=6))
+        for child in get_children(self):
             child.show_all()
 
         self._id = self._scale.connect("value-changed", self._on_user_changed, player)
@@ -55,7 +55,7 @@ class SeekBar(Gtk.Box):
         self._tracker.tick()
 
     def _on_destroy(self, *args):
-        self._tracker.destroy()
+        self._tracker = None
 
     @contextlib.contextmanager
     def _inhibit(self):
@@ -129,5 +129,4 @@ class SeekBarPlugin(EventPlugin):
 
     def disabled(self):
         app.window.set_seekbar_widget(None)
-        self._bar.destroy()
         del self._bar

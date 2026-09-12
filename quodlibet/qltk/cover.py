@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject
+from gi.repository import Gtk, GLib, Gdk, GdkPixbuf, Gio, GObject, Graphene
 from quodlibet.fsn import fsnative
 
 from quodlibet import qltk
@@ -18,7 +18,6 @@ from quodlibet.qltk.image import (
     calc_scale_size,
     scale,
     add_border_widget,
-    get_surface_for_pixbuf,
 )
 
 
@@ -30,33 +29,33 @@ class BigCenteredImage(qltk.Window):
     """Load an image and display it, scaling it down to the parent window size."""
 
     def __init__(self, title, fileobj, parent, scale=0.5):
-        super().__init__(type=Gtk.WindowType.POPUP)
-        self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
+        super().__init__()
+        # A bare frame, as the GTK3 popup window was
+        self.set_decorated(False)
 
         assert parent
         parent = qltk.get_top_parent(parent)
         self.set_transient_for(parent)
 
-        self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-
         # If image fails to set, abort construction.
         if not self.set_image(fileobj, parent, scale):
-            self.destroy()
             return
 
-        event_box = Gtk.EventBox()
-        event_box.add(self.__image)
+        event_box = Gtk.Box()
+        event_box.append(self.__image)
 
         frame = Gtk.Frame()
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
-        frame.add(event_box)
+        frame.set_child(event_box)
 
-        self.add(frame)
+        self.set_child(frame)
 
-        event_box.connect("button-press-event", self.__destroy)
-        event_box.connect("key-press-event", self.__destroy)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__destroy)
+        event_box.add_controller(click)
 
-        self.get_child().show_all()
+        key = Gtk.EventControllerKey()
+        key.connect("key-pressed", self.__destroy)
+        event_box.add_controller(key)
 
     def set_image(self, file, parent, scale=0.5):
         scale_factor = self.get_scale_factor()
@@ -73,13 +72,20 @@ class BigCenteredImage(qltk.Window):
         if not pixbuf:
             return False
 
-        self.__image = Gtk.Image()
-        self.__image.set_from_surface(get_surface_for_pixbuf(self, pixbuf))
+        # Picture, not Image: an Image draws its paintable at icon size
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        self.__image = Gtk.Picture.new_for_paintable(texture)
+        self.__image.set_can_shrink(False)
 
         return True
 
     def __calculate_screen_width(self, parent, scale=0.5):
-        width, height = parent.get_size()
+        width, height = parent.get_width(), parent.get_height()
+        # Fall back to a reasonable default if the window is not yet realized
+        if width <= 0:
+            width = 800
+        if height <= 0:
+            height = 600
         width = int(width * scale)
         height = int(height * scale)
         return (width, height)
@@ -97,21 +103,39 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
     height *= scale_factor
 
     size = max(width, height)
-    theme = Gtk.IconTheme.get_default()
-    icon_info = theme.lookup_icon("quodlibet-missing-cover", size, 0)
-    if icon_info is None:
+    display = Gdk.Display.get_default()
+    if display is None:
+        return None
+    theme = Gtk.IconTheme.get_for_display(display)
+    icon_paintable = theme.lookup_icon(
+        "quodlibet-missing-cover",
+        None,  # fallbacks
+        size,
+        scale_factor,
+        Gtk.TextDirection.NONE,
+        0,  # flags
+    )
+    if icon_paintable is None:
         return None
 
-    filename = icon_info.get_filename()
+    # GTK4: IconPaintable.get_file() returns Gio.File, not filename string
+    icon_file = icon_paintable.get_file()
+    if icon_file is None:
+        return None
+
+    filename = icon_file.get_path()
     try:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(filename, width, height)
     except GLib.GError:
         return None
 
 
-class ResizeImage(Gtk.Bin):
+class ResizeImage(qltk.Destroyable, Gtk.Widget):
+    MAX_SIZE = 128
+    """Largest a resizing cover will grow to, however tall its row gets"""
+
     def __init__(self, resize=False, size=1):
-        Gtk.Bin.__init__(self)
+        super().__init__()
         self._dirty = True
         self._path = None
         self._file = None
@@ -164,61 +188,61 @@ class ResizeImage(Gtk.Bin):
 
     def do_get_request_mode(self):
         if self._resize:
-            return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
+            return Gtk.SizeRequestMode.WIDTH_FOR_HEIGHT
         return Gtk.SizeRequestMode.CONSTANT_SIZE
 
-    def do_get_preferred_width(self):
+    def do_measure(self, orientation, for_size):
         if self._resize:
-            return (0, 0)
+            # Follow the row height, but only so far: the song info wraps in a
+            # narrow window, and without a cap the cover chases it and grows
+            if orientation == Gtk.Orientation.HORIZONTAL and for_size > 0:
+                width, _height = self._get_size(300, min(for_size, self.MAX_SIZE))
+                return (width, width, -1, -1)
+            return (0, 0, -1, -1)
+
         width, height = self._get_size(self._size, self._size)
-        return (width, width)
+        size = width if orientation == Gtk.Orientation.HORIZONTAL else height
+        return (size, size, -1, -1)
 
-    def do_get_preferred_height(self):
-        if self._resize:
-            return (0, 0)
-        width, height = self._get_size(self._size, self._size)
-        return (height, height)
-
-    def do_get_preferred_width_for_height(self, req_height):
-        width, height = self._get_size(300, req_height)
-
-        if width > 256:
-            width = width
-
-        return (width, width)
-
-    def do_draw(self, cairo_context):
+    def do_snapshot(self, snapshot):
         pixbuf = self._get_pixbuf()
         if not pixbuf:
             return
 
-        alloc = self.get_allocation()
-        width, height = alloc.width, alloc.height
-
+        width = self.get_width()
+        height = self.get_height()
+        if self._resize:
+            width = min(width, self.MAX_SIZE)
+            height = min(height, self.MAX_SIZE)
         scale_factor = self.get_scale_factor()
-
-        width *= scale_factor
-        height *= scale_factor
+        dev_width = width * scale_factor
+        dev_height = height * scale_factor
 
         if self._path:
-            if width < (2 * scale_factor) or height < (2 * scale_factor):
+            if dev_width < (2 * scale_factor) or dev_height < (2 * scale_factor):
                 return
             pixbuf = scale(
-                pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor)
+                pixbuf, (dev_width - 2 * scale_factor, dev_height - 2 * scale_factor)
             )
             pixbuf = add_border_widget(pixbuf, self)
         else:
-            pixbuf = scale(pixbuf, (width, height))
+            pixbuf = scale(pixbuf, (dev_width, dev_height))
 
-        style_context = self.get_style_context()
         if not pixbuf:
             print_w(f"Failed to scale pixbuf for {self._path}")
             return
-        surface = get_surface_for_pixbuf(self, pixbuf)
-        Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
+
+        texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+        # Centre the (aspect-preserved) cover within the allocation.
+        tex_w = texture.get_width() / scale_factor
+        tex_h = texture.get_height() / scale_factor
+        x = (self.get_width() - tex_w) / 2
+        y = (self.get_height() - tex_h) / 2
+        rect = Graphene.Rect().init(x, y, tex_w, tex_h)
+        snapshot.append_texture(texture, rect)
 
 
-class CoverImage(Gtk.EventBox):
+class CoverImage(qltk.Destroyable, Gtk.Box):
     __gsignals__ = {
         # We do not necessarily display cover at the same instant this widget
         # is created or set_song is called. This signal allows callers know
@@ -229,23 +253,23 @@ class CoverImage(Gtk.EventBox):
 
     def __init__(self, resize=False, size=70, song=None):
         super().__init__()
-        self.set_visible_window(False)
         self.__song = None
         self.__file = None
         self.__current_bci = None
         self.__cancellable = None
         self._scale = 0.9
 
-        self.add(ResizeImage(resize, size))
-        self.connect("button-press-event", self.__album_clicked)
+        self.append(ResizeImage(resize, size))
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__album_clicked)
+        self.add_controller(click)
         self.set_song(song)
-        self.get_child().show_all()
 
     def set_image(self, _file):
         if _file is not None and not _file.name:
             print_w("Got file which is not in the filesystem!")
         self.__file = _file
-        self.get_child().set_file(_file)
+        self.get_first_child().set_file(_file)
 
     def set_song(self, song):
         self.__song = song
@@ -277,7 +301,6 @@ class CoverImage(Gtk.EventBox):
     def update_bci(self, albumfile):
         # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
-            self.__current_bci.destroy()
             if albumfile:
                 if self._scale:
                     self.__show_cover(self.__song, self._scale)
@@ -290,18 +313,15 @@ class CoverImage(Gtk.EventBox):
     def __reset_bci(self, bci):
         self.__current_bci = None
 
-    def __album_clicked(self, box, event):
+    def __album_clicked(self, gesture, n_press, x, y):
         song = self.__song
         if not song:
-            return None
+            return
 
-        if (
-            event.type != Gdk.EventType.BUTTON_PRESS
-            or event.button == Gdk.BUTTON_MIDDLE
-        ):
-            return False
+        if gesture.get_current_button() == Gdk.BUTTON_MIDDLE:
+            return
 
-        return self.__show_cover(song, scale=self._scale)
+        self.__show_cover(song, scale=self._scale)
 
     def __show_cover(self, song, scale=0.5):
         """Show the cover as a detached BigCenteredImage.

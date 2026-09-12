@@ -12,7 +12,6 @@ try:
 except ImportError:
     dbus = None
 
-from gi.repository import Gtk
 
 from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
@@ -118,7 +117,7 @@ class TMPRIS(PluginTestCase):
     def _wait(self, msg=""):
         start = time.time()
         while not self._replies:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()  # was: iteration(False)
             if time.time() - start > MAX_TIME:
                 self.fail(f"Timed out waiting for replies ({msg})")
         return self._replies.pop(0)
