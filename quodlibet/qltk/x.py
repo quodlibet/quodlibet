@@ -431,6 +431,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
         self._provider = None
         self._color = ""
         self._dummy = Gtk.ToggleButton()
+        self.connect("notify::active", lambda *a: self._update_provider())
 
     def _update_provider(self):
         # not active, reset everything
@@ -479,6 +480,6 @@ class HighlightToggleButton(Gtk.ToggleButton):
             )
             self._provider = provider
 
-    def do_draw(self, context):
+    def do_css_changed(self, change):
+        Gtk.ToggleButton.do_css_changed(self, change)
         self._update_provider()
-        return Gtk.ToggleButton.do_draw(self, context)
