@@ -48,7 +48,8 @@ class TimeLabel(Gtk.Label):
         widths = self.__widths.get(num_chars, (min_, nat))
         widths = max(min_, widths[0]), max(nat, widths[1])
         self.__widths[num_chars] = widths
-        return widths[0], widths[1], min_base, nat_base
+        # baselines are only meaningful when measuring vertically
+        return widths[0], widths[1], -1, -1
 
     def set_time(self, time_):
         """Set the time in seconds"""

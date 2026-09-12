@@ -35,7 +35,8 @@ class TreeViewHints(Gtk.Window):
                 self, orientation, for_size
             )
             if orientation == Gtk.Orientation.HORIZONTAL:
-                return 0, min_, min_base, nat_base
+                # baselines are only meaningful when measuring vertically
+                return 0, min_, -1, -1
             return min_, _nat, min_base, nat_base
 
     # Note: hover tooltips on truncated TreeView cells are not yet wired up
