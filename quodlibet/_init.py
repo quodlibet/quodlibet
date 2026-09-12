@@ -409,12 +409,6 @@ def _init_gtk():  # noqa: C901
     if not hasattr(Gtk.Window, "add"):
         Gtk.Window.add = lambda self, child: self.set_child(child)
 
-    # GTK4: Window.resize() removed - use set_default_size() as approximation
-    if not hasattr(Gtk.Window, "resize"):
-        Gtk.Window.resize = lambda self, width, height: self.set_default_size(
-            width, height
-        )
-
     # GTK4: Box.add() -> Box.append()
     if not hasattr(Gtk.Box, "add"):
         Gtk.Box.add = lambda self, child: self.append(child)

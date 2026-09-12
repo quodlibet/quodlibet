@@ -339,7 +339,7 @@ class PersistentWindowMixin:
         # GTK4: get_screen() removed, skip screen size clamping
         # GTK4 handles window sizing constraints automatically
         if x >= 1 and y >= 1:
-            self.resize(x, y)
+            self.set_default_size(x, y)
 
     def __configure_notify(self, *args):
         """GTK4: Handle notify::default-width/height instead of configure-event"""
@@ -377,8 +377,12 @@ class PersistentWindowMixin:
         if self._should_ignore_state():
             return
 
-        # GTK4: get_size() removed, use get_width()/get_height()
         width, height = self.get_width(), self.get_height()
+        if width < 1 or height < 1:
+            # not allocated yet: notify::default-width fires before the first
+            # allocation, and __restore_size refuses anything under 1x1, so
+            # saving now would persist a size that can never be restored
+            return
         value = "%d %d" % (width, height)
         config.set("memory", self.__conf("size"), value)
 
