@@ -1,5 +1,6 @@
 # Copyright 2011 Christoph Reiter <reiter.christoph@gmail.com>
 # Copyright 2020 Antigone <mail@antigone.xyz>
+# Copyright 2026 Am-curious
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,32 +51,48 @@ class SessionInhibit(EventPlugin):
     PLUGIN_ID = "screensaver_inhibit"
     PLUGIN_NAME = _("Inhibit Screensaver/Suspend")
     PLUGIN_DESC = _(
-        "On a GNOME desktop, when a song is playing, prevents"
-        " either the screensaver from activating, or prevents the"
-        " computer from suspending."
+        "When a song is playing, prevents either the screensaver from"
+        " activating, or prevents the computer from suspending."
     )
     PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_SCREENSAVER
 
     CONFIG_MODE = PLUGIN_ID + "_mode"
 
-    DBUS_NAME = "org.gnome.SessionManager"
-    DBUS_INTERFACE = "org.gnome.SessionManager"
-    DBUS_PATH = "/org/gnome/SessionManager"
+    GNOME_DBUS = (
+        "org.gnome.SessionManager",
+        "/org/gnome/SessionManager",
+        "org.gnome.SessionManager",
+    )
+    FREEDESKTOP_DBUS = {
+        InhibitStrings.IDLE: (
+            "org.freedesktop.ScreenSaver",
+            "/org/freedesktop/ScreenSaver",
+            "org.freedesktop.ScreenSaver",
+        ),
+        InhibitStrings.SUSPEND: (
+            "org.freedesktop.PowerManagement",
+            "/org/freedesktop/PowerManagement/Inhibit",
+            "org.freedesktop.PowerManagement.Inhibit",
+        ),
+    }
 
     APPLICATION_ID = "quodlibet"
     INHIBIT_REASON = _("Music is playing")
 
     __cookie = None
+    __dbus_proxy = None
+    __uninhibit_method = None
 
-    def __get_dbus_proxy(self):
+    def __get_dbus_proxy(self, dbus):
+        name, path, interface = dbus
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         return Gio.DBusProxy.new_sync(
             bus,
             Gio.DBusProxyFlags.NONE,
             None,
-            self.DBUS_NAME,
-            self.DBUS_PATH,
-            self.DBUS_INTERFACE,
+            name,
+            path,
+            interface,
             None,
         )
 
@@ -84,10 +101,12 @@ class SessionInhibit(EventPlugin):
             self.plugin_on_unpaused()
 
     def disabled(self):
-        if not app.player.paused:
-            self.plugin_on_paused()
+        self.plugin_on_paused()
 
     def plugin_on_unpaused(self):
+        if self.__cookie is not None:
+            return
+
         xid = get_toplevel_xid()
         mode = config.get("plugins", self.CONFIG_MODE, InhibitStrings.IDLE)
         flags = (
@@ -95,23 +114,39 @@ class SessionInhibit(EventPlugin):
             if mode == InhibitStrings.SUSPEND
             else InhibitFlags.IDLE
         )
-
         try:
-            dbus_proxy = self.__get_dbus_proxy()
-            self.__cookie = dbus_proxy.Inhibit(
+            dbus_proxy = self.__get_dbus_proxy(self.GNOME_DBUS)
+            cookie = dbus_proxy.Inhibit(
                 "(susu)", self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags
             )
+            uninhibit_method = "Uninhibit"
         except GLib.Error:
-            pass
+            try:
+                dbus_proxy = self.__get_dbus_proxy(self.FREEDESKTOP_DBUS[mode])
+                cookie = dbus_proxy.Inhibit(
+                    "(ss)", self.APPLICATION_ID, self.INHIBIT_REASON
+                )
+                uninhibit_method = "UnInhibit"
+            except GLib.Error:
+                return
+
+        self.__dbus_proxy = dbus_proxy
+        self.__cookie = cookie
+        self.__uninhibit_method = uninhibit_method
 
     def plugin_on_paused(self):
         if self.__cookie is None:
             return
 
+        dbus_proxy = self.__dbus_proxy
+        cookie = self.__cookie
+        uninhibit_method = self.__uninhibit_method
+        self.__dbus_proxy = None
+        self.__cookie = None
+        self.__uninhibit_method = None
+
         try:
-            dbus_proxy = self.__get_dbus_proxy()
-            dbus_proxy.Uninhibit("(u)", self.__cookie)
-            self.__cookie = None
+            getattr(dbus_proxy, uninhibit_method)("(u)", cookie)
         except GLib.Error:
             pass
 
@@ -125,7 +160,6 @@ class SessionInhibit(EventPlugin):
                 self.plugin_on_unpaused()
 
         mode = config.get("plugins", self.CONFIG_MODE, InhibitStrings.IDLE)
-
         hb = Gtk.HBox(spacing=6)
         hb.set_border_width(6)
         # Translators: Inhibiting Mode
