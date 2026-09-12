@@ -662,13 +662,16 @@ class PreferencesButton(Gtk.Box):
     def __init__(self, browser):
         super().__init__()
 
-        menu = Gtk.PopoverMenu()
+        prefs_action = Gio.SimpleAction.new("preferences", None)
+        prefs_action.connect("activate", lambda *a: Preferences(browser))
+        actions = Gio.SimpleActionGroup()
+        actions.add_action(prefs_action)
 
-        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
-        menu.append(pref_item)
-        connect_obj(pref_item, "activate", Preferences, browser)
+        menu_model = Gio.Menu()
+        menu_model.append(_("_Preferences"), "browser.preferences")
 
-        menu.show_all()
+        menu = Gtk.PopoverMenu.new_from_model(menu_model)
+        menu.insert_action_group("browser", actions)
 
         button = MenuButton(
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True

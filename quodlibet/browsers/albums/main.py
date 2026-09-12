@@ -34,7 +34,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj, DeferredSignal
@@ -232,33 +232,33 @@ class PreferencesButton(Gtk.Box):
             (_("Play_count"), self.__compare_avgplaycount),
         ]
 
-        menu = Gtk.PopoverMenu()
-
-        sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.PopoverMenu()
-
         active = config.getint("browsers", "album_sort", 1)
 
-        item = None
+        self._sort_action = Gio.SimpleAction.new_stateful(
+            "sort", GLib.VariantType.new("i"), GLib.Variant("i", active)
+        )
+        self._sort_action.connect("change-state", self.__sort_change_state, model)
+        prefs_action = Gio.SimpleAction.new("preferences", None)
+        prefs_action.connect("activate", lambda *a: Preferences(browser))
+
+        actions = Gio.SimpleActionGroup()
+        actions.add_action(self._sort_action)
+        actions.add_action(prefs_action)
+
+        sort_menu = Gio.Menu()
         for i, (label, func) in enumerate(sort_orders):
-            item = RadioMenuItem(group=item, label=label, use_underline=True)
             model.set_sort_func(100 + i, func)
-            if i == active:
-                model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
-                item.set_active(True)
-            item.connect(
-                "toggled", util.DeferredSignal(self.__sort_toggled_cb), model, i
-            )
-            sort_menu.append(item)
+            item = Gio.MenuItem.new(label, None)
+            item.set_action_and_target_value("browser.sort", GLib.Variant("i", i))
+            sort_menu.append_item(item)
+        model.set_sort_column_id(100 + active, Gtk.SortType.ASCENDING)
 
-        sort_item.set_submenu(sort_menu)
-        menu.append(sort_item)
+        menu_model = Gio.Menu()
+        menu_model.append_submenu(_("Sort _by…"), sort_menu)
+        menu_model.append(_("_Preferences"), "browser.preferences")
 
-        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
-        menu.append(pref_item)
-        connect_obj(pref_item, "activate", Preferences, browser)
-
-        menu.show_all()
+        menu = Gtk.PopoverMenu.new_from_model(menu_model)
+        menu.insert_action_group("browser", actions)
 
         button = MenuButton(
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
@@ -266,10 +266,11 @@ class PreferencesButton(Gtk.Box):
         button.set_menu(menu)
         self.append(button)
 
-    def __sort_toggled_cb(self, item, model, num):
-        if item.get_active():
-            config.set("browsers", "album_sort", str(num))
-            model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
+    def __sort_change_state(self, action, value, model):
+        action.set_state(value)
+        num = value.get_int32()
+        config.set("browsers", "album_sort", str(num))
+        model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
     def __compare_title(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
