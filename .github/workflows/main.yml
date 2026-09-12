@@ -94,13 +94,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install dependencies
-        run: |
-          ./.ci/macos-install.sh
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+      - name: Install Python dependencies
+        run: nix develop -c poetry install
 
       - name: Run tests
-        run: |
-          ./.ci/macos-test.sh
+        run: nix develop -c poetry run pytest tests
 
   ubuntu:
     runs-on: ubuntu-24.04

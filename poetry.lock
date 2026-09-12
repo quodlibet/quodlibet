@@ -71,7 +71,7 @@ files = [
     {file = "certifi-2026.1.4-py3-none-any.whl", hash = "sha256:9943707519e4add1115f44c2bc244f782c0249876bf51b6599fee1ffbedd685c"},
     {file = "certifi-2026.1.4.tar.gz", hash = "sha256:ac726dd470482006e014ad384921ed6438c457018f4b3d204aea4281258b2120"},
 ]
-markers = {main = "extra == \"plugins\""}
+markers = {main = "sys_platform == \"darwin\" or extra == \"plugins\""}
 
 [[package]]
 name = "charset-normalizer"
@@ -1874,4 +1874,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "regex", 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "ab2cc739728212619e3a4815e89a66a64a4455203b9a5b46dfabf0574349e3e3"
+content-hash = "eb46f14647f83d2e4a8e1daf8c4ba9bec633c18cf61a994f3f66aaefd0c1099d"
