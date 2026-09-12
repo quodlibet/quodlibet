@@ -30,8 +30,13 @@ class TreeViewHints(Gtk.Window):
     columns, and in the future, tooltips."""
 
     class _MinLabel(Gtk.Label):
-        def do_get_preferred_width(*args):
-            return (0, Gtk.Label.do_get_preferred_width(*args)[0])
+        def do_measure(self, orientation, for_size):
+            min_, _nat, min_base, nat_base = Gtk.Label.do_measure(
+                self, orientation, for_size
+            )
+            if orientation == Gtk.Orientation.HORIZONTAL:
+                return 0, min_, min_base, nat_base
+            return min_, _nat, min_base, nat_base
 
     # Note: hover tooltips on truncated TreeView cells are not yet wired up
     # for GTK4. The original GTK3 motion handler relied on bin_window and

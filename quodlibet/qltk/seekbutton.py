@@ -35,16 +35,20 @@ class TimeLabel(Gtk.Label):
         self._disabled = False
         self.set_time(time_)
 
-    def do_get_preferred_width(self):
-        widths = Gtk.Label.do_get_preferred_width(self)
+    def do_measure(self, orientation, for_size):
+        min_, nat, min_base, nat_base = Gtk.Label.do_measure(
+            self, orientation, for_size
+        )
+        if orientation != Gtk.Orientation.HORIZONTAL:
+            return min_, nat, min_base, nat_base
 
         # If for same number of characters, the needed width was larger,
         # use that instead of the current one
         num_chars = len(self.get_text())
-        max_widths = self.__widths.get(num_chars, widths)
-        widths = max(widths[0], max_widths[0]), max(widths[1], max_widths[1])
+        widths = self.__widths.get(num_chars, (min_, nat))
+        widths = max(min_, widths[0]), max(nat, widths[1])
         self.__widths[num_chars] = widths
-        return widths
+        return widths[0], widths[1], min_base, nat_base
 
     def set_time(self, time_):
         """Set the time in seconds"""
