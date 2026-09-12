@@ -52,13 +52,22 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 |debian-logo| Debian
 --------------------
 
-* Debian Stable::
+* Debian Stable (Trixie)::
+
+    # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
+
+    curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x5A62D0CAB6264964" | sudo gpg --dearmor -o /etc/apt/keyrings/key-5A62D0CAB6264964.gpg
+    echo -e "Types: deb\nURIs: http://lazka.github.io/ql-debian/stable\nSuites: quodlibet-stable/\nComponents: \nSigned-By: /etc/apt/keyrings/key-5A62D0CAB6264964.gpg" | sudo tee /etc/apt/sources.list.d/quodlibet.sources   
+    sudo apt update
+    sudo apt install quodlibet
+
+* Debian Bookworm::
 
     # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
-    sudo apt-get update
-    sudo apt-get install quodlibet
+    sudo apt update
+    sudo apt install quodlibet
 
 
 .. _fedora:

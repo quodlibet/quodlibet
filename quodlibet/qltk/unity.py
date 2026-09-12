@@ -12,7 +12,10 @@ See the MPRIS plugin for sound menu integration.
 
 import gi
 
+from gi.repository import GLib
+
 from quodlibet import _
+from quodlibet import util
 from quodlibet.util import gi_require_versions
 
 
@@ -43,7 +46,11 @@ def init(desktop_id, player):
     if not is_unity:
         return
 
-    launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
+    try:
+        launcher = Unity.LauncherEntry.get_for_desktop_id(desktop_id)
+    except GLib.GError:
+        util.print_exc()
+        return
 
     main = Dbusmenu.Menuitem()
 

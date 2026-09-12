@@ -2212,7 +2212,7 @@ msgstr "Системные уведомления"
 msgid "Displays a notification when the song changes."
 msgstr "Показывать уведомление при смене трека."
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "Следующий"
 
@@ -6230,7 +6230,7 @@ msgid "performers"
 msgstr "интерпретаторы"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "Никогда"
 
@@ -7606,11 +7606,11 @@ msgstr "_Начинать с:"
 msgid "_Total tracks:"
 msgstr "Всего _треков:"
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "Воспроизведение/пауза"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "Предыдущий"
 

@@ -22,4 +22,16 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix develop --command poetry --version
+      - name: Install dev + plugin deps in the Nix dev shell
+        run: nix develop --command poetry install --with dev --all-extras
+      - name: Smoke-test the dev shell
+        # Nix isn't a primary CI target; we just want to know the flake setup
+        # isn't borked. Installing the deps above is most of the signal; here we
+        # confirm the GUI stack imports and runs headlessly (importing `tests`
+        # starts Xvfb via pyvirtualdisplay) rather than running the full suite.
+        run: >-
+          nix develop --command poetry run pytest -rxXs
+          tests/test_util.py
+          tests/test_qltk_cover.py
+          tests/test_browsers_albums.py
       - run: nix flake check --keep-going -L

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-05-14 01:11+0000\n"
+"PO-Revision-Date: 2026-05-17 01:11+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.5.dev0\n"
+"X-Generator: Weblate 2026.6.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2153,7 +2153,7 @@ msgstr "曲目通知"
 msgid "Displays a notification when the song changes."
 msgstr "當曲目變更時顯示通知。"
 
-#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
+#: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:68
 msgid "Next"
 msgstr "下一個"
 
@@ -3513,7 +3513,6 @@ msgid "Queue Only"
 msgstr "僅限佇列"
 
 #: quodlibet/ext/playorder/queue.py:26
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3522,8 +3521,8 @@ msgid ""
 msgstr ""
 "限制歌曲的播放排至佇列。 \n"
 " \n"
-"在主視窗的隨機播放設定中選擇此播放順序，並啟用隨機播放模式。點按二下任何歌曲"
-"，將會使其排入佇列，而非播放。"
+"在主視窗的隨機播放設定中選擇此播放順序，並啟用隨機播放模式。點按二下任何歌"
+"曲，將會使其排入佇列，而非播放。"
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "Queue only"
@@ -6008,7 +6007,7 @@ msgid "performers"
 msgstr "演出者"
 
 #: quodlibet/qltk/information.py:214 quodlibet/qltk/information.py:228
-#: quodlibet/qltk/songlistcolumns.py:276
+#: quodlibet/qltk/songlistcolumns.py:278
 msgid "Never"
 msgstr "從未"
 
@@ -7324,11 +7323,11 @@ msgstr "起始編號(_M)："
 msgid "_Total tracks:"
 msgstr "曲目總數(_T)："
 
-#: quodlibet/qltk/unity.py:51
+#: quodlibet/qltk/unity.py:58
 msgid "Play/Pause"
 msgstr "播放/暫停"
 
-#: quodlibet/qltk/unity.py:71
+#: quodlibet/qltk/unity.py:78
 msgid "Previous"
 msgstr "前一個"
 
