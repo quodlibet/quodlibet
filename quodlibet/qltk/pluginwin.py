@@ -115,8 +115,6 @@ class PluginErrorWindow(UniqueWindow):
         else:
             self.add(scrolledwin)
 
-        self.get_child().show_all()
-
 
 class EnabledType:
     TAG, ALL, NO, DIS, EN, SEP = range(6)
@@ -484,7 +482,6 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         self.connect("destroy", self.__destroy)
         filter_model.set_visible_func(self.__filter, (fe, enabled_combo, type_combo))
 
-        self.get_child().show_all()
         fe.grab_focus()
 
         restore_id = config.get("memory", "plugin_selection")

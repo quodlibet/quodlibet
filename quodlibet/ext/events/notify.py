@@ -221,7 +221,6 @@ class PreferencesWidget(Gtk.Box):
 
         self.append(display_frame)
 
-        self.show_all()
         self.connect("destroy", self.on_destroyed)
 
     def on_radiobutton_toggled(self, radio, cfgname, value):

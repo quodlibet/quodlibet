@@ -164,7 +164,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
         hbox.append(button)
-        hbox.show_all()
         return hbox
 
     def _create_searchbar(self, library):
@@ -185,7 +184,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         search.connect("focus-out", focus)
 
         self._searchbox = Align(search, left=0, right=6, top=0)
-        self._searchbox.show_all()
 
     def update_connect_button(self):
         but = self.login_button
@@ -233,7 +231,6 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.update_connect_button()
         login.connect("clicked", clicked_login)
         hbox.append(login)
-        hbox.show_all()
         return hbox
 
     def _create_category_widget(self):

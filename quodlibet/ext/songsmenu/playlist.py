@@ -78,7 +78,6 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
         combo_path = Gtk.ComboBoxText()
         hbox_path.append(combo_path)
         diag_cont.append(hbox_path)
-        diag_cont.show_all()
 
         for option_text in [_("Use relative paths"), _("Use absolute paths")]:
             combo_path.append_text(option_text)

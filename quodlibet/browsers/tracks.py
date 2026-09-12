@@ -115,7 +115,6 @@ class TrackList(Browser):
         self.append(Align(sbb, left=6, right=6))
         self.append(sbb.flow_box)
         self.connect("destroy", self.__destroy)
-        self.show_all()
 
     def _get_text(self):
         return self._sb_box.get_text()

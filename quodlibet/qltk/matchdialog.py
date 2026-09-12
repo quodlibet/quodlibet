@@ -125,7 +125,6 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         self.order_entry.connect("changed", changed_order_entry)
 
     def run(self, destroy=True) -> list[int | None]:
-        self.show_all()
         resp = super().run()
         if destroy:
             self.destroy()

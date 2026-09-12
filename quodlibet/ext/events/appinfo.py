@@ -138,6 +138,5 @@ class AppInformation(EventPlugin):
         row += 1
 
         vb.append(grid)
-        vb.show_all()
 
         return vb

@@ -55,8 +55,6 @@ class SelectionWindow(Window):
 
         self.add(box)
 
-        self.show_all()
-
     def __filter(self, model, browser):
         selected = {}
         for row in model:

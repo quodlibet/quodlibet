@@ -91,8 +91,6 @@ class EditPlaycount(SongsMenuPlugin):
             )
             dlg.vbox.add(note)
 
-        dlg.show_all()
-
         # Only operate if apply is pressed.
         if dlg.run() == Gtk.ResponseType.APPLY:
             for song in songs:

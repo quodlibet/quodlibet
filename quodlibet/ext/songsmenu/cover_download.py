@@ -229,7 +229,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         connect_destroy(manager, "covers-found", self._covers_found)
         connect_destroy(manager, "searches-complete", self._finished)
         cancellable = self.__cancellable = Gio.Cancellable()
-        self.show_all()
 
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
@@ -308,7 +307,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         for result in results:
             self.model.append(result)
             self.flow_box.insert(self._create_item_widget(result), 0)
-        self.show_all()
 
     def _finished(self, manager, results):
         if not any(results.values()):

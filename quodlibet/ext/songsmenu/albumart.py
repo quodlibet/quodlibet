@@ -708,8 +708,6 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         self.add(hpaned)
 
-        self.show_all()
-
         left_vbox.append(self.progress)
 
         self.connect("destroy", self.__save_config)

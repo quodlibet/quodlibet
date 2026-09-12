@@ -210,7 +210,6 @@ class Preferences(qltk.UniqueWindow):
         self.add(vbox)
 
         apply.grab_focus()
-        self.show_all()
 
     def __apply(self, editor, close):
         if editor.headers != get_headers():

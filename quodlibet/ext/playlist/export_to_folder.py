@@ -83,8 +83,6 @@ class ExportToFolderDialog(Dialog):
         self.directory_chooser.connect("selection-changed", changed)
         self.pattern_entry.connect("changed", changed)
 
-        self.get_child().show_all()
-
 
 class Config:
     _config = PluginConfig(__name__)

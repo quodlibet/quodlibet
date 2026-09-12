@@ -18,7 +18,7 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk import is_accel_pressed, get_children
+from quodlibet.qltk import is_accel_pressed
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
@@ -112,9 +112,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()
-
-        for child in get_children(self):
-            child.show_all()
 
     def __destroy(self, *args):
         del self._sb_box
@@ -230,7 +227,6 @@ class PanedBrowser(Browser, util.InstanceTracker):
             sws.append(sw)
 
         self.multi_paned.set_widgets(sws)
-        self.multi_paned.show_all()
         # GTK4: pack1() → set_start_child()
         self.main_box.set_start_child(self.multi_paned.get_paned())
         self.main_box.set_resize_start_child(True)

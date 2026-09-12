@@ -416,7 +416,6 @@ class SearchWindow(Dialog):
         self.connect("destroy", self._on_destroy)
 
         stb.emit("clicked")
-        self.get_child().show_all()
 
     def _on_destroy(self, *args):
         self._qthread.stop()

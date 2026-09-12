@@ -47,7 +47,6 @@ class FileListExpander(Gtk.Expander):
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         win.set_size_request(-1, 100)
         self.add(win)
-        win.show_all()
 
 
 class DeleteDialog(WarningMessage):

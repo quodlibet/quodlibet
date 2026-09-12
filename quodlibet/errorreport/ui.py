@@ -46,7 +46,6 @@ class TextExpander(Gtk.Expander):
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         win.set_size_request(-1, 175)
         self.set_child(win)
-        win.show_all()
 
 
 class ErrorDialog(Gtk.MessageDialog):
@@ -74,7 +73,6 @@ class ErrorDialog(Gtk.MessageDialog):
         area = self.get_message_area()
         expand = TextExpander(_("Error details:"), error_text)
         area.append(expand)
-        area.show_all()
 
 
 class SubmitErrorDialog(Gtk.MessageDialog):
@@ -116,7 +114,6 @@ class SubmitErrorDialog(Gtk.MessageDialog):
 
         expand = TextExpander(_("Data to be sent:"), error_text)
         area.append(expand)
-        area.show_all()
 
         self.get_widget_for_response(Gtk.ResponseType.CANCEL).grab_focus()
 

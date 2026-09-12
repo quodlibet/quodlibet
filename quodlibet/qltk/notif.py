@@ -310,7 +310,6 @@ class StatusBar(Gtk.Box):
         self.task_widget = TaskWidget(task_controller)
         self.append(self.task_widget)
 
-        self.show_all()
         self.__set_shown("default")
         self.connect("destroy", self.__destroy)
 

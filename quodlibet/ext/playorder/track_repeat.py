@@ -60,7 +60,6 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         spin.connect("value-changed", plays_changed)
         hbox.append(spin)
         vb.append(hbox)
-        vb.show_all()
         return vb
 
     def restart_counting(self):

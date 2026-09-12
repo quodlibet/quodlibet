@@ -51,7 +51,6 @@ class PyConsole(SongsMenuPlugin):
                 plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name
             )
         )
-        win.show_all()
 
 
 class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
@@ -72,7 +71,6 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
     def create_sidebar(self):
         align = Align(self.console)
         self.sidebar = align
-        self.sidebar.show_all()
         return align
 
 
@@ -657,7 +655,6 @@ class ListChoiceDialog(Gtk.Dialog):
         content = self.get_content_area()
         content.append(scroll)
 
-        content.show_all()
         self.get_action_area().hide()
 
     def on_row_click(self, listbox, row):

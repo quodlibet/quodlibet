@@ -201,10 +201,6 @@ class MultiRPaned:
             # GTK4: self.destroy() removed - _root_paned cleaned up automatically
             pass
 
-    def show_all(self):
-        # GTK4: widgets are visible by default
-        self._root_paned.set_visible(True)
-
     def _get_paneds(self):
         """Get all internal paneds in a flat, ordered list."""
 

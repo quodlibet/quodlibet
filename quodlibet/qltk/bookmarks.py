@@ -49,7 +49,6 @@ def MenuItems(marks, player, seekable):
         text.set_xalign(0.0)
         text.set_yalign(0.5)
         hbox.append(text)
-        i.show_all()
         items.append(i)
     return items
 
@@ -156,7 +155,6 @@ class EditBookmarksPane(Gtk.Box):
             "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
         )
         menu.append(remove)
-        menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
         key_controller = Gtk.EventControllerKey()
         key_controller.connect("key-pressed", self.__view_key_press, remove)
@@ -271,8 +269,6 @@ class EditBookmarks(qltk.Window):
         pane.time.set_text(util.format_time(position))
         pane.markname.grab_focus()
         pane.close.connect("clicked", lambda *x: self.destroy())
-
-        self.get_child().show_all()
 
     def __check_lock(self, library, songs, song):
         if song in songs:

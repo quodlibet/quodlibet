@@ -270,7 +270,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         if browser.headers is not None:
             view.connect("columns-changed", self.__cols_changed, browser)
             self.__cols_changed(view, browser)
-        sw.show_all()
         # GTK4: get_children() removed, use helper
         from quodlibet.qltk import get_children
 

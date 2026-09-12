@@ -243,7 +243,6 @@ def _Button(
         label.set_use_underline(True)
         hbox.append(label)
     align.add(hbox)
-    align.show_all()
     button = type_()
     # GTK4: use set_child() instead of add() for single-child containers
     button.set_child(align)

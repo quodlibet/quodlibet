@@ -653,7 +653,6 @@ class InternetRadio(Browser, util.InstanceTracker):
         box = Gtk.Box(spacing=6)
         box.append(search)
         self._searchbox = Align(box, left=0, right=6, top=0)
-        self._searchbox.show_all()
 
         def qbar_response(infobar, response_id):
             if response_id == infobar.RESPONSE_LOAD:
@@ -685,7 +684,6 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         pane.set_resize_start_child(False)
         pane.set_shrink_start_child(False)
-        pane.show_all()
 
         songbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         songbox.append(self._searchbox)
@@ -695,7 +693,6 @@ class InternetRadio(Browser, util.InstanceTracker):
         )
         songbox.append(self._songpane_container)
         songbox.append(self.qbar)
-        songbox.show_all()
         # GTK4: pack2() → set_end_child()
 
         pane.set_end_child(songbox)

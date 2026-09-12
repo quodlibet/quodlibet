@@ -113,7 +113,6 @@ class GetSonosPlaylistDialog(Dialog):
         box.append(self._combo)
 
         self.vbox.append(box)
-        self.get_child().show_all()
 
     def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
         self.show()

@@ -53,7 +53,6 @@ class GetStringDialog(Dialog):
         box.append(self._val)
 
         content_area.append(box)
-        self.get_child().show_all()
 
     def _read_clipboard_text(self) -> str | None:
         """Read text from the clipboard synchronously using a nested main loop."""

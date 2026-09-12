@@ -74,8 +74,6 @@ class Bookmarks(SongsMenuPlugin):
             no_marks.set_sensitive(False)
             menu.append(no_marks)
 
-        menu.show_all()
-
     def __remove_children(self, menu):
         for child in get_children(menu):
             menu.remove(child)

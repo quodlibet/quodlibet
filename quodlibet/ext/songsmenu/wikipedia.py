@@ -74,7 +74,6 @@ class WikiSearch(SongsMenuPlugin):
         button = Gtk.Button(_("Edit Tags"))
         button.connect("clicked", _open_editor)
         vb.append(button)
-        vb.show_all()
 
         return vb
 

@@ -267,13 +267,6 @@ def _init_gtk():  # noqa: C901
     assert os.path.exists(theme_search_path)
     theme.add_search_path(theme_search_path)
 
-    # GTK4 compatibility: Add show_all/hide_all/set_no_show_all as no-ops
-    if not hasattr(Gtk.Widget, "show_all"):
-        Gtk.Widget.show_all = lambda self: None
-    if not hasattr(Gtk.Widget, "hide_all"):
-        Gtk.Widget.hide_all = lambda self: self.set_visible(False)
-    if not hasattr(Gtk.Widget, "set_no_show_all"):
-        Gtk.Widget.set_no_show_all = lambda self, value: None
     if not hasattr(Gtk.Widget, "get_toplevel"):
         Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
     if not hasattr(Gtk.Widget, "get_window"):
@@ -1037,11 +1030,9 @@ def _init_gtk():  # noqa: C901
 
     Gtk.Button.__init__ = _button_init_compat
 
-    # GTK4: Label.no_show_all property removed
     _orig_label_init = Gtk.Label.__init__
 
     def _label_init_compat(self, *args, **kwargs):
-        kwargs.pop("no_show_all", None)
         # GTK4: Label requires label= as keyword argument
         if args and "label" not in kwargs:
             kwargs["label"] = args[0]

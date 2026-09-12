@@ -182,7 +182,6 @@ class RenameFiles(Gtk.Box):
             title=_("Path Patterns"),
             edit_title=_("Edit saved patterns…"),
         )
-        self.combo.show_all()
         hbox.append(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
@@ -210,7 +209,6 @@ class RenameFiles(Gtk.Box):
         self.filter_box = filter_box
 
         frame_filename_options = Frame(_("File names"), filter_box)
-        frame_filename_options.show_all()
         rename_options.append(frame_filename_options)
 
         # album art options
@@ -248,7 +246,6 @@ class RenameFiles(Gtk.Box):
         albumart_box.append(removeemptydirs_box)
 
         frame_albumart_options = Frame(_("Album art"), albumart_box)
-        frame_albumart_options.show_all()
         rename_options.append(frame_albumart_options)
 
         self.append(rename_options)

@@ -80,7 +80,6 @@ class JSONBasedEditor(qltk.UniqueWindow):
         rem = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         connect_obj(rem, "activate", self.__remove, view)
         menu.append(rem)
-        menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
         key_controller = Gtk.EventControllerKey()
         key_controller.connect("key-pressed", self.__view_key_press, view)
@@ -105,7 +104,6 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
         self.selection.connect("changed", self.__select)
         self.connect("destroy", self.__finish)
-        self.get_child().show_all()
 
     def _find(self, name):
         for row in self.model:
@@ -301,7 +299,6 @@ class TagListEditor(qltk.Window):
         menu = Gtk.PopoverMenu()
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
-        menu.show_all()
         view.connect("popup-menu", self.__popup, menu)
         connect_obj(remove_item, "activate", self.__remove, view)
 
@@ -334,7 +331,6 @@ class TagListEditor(qltk.Window):
 
         # Finish up
         self.add(vbox)
-        self.get_child().show_all()
 
     def __start_editing(self, _render, editable, path):
         editable.set_text(self.model[path][0])

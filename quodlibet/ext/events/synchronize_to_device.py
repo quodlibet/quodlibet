@@ -206,7 +206,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             edit_title=_("Edit saved patterns…"),
         )
         export_pattern_combo.enable_clear_button()
-        export_pattern_combo.show_all()
         export_pattern_entry = export_pattern_combo.get_child()
         export_pattern_entry.set_placeholder_text(
             _("The structure of the exported filenames, based on their tags")
@@ -234,7 +233,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             label=_("Stop preview"), icon_name=Icons.PROCESS_STOP
         )
         preview_stop_button.set_visible(False)
-        preview_stop_button.set_no_show_all(True)
         preview_stop_button.connect("clicked", self._stop_preview)
         self.preview_stop_button = preview_stop_button
 
@@ -281,10 +279,10 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
 
         # Status labels
         self.status_operation = Gtk.Label(
-            xalign=0.0, yalign=0.5, wrap=True, visible=False, no_show_all=True
+            xalign=0.0, yalign=0.5, wrap=True, visible=False
         )
         self.status_progress = Gtk.Label(
-            xalign=0.0, yalign=0.5, wrap=True, visible=False, no_show_all=True
+            xalign=0.0, yalign=0.5, wrap=True, visible=False
         )
         self.status_duplicates = self._label_with_icon(
             _(
@@ -330,7 +328,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             label=_("Stop synchronization"), icon_name=Icons.PROCESS_STOP
         )
         sync_stop_button.set_visible(False)
-        sync_stop_button.set_no_show_all(True)
         sync_stop_button.connect("clicked", self._stop_sync)
         self.sync_stop_button = sync_stop_button
 
@@ -383,7 +380,6 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         hbox = Gtk.Box(spacing=self.spacing_large)
         if not visible:
             hbox.set_visible(False)
-            hbox.set_no_show_all(True)
         hbox.append(image)
         hbox.append(label)
 

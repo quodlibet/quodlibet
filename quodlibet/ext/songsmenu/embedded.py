@@ -120,7 +120,6 @@ class EditEmbedded(SongsMenuPlugin):
         set_item.connect("activate", self.__choose_image, songs)
         menu.append(set_item)
 
-        menu.show_all()
         return menu
 
     def plugin_songs(self, songs):

@@ -278,8 +278,6 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         key_controller.connect("key-pressed", self.__key_pressed, library.librarian)
         self.add_controller(key_controller)
 
-        self.show_all()
-
     def __inhibit(self):
         self.view.get_selection().handler_block(self.__sig)
 
@@ -331,7 +329,6 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     def __popup(self, view, library):
         songs = self.__get_selected_songs(view.get_selection())
         menu = SongsMenu(library, songs)
-        menu.show_all()
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __play(self, view, path, col):

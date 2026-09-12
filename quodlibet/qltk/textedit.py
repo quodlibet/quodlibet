@@ -181,7 +181,6 @@ class TextEdit(qltk.UniqueWindow):
         self.revert = box.revert
 
         close.grab_focus()
-        self.get_child().show_all()
 
     @property
     def text(self):

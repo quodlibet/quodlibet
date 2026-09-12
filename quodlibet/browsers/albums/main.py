@@ -610,8 +610,6 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
         if app.cover_manager:
             connect_destroy(app.cover_manager, "cover-changed", self._cover_changed)
 
-        self.show_all()
-
     def _cover_changed(self, manager, songs):
         model = self.__model
         songs = set(songs)

@@ -593,7 +593,6 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     def plugin_albums(self, albums):
         mode = self.config_get("process_if", UpdateMode.ALWAYS)
         win = RGDialog(albums, parent=self.plugin_window, process_mode=mode)
-        win.show_all()
         win.start_analysis()
 
         # plugin_done checks for metadata changes and opens the write dialog

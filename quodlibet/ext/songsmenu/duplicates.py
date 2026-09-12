@@ -54,9 +54,7 @@ class DuplicateSongsView(RCMHintedTreeView):
         songs = self.get_selected_songs()
         if not songs:
             return None
-        menu = SongsMenu(library, songs, delete=True, plugins=False, playlists=False)
-        menu.show_all()
-        return menu
+        return SongsMenu(library, songs, delete=True, plugins=False, playlists=False)
 
     def __select_song(self, player, path, col):
         if len(path) == 1:
@@ -352,7 +350,6 @@ class DuplicateDialog(Gtk.Window):
         vbox.append(swin)
         vbox.append(hbox)
         self.add(vbox)
-        self.show_all()
 
 
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
@@ -427,7 +424,6 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         frame = qltk.Frame(label=_("Matching options"), child=vb2)
         vb.append(frame)
 
-        vb.show_all()
         return vb
 
     @classmethod

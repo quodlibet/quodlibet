@@ -108,7 +108,6 @@ class FingerprintDialog(Window):
         connect_obj(self, "delete-event", self.__cancel_cb, pool)
 
         self.add(outer_box)
-        self.show_all()
 
     def __update_stats(self):
         all_ = len(self.__songs)

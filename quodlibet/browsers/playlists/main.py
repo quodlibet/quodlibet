@@ -21,7 +21,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons
 from quodlibet.qltk.chooser import choose_files, create_chooser_filter
 from quodlibet.qltk.songsmenu import MenuItemSpec
 from quodlibet.qltk.completion import LibraryTagCompletion
@@ -85,10 +85,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._sb_box = self.__create_searchbar(songs_lib)
         self._rh_box = None
         self._main_box = self.__create_box()
-        self.show_all()
-
-        for child in get_children(self):
-            child.show_all()
 
         self._ids = [
             self.pl_lib.connect("removed", self.__removed),
@@ -117,7 +113,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._main_box.set_resize_end_child(True)
         self._main_box.set_shrink_end_child(False)
         rhbox.show()
-        align.show_all()
         return self._main_box
 
     def unpack(self, container, songpane):
@@ -195,9 +190,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         del self._sb_box
 
     def __create_box(self):
-        box = qltk.ConfigRHPaned("browsers", "playlistsbrowser_pos", 0.4)
-        box.show_all()
-        return box
+        return qltk.ConfigRHPaned("browsers", "playlistsbrowser_pos", 0.4)
 
     def __create_searchbar(self, library):
         self.accelerators = Gtk.AccelGroup()
@@ -483,7 +476,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         playlist = model[itr][0]
         PLAYLIST_HANDLER.populate_menu(menu, library, self, [playlist])
-        menu.show_all()
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def _start_rename(self, path):

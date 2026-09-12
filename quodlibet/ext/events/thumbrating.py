@@ -107,7 +107,6 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
             orientation=Gtk.Orientation.VERTICAL,
         )
         vbox.append(self.rating_box)
-        vbox.show_all()
         return vbox
 
     def disabled(self):

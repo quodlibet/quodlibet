@@ -79,7 +79,6 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
         for page in pages:
-            page.show_all()
             notebook.append_page(page)
 
         fbasemodel = ObjectStore()
@@ -115,8 +114,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         sw.set_child(fview)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        if len(songs) > 1:
-            sw.show_all()
+        sw.set_visible(len(songs) > 1)
 
         paned.set_start_child(sw)
         paned.set_resize_start_child(True)

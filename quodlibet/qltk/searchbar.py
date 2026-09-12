@@ -229,7 +229,6 @@ class LimitSearchBarBox(SearchBarBox):
         }
 
         def __init__(self):
-            # GTK4: no_show_all property removed
             super().__init__(spacing=3)
             label = Gtk.Label(label=_("_Limit:"))
             self.append(label)
@@ -311,7 +310,6 @@ class MultiSearchBarBox(LimitSearchBarBox):
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
-        # GTK4: no_show_all property removed
         self.flow_box = Gtk.FlowBox(
             max_children_per_line=99,
             selection_mode=Gtk.SelectionMode.NONE,

@@ -222,7 +222,6 @@ class LastFMSyncWindow(qltk.Dialog):
         self.get_content_area().append(vbox)
 
         self.set_response_sensitive(Gtk.ResponseType.ACCEPT, False)
-        self.show_all()
 
     def progress(self, message, fraction):
         self.status.set_text(message)

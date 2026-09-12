@@ -72,7 +72,6 @@ class TQltk(TestCase):
         w.add(l)
         m = Gtk.PopoverMenu()
         m.attach_to_widget(l, None)
-        w.show_all()
         qltk.popup_menu_under_widget(m, l, 1, 0)
         w.destroy()
 

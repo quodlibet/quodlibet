@@ -71,4 +71,3 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         self.add(main_box)
 
         close.grab_focus()
-        self.show_all()

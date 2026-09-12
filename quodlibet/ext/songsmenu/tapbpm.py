@@ -47,8 +47,6 @@ class TapBpmPanel(Gtk.Box):
         self.init_tap()
         self.update()
 
-        self.show_all()
-
     def update(self):
         has_new_bpm = self.clicks > 1
 
@@ -189,7 +187,6 @@ class TapBpm(SongsMenuPlugin):
         self._panel = TapBpmPanel(window, song)
         window.vbox.append(self._panel)
 
-        window.vbox.show_all()
         window.present()
 
     def response(self, win, response):

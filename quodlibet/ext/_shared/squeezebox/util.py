@@ -35,7 +35,6 @@ class GetPlayerDialog(Gtk.Dialog):
         self._val = player_combo
         box.append(self._val)
         self.vbox.append(box)
-        self.get_child().show_all()
 
     def run(self, text=""):
         self.show()

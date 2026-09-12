@@ -210,8 +210,6 @@ class PreferencesButton(qltk.Destroyable, Gtk.Box):
         pref_item.connect("activate", preferences_cb)
         menu.append(pref_item)
 
-        menu.show_all()
-
         button = MenuButton(
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
@@ -269,7 +267,6 @@ class Preferences(qltk.UniqueWindow):
         self.add(vbox)
 
         cancel.grab_focus()
-        self.get_child().show_all()
 
     def __apply(self, editor, browser, close, equal_width):
         if editor.headers != get_headers():

@@ -99,7 +99,6 @@ class WebsiteSearch(SongsMenuPlugin):
         button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)
         hb.append(button)
-        hb.show_all()
         return hb
 
     def _get_saved_searches(self):

@@ -240,8 +240,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         grid_add(0, 0, update_lbl)
         grid_add(1, 0, update_combobox)
         for box in strategy_boxes:
-            # GTK4: no_show_all removed, show_all is a no-op
-            # Visibility controlled by show_only_current_box()
+            # visibility is controlled by show_only_current_box()
             grid_add(1, 1, box)
 
         show_only_current_box()

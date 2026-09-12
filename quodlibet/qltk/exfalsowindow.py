@@ -115,8 +115,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         pref_item.connect("activate", prefs_cb)
         menu.append(pref_item)
 
-        menu.show_all()
-
         menu_button = MenuButton(
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.LARGE),
             arrow=True,
@@ -140,7 +138,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
         vb.append(fs)
         vb.append(Align(bbox, border=6))
-        vb.show_all()
 
         hp.set_start_child(vb)
         hp.set_resize_start_child(True)
@@ -244,7 +241,6 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             pass
 
         menu.connect("selection-done", selection_done_cb)
-        menu.show_all()
         return view.popup_menu(menu, 0, GLib.CURRENT_TIME)
 
     def __delete(self, item, paths, fs):
@@ -308,7 +304,6 @@ class PreferencesWindow(QLPreferencesWindow):
         # Seems nicer when there's only one page
         self.set_resizable(True)
         self.set_title(_("Ex Falso Preferences"))
-        self.get_child().show_all()
 
     def __destroy(self):
         config.save()

@@ -316,7 +316,6 @@ class SearchWindow(Window):
 
         outer_box.append(bottom_box)
 
-        outer_box.show_all()
         self.add(outer_box)
 
         self.__album_mode = True

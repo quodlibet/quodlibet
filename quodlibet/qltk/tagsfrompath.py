@@ -116,7 +116,6 @@ class TagsFromPath(Gtk.Box):
             title=_("Path Patterns"),
             edit_title=_("Edit saved patterns…"),
         )
-        self.combo.show_all()
         hbox.append(self.combo)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()

@@ -110,8 +110,6 @@ class FileSystem(Browser, Gtk.Box):
         sw.set_child(dt)
         self.append(sw)
 
-        self.show_all()
-
     def _on_selection_changed(self, tree_selection):
         model, rows = tree_selection.get_selected_rows()
         selected_paths = [model[row][0] for row in rows]

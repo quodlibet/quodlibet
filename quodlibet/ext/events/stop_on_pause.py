@@ -86,5 +86,4 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
         frame = qltk.Frame(label=_("Plugin Options"), child=vb2)
         vb.append(frame)
 
-        vb.show_all()
         return vb

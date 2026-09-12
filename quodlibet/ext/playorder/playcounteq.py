@@ -84,5 +84,4 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
         spin.connect("value-changed", magnitude_changed)
         hbox.append(spin)
         vb.append(hbox)
-        vb.show_all()
         return vb

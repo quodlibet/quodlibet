@@ -89,7 +89,6 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(remove, "activate", self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
-        menu.show_all()
 
         bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         rem_b = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
@@ -119,7 +118,6 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(self, "destroy", Gtk.Widget.unparent, menu)
 
         name.grab_focus()
-        self.get_child().show_all()
 
     def fill_values(self):
         """Responsible for populating self.model (eg with values from disk)"""
