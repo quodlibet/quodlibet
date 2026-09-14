@@ -248,7 +248,23 @@ Recently Landed (2026-09-12)
   `views._MinLabel`) are `do_measure`; `HighlightToggleButton` updates on
   `do_css_changed` plus `notify::active` rather than per-draw.
 
-Remaining shim fronts, largest first — `_init.py` is 1386 lines with 53
+Also landed: `__restore_size` calls `set_default_size` directly, retiring the
+last `Gtk.Window.resize` shim call site, and `__do_save_size_pos` refuses to
+persist a size `__restore_size` would reject.
+
+Two open items from the same session, neither reproduced in a harness:
+
+- **Main window starts at the 600x480 default.** `quodlibet_size_ = 0 0` in the
+  reporter's config; `__restore_size` refuses anything under 1x1 and falls back
+  to `quodlibetwindow.py`'s default. How `0 0` was written is *unknown* — with
+  current code neither the pre-map path nor the hide path saves it
+  (`_should_ignore_state()` blocks both), and a full app run plus quit under a
+  fresh userdir writes no size key at all. Most likely a legacy artefact of an
+  earlier revision of this branch. Clear the key to recover.
+- **CoverGrid's context menu is over-tall** while the song list's is fine — see
+  `GTK4_POST_MIGRATION_CLEANUP.md`, which lists what has been ruled out.
+
+Remaining shim fronts, largest first — `_init.py` is 1380 lines with 52
 monkey-patched attributes:
 
 - `set_border_width` (76 call sites). The shim already maps it to

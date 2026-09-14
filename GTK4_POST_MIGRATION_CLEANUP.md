@@ -243,6 +243,44 @@ only allocate their contents once genuinely mapped, so a bare harness that never
 maps them reports zeros and tells you nothing.
 
 
+CoverGrid context menu is over-tall — unreproduced
+--------------------------------------------------
+
+**Open, cause not found** (2026-09-12). Reported from the running app: the
+CoverGrid right-click menu has enormous gaps between sections, while the song
+list menu — same `SongsMenu` class, same theme — looks correct. Comparing the
+two screenshots and normalising by row pitch, CoverGrid's section gaps are
+roughly seven times larger relative to its rows.
+
+Established:
+
+- **Not a regression.** An identical probe at `0fad9968e` and at the 2026-09-12
+  head gives byte-identical geometry: popover 280px, sections 30/43/73px.
+- **Normal geometry is theme-specified.** Each `GtkMenuSectionBox` is
+  `separator(1px) + content + 12px`; the 12px is CSS margin on the `separator`
+  node (widget margins are 0 throughout). `adw-gtk3-dark`'s
+  `gtk-4.0/libadwaita.css` contains `popover.menu separator { margin: 6px 0; }`
+  verbatim. Overriding it to `1px 0` takes the probe popover 280 → 240.
+- **`main` uses the same seven separators**, so the port added no sections.
+  GTK4 menus are simply taller than GTK3 ones; that part is expected.
+
+Ruled out by measurement — all give an identical 323px popover with sections
+`[30, 43, 73, 43, 73, 43]`:
+
+- parenting the popover to a plain `Gtk.Box` vs a real `AlbumWidget`
+- `AlbumWidget.padding` (bound to the box's `spacing`) at 0, 6 and 20
+- parent `set_size_request()` at 20x20, 300x300 and 400x700 with `vexpand`
+- running under a copy of the reporter's real config
+  (`covergrid_magnification = 3.6`, `covergrid_wide`)
+
+Next step is to measure in the running app, not in a harness: launch with
+`GTK_DEBUG=interactive`, open the CoverGrid menu, and read the heights and
+computed CSS of a `GtkMenuSectionBox` and its `separator`, then do the same on
+the song list menu and diff them. Driving it from a script did not work — a
+popover popped via `emit("songs-menu")` on a `GridView`-recycled tile reports
+`visible=True, mapped=False` and never allocates.
+
+
 89 destroy() calls were deleted branch-wide
 -------------------------------------------
 
