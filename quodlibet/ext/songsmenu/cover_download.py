@@ -21,7 +21,7 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons, get_children, set_margins
 from quodlibet.qltk.paned import Paned
 from quodlibet.qltk.window import PersistentWindowMixin
 from quodlibet.util import connect_destroy, format_size, escape
@@ -267,7 +267,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         img.set_margin_end(12)
         img.set_margin_top(12)
         img.set_margin_bottom(12)
-        frame.set_border_width(12)
+        set_margins(frame, 12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)
         reveal = Gtk.Revealer()

@@ -10,7 +10,7 @@ from gi.repository import Gdk, Gtk
 
 from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.window import Dialog
 
 
@@ -181,7 +181,7 @@ class TapBpm(SongsMenuPlugin):
         window.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.OK)
 
         window.set_default_size(300, 100)
-        window.set_border_width(6)
+        set_margins(window, 6)
         self.__resp_sig = window.connect("response", self.response)
 
         self._panel = TapBpmPanel(window, song)

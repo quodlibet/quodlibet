@@ -29,7 +29,7 @@ from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.advanced_prefs import AdvancedPreferencesPane
-from quodlibet.qltk import Icons, add_css
+from quodlibet.qltk import Icons, add_css, set_margins
 from quodlibet.util import copool, format_time_preferred
 from quodlibet.util.dprint import print_d
 from quodlibet.util.library import emit_signal, get_scan_dirs, scan_library
@@ -177,7 +177,7 @@ class PreferencesWindow(UniqueWindow):
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             self._columns = []
-            self.set_border_width(12)
+            set_margins(self, 12)
             self.title = _("Song List")
             visible_columns_frame, buttons = create_visible_columns_widgets()
 
@@ -328,7 +328,7 @@ class PreferencesWindow(UniqueWindow):
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
-            self.set_border_width(MARGIN)
+            set_margins(self, MARGIN)
             self.title = _("Browsers")
 
             search_frame = create_search_frame()
@@ -440,7 +440,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __init__(self):
             super().__init__(spacing=MARGIN)
-            self.set_border_width(12)
+            set_margins(self, 12)
             self.title = _("Playback")
 
             behavior = self.create_behavior_frame()
@@ -756,7 +756,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __init__(self):
             super().__init__(spacing=MARGIN)
-            self.set_border_width(12)
+            set_margins(self, 12)
             self.title = _("Tags")
             self._songs = []
 
@@ -788,7 +788,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __init__(self):
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
-            self.set_border_width(12)
+            set_margins(self, 12)
             self.title = _("Library")
 
             def refresh_cb(button):
@@ -863,7 +863,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __init__(self):
             super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=MARGIN)
-            self.set_border_width(12)
+            set_margins(self, 12)
             self.title = _("Advanced")
             scrolledwin = Gtk.ScrolledWindow()
             scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -916,11 +916,11 @@ class PreferencesWindow(UniqueWindow):
 
         self.use_header_bar()
         if self.has_close_button():
-            self.set_border_width(0)
+            set_margins(self, 0)
             notebook.set_show_border(False)
             self.add(notebook)
         else:
-            self.set_border_width(12)
+            set_margins(self, 12)
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             vbox.append(notebook)
             vbox.append(button_box)

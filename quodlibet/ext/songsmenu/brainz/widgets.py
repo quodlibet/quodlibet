@@ -13,7 +13,7 @@ from quodlibet.fsn import fsn2text
 
 from quodlibet import _
 from quodlibet import util
-from quodlibet.qltk import Dialog, Icons
+from quodlibet.qltk import Dialog, Icons, set_margins
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.views import HintedTreeView, MultiDragTreeView
 from quodlibet.util.i18n import numeric_phrase
@@ -360,7 +360,7 @@ class SearchWindow(Dialog):
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.ACCEPT)
 
         self.set_default_size(650, 500)
-        self.set_border_width(5)
+        set_margins(self, 5)
         self.set_transient_for(parent)
 
         save_button = self.get_widget_for_response(Gtk.ResponseType.ACCEPT)
@@ -404,13 +404,13 @@ class SearchWindow(Dialog):
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
         rtv = self.result_treeview = ResultTreeView(self.album)
-        rtv.set_border_width(8)
+        set_margins(rtv, 8)
         sw.set_child(rtv)
         vb.append(sw)
 
         # TODO: remove deprecated get_action_area
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
-        self.get_action_area().set_border_width(4)
+        set_margins(self.get_action_area(), 4)
         self.get_content_area().append(vb)
         self.connect("response", self._on_response)
         self.connect("destroy", self._on_destroy)

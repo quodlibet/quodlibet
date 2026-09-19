@@ -9,7 +9,7 @@
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import _, util
-from quodlibet.qltk import Button, Window
+from quodlibet.qltk import Button, Window, set_margins
 from quodlibet.util import connect_obj, print_w
 
 from .acoustid import AcoustidSubmissionThread
@@ -35,7 +35,7 @@ def can_submit(result):
 class FingerprintDialog(Window):
     def __init__(self, songs):
         super().__init__()
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(450, 0)
 

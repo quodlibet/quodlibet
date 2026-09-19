@@ -14,7 +14,7 @@ from quodlibet import qltk, util
 from quodlibet.qltk.entry import UndoEntry, ValidatingEntry
 from quodlibet.qltk.views import RCMHintedTreeView, HintedTreeView
 from quodlibet.qltk.x import MenuItem, Button, Align
-from quodlibet.qltk import Icons, is_accel_pressed
+from quodlibet.qltk import Icons, is_accel_pressed, set_margins
 from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
 from quodlibet.util import connect_obj
@@ -40,7 +40,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.filename = filename
         self.name = proto_cls.NAME or proto_cls.__name__
         self.input_entries = {}
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
@@ -266,7 +266,7 @@ class TagListEditor(qltk.Window):
     def __init__(self, title, values=None):
         super().__init__()
         self.use_header_bar()
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 

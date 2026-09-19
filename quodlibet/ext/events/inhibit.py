@@ -21,7 +21,7 @@ from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import config
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -127,7 +127,7 @@ class SessionInhibit(EventPlugin):
         mode = config.get("plugins", self.CONFIG_MODE, InhibitStrings.IDLE)
 
         hb = Gtk.Box(spacing=6)
-        hb.set_border_width(6)
+        set_margins(hb, 6)
         # Translators: Inhibiting Mode
         hb.append(Gtk.Label(label=_("Mode:")))
         combo = Gtk.ComboBoxText()

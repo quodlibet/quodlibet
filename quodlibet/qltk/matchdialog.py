@@ -14,7 +14,7 @@ from quodlibet.qltk.models import ObjectStore
 
 from quodlibet.qltk.views import HintedTreeView
 
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 from quodlibet import _, app
 
@@ -74,7 +74,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         self.get_content_area().append(vb)
         vb.set_spacing(24)
-        self.set_border_width(5)
+        set_margins(self, 5)
 
         desc_lbl = Gtk.Label(f"\n{description}\n", wrap=True)
         vb.append(desc_lbl)

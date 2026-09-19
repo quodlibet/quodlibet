@@ -16,6 +16,7 @@ from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet.formats import AudioFile
+from quodlibet.qltk import set_margins
 
 from gi.repository import Gtk
 
@@ -301,7 +302,7 @@ class DiscordStatusMessage(EventPlugin):
                 self.plugin_on_unpaused()
 
         status_line1_box = Gtk.Box(spacing=6)
-        status_line1_box.set_border_width(3)
+        set_margins(status_line1_box, 3)
 
         status_line1: Gtk.Entry = Gtk.Entry()
         status_line1.set_text(discord_status_config.rp_line1)
@@ -311,7 +312,7 @@ class DiscordStatusMessage(EventPlugin):
         status_line1_box.append(status_line1)
 
         status_line2_box = Gtk.Box(spacing=3)
-        status_line2_box.set_border_width(3)
+        set_margins(status_line2_box, 3)
 
         status_line2: Gtk.Entry = Gtk.Entry()
         status_line2.set_text(discord_status_config.rp_line2)

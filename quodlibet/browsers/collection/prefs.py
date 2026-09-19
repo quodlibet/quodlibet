@@ -13,7 +13,7 @@ from quodlibet import qltk
 from quodlibet import _
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.views import BaseView
-from quodlibet.qltk import Button, Icons
+from quodlibet.qltk import Button, Icons, set_margins
 from quodlibet.util import connect_obj
 
 
@@ -181,7 +181,7 @@ class Preferences(qltk.UniqueWindow):
 
         self.set_transient_for(qltk.get_top_parent(browser))
         self.set_default_size(350, 225)
-        self.set_border_width(12)
+        set_margins(self, 12)
 
         self.set_title(_("Album Collection Preferences"))
 

@@ -27,7 +27,7 @@ from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.util.tagsfrompath import TagsFromPattern
 from quodlibet.util.string.splitters import split_value
 from quodlibet.util import connect_obj
@@ -107,7 +107,7 @@ class TagsFromPath(Gtk.Box):
     def __init__(self, parent, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        self.set_border_width(12)
+        set_margins(self, 12)
         hbox = Gtk.Box(spacing=6)
         cbes_defaults = TBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(

@@ -16,7 +16,7 @@ from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers._base import FakeDisplayItem, EditDisplayPatternMixin
 from quodlibet.formats import PEOPLE
-from quodlibet.qltk import Button, Icons
+from quodlibet.qltk import Button, Icons, set_margins
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
@@ -57,7 +57,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         if self.is_not_unique():
             return
         super().__init__()
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(_("Album List Preferences"))
         self.set_default_size(420, 380)
         self.set_transient_for(qltk.get_top_parent(browser))

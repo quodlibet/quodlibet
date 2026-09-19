@@ -23,7 +23,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PlaylistPlugin
-from quodlibet.qltk import Icons, Dialog, WarningMessage
+from quodlibet.qltk import Icons, Dialog, WarningMessage, set_margins
 from quodlibet.qltk.notif import Task
 from quodlibet.util import copool, escape
 from quodlibet.util.dprint import print_d, print_w
@@ -90,7 +90,7 @@ class GetSonosPlaylistDialog(Dialog):
         super().__init__(title="Which Sonos Playlist?", transient_for=None)
         self.options = choices
 
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(_("_OK"), Gtk.ResponseType.OK)
@@ -104,7 +104,7 @@ class GetSonosPlaylistDialog(Dialog):
                 "or choose an existing Sonos playlist to overwrite"
             )
         )
-        box.set_border_width(6)
+        set_margins(box, 6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
         box.append(label)

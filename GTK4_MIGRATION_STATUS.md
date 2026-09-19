@@ -2,7 +2,7 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-09-12
+**Last Updated**: 2026-09-19
 **Test Results**: 4665 passed, 49 skipped, 2 failed. Both are
 `tests/plugin/test_mediaserver.py`, whose tearDown asserts the D-Bus name is
 released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
@@ -231,6 +231,22 @@ lifecycle / cleanup differences not yet investigated:
   not GTK-related)
 
 
+Recently Landed (2026-09-19)
+----------------------------
+
+- `set_border_width` is gone: the two shims (the `Frame`/`Window`/`Paned`/`Box`
+  patch and the `Gtk.Table` method) and all 68 call sites across 45 files, which
+  now call `qltk.set_margins(widget, n)` — the same four `set_margin_*` calls the
+  shim made, so behaviour is unchanged. One latent crash went with it:
+  `export_to_folder.py` called it on a `Gtk.FileChooserWidget`, which the shim
+  never patched.
+
+  The mapping is still not *faithful*: GTK3 `border_width` padded inside the
+  container, a GTK4 margin sits outside it, so `Gtk.Frame` and `Gtk.Window` look
+  different. That correction needs looking at the app, not a green suite, and is
+  tracked separately.
+
+
 Recently Landed (2026-09-12)
 ----------------------------
 
@@ -264,15 +280,9 @@ Two open items from the same session, neither reproduced in a harness:
 - **CoverGrid's context menu is over-tall** while the song list's is fine — see
   `GTK4_POST_MIGRATION_CLEANUP.md`, which lists what has been ruled out.
 
-Remaining shim fronts, largest first — `_init.py` is 1380 lines with 52
+Remaining shim fronts, largest first — `_init.py` is 1358 lines with 48
 monkey-patched attributes:
 
-- `set_border_width` (76 call sites). The shim already maps it to
-  `set_margin_*` on the container, so inlining that is behaviour-identical and
-  safe. Note the mapping is not faithful: GTK3 `border_width` padded *inside*
-  the container, a GTK4 margin sits *outside* it. For `Gtk.Frame` / `Gtk.Window`
-  that is visibly different and is already live on the branch. Correcting it is
-  a separate pass that needs looking at the app, not just a green suite.
 - The container `.add()` aliases (Box, Window, Button, Frame, Expander,
   ScrolledWindow, Grid, ComboBox, Paned).
 - The four `Gtk.PopoverMenu` compat patches (`__init__`, `append`, `popup`,

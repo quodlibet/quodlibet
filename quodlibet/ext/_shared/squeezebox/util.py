@@ -8,13 +8,14 @@
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet.qltk import set_margins
 
 
 class GetPlayerDialog(Gtk.Dialog):
     def __init__(self, parent, players, current=0):
         title = _("Choose Squeezebox player")
         super().__init__(title, parent)
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(_("_OK"), Gtk.ResponseType.OK)
@@ -23,7 +24,7 @@ class GetPlayerDialog(Gtk.Dialog):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label(label=_("Found Squeezebox server.\nPlease choose the player"))
-        box.set_border_width(6)
+        set_margins(box, 6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
         box.append(label)

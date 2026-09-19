@@ -30,7 +30,7 @@ from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.cbes import ComboBoxEntrySave
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons, Button, Frame, get_children
+from quodlibet.qltk import Icons, Button, Frame, get_children, set_margins
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
@@ -172,7 +172,7 @@ class RenameFiles(Gtk.Box):
     def __init__(self, parent, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.__skip_interactive = False
-        self.set_border_width(12)
+        set_margins(self, 12)
 
         hbox = Gtk.Box(spacing=6)
         cbes_defaults = NBP_EXAMPLES.split("\n")

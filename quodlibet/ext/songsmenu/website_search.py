@@ -16,7 +16,7 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, get_children
+from quodlibet.qltk import Icons, get_children, set_margins
 from quodlibet.qltk.cbes import StandaloneEditor
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, print_w, print_d
@@ -94,7 +94,7 @@ class WebsiteSearch(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(cls, parent):
         hb = Gtk.Box(spacing=3)
-        hb.set_border_width(0)
+        set_margins(hb, 0)
 
         button = qltk.Button(_("Edit search URLs"), Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)

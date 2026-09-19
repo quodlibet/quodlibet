@@ -11,7 +11,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 
@@ -76,7 +76,7 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
         ]
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        vb.set_border_width(0)
+        set_margins(vb, 0)
         vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for key, label in toggles:
             ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))

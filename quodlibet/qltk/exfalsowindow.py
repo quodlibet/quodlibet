@@ -40,7 +40,7 @@ from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import mtime, normalize_path
 from quodlibet.util import connect_obj, connect_destroy, format_int_locale
@@ -67,7 +67,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.__library = library
 
         hp = ConfigRHPaned("memory", "exfalso_paned_position", 1.0)
-        hp.set_border_width(0)
+        set_margins(hp, 0)
         hp.set_position(250)
         hp.show()
         self.add(hp)

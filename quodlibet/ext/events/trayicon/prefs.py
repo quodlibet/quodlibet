@@ -12,7 +12,7 @@ from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.pattern import Pattern
 from quodlibet.qltk.entry import UndoEntry
 from .util import pconfig
@@ -24,7 +24,7 @@ class Preferences(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        self.set_border_width(6)
+        set_margins(self, 6)
 
         ccb = pconfig.ConfigCheckButton(
             _("Hide main window on close"), "window_hide", populate=True

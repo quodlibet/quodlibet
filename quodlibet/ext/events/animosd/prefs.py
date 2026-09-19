@@ -17,7 +17,7 @@ from quodlibet import qltk
 from quodlibet.util import connect_obj
 from quodlibet.formats import DUMMY_SONG
 from quodlibet.qltk.textedit import PatternEdit
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 
 class ConfigLabel(Gtk.Label):
@@ -198,7 +198,7 @@ class AnimOsdPrefs(Gtk.Box):
             return vb2
 
         frame = qltk.Frame(label=_("Display"), child=build_display_widget())
-        frame.set_border_width(6)
+        set_margins(frame, 6)
         self.append(frame)
 
         def build_text_widget():
@@ -227,7 +227,7 @@ class AnimOsdPrefs(Gtk.Box):
             return t
 
         frame = qltk.Frame(label=_("Text"), child=build_text_widget())
-        frame.set_border_width(6)
+        set_margins(frame, 6)
         self.append(frame)
 
         def build_colors_widget():
@@ -251,7 +251,7 @@ class AnimOsdPrefs(Gtk.Box):
             return t
 
         f = qltk.Frame(label=_("Colors"), child=build_colors_widget())
-        f.set_border_width(6)
+        set_margins(f, 6)
         self.append(f)
 
         def build_effects_widget():
@@ -287,7 +287,7 @@ class AnimOsdPrefs(Gtk.Box):
             return vb2
 
         frame = qltk.Frame(label=_("Effects"), child=build_effects_widget())
-        frame.set_border_width(6)
+        set_margins(frame, 6)
         self.append(frame)
 
         def build_buttons_widget():

@@ -16,7 +16,7 @@ from quodlibet import _
 from quodlibet.qltk.views import BaseView
 from quodlibet.qltk.tagscombobox import TagsComboBoxEntry
 from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import connect_obj
@@ -226,7 +226,7 @@ class Preferences(qltk.UniqueWindow):
 
         self.set_transient_for(qltk.get_top_parent(browser))
         self.set_default_size(350, 300)
-        self.set_border_width(12)
+        set_margins(self, 12)
 
         self.set_title(_("Paned Browser Preferences"))
 

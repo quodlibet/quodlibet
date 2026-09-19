@@ -22,7 +22,7 @@ from gi.repository import Gtk
 from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
-from quodlibet.qltk import Frame, Icons
+from quodlibet.qltk import Frame, Icons, set_margins
 from quodlibet import config
 
 # Translators: statuses relating to Instant Messenger apps
@@ -148,7 +148,7 @@ class GajimStatusMessage(EventPlugin):
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         pattern_box = Gtk.Box(spacing=6)
-        pattern_box.set_border_width(3)
+        set_margins(pattern_box, 3)
         pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
         pattern.connect("changed", self.pattern_changed)
@@ -156,7 +156,7 @@ class GajimStatusMessage(EventPlugin):
         pattern_box.append(pattern)
 
         accounts_box = Gtk.Box(spacing=3)
-        accounts_box.set_border_width(3)
+        set_margins(accounts_box, 3)
         accounts = Gtk.Entry()
         accounts.set_text(" ".join(self.accounts))
         accounts.connect("changed", self.accounts_changed)

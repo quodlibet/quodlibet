@@ -21,7 +21,7 @@ from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
-from quodlibet.qltk import Icons, Dialog
+from quodlibet.qltk import Icons, Dialog, set_margins
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
@@ -362,7 +362,7 @@ class RGDialog(Dialog):
 
         self.process_mode = process_mode
         self.set_default_size(600, 400)
-        self.set_border_width(6)
+        set_margins(self, 6)
 
         hbox = Gtk.Box(spacing=6)
         info = Gtk.Label()

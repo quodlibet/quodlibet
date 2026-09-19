@@ -13,7 +13,7 @@ from quodlibet.order.repeat import Repeat
 from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 START_COUNT = 1
 
@@ -49,7 +49,7 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
             cls.config_set("play_each", int(spin.get_value()))
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        vb.set_border_width(10)
+        set_margins(vb, 10)
         hbox = Gtk.Box(spacing=6)
         lbl = Gtk.Label(label=_("Number of times to play each song:"))
         hbox.append(lbl)

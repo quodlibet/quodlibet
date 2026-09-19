@@ -23,7 +23,7 @@ from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.plugins.playorder import PlayOrderPlugin
 from quodlibet.plugins.query import QueryPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, is_accel_pressed, show_uri
+from quodlibet.qltk import Icons, is_accel_pressed, show_uri, set_margins
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.views import HintedTreeView
@@ -65,13 +65,13 @@ class PluginErrorWindow(UniqueWindow):
         super().__init__()
 
         self.set_title(_("Plugin Errors"))
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_transient_for(parent)
         self.set_default_size(520, 300)
 
         scrolledwin = Gtk.ScrolledWindow()
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(6)
+        set_margins(vbox, 6)
         scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.add_with_viewport(vbox)
 

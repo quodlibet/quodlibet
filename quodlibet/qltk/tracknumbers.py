@@ -17,7 +17,7 @@ from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.util import connect_obj
 
 
@@ -35,7 +35,7 @@ class TrackNumbers(Gtk.Box):
     def __init__(self, prop, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.title = _("Track Numbers")
-        self.set_border_width(12)
+        set_margins(self, 12)
 
         label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)

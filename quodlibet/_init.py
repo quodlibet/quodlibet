@@ -915,21 +915,6 @@ def _init_gtk():  # noqa: C901
 
         Gtk.NativeDialog.run = _native_dialog_run_compat
 
-    # GTK4: set_border_width removed - use margins instead
-    if not hasattr(Gtk.Frame, "set_border_width"):
-
-        def _set_border_width(self, width):
-            # In GTK4, use margins instead of border_width
-            self.set_margin_start(width)
-            self.set_margin_end(width)
-            self.set_margin_top(width)
-            self.set_margin_bottom(width)
-
-        Gtk.Frame.set_border_width = _set_border_width
-        Gtk.Window.set_border_width = _set_border_width
-        Gtk.Paned.set_border_width = _set_border_width
-        Gtk.Box.set_border_width = _set_border_width
-
     # GTK4: PopoverMenu.append() compatibility
     _orig_popover_menu_init = Gtk.PopoverMenu.__init__
 
@@ -1217,13 +1202,6 @@ def _init_gtk():  # noqa: C901
         def set_col_spacing(self, column, spacing):
             # Grid doesn't support per-column spacing, use uniform spacing
             self.set_column_spacing(spacing)
-
-        def set_border_width(self, width):
-            # GTK4: Widget doesn't have border_width, use margins
-            self.set_margin_start(width)
-            self.set_margin_end(width)
-            self.set_margin_top(width)
-            self.set_margin_bottom(width)
 
     Gtk.Table = Table
 

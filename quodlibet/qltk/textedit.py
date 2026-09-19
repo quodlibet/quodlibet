@@ -12,7 +12,7 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet import util
 
-from quodlibet.qltk import Button, Icons
+from quodlibet.qltk import Button, Icons, set_margins
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, Error
 from quodlibet.util import connect_obj
@@ -160,7 +160,7 @@ class TextEdit(qltk.UniqueWindow):
         super().__init__()
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_default_size(420, 190)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)

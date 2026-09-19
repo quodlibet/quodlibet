@@ -17,7 +17,7 @@ from quodlibet.formats import AudioFile
 
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.util import connect_obj
-from quodlibet.qltk import Icons, add_css, get_children, is_accel_pressed
+from quodlibet.qltk import Icons, add_css, get_children, is_accel_pressed, set_margins
 
 
 def MenuItems(marks, player, seekable):
@@ -255,7 +255,7 @@ class EditBookmarks(qltk.Window):
     def __init__(self, parent, library, player):
         super().__init__()
         self.set_transient_for(qltk.get_top_parent(parent))
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_default_size(350, 250)
         self.set_title(_("Bookmarks") + " - {}".format(player.song.comma("title")))
 

@@ -24,7 +24,7 @@ from quodlibet.qltk.edittags import AudioFileGroup
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
-from quodlibet.qltk import Icons, Button
+from quodlibet.qltk import Icons, Button, set_margins
 from quodlibet.util import connect_obj, connect_destroy
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.string.filter import remove_diacritics, remove_punctuation
@@ -286,7 +286,7 @@ class DuplicateDialog(Gtk.Window):
         self.set_title(f"Quod Libet - {Duplicates.PLUGIN_NAME} ({songs_text})")
         self.finished = False
         self.set_default_size(960, 480)
-        self.set_border_width(6)
+        set_margins(self, 6)
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         # Set up the browser view
@@ -387,7 +387,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
             cls.config_set(cls._CFG_KEY_KEY, entry.get_text().strip())
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        vb.set_border_width(0)
+        set_margins(vb, 0)
         hbox = Gtk.Box(spacing=6)
         # TODO: construct a decent validator and use ValidatingEntry
         e = UndoEntry()

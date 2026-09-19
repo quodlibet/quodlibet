@@ -16,7 +16,7 @@ from quodlibet.order.reorder import Reorder
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.order import OrderRemembered
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 
 class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
@@ -73,7 +73,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
             cls.config_set("magnitude", int(spin.get_value_as_int()))
 
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        vb.set_border_width(10)
+        set_margins(vb, 10)
         hbox = Gtk.Box(spacing=6)
         lbl = Gtk.Label(label=_("Priority for less played tracks"))
         hbox.append(lbl)

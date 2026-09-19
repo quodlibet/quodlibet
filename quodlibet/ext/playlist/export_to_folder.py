@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet.pattern import FileFromPattern
 from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.playlist import PlaylistPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk.window import Dialog
@@ -35,7 +35,7 @@ class ExportToFolderDialog(Dialog):
 
         self.set_default_size(400, -1)
         self.set_resizable(True)
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.vbox.set_spacing(6)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
@@ -54,9 +54,9 @@ class ExportToFolderDialog(Dialog):
             action=Gtk.FileChooserAction.SELECT_FOLDER
         )
         self.directory_chooser.set_select_multiple(False)
-        self.directory_chooser.set_border_width(1)
+        set_margins(self.directory_chooser, 1)
         frame.add(self.directory_chooser)
-        frame.set_border_width(0)
+        set_margins(frame, 0)
         box.append(frame)
 
         pattern_label = Gtk.Label(_("Filename pattern:"))
@@ -172,7 +172,7 @@ class ExportToFolder(PlaylistPlugin):
 
         def create_pattern():
             hbox = Gtk.Box(spacing=6)
-            hbox.set_border_width(6)
+            set_margins(hbox, 6)
             label = Gtk.Label(label=_("Default filename pattern:"))
             hbox.append(label)
             entry = UndoEntry()

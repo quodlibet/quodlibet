@@ -23,7 +23,7 @@ from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk.data_editors import JSONBasedEditor
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk import ErrorMessage, Icons
+from quodlibet.qltk import ErrorMessage, Icons, set_margins
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.util.dprint import print_w, print_d, print_e
 from quodlibet.util.json_data import JSONObject, JSONObjectDict
@@ -243,7 +243,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def PluginPreferences(cls, parent):
         hb = Gtk.Box(spacing=3)
-        hb.set_border_width(0)
+        set_margins(hb, 0)
 
         button = qltk.Button(_("Edit Custom Commands") + "…", Icons.EDIT)
         button.connect("clicked", cls.edit_patterns)

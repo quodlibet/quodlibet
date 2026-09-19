@@ -31,7 +31,7 @@ from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons, ConfigRHPaned
+from quodlibet.qltk import Icons, ConfigRHPaned, set_margins
 from quodlibet.qltk.entry import ValidatingEntry
 from quodlibet.qltk.image import scale, add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.msg import ConfirmFileReplace
@@ -699,7 +699,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         hpaned = ConfigRHPaned(
             section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
         )
-        hpaned.set_border_width(widget_space)
+        set_margins(hpaned, widget_space)
         # GTK4: pack1/pack2() → set_start_child/set_end_child()
         hpaned.set_start_child(left_vbox)
         hpaned.set_shrink_start_child(False)

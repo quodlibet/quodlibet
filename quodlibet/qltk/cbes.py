@@ -15,7 +15,7 @@ from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.util import GSignals
 from quodlibet.util import connect_obj, escape
-from quodlibet.qltk import entry, add_css
+from quodlibet.qltk import entry, add_css, set_margins
 from quodlibet.qltk import Icons
 
 
@@ -27,7 +27,7 @@ class _KeyValueEditor(qltk.Window):
 
     def __init__(self, title, validator=None):
         super().__init__()
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 

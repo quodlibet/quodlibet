@@ -11,13 +11,13 @@ from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util import build_filter_query
-from quodlibet.qltk import Window, Icons, Button
+from quodlibet.qltk import Window, Icons, Button, set_margins
 
 
 class SelectionWindow(Window):
     def __init__(self, filters, browser, parent=None):
         super().__init__()
-        self.set_border_width(10)
+        set_margins(self, 10)
         self.set_title(FilterAll.PLUGIN_NAME)
         self.set_default_size(200, 250)
         self.set_transient_for(parent)

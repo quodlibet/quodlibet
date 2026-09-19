@@ -21,7 +21,7 @@ import quodlibet
 from quodlibet import _, print_w, print_e
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.urllib import urlopen
 
@@ -207,7 +207,7 @@ class LastFMSyncWindow(qltk.Dialog):
         super().__init__(_("Last.fm Sync"), parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.ACCEPT)
-        self.set_border_width(5)
+        set_margins(self, 5)
         self.set_default_size(300, 100)
 
         vbox = Gtk.Box(

@@ -469,6 +469,15 @@ def add_css(widget: Gtk.Widget, css: bytes | str):
     context.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 
+def set_margins(widget: Gtk.Widget, margin: int) -> None:
+    """Set all four margins of the widget to the same value"""
+
+    widget.set_margin_start(margin)
+    widget.set_margin_end(margin)
+    widget.set_margin_top(margin)
+    widget.set_margin_bottom(margin)
+
+
 def remove_padding(widget):
     """Removes padding on supplied widget"""
     return add_css(widget, " * { padding: 0px; } ")

@@ -17,7 +17,7 @@ from quodlibet.plugins.events import EventPlugin
 from quodlibet import util
 from quodlibet.util import print_d
 from quodlibet.browsers.playlists import PlaylistsBrowser
-from quodlibet.qltk import notif, Icons
+from quodlibet.qltk import notif, Icons, set_margins
 
 
 class RandomAlbum(EventPlugin):
@@ -72,7 +72,7 @@ class RandomAlbum(EventPlugin):
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         table = Gtk.Table(n_rows=len(self.keys) + 1, n_columns=3)
-        table.set_border_width(3)
+        set_margins(table, 3)
 
         hbox = Gtk.Box(spacing=6)
         spin = Gtk.SpinButton(

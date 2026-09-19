@@ -17,7 +17,13 @@ from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk.entry import Entry
 from quodlibet.qltk.data_editors import TagListEditor
-from quodlibet.qltk import Icons, get_top_parent, ErrorMessage, get_children
+from quodlibet.qltk import (
+    Icons,
+    get_top_parent,
+    ErrorMessage,
+    get_children,
+    set_margins,
+)
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 WIKI_URL = "https://%s.wikipedia.org/wiki/Special:Search/"
@@ -49,7 +55,7 @@ class WikiSearch(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(cls, parent):
         hb = Gtk.Box(spacing=3)
-        hb.set_border_width(6)
+        set_margins(hb, 6)
         e = Entry(max_length=2)
         e.set_width_chars(3)
         e.set_max_width_chars(3)

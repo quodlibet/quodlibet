@@ -11,7 +11,7 @@ from gi.repository import Gtk
 from quodlibet import _, util
 from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 
 class EditPlaycount(SongsMenuPlugin):
@@ -48,7 +48,7 @@ class EditPlaycount(SongsMenuPlugin):
         dlg.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         dlg.add_button(_("_Apply"), Gtk.ResponseType.APPLY)
         dlg.set_default_response(Gtk.ResponseType.APPLY)
-        dlg.set_border_width(4)
+        set_margins(dlg, 4)
         dlg.vbox.set_spacing(4)
 
         # Create some spinners.

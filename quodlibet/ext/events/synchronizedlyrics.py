@@ -18,7 +18,7 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.util.dprint import print_d
 
 
@@ -56,7 +56,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     def PluginPreferences(self, window):
         vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vb.set_border_width(6)
+        set_margins(vb, 6)
 
         t = Gtk.Table(n_rows=5, n_columns=2, homogeneous=True)
         t.set_col_spacings(6)

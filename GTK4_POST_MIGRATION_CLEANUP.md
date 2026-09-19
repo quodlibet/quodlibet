@@ -444,3 +444,21 @@ one for the post-migration cull.
 fake app produces zero warnings, because it lacks the real browser and
 `ConfigRHPaned` that appear in the reported log. It needs checking in the real
 app.
+
+
+`set_margins()` is not the same padding GTK3 gave
+-------------------------------------------------
+
+`set_border_width` was retired on 2026-09-19 in favour of
+`qltk.set_margins(widget, n)`, which does exactly what the shim did — set all
+four `margin-*` properties. That keeps the branch behaviour-identical, but it is
+not what `main` renders: GTK3's `border_width` padded *inside* the container, so
+a `Gtk.Frame`'s border sat outside the padding, and a `Gtk.Window`'s content was
+inset from the window edge. A GTK4 margin sits *outside* the widget, so the
+frame border now hugs its child and window margins are ignored by the toplevel
+entirely.
+
+Fixing this properly means moving the margin onto the *child* for `Gtk.Window`
+and `Gtk.Frame` call sites (`self.set_margins(12)` on a dialog wants to be
+margins on its content area). That needs eyes on the running app — every dialog
+in the app is a call site — so it is a visual pass, not a mechanical one.

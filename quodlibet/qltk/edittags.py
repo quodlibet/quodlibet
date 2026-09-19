@@ -19,7 +19,7 @@ from quodlibet import util
 from quodlibet.formats import AudioFileError
 from quodlibet.plugins import PluginManager
 from quodlibet.plugins.editing import EditTagsPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
 from quodlibet.qltk.ccb import ConfigCheckButton
@@ -317,7 +317,7 @@ class AddTagDialog(Dialog):
             transient_for=qltk.get_top_parent(parent),
             use_header_bar=True,
         )
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         add = self.add_icon_button(_("_Add"), Icons.LIST_ADD, Gtk.ResponseType.OK)
@@ -458,7 +458,7 @@ class EditTags(Gtk.Box):
     def __init__(self, parent, library):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.title = _("Edit Tags")
-        self.set_border_width(12)
+        set_margins(self, 12)
         self._group_info = None
 
         model = ObjectStore()
