@@ -64,12 +64,12 @@ def parse_page(args):
 
         sock = requests.get(uri)
         data = sock.text
-        pl_reg = re.compile("(/listen/\d+/listen\.xspf)")
+        pl_reg = re.compile("(/listen/\\d+/listen\\.xspf)")
         pls = ["http://dir.xiph.org" + u for u in pl_reg.findall(data)]
         if not pls:
             return genre, page, {}, set()
 
-        list_reg = re.compile("\[(\d+).*?listeners\]")
+        list_reg = re.compile("\\[(\\d+).*?listeners\\]")
         listeners = list_reg.findall(data)
         playlists = {}
         for url, count in zip(pls, listeners):

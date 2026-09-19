@@ -16,7 +16,7 @@ from util import get_cache, set_cache
 
 def get_pls(uri):
     r = requests.get(uri)
-    return re.findall("File\d*=(.*)", r.text)
+    return re.findall("File\\d*=(.*)", r.text)
 
 
 def main():
