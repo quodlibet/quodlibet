@@ -55,7 +55,7 @@ class ExportToFolderDialog(Dialog):
         )
         self.directory_chooser.set_select_multiple(False)
         set_margins(self.directory_chooser, 1)
-        frame.add(self.directory_chooser)
+        frame.set_child(self.directory_chooser)
         set_margins(frame, 0)
         box.append(frame)
 

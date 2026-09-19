@@ -517,7 +517,7 @@ class Equalizer(EventPlugin):
         padboxv.append(combo)
         padboxh = Gtk.Box()
         padboxh.append(padboxv)
-        frame.add(padboxh)
+        frame.set_child(padboxh)
 
         main_middle_hbox.append(frame)
 
@@ -577,7 +577,7 @@ class Equalizer(EventPlugin):
         # This block is just for padding.
         padboxh = Gtk.Box()
         padboxh.append(main_bottom_vbox)
-        frame.add(padboxh)
+        frame.set_child(padboxh)
 
         main_vbox.append(frame)
         return main_vbox

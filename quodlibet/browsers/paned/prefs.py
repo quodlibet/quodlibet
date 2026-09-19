@@ -264,7 +264,7 @@ class Preferences(qltk.UniqueWindow):
         vbox.append(editor_frame)
         vbox.append(box)
 
-        self.add(vbox)
+        self.set_child(vbox)
 
         cancel.grab_focus()
 

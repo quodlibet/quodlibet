@@ -59,7 +59,7 @@ class SongInfo(Gtk.Box):
         label.set_wrap(True)
         label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
         label.set_selectable(True)
-        align.add(label)
+        align.append(label)
         # GTK4: set_alignment removed - use xalign/yalign properties
         label.set_xalign(0.0)
         label.set_yalign(0.0)

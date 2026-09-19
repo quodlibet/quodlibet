@@ -43,7 +43,7 @@ class TQltk(TestCase):
     def test_gtp_packed(self):
         w = Gtk.Window()
         l = Gtk.Label()
-        w.add(l)
+        w.set_child(l)
         self.assertEqual(qltk.get_top_parent(w), w)
         self.assertEqual(qltk.get_top_parent(l), w)
         w.destroy()
@@ -69,7 +69,7 @@ class TQltk(TestCase):
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()
         l = Gtk.Label()
-        w.add(l)
+        w.set_child(l)
         m = Gtk.PopoverMenu()
         m.attach_to_widget(l, None)
         qltk.popup_menu_under_widget(m, l, 1, 0)

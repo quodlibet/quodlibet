@@ -117,8 +117,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def unpack(self, container, songpane):
         self._rh_box.remove(songpane)
-        container.remove(self._rh_box)
-        container.remove(self)
+        container.set_end_child(None)
+        container.set_start_child(None)
 
     @classmethod
     def init(cls, library):

@@ -146,7 +146,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             check_button.set_active(self.config_get_bool(query_config))
             saved_search_vbox.append(check_button)
         saved_search_scroll = self._expandable_scroll(min_h=0, max_h=300)
-        saved_search_scroll.add(saved_search_vbox)
+        saved_search_scroll.set_child(saved_search_vbox)
         frame = qltk.Frame(
             label=_("Synchronize the following saved searches:"),
             child=saved_search_scroll,
@@ -241,7 +241,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         self.model = Gtk.ListStore(*column_types)
         self.details_tree = details_tree = HintedTreeView(model=self.model)
         details_scroll = self._expandable_scroll()
-        details_scroll.add(details_tree)
+        details_scroll.set_child(details_tree)
         self.renders = {}
 
         # Preview column: status

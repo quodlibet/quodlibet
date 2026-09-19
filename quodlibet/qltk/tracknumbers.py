@@ -55,7 +55,7 @@ class TrackNumbers(Gtk.Box):
         preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
 
         grid = Gtk.Grid(row_spacing=4, column_spacing=4)
-        grid.add(label_start)
+        grid.attach(label_start, 0, 0, 1, 1)
         grid.attach_next_to(spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
         grid.attach_next_to(label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
         grid.attach_next_to(spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)

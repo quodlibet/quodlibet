@@ -320,7 +320,7 @@ class CoverArea(Gtk.Box, PluginConfigMixin):
         bbox.append(close_button)
 
         bb_align = Align(valign=Gtk.Align.END, right=6)
-        bb_align.add(bbox)
+        bb_align.append(bbox)
 
         main_hbox = Gtk.Box()
         main_hbox.append(grid)
@@ -706,7 +706,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         hpaned.set_end_child(image)
         hpaned.set_shrink_end_child(False)
 
-        self.add(hpaned)
+        self.set_child(hpaned)
 
         left_vbox.append(self.progress)
 

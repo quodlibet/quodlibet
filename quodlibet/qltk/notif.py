@@ -261,13 +261,13 @@ class TaskWidget(Gtk.Box):
         self.pause = SmallImageToggleButton()
         # GTK4: Image.new_from_icon_name() only takes icon_name, not size
         image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE)
-        self.pause.add(image)
+        self.pause.set_child(image)
         self.pause.connect("toggled", self.__pause_toggled)
         self.append(self.pause)
         self.stop = SmallImageButton()
         # GTK4: Image.new_from_icon_name() only takes icon_name, not size
         image = Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP)
-        self.stop.add(image)
+        self.stop.set_child(image)
         self.stop.connect("clicked", self.__stop_clicked)
         self.append(self.stop)
 

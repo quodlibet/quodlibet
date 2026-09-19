@@ -65,7 +65,7 @@ class FingerprintDialog(Window):
         stats.set_size_request(426, -1)
         expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
         expand.set_resize_toplevel(True)
-        expand.add(stats)
+        expand.set_child(stats)
 
         def expand_cb(expand, *args):
             self.resize(self.get_size()[0], 1)
@@ -107,7 +107,7 @@ class FingerprintDialog(Window):
 
         connect_obj(self, "delete-event", self.__cancel_cb, pool)
 
-        self.add(outer_box)
+        self.set_child(outer_box)
 
     def __update_stats(self):
         all_ = len(self.__songs)

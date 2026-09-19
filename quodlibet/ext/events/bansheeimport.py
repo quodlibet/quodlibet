@@ -153,7 +153,7 @@ class BansheeImport(EventPlugin):
         grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
 
         path_revert = Gtk.Button()
-        path_revert.add(
+        path_revert.set_child(
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
 

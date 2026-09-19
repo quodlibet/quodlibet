@@ -108,7 +108,7 @@ def Frame(label, child=None):
     frame.set_child(align)  # GTK4: use set_child() instead of add()
     frame.set_label_widget(label_w)
     if child:
-        align.add(child)
+        align.append(child)
         label_w.set_mnemonic_widget(child)
         label_w.set_use_underline(True)
     return frame
@@ -160,10 +160,6 @@ class Align(Gtk.Box):
 
     def get_margin_right(self):
         return self._margins["right"]
-
-    def add(self, child):
-        """GTK4 compatibility: add() → append()"""
-        self.append(child)
 
     def get_child(self):
         """GTK4 compatibility: return first child"""
@@ -242,7 +238,7 @@ def _Button(
         label = Gtk.Label(label=text)
         label.set_use_underline(True)
         hbox.append(label)
-    align.add(hbox)
+    align.append(hbox)
     button = type_()
     # GTK4: use set_child() instead of add() for single-child containers
     button.set_child(align)

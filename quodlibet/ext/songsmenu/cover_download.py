@@ -276,9 +276,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
 
         eb = Gtk.Box()
-        eb.add(img)
-        reveal.add(eb)
-        frame.add(reveal)
+        eb.append(img)
+        reveal.set_child(eb)
+        frame.set_child(reveal)
         frame.set_label_align(0.5, 1.0)
         reveal.connect("button-press-event", self._on_click)
         return frame
@@ -433,7 +433,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         save_box = create_save_box()
         save_box.set_margin_top(6)
         vbox.append(save_box)
-        frame.add(vbox)
+        frame.set_child(vbox)
 
         self.button = self.add_icon_button(
             _("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.APPLY

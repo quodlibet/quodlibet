@@ -74,7 +74,7 @@ def Frame(name, widget):
     l = Gtk.Label(label=name)
     qltk.add_css(l, " * {opacity: 0.6; margin: 2px;}")
     f.set_label_widget(l)
-    f.add(widget)
+    f.set_child(widget)
     return f
 
 
@@ -473,7 +473,7 @@ class OneArtist(Gtk.Box):
             label.set_markup(album_title)
             box.append(label)
 
-            fb.add(box)
+            fb.append(box)
         if no_album_count:
             text = (
                 ngettext(
@@ -493,7 +493,7 @@ class OneArtist(Gtk.Box):
             label.set_hexpand(True)
             label.set_vexpand(True)
             box.append(label)
-            fb.add(box)
+            fb.append(box)
         self.append(Frame(_("Selected Discography"), fb))
 
 

@@ -53,7 +53,7 @@ class SelectionWindow(Window):
         box.append(sw)
         box.append(buttons)
 
-        self.add(box)
+        self.set_child(box)
 
     def __filter(self, model, browser):
         selected = {}

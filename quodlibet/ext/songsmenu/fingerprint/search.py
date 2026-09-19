@@ -316,7 +316,7 @@ class SearchWindow(Window):
 
         outer_box.append(bottom_box)
 
-        self.add(outer_box)
+        self.set_child(outer_box)
 
         self.__album_mode = True
         self.__group_by_dir = True

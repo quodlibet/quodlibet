@@ -107,8 +107,8 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return container
 
     def unpack(self, container, songpane):
-        container.remove(songpane)
-        container.remove(self)
+        container.set_end_child(None)
+        container.set_start_child(None)
 
     @classmethod
     def _init_model(cls, library):
@@ -246,7 +246,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         hbox = Gtk.Box(spacing=6)
 
         prefs = Gtk.Button()
-        prefs.add(SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL))
+        prefs.set_child(SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL))
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()

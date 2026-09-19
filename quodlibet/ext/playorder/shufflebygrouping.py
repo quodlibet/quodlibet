@@ -190,10 +190,10 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         table.attach(grouping_filter_entry, 1, 2, 1, 2)
         table.attach(delay_spin, 1, 2, 2, 3)
 
-        vbox.add(table)
+        vbox.append(table)
 
         defaults = Gtk.Button(_("Reset to defaults"))
         defaults.connect("clicked", default_on_click)
-        vbox.add(defaults)
+        vbox.append(defaults)
 
         return vbox

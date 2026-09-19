@@ -43,10 +43,10 @@ class FileListExpander(Gtk.Expander):
         lab.set_yalign(0.0)
         lab.set_selectable(True)
         win = Gtk.ScrolledWindow()
-        win.add_with_viewport(Align(lab, border=6))
+        win.set_child(Align(lab, border=6))
         win.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         win.set_size_request(-1, 100)
-        self.add(win)
+        self.set_child(win)
 
 
 class DeleteDialog(WarningMessage):

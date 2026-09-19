@@ -162,7 +162,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         button = Gtk.Button(always_show_image=True)
         button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
-        button.add(self._logo_image)
+        button.set_child(self._logo_image)
         hbox.append(button)
         return hbox
 
@@ -194,7 +194,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         if child:
             print_d("Removing old image...")
             but.remove(child)
-        but.add(icon if icon else Gtk.Label(tooltip))
+        but.set_child(icon if icon else Gtk.Label(tooltip))
 
         but.get_child().show()
         but.set_sensitive(True)

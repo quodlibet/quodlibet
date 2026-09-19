@@ -349,7 +349,7 @@ class DuplicateDialog(Gtk.Window):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         vbox.append(swin)
         vbox.append(hbox)
-        self.add(vbox)
+        self.set_child(vbox)
 
 
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):

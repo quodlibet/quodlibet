@@ -67,7 +67,7 @@ class Preferences(Gtk.Box):
             entry.set_text(pconfig.gettext("tooltip"))
 
         revert = Gtk.Button()
-        revert.add(
+        revert.set_child(
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE)
         )
         revert.connect("clicked", on_reverted)
@@ -86,7 +86,7 @@ class Preferences(Gtk.Box):
             margin_end=18,
         )
         vbox.append(preview)
-        preview_frame.add(vbox)
+        preview_frame.set_child(vbox)
         box.append(preview_frame)
 
         tt_frame = qltk.Frame(_("Tooltip Display"), child=box)

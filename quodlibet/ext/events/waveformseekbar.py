@@ -714,7 +714,7 @@ class WaveformSeekBarPlugin(EventPlugin):
 
             button = Gtk.Button()
             button.connect("clicked", on_clicked)
-            button.add(SymbolicIconImage(Icons.EDIT, Gtk.IconSize.NORMAL))
+            button.set_child(SymbolicIconImage(Icons.EDIT, Gtk.IconSize.NORMAL))
             if colour:
                 add_css(
                     colour_label,

@@ -44,7 +44,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(Gtk.Box(spacing=6))
+        self.set_child(Gtk.Box(spacing=6))
         self.get_child().set_homogeneous(True)
         self.accels = Gtk.AccelGroup()
 
@@ -330,7 +330,7 @@ class TagListEditor(qltk.Window):
             vbox.append(bbox)
 
         # Finish up
-        self.add(vbox)
+        self.set_child(vbox)
 
     def __start_editing(self, _render, editable, path):
         editable.set_text(self.model[path][0])

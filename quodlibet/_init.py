@@ -401,48 +401,9 @@ def _init_gtk():  # noqa: C901
 
     GObject.Object.connect_after = _connect_after_compat
 
-    # GTK4: Button.add() → Button.set_child()
-    if not hasattr(Gtk.Button, "add"):
-        Gtk.Button.add = lambda self, child: self.set_child(child)
-
-    # GTK4: Window.add() → Window.set_child()
-    if not hasattr(Gtk.Window, "add"):
-        Gtk.Window.add = lambda self, child: self.set_child(child)
-
-    # GTK4: Box.add() -> Box.append()
-    if not hasattr(Gtk.Box, "add"):
-        Gtk.Box.add = lambda self, child: self.append(child)
-
     # GTK4: ButtonBox removed - set_layout is a no-op on regular Box
     if not hasattr(Gtk.Box, "set_layout"):
         Gtk.Box.set_layout = lambda self, layout: None
-
-    # GTK4: FlowBox.add() → FlowBox.append()
-    if not hasattr(Gtk.FlowBox, "add"):
-        Gtk.FlowBox.add = lambda self, child: self.append(child)
-
-    # GTK4: ComboBox.add() → ComboBox.set_child() for entry widget
-    if not hasattr(Gtk.ComboBox, "add"):
-        Gtk.ComboBox.add = lambda self, child: self.set_child(child)
-
-    # GTK4: Grid.add() removed - use attach() instead
-    if not hasattr(Gtk.Grid, "add"):
-
-        def _grid_add(self, child):
-            # GTK3 Grid.add appends to row 0, incrementing column
-            col = getattr(self, "_add_column", 0)
-            self.attach(child, col, 0, 1, 1)
-            self._add_column = col + 1
-
-        Gtk.Grid.add = _grid_add
-
-    # GTK4: ScrolledWindow.add_with_viewport() removed
-    if not hasattr(Gtk.ScrolledWindow, "add_with_viewport"):
-        Gtk.ScrolledWindow.add_with_viewport = lambda self, child: self.set_child(child)
-
-    # GTK4: Frame.add() → Frame.set_child()
-    if not hasattr(Gtk.Frame, "add"):
-        Gtk.Frame.add = lambda self, child: self.set_child(child)
 
     # GTK4: Image.new_from_icon_name() only takes icon_name, not size
     _orig_image_new_from_icon_name = Gtk.Image.new_from_icon_name
@@ -963,37 +924,6 @@ def _init_gtk():  # noqa: C901
         return _orig_popover_popup(self)
 
     Gtk.PopoverMenu.popup = _popover_menu_popup_compat
-
-    # GTK4: ScrolledWindow.add() → set_child()
-    if not hasattr(Gtk.ScrolledWindow, "add"):
-        Gtk.ScrolledWindow.add = lambda self, child: self.set_child(child)
-
-    # GTK4: ScrolledWindow.remove() → set_child(None)
-    if not hasattr(Gtk.ScrolledWindow, "remove"):
-        Gtk.ScrolledWindow.remove = lambda self, child: self.set_child(None)
-
-    # GTK4: Window.remove() → set_child(None)
-    if not hasattr(Gtk.Window, "remove"):
-        Gtk.Window.remove = lambda self, child: self.set_child(None)
-
-    # GTK4: Expander.add() → set_child()
-    if not hasattr(Gtk.Expander, "add"):
-        Gtk.Expander.add = lambda self, child: self.set_child(child)
-
-    # GTK4: Expander.remove() → set_child(None)
-    if not hasattr(Gtk.Expander, "remove"):
-        Gtk.Expander.remove = lambda self, child: self.set_child(None)
-
-    # GTK4: Paned.remove() compatibility
-    if not hasattr(Gtk.Paned, "remove"):
-
-        def _paned_remove(self, child):
-            if self.get_start_child() == child:
-                self.set_start_child(None)
-            elif self.get_end_child() == child:
-                self.set_end_child(None)
-
-        Gtk.Paned.remove = _paned_remove
 
     # GTK4: Button.always_show_image property removed (images always shown)
     # Wrap __init__ to strip the property before GObject sees it

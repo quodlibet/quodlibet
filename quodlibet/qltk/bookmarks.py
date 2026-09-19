@@ -260,7 +260,7 @@ class EditBookmarks(qltk.Window):
         self.set_title(_("Bookmarks") + " - {}".format(player.song.comma("title")))
 
         pane = EditBookmarksPane(None, library, song=player.song, close=True)
-        self.add(pane)
+        self.set_child(pane)
 
         s = library.connect("removed", self.__check_lock, player.song)
         connect_obj(self, "destroy", library.disconnect, s)

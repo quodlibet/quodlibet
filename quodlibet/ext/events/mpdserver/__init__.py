@@ -115,7 +115,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(entry, 1, 2, 1, 2)
 
         port_revert = Gtk.Button()
-        port_revert.add(
+        port_revert.set_child(
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
 

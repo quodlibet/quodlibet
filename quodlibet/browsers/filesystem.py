@@ -64,8 +64,8 @@ class FileSystem(Browser, Gtk.Box):
         return container
 
     def unpack(self, container, songpane):
-        container.remove(songpane)
-        container.remove(self)
+        container.set_end_child(None)
+        container.set_start_child(None)
 
     @classmethod
     def __added(cls, library, songs):

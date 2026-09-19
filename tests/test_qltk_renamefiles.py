@@ -162,7 +162,7 @@ class Renamer(Gtk.Box):
         self.library = SongLibrary()
         box = Gtk.Box()
         self.renamer = RenameFiles(self.library, box)
-        box.add(self.renamer)
+        box.append(self.renamer)
 
         self.renamer.test_mode = True
 

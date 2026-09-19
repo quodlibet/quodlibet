@@ -70,7 +70,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         set_margins(hp, 0)
         hp.set_position(250)
         hp.show()
-        self.add(hp)
+        self.set_child(hp)
 
         vb = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,

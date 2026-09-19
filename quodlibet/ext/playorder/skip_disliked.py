@@ -45,7 +45,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
 
         fb_spin.connect("changed", on_changed)
 
-        vb.add(fb_spin)
+        vb.append(fb_spin)
         return vb
 
     def next(self, playlist, current):

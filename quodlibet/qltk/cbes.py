@@ -31,7 +31,7 @@ class _KeyValueEditor(qltk.Window):
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
 
-        self.add(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6))
+        self.set_child(Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6))
 
         t = Gtk.Grid()
         t.set_row_spacing(6)
@@ -303,7 +303,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         font = "font-family: monospace; " if use_mono else ""
         size = escape(config.gettext("settings", "query_font_size"))
         add_css(new_entry, f"entry {{ {font} font-size: {size}; }}")
-        self.add(new_entry)
+        self.set_child(new_entry)
         if validator:
             # Call once more to ensure correct theme colours
             GLib.idle_add(new_entry._set_color, None, validator)

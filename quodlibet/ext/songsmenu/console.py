@@ -117,7 +117,7 @@ class ConsoleWindow(Gtk.Window):
         Gtk.Window.__init__(self)
         if title:
             self.set_title(title)
-        self.add(console)
+        self.set_child(console)
         self.set_size_request(700, 500)
         console.connect("destroy", lambda *x: self.destroy())
 
@@ -630,7 +630,7 @@ class ListChoiceDialog(Gtk.Dialog):
         for i, (name, details) in enumerate(rows):
             row = Gtk.ListBoxRow()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-            row.add(hbox)
+            row.set_child(hbox)
 
             lbl = Gtk.Label(label=name, xalign=0)
             lbl2 = Gtk.Label(label=details, xalign=0)
@@ -642,7 +642,7 @@ class ListChoiceDialog(Gtk.Dialog):
             style.add_class("dim-label")
             add_css(lbl2, ".dim-label { opacity: 0.5; } ")
 
-            listbox.add(row)
+            listbox.append(row)
 
             if i == 0:
                 listbox.set_focus_child(row)

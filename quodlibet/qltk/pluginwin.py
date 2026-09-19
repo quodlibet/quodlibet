@@ -73,7 +73,7 @@ class PluginErrorWindow(UniqueWindow):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         set_margins(vbox, 6)
         scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        scrolledwin.add_with_viewport(vbox)
+        scrolledwin.set_child(vbox)
 
         keys = failures.keys()
         show_expanded = len(keys) <= 3
@@ -97,7 +97,7 @@ class PluginErrorWindow(UniqueWindow):
             failure.set_line_wrap(True)
 
             vbox.append(expander)
-            expander.add(failure)
+            expander.set_child(failure)
 
         self.use_header_bar()
 
@@ -113,7 +113,7 @@ class PluginErrorWindow(UniqueWindow):
             self.add(vbox2)
             close.grab_focus()
         else:
-            self.add(scrolledwin)
+            self.set_child(scrolledwin)
 
 
 class EnabledType:
@@ -475,7 +475,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         paned.set_shrink_end_child(False)
         paned.set_position(290)
 
-        self.add(paned)
+        self.set_child(paned)
 
         self.__refill(plv, pref_box, errors, enabled_combo)
 

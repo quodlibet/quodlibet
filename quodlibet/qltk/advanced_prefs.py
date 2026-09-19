@@ -64,7 +64,9 @@ def boolean_config(section, option, label, tooltip):
 
 def revert_button(on_reverted: Callable[..., None]) -> Gtk.Button:
     revert = Gtk.Button()
-    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE))
+    revert.set_child(
+        Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.LARGE)
+    )
     revert.connect("clicked", on_reverted)
     revert.set_tooltip_text(_("Revert to default"))
     return revert

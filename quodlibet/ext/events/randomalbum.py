@@ -93,7 +93,7 @@ class RandomAlbum(EventPlugin):
         check.set_active(self.use_weights)
         toggled_cb(check, [frame, table])
 
-        frame.add(table)
+        frame.set_child(table)
         vbox.append(frame)
 
         # Less label

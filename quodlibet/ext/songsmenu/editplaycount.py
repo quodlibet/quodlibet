@@ -73,7 +73,7 @@ class EditPlaycount(SongsMenuPlugin):
         table.attach(Gtk.Label(_("Skip Count")), 0, 1, 1, 2)
         table.attach(play, 1, 2, 0, 1)
         table.attach(skip, 1, 2, 1, 2)
-        dlg.vbox.add(table)
+        dlg.vbox.append(table)
 
         # Make a couple tweaks based on the current mode.
         if len(songs) == 1:
@@ -89,7 +89,7 @@ class EditPlaycount(SongsMenuPlugin):
                 + "\n"
                 + _("Counts will be incremented.")
             )
-            dlg.vbox.add(note)
+            dlg.vbox.append(note)
 
         # Only operate if apply is pressed.
         if dlg.run() == Gtk.ResponseType.APPLY:

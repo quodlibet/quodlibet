@@ -176,7 +176,7 @@ class TextEdit(qltk.UniqueWindow):
         if not self.has_close_button():
             vbox.append(b)
 
-        self.add(vbox)
+        self.set_child(vbox)
         self.apply = box.apply
         self.revert = box.revert
 

@@ -139,7 +139,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         )
 
         self.emit("changed", songs)
-        self.add(paned)
+        self.set_child(paned)
         paned.set_position(175)
         notebook.show()
         paned.show()

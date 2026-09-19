@@ -80,7 +80,7 @@ class PreferencesWidget(Gtk.Box):
         )
 
         title_revert = Gtk.Button()
-        title_revert.add(
+        title_revert.set_child(
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
         title_revert.set_tooltip_text(_("Revert to default pattern"))
@@ -103,7 +103,7 @@ class PreferencesWidget(Gtk.Box):
         body_textbuffer.connect("changed", on_textbuffer_changed, "bodypattern")
         body_scrollarea = Gtk.ScrolledWindow()
         body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        body_scrollarea.add(body_textview)
+        body_scrollarea.set_child(body_textview)
         table.attach(body_scrollarea, 1, 2, 1, 2)
 
         body_label = Gtk.Label(label=_("_Body:"))
@@ -118,7 +118,7 @@ class PreferencesWidget(Gtk.Box):
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         body_revert = Gtk.Button()
-        body_revert.add(
+        body_revert.set_child(
             Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
         body_revert.set_tooltip_text(_("Revert to default pattern"))

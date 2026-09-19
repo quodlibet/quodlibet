@@ -234,6 +234,29 @@ lifecycle / cleanup differences not yet investigated:
 Recently Landed (2026-09-19)
 ----------------------------
 
+- The container `.add()` / `.remove()` aliases are gone — ten `add` shims
+  (Button, Window, Box, FlowBox, ComboBox, Grid, Frame, ScrolledWindow,
+  `add_with_viewport`, Expander), four `remove` shims (ScrolledWindow, Window,
+  Expander, Paned) and `qltk.x.Align.add`. Call sites now use `set_child()`,
+  `append()` or `attach()` directly.
+
+  Finding the call sites needed both halves: `.add(` is overwhelmingly Python
+  sets and `copool` in this codebase, so a static grep is mostly noise. The
+  shims were temporarily wrapped to log caller and receiver type, and the suite
+  run — that named 60 non-test sites exactly, and a static pass over the rest
+  caught the ones no test reaches. Three real bugs turned up in that second
+  group, all in code the shims never covered and so already broken: `console.py`
+  called `add()` on a `Gtk.ListBox` and a `Gtk.ListBoxRow`, and
+  `cover_download.py` on a `Gtk.Revealer`.
+
+  `qltk/shortcuts.py` was the one site that could not take the mechanical
+  translation. `Gtk.ShortcutsWindow` is a `Gtk.Window`, so the shim was calling
+  `set_child()` on it and blowing away the internal stack the widget builds for
+  itself; sections, groups and shortcuts have dedicated `add_section()` /
+  `add_group()` / `add_shortcut()` methods, and those are now used. (All three
+  are deprecated in GTK 4.18 along with the widget, but they are the only public
+  API for it.) Verified by building the real window.
+
 - `set_border_width` is gone: the two shims (the `Frame`/`Window`/`Paned`/`Box`
   patch and the `Gtk.Table` method) and all 68 call sites across 45 files, which
   now call `qltk.set_margins(widget, n)` — the same four `set_margin_*` calls the
@@ -280,11 +303,9 @@ Two open items from the same session, neither reproduced in a harness:
 - **CoverGrid's context menu is over-tall** while the song list's is fine — see
   `GTK4_POST_MIGRATION_CLEANUP.md`, which lists what has been ruled out.
 
-Remaining shim fronts, largest first — `_init.py` is 1358 lines with 48
+Remaining shim fronts, largest first — `_init.py` is 1288 lines with 34
 monkey-patched attributes:
 
-- The container `.add()` aliases (Box, Window, Button, Frame, Expander,
-  ScrolledWindow, Grid, ComboBox, Paned).
 - The four `Gtk.PopoverMenu` compat patches (`__init__`, `append`, `popup`,
   `get_children`) and the last 18 `Gtk.Menu*` occurrences in 11 files.
 - ~20 call sites still connecting removed GTK3 signal names, plus

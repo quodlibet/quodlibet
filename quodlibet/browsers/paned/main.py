@@ -54,7 +54,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         return container
 
     def unpack(self, container, songpane):
-        self.main_box.remove(songpane)
+        self.main_box.set_end_child(None)
         container.remove(self)
 
     @classmethod

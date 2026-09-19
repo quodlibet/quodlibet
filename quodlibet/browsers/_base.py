@@ -377,7 +377,7 @@ class EditDisplayPatternMixin:
         label.set_margin_bottom(6)
         eb = Gtk.Box()
         eb.get_style_context().add_class("entry")
-        eb.add(label)
+        eb.append(label)
         edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
         edit.apply.connect("clicked", self._set_pattern, edit, browser)

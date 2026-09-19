@@ -207,7 +207,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
         self.set_title(browser_cls.name + " - Quod Libet")
-        self.add(
+        self.set_child(
             Gtk.Box(
                 orientation=Gtk.Orientation.VERTICAL,
             )

@@ -144,7 +144,7 @@ class FilterPluginBox(Gtk.Box):
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
         )
-        expander.add(vbox)
+        expander.set_child(vbox)
 
         connect_destroy(
             plugin_handler, "changed", self.__refresh_plugins, vbox, expander

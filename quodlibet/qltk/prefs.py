@@ -109,7 +109,7 @@ class PreferencesWindow(UniqueWindow):
                 grid = Gtk.FlowBox(column_spacing=24)
                 for _i, (k, t) in enumerate(self.PREDEFINED_TAGS):
                     buttons[k] = Gtk.CheckButton(label=t, use_underline=True)
-                    grid.add(buttons[k])
+                    grid.append(buttons[k])
                 vbox.append(grid)
                 # Other columns
                 hbox = Gtk.Box(spacing=12)
@@ -625,13 +625,13 @@ class PreferencesWindow(UniqueWindow):
             scale_combo.connect("changed", rating_scale_changed, model)
 
             default_align = Align(halign=Gtk.Align.START)
-            default_align.add(default_lab)
+            default_align.append(default_lab)
             scale_align = Align(halign=Gtk.Align.START)
-            scale_align.add(scale_lab)
+            scale_align.append(scale_lab)
 
             grid = create_grid()
-            grid.add(scale_align)
-            grid.add(scale_combo)
+            grid.attach(scale_align, 0, 0, 1, 1)
+            grid.attach(scale_combo, 1, 0, 1, 1)
             grid.attach(default_align, 0, 1, 1, 1)
             grid.attach(default_combo, 1, 1, 1, 1)
             vb.append(grid)
@@ -918,7 +918,7 @@ class PreferencesWindow(UniqueWindow):
         if self.has_close_button():
             set_margins(self, 0)
             notebook.set_show_border(False)
-            self.add(notebook)
+            self.set_child(notebook)
         else:
             set_margins(self, 12)
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
