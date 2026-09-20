@@ -1853,32 +1853,33 @@ msgid ""
 "plugged in again."
 msgstr "ຢຸດຊົ່ວຄາວໃນກໍລະນີທີ່ຫູຟັງຖືກຖອດອອກ ແລະ ເລີ່ມຫຼິ້ນຕໍ່ໃນກໍລະນີທີ່ພວກມັນຖືກສຽບເຂົ້າອີກຄັ້ງ."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "ຢັບຢັ້ງການພັກໜ້າຈໍ/ການພັກເຄື່ອງ"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "ໃນເດັສທັອບ GNOME, ເມື່ອເພງກຳລັງຫຼິ້ນ, ຈະປ້ອງກັນບໍ່ໃຫ້ຕົວພັກໜ້າຈໍເຮັດວຽກ ຫຼື "
 "ປ້ອງກັນບໍ່ໃຫ້ຄອມພິວເຕີພັກເຄື່ອງ."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "ເພງກຳລັງຫຼິ້ນ"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "ໂໝດ:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "ຢັບຢັ້ງການພັກໜ້າຈໍ"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "ຢັບຢັ້ງການພັກເຄື່ອງ"
 

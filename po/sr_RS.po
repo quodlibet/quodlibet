@@ -1898,32 +1898,32 @@ msgid ""
 "plugged in again."
 msgstr "Паузира када су слушалице откачене и наставља ако су прикачене поново."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 #, fuzzy
 msgid "Inhibit Screensaver/Suspend"
 msgstr "Онемогући чувара екрана"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "Музика свира"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 #, fuzzy
 msgid "Mode:"
 msgstr "Режим"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "Онемогући чувара екрана"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 #, fuzzy
 msgid "Inhibit Suspend"
 msgstr "Онемогући чувара екрана"

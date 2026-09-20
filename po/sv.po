@@ -1888,32 +1888,33 @@ msgid ""
 "plugged in again."
 msgstr "Pausar om hörlurarna kopplas ur och återupptar om de kopplas in igen."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "Förhindra skärmsläckare/viloläge"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "På ett GNOME-skrivbord förhindras antingen att skärmsläckaren aktiveras "
 "eller att datorn går i viloläge när en låt spelas."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "Musik spelas"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "Läge:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "Förhindra skärmsläckare"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "Förhindra viloläge"
 
@@ -2725,8 +2726,8 @@ msgstr "Välj målsökväg"
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
-"Exportsökvägen ändrades från [{old_path}] till [{new_path}] för filen ["
-"{filename}]"
+"Exportsökvägen ändrades från [{old_path}] till [{new_path}] för filen "
+"[{filename}]"
 
 #: quodlibet/ext/events/synchronize_to_device.py:706
 msgid "Starting synchronization preview"
@@ -4376,8 +4377,8 @@ msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
-"Accepterar QL-tagguttryck som <tt>~artist~title</tt> eller <tt>"
-"musicbrainz_track_id</tt>"
+"Accepterar QL-tagguttryck som <tt>~artist~title</tt> eller "
+"<tt>musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "_Group duplicates by:"
@@ -4427,9 +4428,10 @@ msgstr ""
 "\n"
 "När flera låtar är markerade ökas antalen i stället för att anges.\n"
 "\n"
-"När en låts <tt>~#playcount</tt> sätts till 0 rensas posterna <tt>"
-"~#lastplayed</tt> och <tt>~#laststarted</tt>. När en låt med 0 uppspelningar "
-"sätts till ett positivt spelningsantal skapas dock inga uppspelningstider."
+"När en låts <tt>~#playcount</tt> sätts till 0 rensas posterna "
+"<tt>~#lastplayed</tt> och <tt>~#laststarted</tt>. När en låt med 0 "
+"uppspelningar sätts till ett positivt spelningsantal skapas dock inga "
+"uppspelningstider."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:72
 msgid "Play Count"
@@ -5180,8 +5182,8 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
-"Inga bibliotekslåtar hittades i äldre spellista %(filename)r (storlek %(size)"
-".1f kB)."
+"Inga bibliotekslåtar hittades i äldre spellista %(filename)r (storlek "
+"%(size).1f kB)."
 
 #: quodlibet/library/playlist.py:85
 msgid "Have you changed library root dir(s), but not this playlist?"
@@ -7235,8 +7237,8 @@ msgstr ""
 "{old!r} → {new!r}\n"
 "\n"
 "Själva ljudfilerna flyttas inte av detta.\n"
-"Trots det rekommenderas en säkerhetskopia (inklusive Quod Libets 'songs'-fil)"
-"."
+"Trots det rekommenderas en säkerhetskopia (inklusive Quod Libets 'songs'-"
+"fil)."
 
 #: quodlibet/qltk/scanbox.py:172
 msgid "Move scan root {dir!r}?"
@@ -7536,8 +7538,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Mönstret du angav var ogiltigt. Se till att du skriver &lt; och &gt; som \\"
-"&lt; och \\&gt; och att taggarna är balanserade.\n"
+"Mönstret du angav var ogiltigt. Se till att du skriver &lt; och &gt; som "
+"\\&lt; och \\&gt; och att taggarna är balanserade.\n"
 "\n"
 "%s"
 
