@@ -1873,7 +1873,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
 #: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:70
-#: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
+#: quodlibet/qltk/renamefiles.py:258 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
 msgstr ""
@@ -2700,13 +2700,13 @@ msgid "Destination path:"
 msgstr "Nom se atopárom emisoras"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#: quodlibet/qltk/renamefiles.py:182 quodlibet/qltk/tagsfrompath.py:116
+#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:116
 #, fuzzy
 msgid "Path Patterns"
 msgstr "padrom"
 
 #: quodlibet/ext/events/synchronize_to_device.py:199
-#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:117
+#: quodlibet/qltk/renamefiles.py:184 quodlibet/qltk/tagsfrompath.py:117
 #, fuzzy
 msgid "Edit saved patterns…"
 msgstr "Editar os valores guardados..."
@@ -5454,7 +5454,7 @@ msgid "Fill tags based on the file path"
 msgstr "Crear as etiquetas baseándose na rota ao arquivo"
 
 #: quodlibet/operon/commands.py:791 quodlibet/qltk/information.py:271
-#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:265
+#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:266
 #: quodlibet/qltk/tagsfrompath.py:236 quodlibet/qltk/tracknumbers.py:77
 msgid "File"
 msgstr "Arquivo"
@@ -7236,81 +7236,81 @@ msgstr "A qualificaçom de todas as canções seleccionadas mudará para '%s'"
 msgid "Change _Rating"
 msgstr "_Qualificaçom"
 
-#: quodlibet/qltk/renamefiles.py:52
+#: quodlibet/qltk/renamefiles.py:53
 msgid "Replace spaces with _underscores"
 msgstr "Substituír os espazos por trazos _baixos"
 
-#: quodlibet/qltk/renamefiles.py:62
+#: quodlibet/qltk/renamefiles.py:63
 msgid "Replace [semi]colon delimiting with hyphens"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:63
+#: quodlibet/qltk/renamefiles.py:64
 msgid "e.g. \"iv: allegro.flac\" → \"iv - allegro.flac\""
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:82
+#: quodlibet/qltk/renamefiles.py:83
 msgid "Strip _Windows-incompatible characters"
 msgstr "Eliminar os caracters non compatíbeis co _Windows(tm)"
 
-#: quodlibet/qltk/renamefiles.py:100
+#: quodlibet/qltk/renamefiles.py:101
 msgid "Strip _diacritical marks"
 msgstr "Eliminar as marcas diacríticas"
 
-#: quodlibet/qltk/renamefiles.py:115
+#: quodlibet/qltk/renamefiles.py:116
 msgid "Strip non-_ASCII characters"
 msgstr "Eliminar os caracteres non-_ASCII"
 
-#: quodlibet/qltk/renamefiles.py:125
+#: quodlibet/qltk/renamefiles.py:126
 msgid "Use only _lowercase characters"
 msgstr "Empregar unicamente caracteres de caixa-_baixa"
 
-#: quodlibet/qltk/renamefiles.py:156
+#: quodlibet/qltk/renamefiles.py:157
 msgid "Rename Files"
 msgstr "Mudar o nome dos arquivos"
 
-#: quodlibet/qltk/renamefiles.py:187 quodlibet/qltk/tagsfrompath.py:121
+#: quodlibet/qltk/renamefiles.py:188 quodlibet/qltk/tagsfrompath.py:121
 #: quodlibet/qltk/tracknumbers.py:55
 msgid "_Preview"
 msgstr "_Antever"
 
-#: quodlibet/qltk/renamefiles.py:212
+#: quodlibet/qltk/renamefiles.py:213
 #, fuzzy
 msgid "File names"
 msgstr "Nome do ficheiro"
 
-#: quodlibet/qltk/renamefiles.py:222
+#: quodlibet/qltk/renamefiles.py:223
 #, fuzzy
 msgid "_Move album art"
 msgstr "artista do álbum"
 
-#: quodlibet/qltk/renamefiles.py:226
+#: quodlibet/qltk/renamefiles.py:227
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:233
+#: quodlibet/qltk/renamefiles.py:234
 msgid "_Overwrite album art at target"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:244
+#: quodlibet/qltk/renamefiles.py:245
 #, fuzzy
 msgid "_Remove empty directories"
 msgstr "_Eliminar cobertas e cartafoles nom utilizados"
 
-#: quodlibet/qltk/renamefiles.py:250
+#: quodlibet/qltk/renamefiles.py:251
 #, fuzzy
 msgid "Album art"
 msgstr "Lista de Álbuns"
 
-#: quodlibet/qltk/renamefiles.py:279
+#: quodlibet/qltk/renamefiles.py:280
 msgid "New Name"
 msgstr "Novo nome"
 
-#: quodlibet/qltk/renamefiles.py:358
+#: quodlibet/qltk/renamefiles.py:359
 msgid "Unable to rename file"
 msgstr "Non se puido mudar o nome do arquivo"
 
-#: quodlibet/qltk/renamefiles.py:360
+#: quodlibet/qltk/renamefiles.py:361
 #, fuzzy, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
@@ -7321,25 +7321,25 @@ msgstr ""
 "de destino já exista, ou que nom tenha permissões para criar o novo arquivo "
 "ou eliminar o antigo."
 
-#: quodlibet/qltk/renamefiles.py:371
+#: quodlibet/qltk/renamefiles.py:373
 msgid "Ignore _All Errors"
 msgstr "Ignorar todos os _erros"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
-#: quodlibet/qltk/renamefiles.py:373 quodlibet/qltk/wlw.py:49
+#: quodlibet/qltk/renamefiles.py:375 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:375
+#: quodlibet/qltk/renamefiles.py:377
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: quodlibet/qltk/renamefiles.py:486
+#: quodlibet/qltk/renamefiles.py:488
 msgid "Path is not absolute"
 msgstr "O enderezo non é absoluto"
 
-#: quodlibet/qltk/renamefiles.py:488
+#: quodlibet/qltk/renamefiles.py:490
 #, fuzzy, python-format
 msgid ""
 "The pattern\n"
