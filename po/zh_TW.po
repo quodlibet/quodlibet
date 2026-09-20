@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-05-17 01:11+0000\n"
+"PO-Revision-Date: 2026-08-06 07:01+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.6.dev0\n"
+"X-Generator: Weblate 2026.8.1.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3132,7 +3132,7 @@ msgstr "重新載入"
 
 #: quodlibet/ext/events/waveformseekbar.py:644
 msgid "Waveform Seek Bar"
-msgstr "定位列波形狀"
+msgstr "波形搜尋列"
 
 #: quodlibet/ext/events/waveformseekbar.py:647
 msgid "∿ A seekbar in the shape of the waveform of the current song."
@@ -3225,7 +3225,7 @@ msgstr "頻率裁剪(_F)："
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "Low-pass filter cut frequency"
-msgstr "低通濾波器剪段頻率"
+msgstr "低通濾波器截止頻率"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:22
 msgid "Feed _level:"
@@ -6472,7 +6472,7 @@ msgstr "_Fall-back 增益："
 #: quodlibet/qltk/prefs.py:466
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
-msgstr "全部曲目音量調整依照此值，只要結果不會削波"
+msgstr "全部曲目音量調整依照此值，只要生成結果不會削波"
 
 #: quodlibet/qltk/prefs.py:471
 msgid "_Pre-amp gain:"
