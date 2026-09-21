@@ -96,3 +96,31 @@ jobs:
           name: binaries-macos
           path: dev-utils/osx_bundle/_build/*.dmg*
           if-no-files-found: error
+
+  create-release:
+    needs: [create-release-artifacts-linux, create-release-artifacts-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/release-')
+    permissions:
+      contents: write
+    steps:
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: binaries-linux
+          path: dist/linux
+
+      - name: Download macOS artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: binaries-macos
+          path: dist/macos
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          draft: true
+          files: |
+            dist/linux/*
+            dist/macos/*
+          generate_release_notes: true

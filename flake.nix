@@ -87,14 +87,11 @@
                 gdk-pixbuf
                 glib
                 glib-networking
-                glibcLocales
                 gobject-introspection
                 gtk4
                 gtksourceview5
                 kakasi
-                # keybinder3 and libappindicator are GTK3-only
                 libmodplug
-                libnotify
                 librsvg
                 libsoup_3
                 pcre2
@@ -102,8 +99,14 @@
                 pkg-config
               ]
               ++ lib.optionals stdenv.isLinux [
+                glibcLocales
+                # keybinder3 omitted: the backend refuses to load under GTK4
                 libappindicator-gtk3
+                libnotify
                 xvfb
+              ]
+              ++ lib.optionals stdenv.isDarwin [
+                gettext
               ]
               ++ (with gst_all_1; [
                 gstreamer
