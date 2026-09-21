@@ -86,8 +86,6 @@ class TComboBoxEntrySave(TestCase):
         self.test_save()
 
     def tearDown(self):
-        self.cbes.destroy()
-        self.cbes2.destroy()
         os.unlink(self.fname)
         os.unlink(self.fname + ".saved")
         quodlibet.config.quit()

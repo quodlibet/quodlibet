@@ -73,7 +73,7 @@ class AcoustidSubmit(SongsMenuPlugin):
 
     @classmethod
     def PluginPreferences(cls, win):
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # api key section
         def key_changed(entry, *args):
@@ -83,17 +83,17 @@ class AcoustidSubmit(SongsMenuPlugin):
         button.connect(
             "clicked", lambda s: util.website("https://acoustid.org/api-key")
         )
-        key_box = Gtk.HBox(spacing=6)
+        key_box = Gtk.Box(spacing=6)
         entry = UndoEntry()
         entry.set_text(get_api_key())
         entry.connect("changed", key_changed)
         label = Gtk.Label(label=_("API _key:"))
         label.set_use_underline(True)
         label.set_mnemonic_widget(entry)
-        key_box.pack_start(label, False, True, 0)
-        key_box.pack_start(entry, True, True, 0)
-        key_box.pack_start(button, False, True, 0)
+        key_box.append(label)
+        key_box.append(entry)
+        key_box.append(button)
 
-        box.pack_start(Frame(_("AcoustID Web Service"), child=key_box), True, True, 0)
+        box.append(Frame(_("AcoustID Web Service"), child=key_box))
 
         return box

@@ -11,7 +11,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 
@@ -75,16 +75,15 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
             (cls._CFG_SEEKABLE_ONLY, _("Only Seekable Sources")),
         ]
 
-        vb = Gtk.VBox(spacing=10)
-        vb.set_border_width(0)
-        vb2 = Gtk.VBox(spacing=6)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        set_margins(vb, 0)
+        vb2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for key, label in toggles:
             ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
-            vb2.pack_start(ccb, True, True, 0)
+            vb2.append(ccb)
 
         frame = qltk.Frame(label=_("Plugin Options"), child=vb2)
-        vb.pack_start(frame, False, True, 0)
+        vb.append(frame)
 
-        vb.show_all()
         return vb

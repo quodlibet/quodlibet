@@ -71,8 +71,12 @@ NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
 
 class InstanceTracker:
     """A mixin for GObjects to return a list of all alive objects
-    of a given type. Note that it must be used with a GObject or
-    something with a connect method and destroy signal."""
+    of a given type.
+
+    In GTK4, the GtkWidget::destroy signal was removed. Classes that inherit
+    from both InstanceTracker and Window must call _deregister_instance() in
+    their destroy() override (Window does this automatically).
+    """
 
     __kinds: dict[type, list[object]] = {}
 
@@ -81,7 +85,18 @@ class InstanceTracker:
         if klass is None:
             klass = type(self)
         self.__kinds.setdefault(klass, []).append(self)
-        self.connect("destroy", self.__kinds[klass].remove)
+
+    def _deregister_instance(self):
+        """Remove this object from all instance tracking lists.
+
+        Must be called explicitly in destroy() since GTK4 no longer emits
+        the GtkWidget::destroy signal.
+        """
+        for instances in list(self.__kinds.values()):
+            try:
+                instances.remove(self)
+            except ValueError:
+                pass
 
     @classmethod
     def instances(cls):
@@ -745,32 +760,67 @@ def connect_obj(this, detailed_signal, handler, that, *args, **kwargs):
 
 def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     """Connect a bound method to a foreign object signal and disconnect
-    if the object the method is bound to emits destroy (Gtk.Widget subclass).
+    when the object the method is bound to is garbage collected.
 
     Also works if the handler is a nested function in a method and
     references the method's bound object.
 
     This solves the problem that the sender holds a strong reference
     to the bound method and the bound to object doesn't get GCed.
-    """
 
-    if hasattr(handler, "__self__"):
+    In GTK4 the GtkWidget::destroy signal was removed. This implementation
+    uses a weakref wrapper so the connection does not prevent the handler's
+    bound object from being garbage collected.
+    """
+    import weakref
+
+    if hasattr(handler, "__self__") and hasattr(handler, "__func__"):
+        # Standard bound method: hold only a weak ref to the bound object.
+        # Call via the unbound __func__ to avoid holding a strong ref.
         obj = handler.__self__
+        unbound_func = handler.__func__
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            live = obj_ref()
+            if live is None:
+                sender.disconnect(_handler_id[0])
+                return
+            unbound_func(live, *call_args, **call_kwargs)
+
+    elif hasattr(handler, "__self__"):
+        # Callable with __self__ but not a standard bound method (e.g. DeferredSignal).
+        # Hold a weak ref to __self__; call the handler directly.
+        obj = handler.__self__
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            if obj_ref() is None:
+                sender.disconnect(_handler_id[0])
+                return
+            handler(*call_args, **call_kwargs)
+
     else:
         # XXX: get the "self" var of the enclosing scope.
         # Used for nested functions which ref the object but aren't methods.
         # In case they don't ref "self" normal connect() should be used anyway.
         index = handler.__code__.co_freevars.index("self")
         obj = handler.__closure__[index].cell_contents
+        obj_ref = weakref.ref(obj)
+        _handler_id = [None]
+
+        def weak_handler(*call_args, **call_kwargs):
+            if obj_ref() is None:
+                sender.disconnect(_handler_id[0])
+                return
+            handler(*call_args, **call_kwargs)
 
     assert obj is not sender
 
-    handler_id = func(detailed_signal, handler, *args, **kwargs)
-
-    def disconnect_cb(*args):
-        sender.disconnect(handler_id)
-
-    obj.connect("destroy", disconnect_cb)
+    handler_id = func(detailed_signal, weak_handler, *args, **kwargs)
+    _handler_id[0] = handler_id
     return handler_id
 
 

@@ -22,13 +22,14 @@ class TTextEditBox(TestCase):
     def test_clicked(self):
         self.box.apply.clicked()
 
-    def tearDown(self):
-        self.box.destroy()
-
 
 class TTextEdit(TTextEditBox):
     def setUp(self):
         self.box = TextEdit(None)
+
+    def tearDown(self):
+        # A UniqueWindow, so it must go before the next one can be built
+        self.box.destroy()
 
 
 class TTextEditBox2(TestCase):
@@ -39,13 +40,13 @@ class TTextEditBox2(TestCase):
         self.foobar.revert.clicked()
         assert self.foobar.text, "foobar"
 
-    def tearDown(self):
-        self.foobar.destroy()
-
 
 class TTextEdit2(TTextEditBox2):
     def setUp(self):
         self.foobar = TextEdit(None, "foobar")
+
+    def tearDown(self):
+        self.foobar.destroy()
 
 
 class Tvalidate_markup_pattern(TestCase):

@@ -135,7 +135,7 @@ class TPlaylistPlugins(TestCase):
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         with capture_output():
             self.handler.populate_menu(menu, None, self.mock_browser, [TEST_PLAYLIST])
         self.assertEqual(
@@ -145,7 +145,7 @@ class TPlaylistPlugins(TestCase):
     def test_populate_menu(self):
         plugin = Plugin(FakePlaylistPlugin)
         self.handler.plugin_enable(plugin)
-        menu = Gtk.Menu()
+        menu = Gtk.PopoverMenu()
         self.handler.populate_menu(menu, None, self.mock_browser, [TEST_PLAYLIST])
         # Don't forget the separator
         num = len(menu.get_children()) - 1

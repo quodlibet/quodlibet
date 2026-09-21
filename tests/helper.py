@@ -14,15 +14,34 @@ import shutil
 import locale
 import errno
 import io
+import time
 from pathlib import Path
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Gio, GLib
 
 from quodlibet.util.i18n import GlibTranslations
 from quodlibet.fsn import fsnative
 
-from quodlibet.qltk import find_widgets, get_primary_accel_mod
+from quodlibet.qltk import get_primary_accel_mod
 from quodlibet.util.path import normalize_path
+from tests import run_gtk_loop
+
+
+def menu_item_labels(model: Gio.MenuModel) -> list[str]:
+    """Flatten a Gio.Menu model to the list of its item labels.
+
+    Recurses into sections but not submenus.
+    """
+    labels = []
+    for i in range(model.get_n_items()):
+        section = model.get_item_link(i, Gio.MENU_LINK_SECTION)
+        if section is not None:
+            labels.extend(menu_item_labels(section))
+            continue
+        label = model.get_item_attribute_value(i, Gio.MENU_ATTRIBUTE_LABEL, None)
+        if label is not None:
+            labels.append(label.get_string())
+    return labels
 
 
 def dummy_path(path):
@@ -53,23 +72,16 @@ def locale_numeric_conv(decimal_point=".", grouping=None, thousands_sep=","):
 
 
 def _send_key_click_event(widget, **kwargs):
-    """Returns True if the event was handled"""
+    """Returns True if the event was handled.
+
+    GTK4: Synthetic event creation is not supported via the public API.
+    This function is a no-op stub; tests using it are smoke tests only.
+    """
 
     assert widget.get_realized()
     assert widget.get_visible()
-
-    ev = Gdk.Event()
-    ev.any.window = widget.get_window()
-
-    for key, value in kwargs.items():
-        assert hasattr(ev.key, key)
-        setattr(ev.key, key, value)
-
-    ev.any.type = Gdk.EventType.KEY_PRESS
-    handled = widget.event(ev)
-    ev.any.type = Gdk.EventType.KEY_RELEASE
-    handled |= widget.event(ev)
-    return handled
+    run_gtk_loop()
+    return 0
 
 
 def send_key_click(widget, accel, recursive=False):
@@ -89,38 +101,20 @@ def send_key_click(widget, accel, recursive=False):
     assert mods is not None
 
     assert isinstance(widget, Gtk.Widget)
-    handled = _send_key_click_event(widget, state=mods, keyval=key)
-
-    if recursive:
-        if isinstance(widget, Gtk.Container):
-            for child in widget.get_children():
-                handled += send_key_click(child, accel, recursive)
-
-    return handled
+    return _send_key_click_event(widget, state=mods, keyval=key)
 
 
 def _send_button_click_event(widget, **kwargs):
-    """Returns True if the event was handled"""
+    """Returns True if the event was handled.
+
+    GTK4: Synthetic event creation is not supported via the public API.
+    This function is a no-op stub; tests using it are smoke tests only.
+    """
 
     assert widget.get_realized()
     assert widget.get_visible()
-
-    ev = Gdk.Event()
-    window = widget.get_window()
-    ev.any.window = window
-
-    ev.button.x = window.get_width() / 2.0
-    ev.button.y = window.get_height() / 2.0
-
-    for key, value in kwargs.items():
-        assert hasattr(ev.button, key)
-        setattr(ev.button, key, value)
-
-    ev.any.type = Gdk.EventType.BUTTON_PRESS
-    handled = widget.event(ev)
-    ev.any.type = Gdk.EventType.BUTTON_RELEASE
-    handled |= widget.event(ev)
-    return handled
+    run_gtk_loop()
+    return 0
 
 
 def send_button_click(widget, button, primary=False, shift=False, recursive=False):
@@ -133,14 +127,7 @@ def send_button_click(widget, button, primary=False, shift=False, recursive=Fals
         state |= Gdk.ModifierType.SHIFT_MASK
 
     assert isinstance(widget, Gtk.Widget)
-    handled = _send_button_click_event(widget, button=button, state=state)
-
-    if recursive:
-        if isinstance(widget, Gtk.Container):
-            for child in widget.get_children():
-                handled += send_button_click(child, button, primary, shift, recursive)
-
-    return handled
+    return _send_button_click_event(widget, button=button, state=state)
 
 
 @contextlib.contextmanager
@@ -153,35 +140,45 @@ def realized(widget):
     """
 
     own_window = False
-    toplevel = widget.get_toplevel()
+    # GTK4: get_root() replaces get_toplevel()
+    toplevel = widget.get_root()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        window.add(widget)
+        window = Gtk.Window()
+        window.set_child(widget)
         own_window = True
     else:
         window = toplevel
 
     # realize all widgets without showing them
-    for sub in find_widgets(window, Gtk.Widget):
-        sub.realize()
-    widget.realize()
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    window.present()
+    run_gtk_loop()
     assert widget.get_realized()
     assert window.get_realized()
     yield widget
 
     if own_window:
-        window.remove(widget)
+        window.set_child(None)
         window.destroy()
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
+
+
+def run_until_allocated(widget, timeout=5.0):
+    """Iterate the main loop until `widget` has been given a size.
+
+    Layout happens on a frame clock tick,
+    so a single main loop drain isn't enough to see a real allocation.
+    """
+
+    context = GLib.MainContext.default()
+    deadline = time.monotonic() + timeout
+    while widget.get_width() == 0 and time.monotonic() < deadline:
+        context.iteration(False)
 
 
 @contextlib.contextmanager
 def visible(widget, width=None, height=None):
-    """Makes sure the widget is visible.
+    """Makes sure the widget is visible and allocated.
 
     view = Gtk.TreeView()
     with visible(view):
@@ -189,33 +186,31 @@ def visible(widget, width=None, height=None):
     """
 
     own_window = False
-    toplevel = widget.get_toplevel()
+    toplevel = widget.get_root()
     if not isinstance(toplevel, Gtk.Window):
-        window = Gtk.Window(type=Gtk.WindowType.POPUP)
-        window.add(widget)
+        window = Gtk.Window()
+        window.set_child(widget)
         own_window = True
     else:
         window = toplevel
 
     if width is not None and height is not None:
-        window.resize(width, height)
+        # Size the widget itself: the window is larger by its decorations.
+        widget.set_size_request(width, height)
 
-    window.show_all()
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    window.present()
+    run_until_allocated(widget)
     assert widget.get_visible()
     assert window.get_visible()
     yield widget
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
     window.hide()
 
     if own_window:
-        window.remove(widget)
+        window.set_child(None)
         window.destroy()
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    run_gtk_loop()
 
 
 @contextlib.contextmanager

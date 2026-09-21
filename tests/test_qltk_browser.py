@@ -14,6 +14,7 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.browser import LibraryBrowser
 from quodlibet.qltk.songlist import SongList
 from tests import TestCase, init_fake_app, destroy_fake_app
+from tests.helper import menu_item_labels
 
 
 class TLibraryBrowser(TestCase):
@@ -46,7 +47,8 @@ class TLibraryBrowser(TestCase):
         songlist.popup_menu = lambda *args: called.append(args)
         widget._menu(songlist, self.library)
         assert len(called) == 1, "Should have called menu once"
-        assert len(called[0][0].get_children()) > 6, "doesn't seem enough items"
+        labels = menu_item_labels(called[0][0].get_menu_model())
+        assert len(labels) > 6, "doesn't seem enough items"
 
     def tearDown(self):
         destroy_fake_app()

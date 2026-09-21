@@ -32,7 +32,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def enabled(self):
         self.scrolled_window = sw = Gtk.ScrolledWindow()
-        sw.set_shadow_type(Gtk.ShadowType.NONE)
+        sw.set_has_frame(False)
         # Create an overlay container
         self.overlay = overlay = Gtk.Overlay()
 
@@ -48,21 +48,24 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
-        self.textview.connect("key-press-event", self.key_press_event_cb)
+        key_ctrl = Gtk.EventControllerKey()
+        key_ctrl.connect("key-pressed", self.key_press_event_cb)
+        self.textview.add_controller(key_ctrl)
         add_css(sw, "scrolledwindow { padding: 6px; background: @content_view_bg; }")
-        overlay.add(sw)
+        sw.set_child(self.textview)
+        sw.set_vexpand(True)
+        sw.set_hexpand(True)
+        overlay.set_child(sw)
         self._edit_button = Button(None, Icons.EDIT)
         self._edit_button.set_tooltip_text(_("Edit Lyrics"))
-        vbox = Gtk.Box(margin=6)
-        vbox.pack_end(self._edit_button, False, False, 0)
-        vbox.set_valign(Gtk.Align.END)
-        vbox.set_halign(Gtk.Align.END)
+        edit_align = Gtk.Box(
+            margin_start=6, margin_end=6, margin_top=6, margin_bottom=6
+        )
+        edit_align.append(self._edit_button)
+        edit_align.set_valign(Gtk.Align.END)
+        edit_align.set_halign(Gtk.Align.END)
+        overlay.add_overlay(edit_align)
 
-        overlay.add_overlay(vbox)
-        self.scrolled_window.add(self.textview)
-        self.textview.show()
-
-        sw.show()
         self._sig = None
         cur = app.player.info
         if cur is not None:
@@ -70,14 +73,15 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.plugin_on_song_started(cur)
 
     def create_sidebar(self):
-        vbox = Gtk.VBox(margin=0)
-        vbox.pack_start(self.overlay, True, True, 0)
-        vbox.show_all()
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.overlay.set_vexpand(True)
+        vbox.append(self.overlay)
         return vbox
 
     def disabled(self):
-        self.textview.destroy()
-        self.scrolled_window.destroy()
+        self.textview = None
+        self.scrolled_window = None
+        self.overlay = None
 
     def _hide_timestamps(self, lyrics: str):
         """Remove timestamps from the lyrics if they are formatted as an .lrc file."""
@@ -155,27 +159,27 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         else:
             self._set_italicised(_("No active song"))
 
-    def key_press_event_cb(self, widget, event):
-        """Handles up/down "key-press-event" in the lyrics view."""
+    def key_press_event_cb(self, _controller, keyval, _keycode, _state):
+        """Handles up/down keys in the lyrics view."""
         adj = self.scrolled_window.get_vadjustment().props
-        if event.keyval == Gdk.KEY_Up:
+        if keyval == Gdk.KEY_Up:
             adj.value = max(adj.value - adj.step_increment, adj.lower)
-        elif event.keyval == Gdk.KEY_Down:
+        elif keyval == Gdk.KEY_Down:
             adj.value = min(adj.value + adj.step_increment, adj.upper - adj.page_size)
-        elif event.keyval == Gdk.KEY_Page_Up:
+        elif keyval == Gdk.KEY_Page_Up:
             adj.value = max(adj.value - adj.page_increment, adj.lower)
-        elif event.keyval == Gdk.KEY_Page_Down:
+        elif keyval == Gdk.KEY_Page_Down:
             adj.value = min(adj.value + adj.page_increment, adj.upper - adj.page_size)
-        elif event.keyval == Gdk.KEY_Home:
+        elif keyval == Gdk.KEY_Home:
             adj.value = adj.lower
-        elif event.keyval == Gdk.KEY_End:
+        elif keyval == Gdk.KEY_End:
             adj.value = adj.upper - adj.page_size
         else:
             return False
         return True
 
     def PluginPreferences(self, parent):
-        box = Gtk.HBox()
+        box = Gtk.Box()
         ccb = ConfigCheckButton(
             _("Hide timestamps of .lrc or .elrc formatted lyrics"),
             "plugins",
@@ -185,5 +189,5 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             "plugins", "view_lyrics_hide_timestamps", True
         )
         ccb.set_active(hide_timestamps)
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.append(qltk.Frame(_("Preferences"), child=ccb))
         return box

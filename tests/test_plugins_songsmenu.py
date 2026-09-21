@@ -5,6 +5,8 @@
 
 import shutil
 
+from gi.repository import Gio
+
 from quodlibet.library import SongLibrary
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import any_song, each_song
@@ -105,6 +107,11 @@ class TSongsMenuPlugins(TestCase):
         self.pm.enable(plug, False)
         assert not self.pm.enabled(plug)
 
+    def _menu_item(self):
+        return self.handler.build_menu_item(
+            None, [AudioFile()], Gio.SimpleActionGroup(), "songs", lambda: None
+        )
+
     def test_ignores_broken_plugin(self):
         self.create_plugin(
             name="Broken", desc="Desc", funcs=["__init__", "plugin_song"]
@@ -113,12 +120,12 @@ class TSongsMenuPlugins(TestCase):
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
         with capture_output():
-            menu = self.handler.menu(None, [AudioFile()])
-        assert not (menu and menu.get_children())
+            item = self._menu_item()
+        assert item is None, "Shouldn't have enabled a broken plugin"
 
     def test_Menu(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
-        self.handler.menu(None, [AudioFile()])
+        self._menu_item()
 
     def test_handling_songs_without_confirmation(self):
         plugin = Plugin(FakeSongsMenuPlugin)

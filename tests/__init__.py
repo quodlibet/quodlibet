@@ -207,13 +207,20 @@ def init_test_environ():
     os.environ["GTK_THEME"] = "Adwaita"
 
     if pyvirtualdisplay is not None:
-        _VDISPLAY = pyvirtualdisplay.Display()
-        _VDISPLAY.start()
+        if shutil.which("Xvfb") is None:
+            _VDISPLAY = None
+        else:
+            # GTK4 defaults to Wayland, but Xvfb only provides X11
+            os.environ["GDK_BACKEND"] = "x11"
+            _VDISPLAY = pyvirtualdisplay.Display()
+            _VDISPLAY.start()
 
     _BUS_INFO = None
     if os.name != "nt" and sys.platform != "darwin":
-        _BUS_INFO = dbus_launch_user()
-        os.environ.update(_BUS_INFO)
+        # Only launch a new dbus-daemon if there isn't one already
+        if "DBUS_SESSION_BUS_ADDRESS" not in os.environ:
+            _BUS_INFO = dbus_launch_user()
+            os.environ.update(_BUS_INFO)
 
     quodlibet.init(no_translations=True, no_excepthook=True)
     quodlibet.app.name = "QL Tests"
@@ -303,10 +310,18 @@ def unit(
 
 
 def run_gtk_loop():
-    """Exhausts the GTK main loop of any events"""
+    """Exhausts the GTK main loop of any pending events.
+
+    Runs one blocking iteration first to ensure any thread-scheduled
+    idle callbacks have a chance to be queued, then drains all pending events.
+    """
 
     # Import late as various version / init checks fail otherwise
-    from gi.repository import Gtk
+    from gi.repository import GLib
 
-    while Gtk.events_pending():
-        Gtk.main_iteration()
+    context = GLib.MainContext.default()
+    # One blocking iteration to pick up callbacks scheduled from threads
+    context.iteration(True)
+    # Drain any remaining pending events
+    while context.pending():
+        context.iteration(False)
