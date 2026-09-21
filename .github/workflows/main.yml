@@ -94,13 +94,21 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install dependencies
-        run: |
-          ./.ci/macos-install.sh
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+      # aarch64-darwin has thin binary cache coverage upstream,
+      # so without this the GTK stack is rebuilt from source every run.
+      - name: Cache the Nix store
+        uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
+
+      - name: Install Python dependencies
+        run: nix develop -c poetry install
 
       - name: Run tests
-        run: |
-          ./.ci/macos-test.sh
+        run: nix develop -c poetry run pytest tests
 
   ubuntu:
     runs-on: ubuntu-24.04
