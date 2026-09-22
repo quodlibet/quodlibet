@@ -211,6 +211,10 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
             def f(item):
                 return value(item.album)
+        elif value is None:
+
+            def f(item):
+                return b(item.album)
         else:
 
             def f(item):
