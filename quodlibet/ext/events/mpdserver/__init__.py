@@ -62,8 +62,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("MPD Server")
     PLUGIN_DESC = _(
         "Allows remote control of Quod Libet using an MPD Client. "
-        "Streaming, playlist and library management "
-        "are not supported."
+        "Streaming and library management are not supported."
     )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
