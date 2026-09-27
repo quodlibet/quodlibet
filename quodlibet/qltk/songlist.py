@@ -445,7 +445,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
         self.connect("button-press-event", self.__button_press, library)
-        self.connect("key-press-event", self.__key_press, library, player)
+        self.connect("key-press-event", self.__key_press, librarian, player)
 
         self.setup_drop(library)
         self.disable_drop()
