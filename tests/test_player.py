@@ -5,6 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from unittest import mock
 
 from tests import TestCase, skipUnless, get_data_path
 
@@ -385,6 +386,32 @@ class TGstPlayer(TPlayer, TPlayerMixin):
         assert not self.player.can_play_uri("")
         assert self.player.can_play_uri("file://")
         assert not self.player.can_play_uri("fake://")
+
+    def test_external_volume_kept_on_song_change(self):
+        from gi.repository import Gst
+        from quodlibet.player.gstbe import player as gstplayer
+
+        # Every new pipeline gets a fresh sink with the default state,
+        # like a new pulsesink stream which the server failed to restore
+        def new_sink(desc):
+            return [Gst.ElementFactory.make("volume", None)], "volume"
+
+        with (
+            mock.patch.object(gstplayer, "gstreamer_sink", new_sink),
+            mock.patch.object(gstplayer, "sink_has_external_state", lambda s: True),
+            mock.patch.object(gstplayer, "sink_state_is_valid", lambda s: True),
+        ):
+            self.player.go_to(FILES[0])
+            self.player.paused = False
+            assert self.player.has_external_volume
+            self.player.volume = 0.5
+            self.player.mute = True
+
+            self.player.next()
+            assert self.player.bin
+            self.assertAlmostEqual(self.player.volume, 0.5)
+            assert self.player.mute
+            self.player.stop()
 
 
 class TVolume(TestCase):
