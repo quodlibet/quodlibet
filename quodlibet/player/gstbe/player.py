@@ -354,6 +354,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._volume = 1.0
         self._paused = True
         self._mute = False
+        self._ext_state_known = False
 
         self._in_gapless_transition = False
         self._active_error = False
@@ -572,8 +573,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
 
-        if not self.has_external_volume:
-            # Restore volume/ReplayGain and mute state
+        if not self.has_external_volume or self._ext_state_known:
+            # Restore volume/ReplayGain and mute state. Also for external
+            # sinks, as new pulsesink streams sometimes start at 100%.
             self.props.volume = self._volume
             self.mute = self._mute
 
@@ -590,6 +592,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def __destroy_pipeline(self):
         print_d("Destroying Gstreamer pipeline")
+
+        if self.bin and self.has_external_volume:
+            self._volume = self.props.volume
+            self._mute = self.props.mute
+            self._ext_state_known = True
+
         self._remove_plugin_elements()
 
         if self.__bus_id:
