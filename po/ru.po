@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-05-11 09:11+0000\n"
+"PO-Revision-Date: 2026-08-19 05:51+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.5-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:226
@@ -204,11 +204,11 @@ msgstr "Недопустимый шаблон"
 
 #: quodlibet/browsers/collection/main.py:84
 msgid "Album Collection"
-msgstr "Коллекция альбомов"
+msgstr "Собрание альбомов"
 
 #: quodlibet/browsers/collection/main.py:85
 msgid "Album _Collection"
-msgstr "_Коллекция альбомов"
+msgstr "_Собрание альбомов"
 
 #: quodlibet/browsers/collection/models.py:24
 #, python-format
@@ -258,11 +258,11 @@ msgstr "Тег"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr "Группировать"
+msgstr "Объединять"
 
 #: quodlibet/browsers/collection/prefs.py:187
 msgid "Album Collection Preferences"
-msgstr "Настройка коллекции альбомов"
+msgstr "Настройки собрания альбомов"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:249
@@ -693,7 +693,7 @@ msgstr "Не удалось переименовать плейлист"
 
 #: quodlibet/browsers/playlists/main.py:640
 msgid "Import Playlist"
-msgstr "Импортировать плейлист"
+msgstr "Импорт плейлиста"
 
 #: quodlibet/browsers/playlists/main.py:640
 msgid "_Import"
@@ -778,7 +778,7 @@ msgid ""
 msgstr ""
 "Импортирование плейлиста.\n"
 "\n"
-"%(current)d/%(total)d треков добавлено."
+"Песен добавлено: %(current)d/%(total)d."
 
 #: quodlibet/browsers/podcasts.py:245
 msgid "New Feed"
@@ -896,7 +896,7 @@ msgstr "Quod Libet теперь подключён, %s!"
 #: quodlibet/browsers/soundcloud/main.py:485
 #, python-format
 msgid "Log out of %s"
-msgstr "Выйти из %s"
+msgstr "Выйти из учётной записи %s"
 
 #: quodlibet/browsers/soundcloud/main.py:488
 msgid "Enter code…"
