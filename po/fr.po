@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-05-11 09:11+0000\n"
+"PO-Revision-Date: 2026-09-14 09:51+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 2026.5-dev\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1926,13 +1926,12 @@ msgid "Inhibit Screensaver/Suspend"
 msgstr "Inhiber l'économiseur d'écran/la mise en veille"
 
 #: quodlibet/ext/events/inhibit.py:54
-#, fuzzy
 msgid ""
 "When a song is playing, prevents either the screensaver from activating, or "
 "prevents the computer from suspending."
 msgstr ""
-"Sur un bureau GNOME, quand un morceau est en cours de lecture, empêche soit "
-"l'économiseur d'écran de s'activer, soit l'ordinateur de se mettre en veille."
+"Lorsqu'une chanson est en cours de lecture, cela empêche l'activation de "
+"l'économiseur d'écran ou la mise en veille de l'ordinateur."
 
 #: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
