@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2026-05-11 09:11+0000\n"
-"Last-Translator: 大王叫我来巡山 "
+"PO-Revision-Date: 2026-09-14 09:51+0000\n"
+"Last-Translator: Hosted Weblate user 54392 "
 "<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 2026.5-dev\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1856,12 +1856,10 @@ msgid "Inhibit Screensaver/Suspend"
 msgstr "阻止屏幕保护程序或睡眠"
 
 #: quodlibet/ext/events/inhibit.py:54
-#, fuzzy
 msgid ""
 "When a song is playing, prevents either the screensaver from activating, or "
 "prevents the computer from suspending."
-msgstr ""
-"在GNOME桌面上，当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
+msgstr "当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
 
 #: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
