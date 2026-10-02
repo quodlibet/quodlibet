@@ -1851,31 +1851,32 @@ msgid ""
 "plugged in again."
 msgstr "耳机拔出时暂停曲目播放，耳机插入时恢复曲目播放。"
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "阻止屏幕保护程序或睡眠"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "在GNOME桌面上，当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "音乐播放中"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "模式："
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "禁止屏保"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "阻止睡眠"
 

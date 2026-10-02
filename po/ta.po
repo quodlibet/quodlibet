@@ -1889,32 +1889,33 @@ msgid ""
 "plugged in again."
 msgstr "எட்ஃபோன்கள் மீண்டும் செருகப்பட்டால், அவை மீண்டும் செருகப்பட்டால் இடைநிறுத்தப்படுகின்றன."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "ச்கிரீன்சேவர்/சச்பென்ட் ஆகியவற்றைத் தடுக்கிறது"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "ஒரு சினோம் டெச்க்டாப்பில், ஒரு பாடல் இயங்கும் போது, ச்கிரீன்சேவர் செயல்படுத்துவதைத் "
 "தடுக்கிறது அல்லது கணினி இடைநிறுத்தப்படுவதைத் தடுக்கிறது."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "இசை விளையாடுகிறது"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "பயன்முறை:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "ச்கிரீன்சேவரைத் தடுக்கவும்"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "இடைநீக்கத்தைத் தடுக்கவும்"
 

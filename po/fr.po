@@ -1921,32 +1921,33 @@ msgstr ""
 "Suspendre la lecture quand le casque audio est débranché et la reprendre dès "
 "qu'il est rebranché."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "Inhiber l'économiseur d'écran/la mise en veille"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "Sur un bureau GNOME, quand un morceau est en cours de lecture, empêche soit "
 "l'économiseur d'écran de s'activer, soit l'ordinateur de se mettre en veille."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "La musique est en cours de lecture"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "Mode :"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "Désactiver l'économiseur d'écran"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "Inhiber la mise en veille"
 

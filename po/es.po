@@ -1915,32 +1915,33 @@ msgstr ""
 "Pone en pausa la reproducción al desenchufar los auriculares y la reanuda si "
 "se vuelven a enchufar."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "Inhibir salvapantallas/suspensión"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "En el escritorio GNOME, cuando se reproduce una canción, evita que el "
 "salvapantallas se active o que el equipo se suspenda."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "Se reproduce música"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "Modo:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "Inhibir salvapantallas"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "Inhibir suspensión"
 
@@ -4418,8 +4419,8 @@ msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
-"Acepta expresiones de etiquetas de QL como <tt>~artist~title</tt> o <tt>"
-"musicbrainz_track_id</tt>"
+"Acepta expresiones de etiquetas de QL como <tt>~artist~title</tt> o "
+"<tt>musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "_Group duplicates by:"
@@ -4471,10 +4472,10 @@ msgstr ""
 "Cuando se seleccionen varias canciones, los contadores serán incrementados "
 "en vez de establecidos.\n"
 "\n"
-"Al establecer <tt>~#playcount</tt> a 0 en una canción, sus entradas <tt>"
-"~#lastplayed</tt> y <tt>~#laststarted</tt> serán borradas. Sin embargo, al "
-"establecer alguna canción que nunca haya sido reproducida (playcount=0) a un "
-"valor positivo, ninguna marca de tiempo será creada."
+"Al establecer <tt>~#playcount</tt> a 0 en una canción, sus entradas "
+"<tt>~#lastplayed</tt> y <tt>~#laststarted</tt> serán borradas. Sin embargo, "
+"al establecer alguna canción que nunca haya sido reproducida (playcount=0) a "
+"un valor positivo, ninguna marca de tiempo será creada."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:72
 msgid "Play Count"
