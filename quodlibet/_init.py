@@ -472,16 +472,6 @@ def _init_gtk():  # noqa: C901
 
         Gtk.AttachOptions = AttachOptions
 
-    # GTK4: Window type property removed - wrap __init__ to filter it out
-    _orig_window_init = Gtk.Window.__init__
-
-    def _window_init_compat(self, *args, **kwargs):
-        # Remove 'type' kwarg if present (GTK3 only, not supported in GTK4)
-        kwargs.pop("type", None)
-        return _orig_window_init(self, *args, **kwargs)
-
-    Gtk.Window.__init__ = _window_init_compat
-
     # GTK4 compatibility: Window type hints removed
     if not hasattr(Gtk.Window, "set_type_hint"):
 
@@ -578,16 +568,6 @@ def _init_gtk():  # noqa: C901
             TILED = 1 << 8
 
         Gdk.WindowState = WindowState
-
-    # GTK4 compatibility: Gtk.WindowType removed (used for Window constructor)
-    if not hasattr(Gtk, "WindowType"):
-        from enum import IntEnum
-
-        class WindowType(IntEnum):
-            TOPLEVEL = 0
-            POPUP = 1
-
-        Gtk.WindowType = WindowType
 
     from gi.repository import GObject
 
@@ -796,18 +776,6 @@ def _init_gtk():  # noqa: C901
 
             Gdk.cairo_surface_create_from_pixbuf = _cairo_surface_from_pixbuf
 
-    # GTK4: AccelMap removed
-    class AccelMap:
-        @staticmethod
-        def load(filename):
-            pass
-
-        @staticmethod
-        def save(filename):
-            pass
-
-    Gtk.AccelMap = AccelMap
-
     # GTK4: IconSize enum changed
     if not hasattr(Gtk.IconSize, "LARGE_TOOLBAR"):
         Gtk.IconSize.LARGE_TOOLBAR = Gtk.IconSize.LARGE
@@ -958,10 +926,6 @@ def _init_gtk():  # noqa: C901
     if not hasattr(Gtk.Label, "set_line_wrap_mode"):
         Gtk.Label.set_line_wrap_mode = lambda self, mode: self.set_wrap_mode(mode)
 
-    # GTK4: Label.get_line_wrap() → get_wrap()
-    if not hasattr(Gtk.Label, "get_line_wrap"):
-        Gtk.Label.get_line_wrap = lambda self: self.get_wrap()
-
     # GTK4: Label.set_alignment() → set_xalign()/set_yalign()
     if not hasattr(Gtk.Label, "set_alignment"):
 
@@ -1060,17 +1024,6 @@ def _init_gtk():  # noqa: C901
             return get_children(child)
 
         Gtk.PopoverMenu.get_children = _popover_get_children
-
-    # GTK4: Gdk.Event.new() removed
-    if not hasattr(Gdk.Event, "new"):
-
-        class _FakeEvent:
-            def __init__(self, event_type=None):
-                self.type = event_type
-                self.keyval = 0
-                self.state = Gdk.ModifierType(0)
-
-        Gdk.Event.new = staticmethod(lambda event_type: _FakeEvent(event_type))
 
     # GTK4: Table removed - wrap Grid to provide Table API
     class Table(Gtk.Grid):
