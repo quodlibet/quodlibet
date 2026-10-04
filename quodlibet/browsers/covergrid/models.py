@@ -287,3 +287,61 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
 class AlbumListSortModel(ObjectModelSort):
     """This model sorts entries of a child model"""
+
+
+class CollectionListItem(GObject.Object):
+    """This model represents an entry for a collection (grouping of albums).
+
+    It will load a collection cover and generate the collection label on demand.
+    """
+
+    def __init__(self, collection_name: str = ""):
+        super().__init__()
+        self.collection_name = collection_name
+        self._cover = None
+        self._label = None
+        self._cover_path = None
+
+    def set_cover_path(self, path: str):
+        """Set the path to the collection cover image"""
+        from gi.repository import GdkPixbuf
+
+        try:
+            self._cover = GdkPixbuf.Pixbuf.new_from_file(path)
+            self.notify("cover")
+        except Exception:
+            # If cover fails to load, use None (will show default)
+            self._cover = None
+
+    def load_cover(self, size: int, cancelable: Gio.Cancellable | None = None):
+        """Load cover at specified size (compatibility with AlbumWidget)"""
+        if self._cover_path:
+            from gi.repository import GdkPixbuf
+
+            try:
+                self._cover = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                    self._cover_path, size, size
+                )
+                self.notify("cover")
+            except Exception:
+                self._cover = None
+        else:
+            self.notify("cover")
+
+    def format_label(self):
+        """Format the label for this collection"""
+        self._label = util.bold(self.collection_name)
+        self.notify("label")
+
+    @GObject.Property
+    def album(self):
+        """Compatibility property (collections don't have albums)"""
+        return
+
+    @GObject.Property
+    def cover(self):
+        return self._cover
+
+    @GObject.Property
+    def label(self):
+        return self._label
