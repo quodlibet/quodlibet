@@ -15,6 +15,7 @@ accessible by right clicking on a specific interface element or by pressing
 Main Window
 -----------
 
+* :kbd:`Space` - Toggle play/pause mode
 * :kbd:`Alt` + :kbd:`Left` - Seek backwards by 10 seconds
 * :kbd:`Alt` + :kbd:`Right` - Seek forward by 10 seconds
 * :kbd:`Primary` + :kbd:`L` - Focus the search entry

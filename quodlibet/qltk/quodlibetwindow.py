@@ -835,7 +835,31 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             window = EditBookmarks(self, librarian, player)
             window.show()
 
+    def __focus_accepts_text(self):
+        focus = self.get_focus()
+        if isinstance(focus, Gtk.Entry):
+            return focus.get_editable()
+        if isinstance(focus, Gtk.TextView):
+            return focus.get_editable()
+        return False
+
+    def __is_play_pause_space_event(self, event):
+        if event.type != Gdk.EventType.KEY_PRESS:
+            return False
+        if event.keyval not in (Gdk.KEY_space, Gdk.KEY_KP_Space):
+            return False
+
+        modifiers = event.state & Gtk.accelerator_get_default_mod_mask()
+        non_space_modifiers = modifiers & ~Gdk.ModifierType.SHIFT_MASK
+        return not non_space_modifiers
+
     def __key_pressed(self, widget, event, player):
+        if self.__is_play_pause_space_event(event):
+            if self.__focus_accepts_text():
+                return None
+            player.playpause()
+            return True
+
         if not player.song:
             return None
 
@@ -1009,7 +1033,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         ag.add_action(act)
 
         act = ToggleAction(name="StopAfter", label=_("Stop After This Song"))
-        ag.add_action_with_accel(act, "<shift>space")
+        ag.add_action(act)
 
         # access point for the tray icon
         self.stop_after = act
