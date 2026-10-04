@@ -222,9 +222,8 @@ def find_widgets(widget, type_):
     if isinstance(widget, type_):
         found.append(widget)
 
-    if isinstance(widget, Gtk.Container) or hasattr(widget, "get_first_child"):
-        for child in get_children(widget):
-            found.extend(find_widgets(child, type_))
+    for child in get_children(widget):
+        found.extend(find_widgets(child, type_))
 
     return found
 

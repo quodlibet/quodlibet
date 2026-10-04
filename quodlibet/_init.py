@@ -653,43 +653,6 @@ def _init_gtk():  # noqa: C901
 
     Gtk.ImageMenuItem = ImageMenuItem
 
-    # GTK4: Alignment widget removed - use Box with alignment properties
-    class Alignment(Gtk.Box):
-        """Dummy Alignment for GTK4 compatibility.
-
-        In GTK4, Gtk.Alignment was removed. Use widget alignment
-        properties (halign, valign, margins) directly on widgets.
-        This provides a simple Box container as a replacement.
-        """
-
-        def __init__(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0):
-            super().__init__()
-            # Store these for compatibility but don't use them
-            self._xalign = xalign
-            self._yalign = yalign
-            self._xscale = xscale
-            self._yscale = yscale
-
-        def set(self, xalign, yalign, xscale, yscale):
-            """GTK4: set() method for compatibility"""
-            self._xalign = xalign
-            self._yalign = yalign
-            self._xscale = xscale
-            self._yscale = yscale
-
-        def set_padding(self, top, bottom, left, right):
-            """GTK4: Use margins instead of padding"""
-            self.set_margin_top(top)
-            self.set_margin_bottom(bottom)
-            self.set_margin_start(left)
-            self.set_margin_end(right)
-
-        def add(self, widget):
-            """Add a child widget"""
-            self.append(widget)
-
-    Gtk.Alignment = Alignment
-
     # GTK4: Arrow removed - create factory class that returns Image
     if not hasattr(Gtk, "Arrow"):
 
@@ -782,9 +745,6 @@ def _init_gtk():  # noqa: C901
         Gtk.IconSize.SMALL_TOOLBAR = Gtk.IconSize.NORMAL
         Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
         Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
-
-    # GTK4: Container removed - all widgets are now containers
-    Gtk.Container = Gtk.Widget
 
     # GTK4: RC file system removed - themes work differently
     if not hasattr(Gtk, "rc_get_theme_dir"):
@@ -966,20 +926,6 @@ def _init_gtk():  # noqa: C901
                 super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
 
         Gtk.SeparatorMenuItem = SeparatorMenuItem
-
-    # GTK4: EventBox removed - all widgets can receive events
-    if not hasattr(Gtk, "EventBox"):
-
-        class EventBox(Gtk.Box):
-            """GTK4: EventBox removed, use Box as container instead."""
-
-            def __init__(self):
-                super().__init__()
-
-            def add(self, child):
-                self.append(child)
-
-        Gtk.EventBox = EventBox
 
     # GTK4: CellRendererText.set_margin_start doesn't exist - it's a Widget method
     # CellRenderer is not a widget in GTK4, margins don't apply the same way

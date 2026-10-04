@@ -28,7 +28,7 @@ class TLyricsPane(TestCase):
         quodlibet.config.init()
         init_fake_app()
         self.library = SongLibrary()
-        self.pane = LyricsPane(self.library, Gtk.EventBox())
+        self.pane = LyricsPane(self.library, Gtk.Box())
 
     def tearDown(self):
         destroy_fake_app()
@@ -52,7 +52,7 @@ class TLyricsPane(TestCase):
         with open(lf_name, "wb") as f:
             f.write(LYRICS.encode("utf-8"))
         assert os.path.exists(lf_name)
-        self.pane = LyricsPane(self.library, Gtk.EventBox())
+        self.pane = LyricsPane(self.library, Gtk.Box())
         self.pane._save_lyrics(af, LYRICS)
         assert not os.path.exists(lf_name)
 
