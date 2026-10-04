@@ -1771,7 +1771,7 @@ msgstr "ຊື່ຄ່າທີ່ຕັ້ງໄວ້ສຳລັບບັນ
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
 #: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:70
-#: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
+#: quodlibet/qltk/renamefiles.py:258 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
 msgstr "_ບັນທຶກ"
@@ -1853,32 +1853,33 @@ msgid ""
 "plugged in again."
 msgstr "ຢຸດຊົ່ວຄາວໃນກໍລະນີທີ່ຫູຟັງຖືກຖອດອອກ ແລະ ເລີ່ມຫຼິ້ນຕໍ່ໃນກໍລະນີທີ່ພວກມັນຖືກສຽບເຂົ້າອີກຄັ້ງ."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "ຢັບຢັ້ງການພັກໜ້າຈໍ/ການພັກເຄື່ອງ"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "ໃນເດັສທັອບ GNOME, ເມື່ອເພງກຳລັງຫຼິ້ນ, ຈະປ້ອງກັນບໍ່ໃຫ້ຕົວພັກໜ້າຈໍເຮັດວຽກ ຫຼື "
 "ປ້ອງກັນບໍ່ໃຫ້ຄອມພິວເຕີພັກເຄື່ອງ."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "ເພງກຳລັງຫຼິ້ນ"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "ໂໝດ:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "ຢັບຢັ້ງການພັກໜ້າຈໍ"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "ຢັບຢັ້ງການພັກເຄື່ອງ"
 
@@ -2592,12 +2593,12 @@ msgid "Destination path:"
 msgstr "ເສັ້ນທາງປາຍທາງ:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#: quodlibet/qltk/renamefiles.py:182 quodlibet/qltk/tagsfrompath.py:116
+#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:116
 msgid "Path Patterns"
 msgstr "ຮູບແບບເສັ້ນທາງ"
 
 #: quodlibet/ext/events/synchronize_to_device.py:199
-#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:117
+#: quodlibet/qltk/renamefiles.py:184 quodlibet/qltk/tagsfrompath.py:117
 msgid "Edit saved patterns…"
 msgstr "ແກ້ໄຂຮູບແບບທີ່ບັນທຶກໄວ້…"
 
@@ -5234,7 +5235,7 @@ msgid "Fill tags based on the file path"
 msgstr "ຕື່ມຂໍ້ມູນແທັກຕາມຕຳແໜ່ງໄຟລ໌"
 
 #: quodlibet/operon/commands.py:791 quodlibet/qltk/information.py:271
-#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:265
+#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:266
 #: quodlibet/qltk/tagsfrompath.py:236 quodlibet/qltk/tracknumbers.py:77
 msgid "File"
 msgstr "ໄຟລ໌"
@@ -6845,77 +6846,77 @@ msgstr "ຄະແນນຂອງທຸກເພງທີ່ເລືອກຈະ
 msgid "Change _Rating"
 msgstr "ປ່ຽນ _ຄະແນນ"
 
-#: quodlibet/qltk/renamefiles.py:52
+#: quodlibet/qltk/renamefiles.py:53
 msgid "Replace spaces with _underscores"
 msgstr "ແທນທີ່ຊ່ອງຫວ່າງດ້ວຍ _ຂີດກ້ອງ (Underscore)"
 
-#: quodlibet/qltk/renamefiles.py:62
+#: quodlibet/qltk/renamefiles.py:63
 msgid "Replace [semi]colon delimiting with hyphens"
 msgstr "ແທນທີ່ເຄື່ອງໝາຍຈ້ຳເມັດ (Colon) ດ້ວຍຂີດຕໍ່ (Hyphen)"
 
-#: quodlibet/qltk/renamefiles.py:63
+#: quodlibet/qltk/renamefiles.py:64
 msgid "e.g. \"iv: allegro.flac\" → \"iv - allegro.flac\""
 msgstr "ຕົວຢ່າງ: \"iv: allegro.flac\" → \"iv - allegro.flac\""
 
-#: quodlibet/qltk/renamefiles.py:82
+#: quodlibet/qltk/renamefiles.py:83
 msgid "Strip _Windows-incompatible characters"
 msgstr "ລຶບຕົວອັກສອນທີ່ _ບໍ່ຮອງຮັບໃນ Windows"
 
-#: quodlibet/qltk/renamefiles.py:100
+#: quodlibet/qltk/renamefiles.py:101
 msgid "Strip _diacritical marks"
 msgstr "ລຶບ _ເຄື່ອງໝາຍກຳກັບສຽງ"
 
-#: quodlibet/qltk/renamefiles.py:115
+#: quodlibet/qltk/renamefiles.py:116
 msgid "Strip non-_ASCII characters"
 msgstr "ລຶບຕົວອັກສອນທີ່ບໍ່ແມ່ນ _ASCII"
 
-#: quodlibet/qltk/renamefiles.py:125
+#: quodlibet/qltk/renamefiles.py:126
 msgid "Use only _lowercase characters"
 msgstr "ໃຊ້ສະເພາະ _ຕົວພິມນ້ອຍ"
 
-#: quodlibet/qltk/renamefiles.py:156
+#: quodlibet/qltk/renamefiles.py:157
 msgid "Rename Files"
 msgstr "ປ່ຽນຊື່ໄຟລ໌"
 
-#: quodlibet/qltk/renamefiles.py:187 quodlibet/qltk/tagsfrompath.py:121
+#: quodlibet/qltk/renamefiles.py:188 quodlibet/qltk/tagsfrompath.py:121
 #: quodlibet/qltk/tracknumbers.py:55
 msgid "_Preview"
 msgstr "_ຕົວຢ່າງ"
 
-#: quodlibet/qltk/renamefiles.py:212
+#: quodlibet/qltk/renamefiles.py:213
 msgid "File names"
 msgstr "ຊື່ໄຟລ໌"
 
-#: quodlibet/qltk/renamefiles.py:222
+#: quodlibet/qltk/renamefiles.py:223
 msgid "_Move album art"
 msgstr "_ຍ້າຍໜ້າປົກອະລະບັ້ມ"
 
-#: quodlibet/qltk/renamefiles.py:226
+#: quodlibet/qltk/renamefiles.py:227
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr "ເບິ່ງລາຍການຄອນຟິກ '[albumart] search_filenames' ເພື່ອເບິ່ງວ່າຮູບໃດຈະຖືກຍ້າຍ"
 
-#: quodlibet/qltk/renamefiles.py:233
+#: quodlibet/qltk/renamefiles.py:234
 msgid "_Overwrite album art at target"
 msgstr "_ຂຽນທັບໜ້າປົກອະລະບັ້ມຢູ່ປາຍທາງ"
 
-#: quodlibet/qltk/renamefiles.py:244
+#: quodlibet/qltk/renamefiles.py:245
 msgid "_Remove empty directories"
 msgstr "_ລຶບໂຟນເດີທີ່ຫວ່າງເປົ່າ"
 
-#: quodlibet/qltk/renamefiles.py:250
+#: quodlibet/qltk/renamefiles.py:251
 msgid "Album art"
 msgstr "ໜ້າປົກອະລະບັ້ມ"
 
-#: quodlibet/qltk/renamefiles.py:279
+#: quodlibet/qltk/renamefiles.py:280
 msgid "New Name"
 msgstr "ຊື່ໃໝ່"
 
-#: quodlibet/qltk/renamefiles.py:358
+#: quodlibet/qltk/renamefiles.py:359
 msgid "Unable to rename file"
 msgstr "ບໍ່ສາມາດປ່ຽນຊື່ໄຟລ໌ໄດ້"
 
-#: quodlibet/qltk/renamefiles.py:360
+#: quodlibet/qltk/renamefiles.py:361
 #, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
@@ -6925,25 +6926,25 @@ msgstr ""
 "ການປ່ຽນຊື່ %(old-name)s ເປັນ %(new-name)s ຫຼົ້ມເຫຼວ. ໄຟລ໌ປາຍທາງອາດຈະມີຢູ່ແລ້ວ, ຫຼື "
 "ເຈົ້າບໍ່ມີສິດໃນການສ້າງໄຟລ໌ໃໝ່ ຫຼື ລຶບໄຟລ໌ເກົ່າ."
 
-#: quodlibet/qltk/renamefiles.py:371
+#: quodlibet/qltk/renamefiles.py:373
 msgid "Ignore _All Errors"
 msgstr "ລະເລີຍ _ຂໍ້ຜິດພາດທັງໝົດ"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
-#: quodlibet/qltk/renamefiles.py:373 quodlibet/qltk/wlw.py:49
+#: quodlibet/qltk/renamefiles.py:375 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
 msgstr "_ຢຸດ"
 
-#: quodlibet/qltk/renamefiles.py:375
+#: quodlibet/qltk/renamefiles.py:377
 msgid "_Continue"
 msgstr "_ດຳເນີນການຕໍ່"
 
-#: quodlibet/qltk/renamefiles.py:486
+#: quodlibet/qltk/renamefiles.py:488
 msgid "Path is not absolute"
 msgstr "ຕຳແໜ່ງໄຟລ໌ບໍ່ແມ່ນແບບສົມບູນ (Absolute)"
 
-#: quodlibet/qltk/renamefiles.py:488
+#: quodlibet/qltk/renamefiles.py:490
 #, python-format
 msgid ""
 "The pattern\n"
