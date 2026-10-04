@@ -272,15 +272,14 @@ def build_song_data(release, track):
     meta["musicbrainz_albumid"] = release.id
     meta["labelid"] = release.labelid
 
-    if not release.is_single_artist and not release.is_various_artists:
-        artists = release.artists
-        meta["albumartist"] = join([a.name for a in artists])
-        meta["albumartistsort"] = join([a.sort_name for a in artists])
-        meta["musicbrainz_albumartistid"] = join([a.id for a in artists])
-    else:
-        meta["albumartist"] = ""
-        meta["albumartistsort"] = ""
-        meta["musicbrainz_albumartistid"] = ""
+    # Always populate albumartist tags from the MB release artists. Even on a
+    # single-artist release where the release artist equals the track artist,
+    # writing the tag is correct and explicit; emitting "" here would cause
+    # ``apply_to_song`` to delete an existing albumartist tag (see #4900).
+    artists = release.artists
+    meta["albumartist"] = join([a.name for a in artists])
+    meta["albumartistsort"] = join([a.sort_name for a in artists])
+    meta["musicbrainz_albumartistid"] = join([a.id for a in artists])
 
     meta["artist"] = join([a.name for a in track.artists])
     meta["artistsort"] = join([a.sort_name for a in track.artists])
@@ -310,7 +309,9 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz, labelid
         meta["date"] = meta["date"].split("-", 1)[0]
 
     if not albumartist:
-        meta["albumartist"] = ""
+        # Drop the entry instead of emitting "", which would cause
+        # ``apply_to_song`` to delete the song's existing albumartist (#4900).
+        meta.pop("albumartist", None)
 
     if not artistsort:
         meta["albumartistsort"] = ""
