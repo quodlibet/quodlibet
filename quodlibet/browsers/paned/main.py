@@ -28,7 +28,7 @@ from quodlibet.util import connect_destroy
 from quodlibet.qltk.paned import ConfigMultiRHPaned
 
 from .prefs import PreferencesButton, ColumnMode
-from .util import get_headers
+from .util import get_headers, save_headers
 from .pane import Pane
 
 
@@ -321,3 +321,10 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
     def fill(self, songs):
         GLib.idle_add(self.songs_selected, list(songs))
+
+    def set_panes_headers(self, new_headers):
+        new_headers = new_headers.split("\t")
+        if new_headers != get_headers():
+            save_headers(new_headers)
+            self.set_all_panes()
+            self.make_pane_widths_equal()

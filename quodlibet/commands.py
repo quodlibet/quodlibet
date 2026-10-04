@@ -17,6 +17,7 @@ from quodlibet.util.string import split_escape
 from quodlibet import browsers
 
 from quodlibet import util
+from quodlibet import _
 from quodlibet.util import print_d, print_e, copool
 
 from quodlibet.qltk.browser import LibraryBrowser
@@ -580,3 +581,9 @@ def _print_playing(app, fstring=None):
 def _uri_received(app, uri):
     uri = arg2text(uri)
     app.browser.emit("uri-received", uri)
+
+
+@registry.register("set-panes", args=1)
+def _set_panes(app, value):
+    if app.browser.name == _("Paned Browser"):
+        app.browser.set_panes_headers(value)
