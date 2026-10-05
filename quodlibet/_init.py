@@ -653,52 +653,6 @@ def _init_gtk():  # noqa: C901
 
     Gtk.ImageMenuItem = ImageMenuItem
 
-    # GTK4: Arrow removed - create factory class that returns Image
-    if not hasattr(Gtk, "Arrow"):
-
-        class ArrowFactory:
-            @staticmethod
-            def new(arrow_type, shadow_type):
-                # Map arrow types to icon names
-                icon_map = {
-                    Gtk.ArrowType.UP: "pan-up-symbolic",
-                    Gtk.ArrowType.DOWN: "pan-down-symbolic",
-                    Gtk.ArrowType.LEFT: "pan-start-symbolic",
-                    Gtk.ArrowType.RIGHT: "pan-end-symbolic",
-                }
-                icon_name = icon_map.get(arrow_type, "pan-down-symbolic")
-                return Gtk.Image.new_from_icon_name(icon_name)
-
-            def __call__(self, arrow_type, shadow_type):
-                return self.new(arrow_type, shadow_type)
-
-        Gtk.Arrow = ArrowFactory()
-
-    # GTK4: ArrowType enum - add if missing
-    if not hasattr(Gtk, "ArrowType"):
-        from enum import IntEnum
-
-        class ArrowType(IntEnum):
-            UP = 0
-            DOWN = 1
-            LEFT = 2
-            RIGHT = 3
-
-        Gtk.ArrowType = ArrowType
-
-    # GTK4: ShadowType enum - add if missing (used for frames)
-    if not hasattr(Gtk, "ShadowType"):
-        from enum import IntEnum
-
-        class ShadowType(IntEnum):
-            NONE = 0
-            IN = 1
-            OUT = 2
-            ETCHED_IN = 3
-            ETCHED_OUT = 4
-
-        Gtk.ShadowType = ShadowType
-
     # GTK4: ButtonBoxStyle removed (ButtonBox removed)
     if not hasattr(Gtk, "ButtonBoxStyle"):
         from enum import IntEnum

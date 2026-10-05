@@ -98,21 +98,23 @@ class RandomAlbum(EventPlugin):
 
         # Less label
         less_lbl = Gtk.Label()
-        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT, shadow_type=Gtk.ShadowType.OUT)
+        arr = Gtk.Image.new_from_icon_name("pan-start-symbolic")
         less_lbl.set_markup(util.italic(_("avoid")))
         less_lbl.set_alignment(0, 0)
+        less_lbl.set_hexpand(True)
         hb = Gtk.Box(spacing=0)
         hb.append(arr)
         hb.append(less_lbl)
         table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()
-        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT, shadow_type=Gtk.ShadowType.OUT)
+        arr = Gtk.Image.new_from_icon_name("pan-end-symbolic")
         more_lbl.set_markup(util.italic(_("prefer")))
         more_lbl.set_alignment(1, 0)
+        more_lbl.set_hexpand(True)
         hb = Gtk.Box(spacing=0)
-        hb.append(arr)
         hb.append(more_lbl)
+        hb.append(arr)
         table.attach(hb, 2, 3, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
 
         for idx, (key, text, _func) in enumerate(self.keys):
