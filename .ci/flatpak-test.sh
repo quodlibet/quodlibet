@@ -5,6 +5,8 @@ set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if [[ $1 == "inflatpak" ]]; then
+    # glycin sandbox fails in github actions for some reason
+    export GLYCIN_DISABLE_SANDBOX=i-know-the-risks
     tmp="$(mktemp -d)"
     python3 -m venv --system-site-packages "$tmp"
     "$tmp"/bin/python3 -m pip install "pytest==9.0.2" "ruff==0.7.3" flaky "pypresence>=4.6.1" "regex>=2025.9.18"
