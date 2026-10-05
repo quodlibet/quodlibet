@@ -269,7 +269,7 @@ msgstr "_Použiť"
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:66
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:360
+#: quodlibet/ext/songsmenu/brainz/widgets.py:361
 #: quodlibet/ext/songsmenu/editplaycount.py:48
 #: quodlibet/ext/songsmenu/embedded.py:76
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -1811,7 +1811,7 @@ msgstr "Názov zoznam nastavení pre uloženie:"
 #: quodlibet/ext/events/synchronize_to_device.py:437
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #: quodlibet/ext/songsmenu/albumart.py:223
-#: quodlibet/ext/songsmenu/brainz/widgets.py:361
+#: quodlibet/ext/songsmenu/brainz/widgets.py:362
 #: quodlibet/ext/songsmenu/cover_download.py:418
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:73 quodlibet/ext/songsmenu/lastfmsync.py:209
@@ -4015,7 +4015,7 @@ msgid "_Search"
 msgstr "_Hľadať"
 
 #: quodlibet/ext/songsmenu/albumart.py:744
-#: quodlibet/ext/songsmenu/brainz/widgets.py:458
+#: quodlibet/ext/songsmenu/brainz/widgets.py:459
 msgid "Searching…"
 msgstr "Vyhľadáva sa…"
 
@@ -4118,37 +4118,37 @@ msgstr "Názov"
 msgid "Artist"
 msgstr "Umelec"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:358
+#: quodlibet/ext/songsmenu/brainz/widgets.py:359
 msgid "MusicBrainz lookup"
 msgstr "Prehľadávanie MusicBrainz"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:380
+#: quodlibet/ext/songsmenu/brainz/widgets.py:381
 msgid "_Query:"
 msgstr "_Požiadavka:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:383
+#: quodlibet/ext/songsmenu/brainz/widgets.py:384
 msgid "S_earch"
 msgstr "_Hľadať"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:396
+#: quodlibet/ext/songsmenu/brainz/widgets.py:397
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Výsledky <i>(potiahnutím zmeníte poradie)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:454
+#: quodlibet/ext/songsmenu/brainz/widgets.py:455
 msgid "Please enter a query."
 msgstr "Zadajte požiadavku."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:472
-#: quodlibet/ext/songsmenu/brainz/widgets.py:503
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:504
 msgid "Error encountered. Please retry."
 msgstr "Vyskytla sa chyba. Skúste to znova."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:479
-#: quodlibet/ext/songsmenu/brainz/widgets.py:495
+#: quodlibet/ext/songsmenu/brainz/widgets.py:480
+#: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Loading result…"
 msgstr "Načítavajú sa výsledky…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:482
+#: quodlibet/ext/songsmenu/brainz/widgets.py:483
 msgid "No results found."
 msgstr "Nenašli sa žiadne výsledky."
 
@@ -5505,16 +5505,16 @@ msgstr "Prúd"
 msgid "Buffering"
 msgstr "Ukladanie do vyrovnávacej pamäte"
 
-#: quodlibet/player/gstbe/player.py:485
+#: quodlibet/player/gstbe/player.py:486
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nepodarilo sa vytvoriť zreťazenie systému GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:705
+#: quodlibet/player/gstbe/player.py:713
 msgid "No GStreamer element found to handle media format"
 msgstr "Nenašiel sa žiadny prvok GStreamera na spracovanie tohto formátu"
 
-#: quodlibet/player/gstbe/player.py:706
+#: quodlibet/player/gstbe/player.py:714
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formát: %(format-description)s"

@@ -266,7 +266,7 @@ msgstr "_Aplica"
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:66
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:360
+#: quodlibet/ext/songsmenu/brainz/widgets.py:361
 #: quodlibet/ext/songsmenu/editplaycount.py:48
 #: quodlibet/ext/songsmenu/embedded.py:76
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -1816,7 +1816,7 @@ msgstr "Nom amb què es desarà el valor predefinit:"
 #: quodlibet/ext/events/synchronize_to_device.py:437
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #: quodlibet/ext/songsmenu/albumart.py:223
-#: quodlibet/ext/songsmenu/brainz/widgets.py:361
+#: quodlibet/ext/songsmenu/brainz/widgets.py:362
 #: quodlibet/ext/songsmenu/cover_download.py:418
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:73 quodlibet/ext/songsmenu/lastfmsync.py:209
@@ -4025,7 +4025,7 @@ msgid "_Search"
 msgstr "_Cerca"
 
 #: quodlibet/ext/songsmenu/albumart.py:744
-#: quodlibet/ext/songsmenu/brainz/widgets.py:458
+#: quodlibet/ext/songsmenu/brainz/widgets.py:459
 msgid "Searching…"
 msgstr "S'està cercant…"
 
@@ -4128,37 +4128,37 @@ msgstr "Títol"
 msgid "Artist"
 msgstr "Artista"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:358
+#: quodlibet/ext/songsmenu/brainz/widgets.py:359
 msgid "MusicBrainz lookup"
 msgstr "Cerca a MusicBrainz"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:380
+#: quodlibet/ext/songsmenu/brainz/widgets.py:381
 msgid "_Query:"
 msgstr "_Consulta:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:383
+#: quodlibet/ext/songsmenu/brainz/widgets.py:384
 msgid "S_earch"
 msgstr "C_erca"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:396
+#: quodlibet/ext/songsmenu/brainz/widgets.py:397
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Resultats <i>(arrossegueu-los per a reordenar-los)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:454
+#: quodlibet/ext/songsmenu/brainz/widgets.py:455
 msgid "Please enter a query."
 msgstr "Introduïu una consulta."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:472
-#: quodlibet/ext/songsmenu/brainz/widgets.py:503
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:504
 msgid "Error encountered. Please retry."
 msgstr "S'ha produït un error. Torneu-ho a intentar."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:479
-#: quodlibet/ext/songsmenu/brainz/widgets.py:495
+#: quodlibet/ext/songsmenu/brainz/widgets.py:480
+#: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Loading result…"
 msgstr "S'està carregant el resultat…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:482
+#: quodlibet/ext/songsmenu/brainz/widgets.py:483
 msgid "No results found."
 msgstr "No s'ha trobat cap resultat."
 
@@ -5518,17 +5518,17 @@ msgstr "Transmissió"
 msgid "Buffering"
 msgstr "S'està carregant"
 
-#: quodlibet/player/gstbe/player.py:485
+#: quodlibet/player/gstbe/player.py:486
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "No s'ha pogut crear la canonada del GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:705
+#: quodlibet/player/gstbe/player.py:713
 msgid "No GStreamer element found to handle media format"
 msgstr ""
 "No s'ha trobat cap element del GStreamer per a gestionar el format multimèdia"
 
-#: quodlibet/player/gstbe/player.py:706
+#: quodlibet/player/gstbe/player.py:714
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Format multimèdia: %(format-description)s"

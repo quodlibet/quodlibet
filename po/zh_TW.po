@@ -262,7 +262,7 @@ msgstr "套用(_A)"
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:66
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:360
+#: quodlibet/ext/songsmenu/brainz/widgets.py:361
 #: quodlibet/ext/songsmenu/editplaycount.py:48
 #: quodlibet/ext/songsmenu/embedded.py:76
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -1760,7 +1760,7 @@ msgstr "音效名稱用於儲存："
 #: quodlibet/ext/events/synchronize_to_device.py:437
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #: quodlibet/ext/songsmenu/albumart.py:223
-#: quodlibet/ext/songsmenu/brainz/widgets.py:361
+#: quodlibet/ext/songsmenu/brainz/widgets.py:362
 #: quodlibet/ext/songsmenu/cover_download.py:418
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:73 quodlibet/ext/songsmenu/lastfmsync.py:209
@@ -3868,7 +3868,7 @@ msgid "_Search"
 msgstr "搜尋(_S)"
 
 #: quodlibet/ext/songsmenu/albumart.py:744
-#: quodlibet/ext/songsmenu/brainz/widgets.py:458
+#: quodlibet/ext/songsmenu/brainz/widgets.py:459
 msgid "Searching…"
 msgstr "搜尋中…"
 
@@ -3969,37 +3969,37 @@ msgstr "標題"
 msgid "Artist"
 msgstr "藝人"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:358
+#: quodlibet/ext/songsmenu/brainz/widgets.py:359
 msgid "MusicBrainz lookup"
 msgstr "MusicBrainz 查詢"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:380
+#: quodlibet/ext/songsmenu/brainz/widgets.py:381
 msgid "_Query:"
 msgstr "查詢(_Q)："
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:383
+#: quodlibet/ext/songsmenu/brainz/widgets.py:384
 msgid "S_earch"
 msgstr "搜尋(_E)"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:396
+#: quodlibet/ext/songsmenu/brainz/widgets.py:397
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "結果 <i>(拖放至錄音)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:454
+#: quodlibet/ext/songsmenu/brainz/widgets.py:455
 msgid "Please enter a query."
 msgstr "請輸入一個佇列。"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:472
-#: quodlibet/ext/songsmenu/brainz/widgets.py:503
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:504
 msgid "Error encountered. Please retry."
 msgstr "發生錯誤。請重新輸入。"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:479
-#: quodlibet/ext/songsmenu/brainz/widgets.py:495
+#: quodlibet/ext/songsmenu/brainz/widgets.py:480
+#: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Loading result…"
 msgstr "載入結果…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:482
+#: quodlibet/ext/songsmenu/brainz/widgets.py:483
 msgid "No results found."
 msgstr "查無結果。"
 
@@ -5303,16 +5303,16 @@ msgstr "串流"
 msgid "Buffering"
 msgstr "緩衝"
 
-#: quodlibet/player/gstbe/player.py:485
+#: quodlibet/player/gstbe/player.py:486
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "無法建立 GStreamer pipeline (%s)"
 
-#: quodlibet/player/gstbe/player.py:705
+#: quodlibet/player/gstbe/player.py:713
 msgid "No GStreamer element found to handle media format"
 msgstr "找無 GStreamer 元件來處理媒體格式"
 
-#: quodlibet/player/gstbe/player.py:706
+#: quodlibet/player/gstbe/player.py:714
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "媒體檔案格式： %(format-description)s"

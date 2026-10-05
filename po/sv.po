@@ -268,7 +268,7 @@ msgstr "_Tillämpa"
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:66
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:360
+#: quodlibet/ext/songsmenu/brainz/widgets.py:361
 #: quodlibet/ext/songsmenu/editplaycount.py:48
 #: quodlibet/ext/songsmenu/embedded.py:76
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -1798,7 +1798,7 @@ msgstr "Namn på förvalet som ska sparas:"
 #: quodlibet/ext/events/synchronize_to_device.py:437
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #: quodlibet/ext/songsmenu/albumart.py:223
-#: quodlibet/ext/songsmenu/brainz/widgets.py:361
+#: quodlibet/ext/songsmenu/brainz/widgets.py:362
 #: quodlibet/ext/songsmenu/cover_download.py:418
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:73 quodlibet/ext/songsmenu/lastfmsync.py:209
@@ -3981,7 +3981,7 @@ msgid "_Search"
 msgstr "_Sök"
 
 #: quodlibet/ext/songsmenu/albumart.py:744
-#: quodlibet/ext/songsmenu/brainz/widgets.py:458
+#: quodlibet/ext/songsmenu/brainz/widgets.py:459
 msgid "Searching…"
 msgstr "Söker…"
 
@@ -4084,37 +4084,37 @@ msgstr "Titel"
 msgid "Artist"
 msgstr "Artist"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:358
+#: quodlibet/ext/songsmenu/brainz/widgets.py:359
 msgid "MusicBrainz lookup"
 msgstr "MusicBrainz-sökning"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:380
+#: quodlibet/ext/songsmenu/brainz/widgets.py:381
 msgid "_Query:"
 msgstr "_Sökfråga:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:383
+#: quodlibet/ext/songsmenu/brainz/widgets.py:384
 msgid "S_earch"
 msgstr "S_ök"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:396
+#: quodlibet/ext/songsmenu/brainz/widgets.py:397
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Resultat <i>(dra för att ändra ordning)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:454
+#: quodlibet/ext/songsmenu/brainz/widgets.py:455
 msgid "Please enter a query."
 msgstr "Ange en sökfråga."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:472
-#: quodlibet/ext/songsmenu/brainz/widgets.py:503
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:504
 msgid "Error encountered. Please retry."
 msgstr "Ett fel uppstod. Försök igen."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:479
-#: quodlibet/ext/songsmenu/brainz/widgets.py:495
+#: quodlibet/ext/songsmenu/brainz/widgets.py:480
+#: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Loading result…"
 msgstr "Läser in resultat…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:482
+#: quodlibet/ext/songsmenu/brainz/widgets.py:483
 msgid "No results found."
 msgstr "Inga resultat hittades."
 
@@ -5458,16 +5458,16 @@ msgstr "Ström"
 msgid "Buffering"
 msgstr "Buffrar"
 
-#: quodlibet/player/gstbe/player.py:485
+#: quodlibet/player/gstbe/player.py:486
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Det gick inte att skapa GStreamer-pipeline (%s)"
 
-#: quodlibet/player/gstbe/player.py:705
+#: quodlibet/player/gstbe/player.py:713
 msgid "No GStreamer element found to handle media format"
 msgstr "Inget GStreamer-element hittades för att hantera medieformatet"
 
-#: quodlibet/player/gstbe/player.py:706
+#: quodlibet/player/gstbe/player.py:714
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Medieformat: %(format-description)s"
