@@ -321,6 +321,21 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
+    def test_reorder_while_filtered_preserves_playlist(self):
+        original = list(self.big)
+        self.bar.filter_text("artist = piman|artist = mu")
+
+        self.bar.reordered([SONGS[1], SONGS[0]])
+
+        self.assertEqual(list(self.big), original)
+
+    def test_reorder_without_filter_updates_playlist(self):
+        reordered = list(reversed(SONGS))
+
+        self.bar.reordered(reordered)
+
+        self.assertEqual(list(self.big), reordered)
+
     def test_playlist_drag_data_extend_accept(self):
         b = self.bar
         song1 = AudioFile()

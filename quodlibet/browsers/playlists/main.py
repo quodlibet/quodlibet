@@ -686,6 +686,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.__view.iter_select_by_func(lambda r: song in r[0])
 
     def reordered(self, songs):
+        if self.get_filter_text():
+            return
         model, iter = self.__selected_playlists()
         playlist = None
         if iter:
