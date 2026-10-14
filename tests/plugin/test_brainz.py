@@ -510,6 +510,19 @@ class TBrainz(PluginTestCase):
         assert not release.is_various_artists
         assert release.artists
 
+    def test_release_missing_medium_list(self):
+        """Releases without a 'medium-list' key shouldn't crash"""
+        Release = brainz.mb.Release
+
+        data = dict(TEST_SEARCH_RESULT["release-list"][0])
+        del data["medium-list"]
+        release = Release(data)
+        self.assertEqual(release.medium_format, "")
+        self.assertEqual(release.track_count, 0)
+        self.assertEqual(release.tracks, [])
+        assert release.is_single_artist
+        self.assertEqual(release.title, "Athenaeum, Homebush, Quay & Raab")
+
     def test_release_tracks(self):
         Release = brainz.mb.Release
 

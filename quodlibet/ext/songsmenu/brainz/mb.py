@@ -119,9 +119,14 @@ class Release:
         return self._mbrelease.get("date", "")
 
     @property
+    def _mediums(self):
+        """The release's mediums, which MusicBrainz sometimes omits"""
+        return self._mbrelease.get("medium-list", [])
+
+    @property
     def medium_format(self):
         formats = []
-        for medium in self._mbrelease["medium-list"]:
+        for medium in self._mediums:
             format_ = medium.get("format", "")
             if format_:
                 formats.append(format_)
@@ -141,7 +146,7 @@ class Release:
         """Number of tracks for all included mediums"""
 
         track_count = 0
-        for medium in self._mbrelease["medium-list"]:
+        for medium in self._mediums:
             if "track-count" in medium:
                 track_count += medium["track-count"]
             if "pregap" in medium:
@@ -151,7 +156,7 @@ class Release:
     @property
     def tracks(self):
         tracks = []
-        for medium in self._mbrelease["medium-list"]:
+        for medium in self._mediums:
             disc = medium["position"]
             title = medium.get("title", "")
             track_count = medium["track-count"]
