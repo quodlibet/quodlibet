@@ -68,7 +68,7 @@ On the branch
 * Grab a title from `Daily Dinosaur Comics <https://qwantz.com/archive.php/>`_
 * Update :ref:`News` with a list of all bugfixes and features since last release
 * ``git commit -m "update NEWS"``
-* TODO: Set the version: ``dev-utils/set-version.sh X.Y.Z``
+* Set the version: ``dev-utils/set-version.py X.Y.Z``
   (``pyproject.toml``, ``const.py`` and ``appdata.xml.in`` files)
 * ``git commit -m "release prep"``
 * ``git tag release-x.y.z``
@@ -92,7 +92,7 @@ Then:
 On default branch
 ^^^^^^^^^^^^^^^^^
 
-* TODO: Set the next version: ``dev-utils/set-version.sh X.Y.Z-pre``
+* Set the next version: ``dev-utils/set-version.py X.Y.Z-pre``
 * ``git commit -m "version bump"``
 * Cherry-pick ``NEWS`` commit
 
