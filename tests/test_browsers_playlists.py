@@ -321,7 +321,7 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
-    def test_drop_while_filtered_without_selection_creates_playlist(self):
+    def test_dnd_with_filter_and_no_selection_creates_playlist(self):
         self.bar._view.get_selection().unselect_all()
         self.bar.filter_text("artist = piman")
 
