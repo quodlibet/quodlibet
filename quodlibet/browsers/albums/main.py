@@ -269,7 +269,6 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
-        button.set_hexpand(self.expand)
         self.append(button)
 
     def __sort_change_state(self, action, value, model):
