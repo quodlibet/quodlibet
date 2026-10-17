@@ -22,7 +22,7 @@
       perSystem =
         { pkgs, ... }:
         let
-          # 3.11 is now too far against the tide here to be worth it
+          # Keep in sync with `poetry env use` in CI and docs/development/devenv.rst
           qlPython = pkgs.python312;
         in
         {
