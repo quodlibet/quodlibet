@@ -1,6 +1,7 @@
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
 #      2020,2025 Nick Boultbee
+#           2026 Gwyneth Morgan
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,6 +57,12 @@ class MP4File(AudioFile):
         f"{ITUNES}:MusicBrainz Album Type": "musicbrainz_albumtype",
         f"{ITUNES}:MusicBrainz Album Release Country": "releasecountry",
         f"{ITUNES}:MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
+        # Support capitalized ReplayGain tags, but write in lowercase
+        f"{ITUNES}:REPLAYGAIN_ALBUM_GAIN": "replaygain_album_gain",
+        f"{ITUNES}:REPLAYGAIN_ALBUM_PEAK": "replaygain_album_peak",
+        f"{ITUNES}:REPLAYGAIN_TRACK_GAIN": "replaygain_track_gain",
+        f"{ITUNES}:REPLAYGAIN_TRACK_PEAK": "replaygain_track_peak",
+        f"{ITUNES}:REPLAYGAIN_REFERENCE_LOUDNESS": "replaygain_reference_loudness",
         f"{ITUNES}:replaygain_album_gain": "replaygain_album_gain",
         f"{ITUNES}:replaygain_album_peak": "replaygain_album_peak",
         f"{ITUNES}:replaygain_track_gain": "replaygain_track_gain",
