@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+# Cancel superseded runs of the same branch / PR; keep every run on main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   lint-with-nix-shell:
     runs-on: ubuntu-latest
