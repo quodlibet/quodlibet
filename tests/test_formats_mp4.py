@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2026 Gwyneth Morgan
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,6 +76,51 @@ class TMP4File(TestCase):
         self._assert_tag_supported("description")
 
     def test_replaygain_tags(self):
+        # Ensure uppercase tags are read, but written back in lowercase
+        tags = [
+            [
+                "replaygain_album_gain",
+                "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN",
+                "----:com.apple.iTunes:replaygain_album_gain",
+            ],
+            [
+                "replaygain_album_peak",
+                "----:com.apple.iTunes:REPLAYGAIN_ALBUM_PEAK",
+                "----:com.apple.iTunes:replaygain_album_peak",
+            ],
+            [
+                "replaygain_track_gain",
+                "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN",
+                "----:com.apple.iTunes:replaygain_track_gain",
+            ],
+            [
+                "replaygain_track_peak",
+                "----:com.apple.iTunes:REPLAYGAIN_TRACK_PEAK",
+                "----:com.apple.iTunes:replaygain_track_peak",
+            ],
+            [
+                "replaygain_reference_loudness",
+                "----:com.apple.iTunes:REPLAYGAIN_REFERENCE_LOUDNESS",
+                "----:com.apple.iTunes:replaygain_reference_loudness",
+            ],
+        ]
+        for [internal_name, upper_variant, lower_variant] in tags:
+            tag = mutagen.mp4.MP4(self.f)
+            tag[upper_variant] = [b"foo"]
+            tag.save()
+
+            tag = mutagen.mp4.MP4(self.f)
+            self.assertEqual(tag[upper_variant], [b"foo"])
+            assert lower_variant not in tag
+
+            song = MP4File(self.f)
+            self.assertEqual(song[internal_name], "foo")
+            song.write()
+
+            tag = mutagen.mp4.MP4(self.f)
+            self.assertEqual(tag[lower_variant], [b"foo"])
+            assert upper_variant not in tag
+
         self._assert_tag_supported("replaygain_album_gain", "-5.67 dB")
         self._assert_tag_supported("replaygain_album_peak", "1.0")
         self._assert_tag_supported("replaygain_track_gain", "-5.67 dB")
