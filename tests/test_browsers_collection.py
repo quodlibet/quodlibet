@@ -121,3 +121,39 @@ class TCollectionBrowser(TestCase):
         library = SongLibrary()
         x = CollectionBrowser(library)
         x.destroy()
+
+    def _album_titles_with_sort(self, sort):
+        config.set("browsers", "collection_album_sort", str(sort))
+        save_headers([("genre", 0)])
+        library = SongLibrary()
+        library.add(
+            [
+                AudioFile(
+                    {
+                        "album": "Beta",
+                        "artist": "Aardvark",
+                        "genre": "g",
+                        "~filename": "/b",
+                    }
+                ),
+                AudioFile(
+                    {
+                        "album": "Alpha",
+                        "artist": "Zebra",
+                        "genre": "g",
+                        "~filename": "/a",
+                    }
+                ),
+            ]
+        )
+        browser = CollectionBrowser(library)
+        model = browser.view.get_model()
+        titles = [row[0].album.title for row in model[0].iterchildren()]
+        browser.destroy()
+        return titles
+
+    def test_albums_sort_by_people(self):
+        assert self._album_titles_with_sort(1) == ["Beta", "Alpha"]
+
+    def test_albums_sort_by_title(self):
+        assert self._album_titles_with_sort(0) == ["Alpha", "Beta"]
