@@ -173,8 +173,9 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
             model.ref_node(row.iter)
 
         model.set_visible_func(self._apply_filter)
+        self.__row_changed_sig = model.connect("row-changed", self._row_changed)
         self.__sigs = [
-            model.connect("row-changed", self._row_changed),
+            self.__row_changed_sig,
             model.connect("row-inserted", self._row_inserted),
             model.connect("row-deleted", self._row_deleted),
             model.connect("rows-reordered", self._rows_reordered),
@@ -222,7 +223,10 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
         if f or self.__filter:
             self.__filter = f
-            self._model.refilter()
+            # Refiltering re-emits row-changed for every visible row,
+            # but no album actually changed, so don't reload them
+            with self._model.handler_block(self.__row_changed_sig):
+                self._model.refilter()
 
     def do_get_n_items(self):
         return len(self)
