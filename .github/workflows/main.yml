@@ -105,7 +105,9 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
 
       - name: Install Python dependencies
-        run: nix develop -c poetry install
+        run: |
+          nix develop -c poetry env use python3.12
+          nix develop -c poetry install
 
       - name: Run tests
         run: nix develop -c poetry run pytest tests

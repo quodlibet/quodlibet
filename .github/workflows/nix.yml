@@ -18,10 +18,13 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Nix
-        uses: cachix/install-nix-action@v27
+        uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint (treefmt), fast-failing before the slower dev shell steps
+        run: nix flake check --keep-going -L
       - run: nix develop --command poetry --version
+      - run: nix develop --command poetry env use python3.12
       - name: Install dev + plugin deps in the Nix dev shell
         run: nix develop --command poetry install --with dev --all-extras
       - name: Smoke-test the dev shell
@@ -34,4 +37,3 @@ jobs:
           tests/test_util.py
           tests/test_qltk_cover.py
           tests/test_browsers_albums.py
-      - run: nix flake check --keep-going -L
