@@ -97,8 +97,16 @@ jobs:
           path: dev-utils/osx_bundle/_build/*.dmg*
           if-no-files-found: error
 
+  create-release-artifacts-windows:
+    uses: ./.github/workflows/wininst.yml
+    with:
+      ref: ${{ github.ref_name }}
+
   create-release:
-    needs: [create-release-artifacts-linux, create-release-artifacts-macos]
+    needs:
+      - create-release-artifacts-linux
+      - create-release-artifacts-macos
+      - create-release-artifacts-windows
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/release-')
     permissions:
@@ -116,6 +124,12 @@ jobs:
           name: binaries-macos
           path: dist/macos
 
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: installer
+          path: dist/windows
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
@@ -123,4 +137,5 @@ jobs:
           files: |
             dist/linux/*
             dist/macos/*
+            dist/windows/*
           generate_release_notes: true
