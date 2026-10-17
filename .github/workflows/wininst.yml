@@ -8,6 +8,13 @@ on:
         default: ""
         required: false
         type: string
+  workflow_call:
+    inputs:
+      ref:
+        description: "The git ref to build. Current ref if empty."
+        default: ""
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -38,7 +45,7 @@ jobs:
 
       - name: Build Installer
         env:
-          BUILD_REF: ${{ github.event.inputs.ref }}
+          BUILD_REF: ${{ inputs.ref }}
         shell: msys2 {0}
         run: |
           if [[ -z "$BUILD_REF" ]]; then
@@ -48,7 +55,7 @@ jobs:
           ./build.sh "$BUILD_REF"
 
       - name: Upload Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: installer
           path: dev-utils/win_installer/*.exe
