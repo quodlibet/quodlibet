@@ -23,6 +23,11 @@ then run::
     $ nix develop
     $ python --version  # or whatever
 
+Before the first ``poetry install``, point Poetry at the flake's Python
+(otherwise it uses its own, newer one)::
+
+    $ poetry env use python3.12
+
 
 
 Poetry
