@@ -39,10 +39,8 @@ from quodlibet.query import Query
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 from quodlibet.util import connect_obj
@@ -50,53 +48,8 @@ from quodlibet.qltk import popup_menu_at_widget
 
 
 class PreferencesButton(AlbumPreferencesButton):
-    def __init__(self, browser, model):
-        Gtk.HBox.__init__(self)
-
-        sort_orders = [
-            (_("_Title"), self.__compare_title),
-            (_("_People"), self.__compare_people),
-            (_("_Date"), self.__compare_date),
-            (_("_Date Added"), self.__compare_date_added),
-            (_("_Original Date"), self.__compare_original_date),
-            (_("_Genre"), self.__compare_genre),
-            (_("_Rating"), self.__compare_rating),
-            (_("Play_count"), self.__compare_avgplaycount),
-        ]
-
-        menu = Gtk.Menu()
-
-        sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
-        sort_menu = Gtk.Menu()
-
-        active = config.getint("browsers", "album_sort", 1)
-
-        item = None
-        for i, (label, func) in enumerate(sort_orders):
-            item = RadioMenuItem(group=item, label=label, use_underline=True)
-            model.set_sort_func(100 + i, func)
-            if i == active:
-                model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
-                item.set_active(True)
-            item.connect(
-                "toggled", util.DeferredSignal(self.__sort_toggled_cb), model, i
-            )
-            sort_menu.append(item)
-
-        sort_item.set_submenu(sort_menu)
-        menu.append(sort_item)
-
-        pref_item = MenuItem(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
-        menu.append(pref_item)
-        connect_obj(pref_item, "activate", Preferences, browser)
-
-        menu.show_all()
-
-        button = MenuButton(
-            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.MENU), arrow=True
-        )
-        button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+    preferences = Preferences
+    expand = True
 
 
 class CoverGridContainer(ScrolledWindow):
