@@ -22,7 +22,7 @@
       perSystem =
         { pkgs, ... }:
         let
-          # Keep in sync with `poetry env use` in CI and docs/development/devenv.rst
+          # Keep in sync with `poetry env use` in CI workflows and devenv.rst
           qlPython = pkgs.python312;
         in
         {
