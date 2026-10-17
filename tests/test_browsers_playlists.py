@@ -322,7 +322,7 @@ class TPlaylistsBrowser(TestCase):
         b._drag_data_get(None, None, sel, DND_QL, None)
 
     def test_drop_while_filtered_without_selection_creates_playlist(self):
-        self.bar._PlaylistsBrowser__view.get_selection().unselect_all()
+        self.bar._view.get_selection().unselect_all()
         self.bar.filter_text("artist = piman")
 
         self.bar.reordered([SONGS[0]])

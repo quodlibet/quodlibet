@@ -79,7 +79,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.Confirmer = confirmer_cls
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__render = self.__create_cell_renderer()
-        self.__view = view = self.__create_playlists_view(self.__render)
+        self._view = view = self.__create_playlists_view(self.__render)
         self.__embed_in_scrolledwin(view)
         self.__configure_buttons(songs_lib)
         self.__configure_dnd(view)
@@ -475,7 +475,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 ).run()
 
     def _drag_data_get(self, view, ctx, sel, tid, etime):
-        model, iters = self.__view.get_selection().get_selected_rows()
+        model, iters = self._view.get_selection().get_selected_rows()
         songs = []
         for itr in iters:
             if itr:
@@ -486,7 +486,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             sel.set_uris([song("~uri") for song in songs])
 
     def _select_playlist(self, playlist, scroll=False):
-        view = self.__view
+        view = self._view
         model = view.get_model()
         for row in model:
             if row[0] is playlist:
@@ -531,7 +531,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def _start_rename(self, path):
-        view = self.__view
+        view = self._view
         self.__render.set_property("editable", True)
         view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
@@ -672,7 +672,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         except config.Error as e:
             print_d(f"Couldn't get last playlist from config: {e}")
         else:
-            self.__view.select_by_func(lambda r: r[0].name == name, one=True)
+            self._view.select_by_func(lambda r: r[0].name == name, one=True)
         try:
             text = config.get("browsers", "query_text")
         except config.Error as e:
@@ -683,7 +683,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     can_reorder = True
 
     def scroll(self, song):
-        self.__view.iter_select_by_func(lambda r: song in r[0])
+        self._view.iter_select_by_func(lambda r: song in r[0])
 
     def reordered(self, songs):
         model, iter = self.__selected_playlists()
@@ -699,7 +699,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __selected_playlists(self):
         """Returns a tuple of (model, iter) for the current playlist(s)"""
-        return self.__view.get_selection().get_selected()
+        return self._view.get_selection().get_selected()
 
 
 class PreferencesButton(Gtk.HBox):
