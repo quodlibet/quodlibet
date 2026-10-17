@@ -22,7 +22,6 @@
         let
           # 3.11 is now too far against the tide here to be worth it
           qlPython = pkgs.python312;
-          qlPoetry = pkgs.poetry;
         in
         {
           treefmt = {
@@ -70,7 +69,7 @@
               LD_LIBRARY_PATH = "${glib.out}/lib";
               GIO_MODULE_DIR = "${glib-networking}/lib/gio/modules/";
               packages = [
-                qlPoetry
+                poetry
                 qlPython
                 adwaita-icon-theme
                 cairo
