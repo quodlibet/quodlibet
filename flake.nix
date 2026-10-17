@@ -22,7 +22,7 @@
         let
           # 3.11 is now too far against the tide here to be worth it
           qlPython = pkgs.python312;
-          qlPoetry = pkgs.poetry.override { python3 = qlPython; };
+          qlPoetry = pkgs.poetry;
         in
         {
           treefmt = {

@@ -24,6 +24,7 @@ jobs:
       - name: Lint (treefmt), fast-failing before the slower dev shell steps
         run: nix flake check --keep-going -L
       - run: nix develop --command poetry --version
+      - run: nix develop --command poetry env use python3.12
       - name: Install dev + plugin deps in the Nix dev shell
         run: nix develop --command poetry install --with dev --all-extras
       - name: Smoke-test the dev shell
