@@ -477,7 +477,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
         key_controller = Gtk.EventControllerKey()
-        key_controller.connect("key-pressed", self.__key_press, library, player)
+        key_controller.connect("key-pressed", self.__key_press, librarian, player)
         click_controller = Gtk.GestureClick()
         click_controller.connect("pressed", self.__button_press, library)
         self.add_controller(key_controller)

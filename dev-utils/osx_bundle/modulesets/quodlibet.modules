@@ -726,9 +726,9 @@
   <distutils id="python-pyobjc-core" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-core-${version}"
-            module="b8/b6/d5612eb40be4fd5ef88c259339e6313f46ba67577a95d86c3470b951fce0/pyobjc_core-${version}.tar.gz"
-            version="12.1"
-            hash="sha256:2bb3903f5387f72422145e1466b3ac3f7f0ef2e9960afa9bcd8961c5cbf8bd21"/>
+            module="a5/78/abc4ce5920305780aeb36b4067a86253378b36e29ba96673a3deb02eb03a/pyobjc_core-${version}.tar.gz"
+            version="12.2.2"
+            hash="sha256:3906452339cd06a3bb07df103c2511d4cb0f7a22d8771c0b802eba15d9a642b6"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -737,9 +737,9 @@
   <distutils id="python-pyobjc-framework-Cocoa" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Cocoa-${version}"
-            module="02/a3/16ca9a15e77c061a9250afbae2eae26f2e1579eb8ca9462ae2d2c71e1169/pyobjc_framework_cocoa-${version}.tar.gz"
-            version="12.1"
-            hash="sha256:5556c87db95711b985d5efdaaf01c917ddd41d148b1e52a0c66b1a2e2c5c1640"/>
+            module="75/76/49c6da2c6a831020b4854ba20079d5a1030474bffc776b7b73c2eeff8c15/pyobjc_framework_cocoa-${version}.tar.gz"
+            version="12.2.2"
+            hash="sha256:c96c0ef69a71afbbb0e6a7d594b455c5fe47d62e0db376ee7a2b4b828c16ace9"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -749,9 +749,9 @@
   <distutils id="python-pyobjc-framework-Quartz" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Quartz-${version}"
-            module="94/18/cc59f3d4355c9456fc945eae7fe8797003c4da99212dd531ad1b0de8a0c6/pyobjc_framework_quartz-${version}.tar.gz"
-            version="12.1"
-            hash="sha256:27f782f3513ac88ec9b6c82d9767eef95a5cf4175ce88a1e5a65875fee799608"/>
+            module="35/b1/426a37c7ae37280b3ffca2571fb48f211946aee2f4ca31a603ed1943c4a7/pyobjc_framework_quartz-${version}.tar.gz"
+            version="12.2.2"
+            hash="sha256:810f97b210cfd93704d240860286dfd6df09f9f1c52525fc5c2166723aea3f9e"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -762,9 +762,9 @@
   <distutils id="python-pyobjc-framework-MediaPlayer" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-MediaPlayer-${version}"
-            module="e9/f0/851f6f47e11acbd62d5f5dcb8274afc969135e30018591f75bf3cbf6417f/pyobjc_framework_mediaplayer-${version}.tar.gz"
-            version="12.1"
-            hash="sha256:5ef3f669bdf837d87cdb5a486ec34831542360d14bcba099c7c2e0383380794c"/>
+            module="9b/26/92f7d792308588579d7e1baba67366d974e107b2f60f75d33b56623b488e/pyobjc_framework_mediaplayer-${version}.tar.gz"
+            version="12.2.2"
+            hash="sha256:28aeb2b8ed14d7f03648c7c78ed6d9a9f5343850e026b5c8726c26a1a01eb58d"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -775,9 +775,9 @@
   <distutils id="python-pyobjc" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-${version}"
-            module="17/06/d77639ba166cc09aed2d32ae204811b47bc5d40e035cdc9bff7fff72ec5f/pyobjc-${version}.tar.gz"
-            version="12.1"
-            hash="sha256:686d6db3eb3182fac9846b8ce3eedf4c7d2680b21b8b8d6e6df054a17e92a12d"/>
+            module="5d/5f/86e02d8e0a81b7bc5fbcee2069c37cd96dd7d81865914d1476ffe1fa2922/pyobjc-${version}.tar.gz"
+            version="12.2.2"
+            hash="sha256:0c31f3453870b4649d3678d915dfef82899fb76e60612102bc80d25fc9955820"/>
     <dependencies>
     <dep package="python-setuptools"/>
     <dep package="python-pyobjc-core"/>

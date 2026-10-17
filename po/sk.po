@@ -269,7 +269,7 @@ msgstr "_Použiť"
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:66
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:360
+#: quodlibet/ext/songsmenu/brainz/widgets.py:361
 #: quodlibet/ext/songsmenu/editplaycount.py:48
 #: quodlibet/ext/songsmenu/embedded.py:76
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -1811,7 +1811,7 @@ msgstr "Názov zoznam nastavení pre uloženie:"
 #: quodlibet/ext/events/synchronize_to_device.py:437
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #: quodlibet/ext/songsmenu/albumart.py:223
-#: quodlibet/ext/songsmenu/brainz/widgets.py:361
+#: quodlibet/ext/songsmenu/brainz/widgets.py:362
 #: quodlibet/ext/songsmenu/cover_download.py:418
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:73 quodlibet/ext/songsmenu/lastfmsync.py:209
@@ -1819,7 +1819,7 @@ msgstr "Názov zoznam nastavení pre uloženie:"
 #: quodlibet/ext/songsmenu/replaygain.py:361
 #: quodlibet/ext/songsmenu/tapbpm.py:183 quodlibet/qltk/_editutils.py:41
 #: quodlibet/qltk/lyrics.py:35 quodlibet/qltk/msg.py:70
-#: quodlibet/qltk/renamefiles.py:257 quodlibet/qltk/tagsfrompath.py:154
+#: quodlibet/qltk/renamefiles.py:258 quodlibet/qltk/tagsfrompath.py:154
 #: quodlibet/qltk/tracknumbers.py:111
 msgid "_Save"
 msgstr "_Uložiť"
@@ -1905,32 +1905,33 @@ msgstr ""
 "Pozastaví prehrávanie pri odpojení slúchadiel a obnoví prehrávanie pri ich "
 "opätovnom pripojení."
 
-#: quodlibet/ext/events/inhibit.py:51
+#: quodlibet/ext/events/inhibit.py:52
 msgid "Inhibit Screensaver/Suspend"
 msgstr "Zakázať šetrič obrazovky/režim spánku"
 
-#: quodlibet/ext/events/inhibit.py:53
+#: quodlibet/ext/events/inhibit.py:54
+#, fuzzy
 msgid ""
-"On a GNOME desktop, when a song is playing, prevents either the screensaver "
-"from activating, or prevents the computer from suspending."
+"When a song is playing, prevents either the screensaver from activating, or "
+"prevents the computer from suspending."
 msgstr ""
 "V pracovnom prostredí GNOME zabraňuje spusteniu šetriča obrazovky alebo "
 "prechodu počítača do režimu spánku ak sa práve prehráva skladba."
 
-#: quodlibet/ext/events/inhibit.py:66
+#: quodlibet/ext/events/inhibit.py:80
 msgid "Music is playing"
 msgstr "Prehráva sa hudba"
 
 #. Translators: Inhibiting Mode
-#: quodlibet/ext/events/inhibit.py:132
+#: quodlibet/ext/events/inhibit.py:166
 msgid "Mode:"
 msgstr "Režim:"
 
-#: quodlibet/ext/events/inhibit.py:134
+#: quodlibet/ext/events/inhibit.py:168
 msgid "Inhibit Screensaver"
 msgstr "Zakázať šetrič obrazovky"
 
-#: quodlibet/ext/events/inhibit.py:135
+#: quodlibet/ext/events/inhibit.py:169
 msgid "Inhibit Suspend"
 msgstr "Zakázať režim spánku"
 
@@ -2674,12 +2675,12 @@ msgid "Destination path:"
 msgstr "Cieľové umiestnenie:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#: quodlibet/qltk/renamefiles.py:182 quodlibet/qltk/tagsfrompath.py:116
+#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:116
 msgid "Path Patterns"
 msgstr "Vzory cesty"
 
 #: quodlibet/ext/events/synchronize_to_device.py:199
-#: quodlibet/qltk/renamefiles.py:183 quodlibet/qltk/tagsfrompath.py:117
+#: quodlibet/qltk/renamefiles.py:184 quodlibet/qltk/tagsfrompath.py:117
 msgid "Edit saved patterns…"
 msgstr "Upraviť uložené vzory…"
 
@@ -4014,7 +4015,7 @@ msgid "_Search"
 msgstr "_Hľadať"
 
 #: quodlibet/ext/songsmenu/albumart.py:744
-#: quodlibet/ext/songsmenu/brainz/widgets.py:458
+#: quodlibet/ext/songsmenu/brainz/widgets.py:459
 msgid "Searching…"
 msgstr "Vyhľadáva sa…"
 
@@ -4117,37 +4118,37 @@ msgstr "Názov"
 msgid "Artist"
 msgstr "Umelec"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:358
+#: quodlibet/ext/songsmenu/brainz/widgets.py:359
 msgid "MusicBrainz lookup"
 msgstr "Prehľadávanie MusicBrainz"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:380
+#: quodlibet/ext/songsmenu/brainz/widgets.py:381
 msgid "_Query:"
 msgstr "_Požiadavka:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:383
+#: quodlibet/ext/songsmenu/brainz/widgets.py:384
 msgid "S_earch"
 msgstr "_Hľadať"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:396
+#: quodlibet/ext/songsmenu/brainz/widgets.py:397
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Výsledky <i>(potiahnutím zmeníte poradie)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:454
+#: quodlibet/ext/songsmenu/brainz/widgets.py:455
 msgid "Please enter a query."
 msgstr "Zadajte požiadavku."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:472
-#: quodlibet/ext/songsmenu/brainz/widgets.py:503
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:504
 msgid "Error encountered. Please retry."
 msgstr "Vyskytla sa chyba. Skúste to znova."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:479
-#: quodlibet/ext/songsmenu/brainz/widgets.py:495
+#: quodlibet/ext/songsmenu/brainz/widgets.py:480
+#: quodlibet/ext/songsmenu/brainz/widgets.py:496
 msgid "Loading result…"
 msgstr "Načítavajú sa výsledky…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:482
+#: quodlibet/ext/songsmenu/brainz/widgets.py:483
 msgid "No results found."
 msgstr "Nenašli sa žiadne výsledky."
 
@@ -5422,7 +5423,7 @@ msgid "Fill tags based on the file path"
 msgstr "Vyplniť značky na základe ciest k súborom"
 
 #: quodlibet/operon/commands.py:791 quodlibet/qltk/information.py:271
-#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:265
+#: quodlibet/qltk/properties.py:95 quodlibet/qltk/renamefiles.py:266
 #: quodlibet/qltk/tagsfrompath.py:236 quodlibet/qltk/tracknumbers.py:77
 msgid "File"
 msgstr "Súbor"
@@ -5504,16 +5505,16 @@ msgstr "Prúd"
 msgid "Buffering"
 msgstr "Ukladanie do vyrovnávacej pamäte"
 
-#: quodlibet/player/gstbe/player.py:485
+#: quodlibet/player/gstbe/player.py:486
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nepodarilo sa vytvoriť zreťazenie systému GStreamer (%s)"
 
-#: quodlibet/player/gstbe/player.py:705
+#: quodlibet/player/gstbe/player.py:713
 msgid "No GStreamer element found to handle media format"
 msgstr "Nenašiel sa žiadny prvok GStreamera na spracovanie tohto formátu"
 
-#: quodlibet/player/gstbe/player.py:706
+#: quodlibet/player/gstbe/player.py:714
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Formát: %(format-description)s"
@@ -7113,79 +7114,79 @@ msgstr "Hodnotenie vybraných skladieb sa zmení na %s"
 msgid "Change _Rating"
 msgstr "Zmeniť _hodnotenie"
 
-#: quodlibet/qltk/renamefiles.py:52
+#: quodlibet/qltk/renamefiles.py:53
 msgid "Replace spaces with _underscores"
 msgstr "Nahradiť medzery _podtržítkami"
 
-#: quodlibet/qltk/renamefiles.py:62
+#: quodlibet/qltk/renamefiles.py:63
 msgid "Replace [semi]colon delimiting with hyphens"
 msgstr "Nahradiť delenie bodkočiarkou alebo dvojbodkou pomlčkou"
 
-#: quodlibet/qltk/renamefiles.py:63
+#: quodlibet/qltk/renamefiles.py:64
 msgid "e.g. \"iv: allegro.flac\" → \"iv - allegro.flac\""
 msgstr "napr. \"iv: allegro.flac\" → \"iv - allegro.flac\""
 
-#: quodlibet/qltk/renamefiles.py:82
+#: quodlibet/qltk/renamefiles.py:83
 msgid "Strip _Windows-incompatible characters"
 msgstr "Odstrániť znaky nekompatibilné s _Windows"
 
-#: quodlibet/qltk/renamefiles.py:100
+#: quodlibet/qltk/renamefiles.py:101
 msgid "Strip _diacritical marks"
 msgstr "Odstrániť _diakritiku"
 
-#: quodlibet/qltk/renamefiles.py:115
+#: quodlibet/qltk/renamefiles.py:116
 msgid "Strip non-_ASCII characters"
 msgstr "Odstrániť ne-_ASCII znaky"
 
-#: quodlibet/qltk/renamefiles.py:125
+#: quodlibet/qltk/renamefiles.py:126
 msgid "Use only _lowercase characters"
 msgstr "Používať len _malé písmená"
 
-#: quodlibet/qltk/renamefiles.py:156
+#: quodlibet/qltk/renamefiles.py:157
 msgid "Rename Files"
 msgstr "Premenovať súbory"
 
-#: quodlibet/qltk/renamefiles.py:187 quodlibet/qltk/tagsfrompath.py:121
+#: quodlibet/qltk/renamefiles.py:188 quodlibet/qltk/tagsfrompath.py:121
 #: quodlibet/qltk/tracknumbers.py:55
 msgid "_Preview"
 msgstr "_Náhľad"
 
-#: quodlibet/qltk/renamefiles.py:212
+#: quodlibet/qltk/renamefiles.py:213
 msgid "File names"
 msgstr "Názvy súborov"
 
-#: quodlibet/qltk/renamefiles.py:222
+#: quodlibet/qltk/renamefiles.py:223
 msgid "_Move album art"
 msgstr "_Presunúť obrázok albumu"
 
-#: quodlibet/qltk/renamefiles.py:226
+#: quodlibet/qltk/renamefiles.py:227
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 "Pozrite si položku konfigurácie '[albumart] search_filenames', ktorej "
 "obrázky sa presunú"
 
-#: quodlibet/qltk/renamefiles.py:233
+#: quodlibet/qltk/renamefiles.py:234
 msgid "_Overwrite album art at target"
 msgstr "_Prepísať obrázok albumu v cieli"
 
-#: quodlibet/qltk/renamefiles.py:244
+#: quodlibet/qltk/renamefiles.py:245
 msgid "_Remove empty directories"
 msgstr "_Odstrániť prázdne priečinky"
 
-#: quodlibet/qltk/renamefiles.py:250
+#: quodlibet/qltk/renamefiles.py:251
 msgid "Album art"
 msgstr "Obrázky albumov"
 
-#: quodlibet/qltk/renamefiles.py:279
+#: quodlibet/qltk/renamefiles.py:280
 msgid "New Name"
 msgstr "Nový názov"
 
-#: quodlibet/qltk/renamefiles.py:358
+#: quodlibet/qltk/renamefiles.py:359
 msgid "Unable to rename file"
 msgstr "Nepodarilo sa premenovať súbory"
 
-#: quodlibet/qltk/renamefiles.py:360
+#: quodlibet/qltk/renamefiles.py:361
 #, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
@@ -7195,25 +7196,25 @@ msgstr ""
 "Premenovanie %(old-name)s na %(new-name)s zlyhalo. Možno cieľový súbor už "
 "jestvuje alebo nemáte právo vytvoriť nový súbor či odstrániť starý."
 
-#: quodlibet/qltk/renamefiles.py:371
+#: quodlibet/qltk/renamefiles.py:373
 msgid "Ignore _All Errors"
 msgstr "Ignorovať _všetky chyby"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
-#: quodlibet/qltk/renamefiles.py:373 quodlibet/qltk/wlw.py:49
+#: quodlibet/qltk/renamefiles.py:375 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
 msgstr "_Zastaviť"
 
-#: quodlibet/qltk/renamefiles.py:375
+#: quodlibet/qltk/renamefiles.py:377
 msgid "_Continue"
 msgstr "_Pokračovať"
 
-#: quodlibet/qltk/renamefiles.py:486
+#: quodlibet/qltk/renamefiles.py:488
 msgid "Path is not absolute"
 msgstr "Cesta nie je absolútna"
 
-#: quodlibet/qltk/renamefiles.py:488
+#: quodlibet/qltk/renamefiles.py:490
 #, python-format
 msgid ""
 "The pattern\n"

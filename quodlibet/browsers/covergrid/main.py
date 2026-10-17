@@ -40,63 +40,15 @@ from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.songsmenu import SongsMenu, MenuItemSpec
 from quodlibet.qltk.x import Align, ScrolledWindow
-from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
 from quodlibet.util import connect_obj
 from quodlibet.qltk import popup_menu_at_widget
 
 
 class PreferencesButton(AlbumPreferencesButton):
-    def __init__(self, browser, model):
-        Gtk.Box.__init__(self)
-
-        sort_orders = [
-            (_("_Title"), self.__compare_title),
-            (_("_People"), self.__compare_people),
-            (_("_Date"), self.__compare_date),
-            (_("_Date Added"), self.__compare_date_added),
-            (_("_Original Date"), self.__compare_original_date),
-            (_("_Genre"), self.__compare_genre),
-            (_("_Rating"), self.__compare_rating),
-            (_("Play_count"), self.__compare_avgplaycount),
-        ]
-
-        active = config.getint("browsers", "album_sort", 1)
-
-        self._sort_action = Gio.SimpleAction.new_stateful(
-            "sort", GLib.VariantType.new("i"), GLib.Variant("i", active)
-        )
-        self._sort_action.connect("change-state", self.__sort_change_state, model)
-        prefs_action = Gio.SimpleAction.new("preferences", None)
-        prefs_action.connect("activate", lambda *a: Preferences(browser))
-
-        actions = Gio.SimpleActionGroup()
-        actions.add_action(self._sort_action)
-        actions.add_action(prefs_action)
-
-        sort_menu = Gio.Menu()
-        for i, (label, func) in enumerate(sort_orders):
-            model.set_sort_func(100 + i, func)
-            item = Gio.MenuItem.new(label, None)
-            item.set_action_and_target_value("browser.sort", GLib.Variant("i", i))
-            sort_menu.append_item(item)
-        model.set_sort_column_id(100 + active, Gtk.SortType.ASCENDING)
-
-        menu_model = Gio.Menu()
-        menu_model.append_submenu(_("Sort _by…"), sort_menu)
-        menu_model.append(_("_Preferences"), "browser.preferences")
-
-        menu = Gtk.PopoverMenu.new_from_model(menu_model)
-        menu.insert_action_group("browser", actions)
-
-        button = MenuButton(
-            SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
-        )
-        button.set_menu(menu)
-        self.append(button)
+    preferences = Preferences
+    expand = True
 
 
 class CoverGridContainer(ScrolledWindow):

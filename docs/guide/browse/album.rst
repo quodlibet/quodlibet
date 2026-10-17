@@ -48,6 +48,21 @@ It has a search similar to album list (see the section below),
 and configuration of its own (including a flexible per-album display area).
 
 
+Album Collection Browser
+------------------------
+
+The *Album Collection* shows albums in a tree, grouped by tags of your choice
+(by default ``~people``, so e.g. artists and composers), set in its *Preferences*.
+
+
+Sorting
+-------
+
+All three browsers have a *Sort by…* menu (title, people, date, date added, genre, rating…).
+In the Album Collection this sorts the albums within each group;
+the groups themselves are always in name order.
+
+
 
 Searching
 ---------

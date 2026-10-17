@@ -217,37 +217,42 @@ def compare_avgplaycount(a1, a2):
     )
 
 
+SORT_ORDERS = [
+    (_("_Title"), compare_title),
+    (_("_People"), compare_people),
+    (_("_Date"), compare_date),
+    (_("_Date Added"), compare_date_added),
+    (_("_Original Date"), compare_original_date),
+    (_("_Genre"), compare_genre),
+    (_("_Rating"), compare_rating),
+    (_("Play_count"), compare_avgplaycount),
+]
+
+
 class PreferencesButton(Gtk.Box):
+    preferences = Preferences
+    sort_config_key = "album_sort"
+    expand = False
+
     def __init__(self, browser, model):
         super().__init__()
 
-        sort_orders = [
-            (_("_Title"), self.__compare_title),
-            (_("_People"), self.__compare_people),
-            (_("_Date"), self.__compare_date),
-            (_("_Date Added"), self.__compare_date_added),
-            (_("_Original Date"), self.__compare_original_date),
-            (_("_Genre"), self.__compare_genre),
-            (_("_Rating"), self.__compare_rating),
-            (_("Play_count"), self.__compare_avgplaycount),
-        ]
-
-        active = config.getint("browsers", "album_sort", 1)
+        active = config.getint("browsers", self.sort_config_key, 1)
 
         self._sort_action = Gio.SimpleAction.new_stateful(
             "sort", GLib.VariantType.new("i"), GLib.Variant("i", active)
         )
         self._sort_action.connect("change-state", self.__sort_change_state, model)
         prefs_action = Gio.SimpleAction.new("preferences", None)
-        prefs_action.connect("activate", lambda *a: Preferences(browser))
+        prefs_action.connect("activate", lambda *a: self.preferences(browser))
 
         actions = Gio.SimpleActionGroup()
         actions.add_action(self._sort_action)
         actions.add_action(prefs_action)
 
         sort_menu = Gio.Menu()
-        for i, (label, func) in enumerate(sort_orders):
-            model.set_sort_func(100 + i, func)
+        for i, (label, compare) in enumerate(SORT_ORDERS):
+            model.set_sort_func(100 + i, self._compare_rows, compare)
             item = Gio.MenuItem.new(label, None)
             item.set_action_and_target_value("browser.sort", GLib.Variant("i", i))
             sort_menu.append_item(item)
@@ -264,45 +269,17 @@ class PreferencesButton(Gtk.Box):
             SymbolicIconImage(Icons.OPEN_MENU, Gtk.IconSize.NORMAL), arrow=True
         )
         button.set_menu(menu)
+        button.set_hexpand(self.expand)
         self.append(button)
 
     def __sort_change_state(self, action, value, model):
         action.set_state(value)
         num = value.get_int32()
-        config.set("browsers", "album_sort", str(num))
+        config.set("browsers", self.sort_config_key, str(num))
         model.set_sort_column_id(100 + num, Gtk.SortType.ASCENDING)
 
-    def __compare_title(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_title(a1, a2)
-
-    def __compare_people(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_people(a1, a2)
-
-    def __compare_date(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_date(a1, a2)
-
-    def __compare_date_added(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_date_added(a1, a2)
-
-    def __compare_original_date(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_original_date(a1, a2)
-
-    def __compare_genre(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_genre(a1, a2)
-
-    def __compare_rating(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_rating(a1, a2)
-
-    def __compare_avgplaycount(self, model, i1, i2, data):
-        a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_avgplaycount(a1, a2)
+    def _compare_rows(self, model, i1, i2, compare):
+        return compare(model.get_value(i1), model.get_value(i2))
 
 
 class VisibleUpdate:

@@ -3,7 +3,9 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     inputs@{ flake-parts, ... }:
@@ -20,9 +22,8 @@
       perSystem =
         { pkgs, ... }:
         let
-          # 3.11 is now too far against the tide here to be worth it
+          # Keep in sync with `poetry env use` in CI workflows and devenv.rst
           qlPython = pkgs.python312;
-          qlPoetry = pkgs.poetry.override { python3 = qlPython; };
         in
         {
           treefmt = {
@@ -78,7 +79,7 @@
               ];
               GIO_MODULE_DIR = "${glib-networking}/lib/gio/modules/";
               packages = [
-                qlPoetry
+                poetry
                 qlPython
                 adwaita-icon-theme
                 cairo
