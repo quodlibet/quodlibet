@@ -68,33 +68,43 @@ On the branch
 * Grab a title from `Daily Dinosaur Comics <https://qwantz.com/archive.php/>`_
 * Update :ref:`News` with a list of all bugfixes and features since last release
 * ``git commit -m "update NEWS"``
-* Create a source dist: ``git clean && poetry run ./setup.py distcheck``
-* Update version to ``X.Y.Z`` in ``pyproject.toml``
-* Update version to ``(X, Y, Z)`` in ``const.py``
-* Update version to ``(X, Y, Z)`` in ``appdata.xml.in`` files
+* TODO: Set the version: ``dev-utils/set-version.sh X.Y.Z``
+  (``pyproject.toml``, ``const.py`` and ``appdata.xml.in`` files)
 * ``git commit -m "release prep"``
 * ``git tag release-x.y.z``
 * ``git push origin release-x.y.z``
-* `Create Windows builds <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/win_installer#creating-an-installer>`_
-* `Create macOS DMGs <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/osx_bundle#creating-a-bundle>`_
-* Create PGP signature: ``gpg -b dist/quodlibet-x.y.z.tar.gz > dist/quodlibet-x.y.z.tar.gz.sig``
-* Get built artifact and SHA sum from most recent branch build
-* Attach everything to the `Github release <https://github.com/quodlibet/quodlibet/releases/>`_ tag.
+
+The tag push then runs the ``release`` workflow, which:
+
+* TODO: checks the tag matches the version in the source
+* builds the source dist, Windows installer and portable build, and macOS DMG
+* TODO: adds a ``.sha256`` for each (sdist only so far)
+* creates a **draft** `GitHub release <https://github.com/quodlibet/quodlibet/releases/>`_
+  with all of them attached
+
+Then:
+
+* TODO: decide how to sign the artifacts.
+  Until then: ``gpg -b quodlibet-x.y.z.tar.gz`` etc., and attach the ``.sig`` files
+* Check the draft, and publish it
 
 
 On default branch
 ^^^^^^^^^^^^^^^^^
 
-* Update version to ``(X, Y, Z, -1)`` in ``const.py``
-* Update version to ``X.Y.Z-pre`` in ``pyproject.toml``
+* TODO: Set the next version: ``dev-utils/set-version.sh X.Y.Z-pre``
 * ``git commit -m "version bump"``
 * Cherry-pick ``NEWS`` commit
-* Update ``release_db/make.py``; run ``./release_db/update.sh``
 
 
 External
 --------
 
-* Update stable PPAs (ubuntu/debian/OBS)
-* Make a PR on the `Flathub repo <https://github.com/flathub/io.github.quodlibet.QuodLibet/>`_
-* Announce on IRC / Discord / Mastodon etc
+Publishing the release then:
+
+* TODO: updates the website appcast from the GitHub releases.
+  Until then: update ``release_db/make.py`` and run ``./release_db/update.sh``
+* TODO: opens a PR on the `Flathub repo <https://github.com/flathub/io.github.quodlibet.QuodLibet/>`_
+* TODO: triggers the stable PPAs (ubuntu/debian/OBS)
+
+Finally, announce on IRC / Discord / Mastodon etc.
