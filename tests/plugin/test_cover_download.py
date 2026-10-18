@@ -10,11 +10,11 @@ from unittest import mock
 from quodlibet.ext.songsmenu.cover_download import DownloadCoverArt, Config
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
 from quodlibet.qltk import find_widgets, get_children
 from quodlibet.util.cover.manager import CoverData
-from tests import init_fake_app, destroy_fake_app
+from tests import init_fake_app, destroy_fake_app, run_gtk_loop
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
@@ -75,3 +75,16 @@ class TAlbumArt(PluginTestCase):
         dropdown.set_selected(1)
         assert win.config.save_pattern == self.mod.SAVE_PATTERNS[1]
         win.destroy()
+
+    def test_closing_cancels_searches_and_disconnects(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        sigs = list(win._manager_sigs)
+        win.present()
+        run_gtk_loop()
+        win.close()
+        assert win._cancellable.is_cancelled()
+        assert not any(
+            GObject.signal_handler_is_connected(app.cover_manager, sig) for sig in sigs
+        )

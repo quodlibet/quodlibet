@@ -24,7 +24,7 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons, get_children, set_margins
 from quodlibet.qltk.paned import Paned
 from quodlibet.qltk.window import PersistentWindowMixin
-from quodlibet.util import connect_destroy, format_size, escape
+from quodlibet.util import format_size, escape
 from quodlibet.util.cover import CoverManager
 from quodlibet.util.cover.manager import CoverData
 from quodlibet.util.http import download
@@ -220,18 +220,26 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned.set_vexpand(True)
         self.get_content_area().prepend(paned)
 
-        connect_destroy(manager, "covers-found", self._covers_found)
-        connect_destroy(manager, "searches-complete", self._finished)
-        cancellable = self.__cancellable = Gio.Cancellable()
+        self._manager = manager
+        self._manager_sigs = [
+            manager.connect("covers-found", self._covers_found),
+            manager.connect("searches-complete", self._finished),
+        ]
+        self._cancellable = cancellable = Gio.Cancellable()
+        # As a Dialog, ::destroy alone isn't reliable while Python holds a reference
+        self.connect("close-request", self._cleanup)
+        self.connect("destroy", self._cleanup)
 
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
 
-    def destroy(self):
-        if self.__cancellable:
-            print_d("Cancelling remaining requests...")
-            self.__cancellable.cancel()
-        super().destroy()
+    def _cleanup(self, _window):
+        print_d("Cancelling remaining requests...")
+        self._cancellable.cancel()
+        for sig in self._manager_sigs:
+            self._manager.disconnect(sig)
+        self._manager_sigs = []
+        return Gdk.EVENT_PROPAGATE
 
     def _image_failed(self, _view, message: str, widget: Gtk.Widget):
         print_d(f"Failed downloading image ({message}), removing result.")
