@@ -9,6 +9,7 @@
 
 
 from quodlibet.browsers.covergrid.main import CoverGrid
+from quodlibet.browsers.covergrid.models import AlbumListFilterModel, AlbumListModel
 
 from . import TestCase, run_gtk_loop
 from .helper import realized
@@ -299,3 +300,31 @@ class TCoverGridBrowser(TestCase):
             self._assert_albums(browser, {"piman", "boris"}, selected)
         finally:
             browser.destroy()
+
+
+def _albums_notified(change):
+    library = SongLibrary()
+    library.add(SONGS)
+    model_filter = AlbumListFilterModel(child_model=AlbumListModel(library))
+    notified = []
+    for item in model_filter:
+        item.connect("notify::album", lambda item, _: notified.append(item.album))
+    change(library, model_filter)
+    return notified
+
+
+def test_filtering_does_not_reload_albums():
+    notified = _albums_notified(
+        lambda library, model: setattr(model.props, "filter", lambda album: True)
+    )
+    assert notified == []
+
+
+def test_changed_album_is_reloaded():
+    changed = []
+
+    def change(library, model):
+        changed.append(next(iter(library.albums.values())))
+        library.albums.emit("changed", set(changed))
+
+    assert _albums_notified(change) == changed
