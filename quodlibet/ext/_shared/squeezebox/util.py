@@ -8,34 +8,34 @@
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet.qltk import set_margins
 
 
 class GetPlayerDialog(Gtk.Dialog):
     def __init__(self, parent, players, current=0):
         title = _("Choose Squeezebox player")
         super().__init__(title, parent)
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(_("_OK"), Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label(label=_("Found Squeezebox server.\nPlease choose the player"))
-        box.set_border_width(6)
+        set_margins(box, 6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.pack_start(label, True, True, 0)
+        box.append(label)
 
         player_combo = Gtk.ComboBoxText()
         for player in players:
             player_combo.append_text(player["name"])
         player_combo.set_active(current)
         self._val = player_combo
-        box.pack_start(self._val, True, True, 0)
-        self.vbox.pack_start(box, True, True, 0)
-        self.get_child().show_all()
+        box.append(self._val)
+        self.vbox.append(box)
 
     def run(self, text=""):
         self.show()
@@ -45,5 +45,5 @@ class GetPlayerDialog(Gtk.Dialog):
             value = self._val.get_active()
         else:
             value = None
-        self.destroy()
+        self.close()
         return value

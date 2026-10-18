@@ -12,23 +12,8 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 
 
 class TWaitLoadWindow(TestCase):
-    class DummyConnector(Gtk.Window):
-        count = 0
-
-        def connect(self, *args):
-            self.count += 1
-
-        def disconnect(self, *args):
-            self.count -= 1
-
-        class Eater:
-            def set_cursor(*args):
-                pass
-
-        window = Eater()
-
     def setUp(self):
-        self.parent = self.DummyConnector()
+        self.parent = Gtk.Window()
         self.wlw = WaitLoadWindow(self.parent, 5, "a test")
 
     def test_none(self):
@@ -44,10 +29,10 @@ class TWaitLoadWindow(TestCase):
                 wlw.step()
             self.assertEqual(wlw._label.get_text(), "At 1,000 of 1,234")
 
-    def test_connect(self):
-        self.assertEqual(self.parent.count, 2)
-        self.wlw.destroy()
-        self.assertEqual(self.parent.count, 0)
+    def test_transient(self):
+        # GTK4: configure-event and visibility-notify-event removed
+        # Just verify transient relationship is set
+        self.assertEqual(self.wlw.get_transient_for(), self.parent)
 
     def test_start(self):
         self.assertEqual(self.wlw.current, 0)
@@ -61,8 +46,8 @@ class TWaitLoadWindow(TestCase):
         self.assertEqual(self.wlw.current, 3)
 
     def test_destroy(self):
+        # Just verify destroy works without errors
         self.wlw.destroy()
-        self.assertEqual(self.parent.count, 0)
 
     def tearDown(self):
         self.wlw.destroy()

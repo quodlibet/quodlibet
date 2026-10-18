@@ -38,5 +38,5 @@ class Timage_support(TestCase):
 
     def test_cursors(self):
         # make sure cursor images are packaged right
-        cursor = Gdk.Cursor.new_from_name(Gdk.Display.get_default(), "default")
-        assert cursor.get_surface()
+        cursor = Gdk.Cursor.new_from_name("default", None)
+        assert cursor is not None

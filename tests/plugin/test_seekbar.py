@@ -19,5 +19,4 @@ class TSeekBar(PluginTestCase):
         del self.mod
 
     def test_create(self):
-        SeekBar = self.mod.SeekBar
-        SeekBar(NullPlayer(), SongLibrary()).destroy()
+        self.mod.SeekBar(NullPlayer(), SongLibrary())

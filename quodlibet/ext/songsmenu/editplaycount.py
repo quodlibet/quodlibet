@@ -11,7 +11,7 @@ from gi.repository import Gtk
 from quodlibet import _, util
 from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 
 class EditPlaycount(SongsMenuPlugin):
@@ -48,7 +48,7 @@ class EditPlaycount(SongsMenuPlugin):
         dlg.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         dlg.add_button(_("_Apply"), Gtk.ResponseType.APPLY)
         dlg.set_default_response(Gtk.ResponseType.APPLY)
-        dlg.set_border_width(4)
+        set_margins(dlg, 4)
         dlg.vbox.set_spacing(4)
 
         # Create some spinners.
@@ -73,7 +73,7 @@ class EditPlaycount(SongsMenuPlugin):
         table.attach(Gtk.Label(_("Skip Count")), 0, 1, 1, 2)
         table.attach(play, 1, 2, 0, 1)
         table.attach(skip, 1, 2, 1, 2)
-        dlg.vbox.add(table)
+        dlg.vbox.append(table)
 
         # Make a couple tweaks based on the current mode.
         if len(songs) == 1:
@@ -89,9 +89,7 @@ class EditPlaycount(SongsMenuPlugin):
                 + "\n"
                 + _("Counts will be incremented.")
             )
-            dlg.vbox.add(note)
-
-        dlg.show_all()
+            dlg.vbox.append(note)
 
         # Only operate if apply is pressed.
         if dlg.run() == Gtk.ResponseType.APPLY:
@@ -119,5 +117,5 @@ class EditPlaycount(SongsMenuPlugin):
                 if song.get("~#skipcount", 0) == 0:
                     song.pop("~#skipcount", None)
 
-        dlg.destroy()
+        dlg.close()
         return

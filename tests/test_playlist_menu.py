@@ -7,8 +7,9 @@
 
 import os
 
+from gi.repository import Gio
+
 import quodlibet
-from quodlibet import qltk
 from quodlibet.browsers.playlists.menu import PlaylistMenu
 from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
@@ -59,12 +60,13 @@ class TPlaylistMenu(TestCase):
         quodlibet.config.quit()
 
     def test__on_new_playlist_activate(self):
-        main = qltk.MenuItem("Menu")
-        menu = StubbedPlaylistMenu(self.SONGS, PlaylistLibrary(SongFileLibrary()))
-        main.set_submenu(menu)
+        actions = Gio.SimpleActionGroup()
+        menu = StubbedPlaylistMenu(
+            self.SONGS, PlaylistLibrary(SongFileLibrary()), actions, "songs"
+        )
 
         # Run it (with stubbed dialog)
-        pl = menu._on_new_playlist_activate(main, self.SONGS)
+        pl = menu._on_new_playlist_activate(None, self.SONGS)
 
         assert pl, "No playlists added"
         assert pl.name == FIXED_NAME, "Wrong name used"

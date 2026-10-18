@@ -182,7 +182,7 @@ def main(argv=None):
     mmkeys_handler.start()
 
     current_path = os.path.join(quodlibet.get_user_dir(), "current")
-    fsiface = FSInterface(current_path, player, library)
+    fsiface = FSInterface(current_path, player, library)  # noqa: F841
     remote = Remote(app, cmd_registry)
     try:
         remote.start()
@@ -191,7 +191,7 @@ def main(argv=None):
 
     if DBusHandler is not None:
         DBusHandler(player, library)
-    tracker = SongTracker(library.librarian, player, window.playlist)
+    tracker = SongTracker(library.librarian, player, window.playlist)  # noqa: F841
 
     from quodlibet import session
 

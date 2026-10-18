@@ -5,7 +5,7 @@
 
 import os
 
-from gi.repository import Gtk, GdkPixbuf, Gdk
+from gi.repository import Gtk, GdkPixbuf
 
 from tests import TestCase, mkstemp, init_fake_app, destroy_fake_app
 from quodlibet import config
@@ -35,9 +35,6 @@ class TCoverImage(TestCase):
     def test_set_song(self):
         c = CoverImage()
         c.set_song(AudioFile({"~filename": "woo"}))
-        event = Gdk.Event.new(Gdk.EventType.BUTTON_PRESS)
-        event.type.button = 1
-        c.emit("button-press-event", event)
         c.destroy()
 
     def test_big_window(self):

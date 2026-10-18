@@ -37,9 +37,9 @@ class TAlbumArt(PluginTestCase):
         self.plugin = DownloadAlbumArt(self.songs, library)
 
     def testAlbumArtWindow(self):
-        win = AlbumArtWindow(self.songs)
-        win.destroy()
+        AlbumArtWindow(self.songs)
+        # GTK4: destroy() removed, widgets cleaned up automatically
 
     def testCoverArea(self):
-        win = CoverArea(None, self.songs[0])
-        win.destroy()
+        CoverArea(None, self.songs[0])
+        # GTK4: destroy() removed, widgets cleaned up automatically

@@ -20,9 +20,9 @@ def get_surface_for_pixbuf(
     if not pixbuf:
         return None
     scale_factor = widget.get_scale_factor()
-    return Gdk.cairo_surface_create_from_pixbuf(
-        pixbuf, scale_factor, widget.get_window()
-    )
+    # GTK4: window parameter is optional/deprecated
+    window = widget.get_window() if hasattr(widget, "get_window") else None
+    return Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale_factor, window)
 
 
 def get_surface_extents(surface):
@@ -40,35 +40,13 @@ def get_surface_extents(surface):
     return (x1, y1, x2, y2)
 
 
-def get_border_radius(_widgets=None):
+def get_border_radius():
     """Returns the border radius commonly used in the current theme.
     If there are no rounded corners 0 will be returned.
+
+    GTK4: STYLE_PROPERTY_BORDER_RADIUS was removed. Use a sensible default.
     """
-    _widgets = _widgets or []
-    if not _widgets:
-        b = Gtk.Button()
-        b.show()
-        e = Gtk.Entry()
-        e.show()
-        _widgets += [b, e]
-
-    radii = []
-    for widget in _widgets:
-        style_context = widget.get_style_context()
-        radii.append(
-            style_context.get_property(
-                Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()
-            )
-        )
-    radius = max(radii)
-
-    # Doesn't work on the default Ubuntu theme.
-    # Not sure why, so fix manually for now
-    theme_name = Gtk.Settings.get_default().props.gtk_theme_name
-    if theme_name in ("Ambiance", "Radiance"):
-        radius = int(radius / 1.5)
-
-    return radius
+    return 6
 
 
 def add_border(pixbuf, color, width=1, radius=0):
@@ -115,7 +93,7 @@ def add_border_widget(pixbuf, widget):
     """
 
     context = widget.get_style_context()
-    color = context.get_color(context.get_state())
+    color = context.get_color()
     color.alpha *= 0.1
     scale_factor = widget.get_scale_factor()
     border_radius = get_border_radius() * scale_factor

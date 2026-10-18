@@ -22,7 +22,7 @@ from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import config
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -160,14 +160,15 @@ class SessionInhibit(EventPlugin):
                 self.plugin_on_unpaused()
 
         mode = config.get("plugins", self.CONFIG_MODE, InhibitStrings.IDLE)
-        hb = Gtk.HBox(spacing=6)
-        hb.set_border_width(6)
+
+        hb = Gtk.Box(spacing=6)
+        set_margins(hb, 6)
         # Translators: Inhibiting Mode
-        hb.pack_start(Gtk.Label(label=_("Mode:")), False, True, 0)
+        hb.append(Gtk.Label(label=_("Mode:")))
         combo = Gtk.ComboBoxText()
         combo.append_text(_("Inhibit Screensaver"))
         combo.append_text(_("Inhibit Suspend"))
         combo.set_active(1 if mode == InhibitStrings.SUSPEND else 0)
         combo.connect("changed", changed)
-        hb.pack_start(combo, True, True, 0)
+        hb.append(combo)
         return hb

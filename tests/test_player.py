@@ -446,4 +446,3 @@ class TVolume(TestCase):
 
     def tearDown(self):
         self.p.destroy()
-        self.v.destroy()

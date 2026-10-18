@@ -5,10 +5,16 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from unittest import mock
+
 from quodlibet.ext.songsmenu.cover_download import DownloadCoverArt, Config
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager
-from tests import init_fake_app, destroy_fake_app
+from gi.repository import GObject, Gtk
+
+from quodlibet.qltk import find_widgets, get_children
+from quodlibet.util.cover.manager import CoverData
+from tests import init_fake_app, destroy_fake_app, run_gtk_loop
 from tests.plugin import PluginTestCase
 
 from quodlibet import config
@@ -49,3 +55,36 @@ class TAlbumArt(PluginTestCase):
             headless=True,
         )
         win.destroy()
+
+    def test_found_cover_is_shown(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        result = CoverData("https://example.com/cover.jpg", "test", "1x1")
+        with mock.patch.object(self.mod, "download"):
+            win._covers_found(app.cover_manager, "test", [result])
+        (child,) = get_children(win.flow_box)
+        assert isinstance(win._image_from_child(child), self.mod.ResizeWebImage)
+        win.destroy()
+
+    def test_choosing_save_destination_sets_pattern(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        (dropdown,) = find_widgets(win, Gtk.DropDown)
+        dropdown.set_selected(1)
+        assert win.config.save_pattern == self.mod.SAVE_PATTERNS[1]
+        win.destroy()
+
+    def test_closing_cancels_searches_and_disconnects(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        sigs = list(win._manager_sigs)
+        win.present()
+        run_gtk_loop()
+        win.close()
+        assert win._cancellable.is_cancelled()
+        assert not any(
+            GObject.signal_handler_is_connected(app.cover_manager, sig) for sig in sigs
+        )

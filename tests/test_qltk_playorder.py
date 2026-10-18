@@ -29,7 +29,6 @@ class TPlayOrderWidget(TestCase):
         self.po = PlayOrderWidget(self, self)
 
     def tearDown(self):
-        self.po.destroy()
         quodlibet.config.quit()
 
     def test_initial(self):
@@ -80,9 +79,6 @@ class TToggledPlayOrderMenu(TestCase):
             current_order=OrderShuffle,
             enabled=True,
         )
-
-    def tearDown(self):
-        self.tpom.destroy()
 
     def test_enabled_initially(self):
         assert self.tpom.enabled

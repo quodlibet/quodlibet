@@ -58,10 +58,6 @@ class TFilterCheckButton(TestCase):
         l.sort()
         self.assertEqual(l, [self.fcb2, self.fcb3, self.fcb4, self.fcb5, self.fcb1])
 
-    def tearDown(self):
-        for cb in [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]:
-            cb.destroy()
-
 
 class TEditDialogs(TestCase):
     def test_overwrite(self):
@@ -76,4 +72,3 @@ class TFilterPluginBox(TestCase):
         handler = EditingPluginHandler()
         x = FilterPluginBox(handler)
         self.assertEqual(x.filters, [])
-        x.destroy()

@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 
 from tests import TestCase, skipIf
 from quodlibet.qltk.getstring import GetStringDialog
@@ -35,11 +35,15 @@ class TGetStringDialog(TestCase):
         self.assertEqual(foo._val.get_tooltip_text(), "foo bar")
 
     def test_clipboard(self):
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text("42", -1)
+        display = Gdk.Display.get_default()
+        if display is None:
+            return
+        clipboard = display.get_clipboard()
+        value = GObject.Value(str, "42")
+        clipboard.set_content(Gdk.ContentProvider.new_for_value(value))
         ret = self.gsd2.run(text="24", clipboard=True, test=True)
         self.assertEqual(ret, "42")
-        clipboard.clear()
+        clipboard.set_content(None)
 
     def tearDown(self):
         self.gsd1.destroy()

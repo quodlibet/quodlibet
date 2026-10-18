@@ -37,14 +37,13 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         self.human = self.config_get_bool("human_title_case", True)
 
         super().__init__(label=_("Title-_case Value"), use_underline=True)
-        self.set_image(
-            Gtk.Image.new_from_icon_name(Icons.TOOLS_CHECK_SPELLING, Gtk.IconSize.MENU)
-        )
         self.set_sensitive(self.process_tag(value) != value)
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = Gtk.VBox()
+        vb = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL,
+        )
         vb.set_spacing(8)
         config_toggles = [
             ("allow_all_caps", _("Allow _ALL-CAPS in tags"), None, True),
@@ -62,7 +61,7 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
             ccb = cls.ConfigCheckButton(label, key, default)
             if tooltip:
                 ccb.set_tooltip_text(tooltip)
-            vb.pack_start(ccb, True, True, 0)
+            vb.append(ccb)
         return vb
 
     def activated(self, tag, value):

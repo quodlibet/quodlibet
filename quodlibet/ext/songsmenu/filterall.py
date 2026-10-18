@@ -11,13 +11,13 @@ from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.tags import MACHINE_TAGS
 from quodlibet.util import build_filter_query
-from quodlibet.qltk import Window, Icons, Button
+from quodlibet.qltk import Window, Icons, Button, set_margins
 
 
 class SelectionWindow(Window):
     def __init__(self, filters, browser, parent=None):
         super().__init__()
-        self.set_border_width(10)
+        set_margins(self, 10)
         self.set_title(FilterAll.PLUGIN_NAME)
         self.set_default_size(200, 250)
         self.set_transient_for(parent)
@@ -39,23 +39,21 @@ class SelectionWindow(Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        sw.add(view)
+        sw.set_child(view)
+        sw.set_vexpand(True)
 
-        buttons = Gtk.HButtonBox()
+        buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         buttons.set_spacing(6)
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", lambda *x: self.destroy())
-        buttons.pack_start(close, True, True, 0)
+        buttons.append(close)
 
-        box = Gtk.VBox(spacing=12)
-        box.pack_start(sw, True, True, 0)
-        box.pack_start(buttons, False, True, 0)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.append(sw)
+        box.append(buttons)
 
-        self.add(box)
-
-        self.show_all()
+        self.set_child(box)
 
     def __filter(self, model, browser):
         selected = {}

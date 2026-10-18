@@ -17,7 +17,7 @@ from quodlibet import util
 from quodlibet import config
 from quodlibet import app
 from quodlibet.pattern import Pattern
-from quodlibet.qltk.views import TreeViewColumnButton
+from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk import add_css
 from quodlibet.util.path import unexpand
 from quodlibet.formats._audio import FILESYSTEM_TAGS
@@ -104,7 +104,7 @@ class SongListCellAreaBox(Gtk.CellAreaBox):
         )
 
 
-class SongListColumn(TreeViewColumnButton):
+class SongListColumn(TreeViewColumn):
     can_edit = False
     """Whether this column can support editing"""
 
@@ -183,6 +183,9 @@ class TextColumn(SongListColumn):
         return text_width + 8 + cell_pad
 
     def _check_width_update(self):
+        if self.get_tree_view() is None:
+            # Detached before the deferred check ran, so there's nothing to size
+            return
         width = self._cell_width("abc 123")
         if self._last_width == width:
             self._force_update = False
@@ -501,7 +504,9 @@ class CurrentColumn(SongListColumn):
         self.pack_start(self._render, True)
         self._render.set_property("xalign", 0.5)
 
-        self.set_fixed_width(24)
+        # Wider than the icon needs, but a header button can't go below the
+        # theme's minimum and GTK4 complains loudly when asked to
+        self.set_fixed_width(30)
         self.set_expand(False)
         self.set_cell_data_func(self._render, self._cdf)
 

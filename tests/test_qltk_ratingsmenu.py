@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gio
 
 from tests import TestCase
 from quodlibet import config
@@ -25,33 +25,31 @@ class TRatingsMenuItem(TestCase):
         self.library.librarian = SongLibrarian()
         self.af = AudioFile({"~filename": "/foo", "~#rating": 1.0})
         self.af.sanitize()
-        self.rmi = RatingsMenuItem([self.af], self.library)
+        self.actions = Gio.SimpleActionGroup()
+        self.rmi = RatingsMenuItem([self.af], self.library, self.actions, "songs")
 
     def tearDown(self):
-        self.rmi.destroy()
         self.library.destroy()
         self.library.librarian.destroy()
 
-    def test_menuitem_children(self):
-        children = [
-            mi
-            for mi in self.rmi.get_submenu().get_children()
-            if isinstance(mi, Gtk.CheckMenuItem)
-        ]
-        self.assertEqual(len(children), NUM_RATINGS + 1)
-        highest = children[-1]
-        self.assertEqual(highest.get_active(), True)
-        self.assertEqual(children[1].get_active(), False)
+    def _rating_state(self):
+        return self.actions.lookup_action("rating").get_state().get_double()
+
+    def test_submenu_structure(self):
+        submenu = self.rmi.submenu
+        self.assertEqual(submenu.get_n_items(), 2)
+        ratings = submenu.get_item_link(0, Gio.MENU_LINK_SECTION)
+        self.assertEqual(ratings.get_n_items(), NUM_RATINGS + 1)
+
+    def test_state_reflects_common_rating(self):
+        # af is rated the maximum (1.0), so that value should be selected
+        self.assertEqual(self._rating_state(), 1.0)
 
     def test_no_rating(self):
         af = AudioFile({"~filename": "/foobar", "artist": "foo"})
-        rmi = RatingsMenuItem([af], self.library)
-        children = [
-            mi
-            for mi in rmi.get_submenu().get_children()
-            if isinstance(mi, Gtk.CheckMenuItem)
-        ]
-        assert not any(c.get_active() for c in children)
+        actions = Gio.SimpleActionGroup()
+        RatingsMenuItem([af], self.library, actions, "songs")
+        self.assertEqual(actions.lookup_action("rating").get_state().get_double(), -1.0)
 
     def test_set_remove_rating(self):
         self.rmi.set_rating(0.5, [self.af], self.library)

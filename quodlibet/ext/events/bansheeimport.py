@@ -153,8 +153,8 @@ class BansheeImport(EventPlugin):
         grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
 
         path_revert = Gtk.Button()
-        path_revert.add(
-            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+        path_revert.set_child(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.NORMAL)
         )
 
         def path_revert_cb(button, entry):
@@ -171,9 +171,9 @@ class BansheeImport(EventPlugin):
 
         button.connect("clicked", clicked_cb)
 
-        box = Gtk.VBox(spacing=12)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        box.pack_start(grid, True, True, 0)
-        box.pack_start(button, False, False, 0)
+        box.append(grid)
+        box.append(button)
 
         return box
