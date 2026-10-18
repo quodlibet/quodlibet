@@ -11,7 +11,7 @@ import shutil
 from functools import reduce
 from collections.abc import Iterable
 
-from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
+from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w, util
 from quodlibet import qltk
@@ -207,18 +207,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned = Paned(orientation=Gtk.Orientation.VERTICAL)
         paned.ensure_wide_handle()
         sw = Gtk.ScrolledWindow()
-        # GTK4: ScrolledWindow.add() → set_child()
         sw.set_child(self.flow_box)
 
-        # GTK4: pack1() → set_start_child()
-
         paned.set_start_child(sw)
-
         paned.set_resize_start_child(True)
-
         paned.set_shrink_start_child(True)
-        # GTK4: pack2() → set_end_child()
-
         paned.set_end_child(self.create_options())
 
         paned.set_resize_end_child(False)
@@ -262,11 +255,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             "dimensions": item.dimensions,
         }
         frame = Gtk.Frame.new(text)
-        # GTK4: set_padding() removed, use margins
-        img.set_margin_start(12)
-        img.set_margin_end(12)
-        img.set_margin_top(12)
-        img.set_margin_bottom(12)
+        set_margins(img, 12)
         set_margins(frame, 12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)
@@ -279,16 +268,14 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         eb.append(img)
         reveal.set_child(eb)
         frame.set_child(reveal)
-        frame.set_label_align(0.5, 1.0)
-        reveal.connect("button-press-event", self._on_click)
+        frame.set_label_align(0.5)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self._on_click)
+        reveal.add_controller(click)
         return frame
 
-    def _on_click(self, view, event):
-        # TODO: less hacky way to detect double-click
-        if (
-            event.button == Gdk.BUTTON_PRIMARY
-            and event.type != Gdk.EventType.BUTTON_PRESS
-        ):
+    def _on_click(self, gesture, n_press, x, y):
+        if n_press == 2:
             self.__save(None)
             self.close()
 
@@ -374,7 +361,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         slider.connect("format-value", format_dims)
         slider.connect("value-changed", slider_changed)
-        # GTK4: Label() requires label= keyword argument
         label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
         hbox.append(label)
@@ -386,7 +372,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         def create_save_box():
             hbox = Gtk.Box()
-            # GTK4: Label() requires label= keyword argument
             label = Gtk.Label(label=_("Save destination"))
             hbox.append(label)
             model = Gtk.ListStore(str)
@@ -395,7 +380,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             save_filename = Gtk.ComboBox(model=model)
             label.set_mnemonic_widget(save_filename)
             cell = Gtk.CellRendererText()
-            # GTK4: ComboBox.prepend() removed - use pack_start() instead
             save_filename.pack_start(cell, True)
 
             def draw_save_type(column, cell, model, it, data):

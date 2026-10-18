@@ -5,9 +5,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from unittest import mock
+
 from quodlibet.ext.songsmenu.cover_download import DownloadCoverArt, Config
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager
+from quodlibet.qltk import get_children
+from quodlibet.util.cover.manager import CoverData
 from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
@@ -48,4 +52,14 @@ class TAlbumArt(PluginTestCase):
             config=Config(),
             headless=True,
         )
+        win.destroy()
+
+    def test_found_cover_is_shown(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        result = CoverData("https://example.com/cover.jpg", "test", "1x1")
+        with mock.patch.object(self.mod, "download"):
+            win._covers_found(app.cover_manager, "test", [result])
+        assert len(get_children(win.flow_box)) == 1
         win.destroy()
