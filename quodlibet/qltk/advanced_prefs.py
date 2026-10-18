@@ -103,13 +103,14 @@ def slider_config(
     default = config.getfloat(section, option)
 
     adjustment = Gtk.Adjustment(value=default, lower=lower, upper=upper)
-    scale = Gtk.HScale.new(adjustment)
+    scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=adjustment)
+    scale.set_draw_value(True)
     scale.set_value_pos(Gtk.PositionType.LEFT)
     scale.set_show_fill_level(True)
     scale.set_tooltip_text(_(tooltip))
 
     if label_value_callback:
-        scale.connect("format-value", lambda _, value: label_value_callback(value))
+        scale.set_format_value_func(lambda _, value: label_value_callback(value))
     scale.connect("value-changed", on_change)
 
     revert = revert_button(on_reverted)

@@ -11,7 +11,7 @@ import shutil
 from functools import reduce
 from collections.abc import Iterable
 
-from gi.repository import GObject, Gtk, Gio, GLib, Soup, GdkPixbuf
+from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 
 from quodlibet import _, app, print_d, print_w, util
 from quodlibet import qltk
@@ -78,7 +78,7 @@ class Config:
     jpg_quality = IntConfProp(plugin_config, "jpeg_quality", 95)
 
 
-class ResizeWebImage(Gtk.Image):
+class ResizeWebImage(Gtk.Picture):
     """A resizeable widget that can receive loaded images, and save them"""
 
     __gsignals__ = {
@@ -144,7 +144,7 @@ class ResizeWebImage(Gtk.Image):
         resized = self._pixbuf.scale_simple(
             new_size, new_size, GdkPixbuf.InterpType.BILINEAR
         )
-        self.set_from_pixbuf(resized)
+        self.set_paintable(Gdk.Texture.new_for_pixbuf(resized))
         self.set_size_request(new_size, new_size)
 
     def save_image(self, fsn):
@@ -217,6 +217,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned.set_resize_end_child(False)
 
         paned.set_shrink_end_child(False)
+        paned.set_vexpand(True)
         self.get_content_area().prepend(paned)
 
         connect_destroy(manager, "covers-found", self._covers_found)
@@ -359,11 +360,13 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             except AttributeError as e:
                 print_w(f"Couldn't set picture size(s) ({e})")
 
-        slider.connect("format-value", format_dims)
+        slider.set_draw_value(True)
+        slider.set_format_value_func(format_dims)
         slider.connect("value-changed", slider_changed)
         label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
         hbox.append(label)
+        slider.set_hexpand(True)
         hbox.append(slider)
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
@@ -432,7 +435,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         img = self.__image_from_child(child)
         self._save_images(data, img)
 
-    def _save_images(self, data: CoverData, img: Gtk.Image):
+    def _save_images(self, data: CoverData, img: ResizeWebImage):
         paths = self._filenames(self.config.save_pattern, img.extension, full_path=True)
         try:
             first_path = paths.pop()

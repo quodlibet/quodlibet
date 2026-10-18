@@ -435,7 +435,8 @@ class PreferencesWindow(UniqueWindow):
             scale.set_show_fill_level(True)
             scale.set_property("round-digits", 0)
             scale.set_value_pos(Gtk.PositionType.LEFT)
-            scale.connect("format-value", format_gain)
+            scale.set_draw_value(True)
+            scale.set_format_value_func(format_gain)
             return scale
 
         def __init__(self):
