@@ -679,6 +679,9 @@ class RCMTreeView(BaseView):
 
         click_ctrl = Gtk.GestureClick()
         click_ctrl.set_button(Gdk.BUTTON_SECONDARY)
+        # Before the tree view's own click handling, which would reselect
+        click_ctrl.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        click_ctrl.connect("pressed", self.__button_pressed)
         # On release: a popover popped up during the press takes a grab, and
         # then treats the release over the row as a click-outside and hides
         click_ctrl.connect("released", self.__button_released)
@@ -687,6 +690,13 @@ class RCMTreeView(BaseView):
         key_ctrl = Gtk.EventControllerKey()
         key_ctrl.connect("key-pressed", self.__key_pressed)
         self.add_controller(key_ctrl)
+
+    def __button_pressed(self, gesture, _n_press, x, y):
+        # Keep a multi-selection when right-clicking one of its rows
+        bx, by = self.convert_widget_to_bin_window_coords(int(x), int(y))
+        hit = self.get_path_at_pos(bx, by)
+        if hit and self.get_selection().path_is_selected(hit[0]):
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED)
 
     def __button_released(self, gesture, _n_press, x, y):
         gesture.set_state(Gtk.EventSequenceState.CLAIMED)
