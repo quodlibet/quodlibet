@@ -2,10 +2,9 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-09-19
-**Test Results**: 4665 passed, 49 skipped, 2 failed. Both are
-`tests/plugin/test_mediaserver.py`, whose tearDown asserts the D-Bus name is
-released on `disabled()` — a D-Bus lifecycle issue, not a GTK4 one.
+**Last Updated**: 2026-10-18
+**Test Results**: 4675 passed, 49 skipped, with `test_mpris` and `test_mediaserver` deselected
+(run alongside a live instance, which owns their D-Bus names; see below).
 
 The long-standing order-dependent `test_qltk_cover.test_big_window` failure is
 fixed. It was never about covers: a `LibraryValueCompletion` copool task
@@ -229,6 +228,39 @@ lifecycle / cleanup differences not yet investigated:
 - Tray icon (2): test_popup_menu, test_icons
 - MediaServer (2): test_entry_name, test_name_owner (DBus teardown,
   not GTK-related)
+
+
+Recently Landed (2026-10-18)
+----------------------------
+
+Album browsers and the cover download plugin, from a manual-test round.
+`main` was merged in twice (#4932, #4935, #4955 and 71e122b34).
+
+- **Shared album *Sort by…* menu** (#4955 on `main`) ported to `Gio.Menu` + stateful action;
+  Album List, Cover Grid and Album Collection now share one `PreferencesButton`.
+- **Cover Grid perf**: searching no longer reloads every matching album's cover (71e122b34, #4957):
+  `refilter()` re-emits `row-changed`, which was taken as "album changed".
+  In since #4101 (4.6.0); probably also #4882.
+- **Cover Grid global filter crash** (#4932):
+  its tests walked `FlowBox` children, which `GridView` doesn't have; dropped that part.
+- **Cover Grid covers** render at the configured size in fixed cells,
+  instead of an `AspectFrame` stretched to the column width (blurry, setting ignored).
+- **Cover Grid context menu** hangs from the browser, pointing at the tile,
+  not from a `GridView`-recycled tile. The over-tall section gaps look fixed (to confirm).
+- **Album browsers' ⋯ button** no longer stretched: `set_hexpand()` propagates up in GTK4,
+  unlike GTK3's `pack_start(expand=True)` inside its own box.
+- **Cover download plugin**, largely broken:
+  - `Frame.set_label_align()` takes one argument; double-click via `Gtk.GestureClick`.
+  - `ResizeWebImage` is a `Gtk.Picture` (was `Gtk.Image`, drawn at icon size).
+  - Dropped `expand`s restored (paned, slider); GTK3 `pack_start` padding as box spacing.
+  - Save destination is a `Gtk.DropDown` (was a deprecated `Gtk.ComboBox`).
+  - Saving: a GTK3 `EventBox` had become a `Box` with no `get_child()`.
+  - Closed windows kept searching and listening, piling up "No covers found" dialogs;
+    see "`qltk.Dialog` never emits ::destroy" in the cleanup backlog.
+- **`Gtk.Scale` value formatting**: `format-value` doesn't exist in GTK4 and the `connect` shim
+  swallowed it; now `set_format_value_func()` + `set_draw_value(True)`
+  (cover download, ReplayGain prefs, advanced prefs).
+- **Song list rename via Alt+Return** (#4933 on `main`) ported to the key controller.
 
 
 Recently Landed (2026-09-19)
@@ -457,9 +489,8 @@ probably the same root cause.
 `set_paintable(Gdk.Texture.new_for_pixbuf(pb))`. In GTK4 `Gtk.Image`
 only renders at *icon size* and downscales any pixbuf — it is not for
 arbitrary-size images. Same trap still affects the `Gtk.Image`
-*subclasses* `WebImage` (`qltk/x.py:364`) and `ResizeWebImage`
-(`ext/songsmenu/cover_download.py:81`); converting those means reworking
-the base class.
+subclass `WebImage` (`qltk/x.py`); `ResizeWebImage` (cover download)
+is now a `Gtk.Picture` (2026-10-18).
 
 ### Other open visual items
 

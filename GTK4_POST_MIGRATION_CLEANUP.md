@@ -26,6 +26,11 @@ so the tree stays runnable throughout.
   event signals (`button-press-event`, `key-press-event`, …) — remove once all
   call sites use `Gtk.EventController*`. This shim hides real breakage, so it's a
   priority to retire.
+  It swallows *any* removed signal, not just events: `Gtk.Scale` `format-value` silently did nothing
+  in three places until 2026-10-18. To find the rest, make the shim log what it drops,
+  then run the suite.
+- `Gtk.Dialog.run()` / `Gtk.NativeDialog.run()` blocking shims (nested main loop).
+  Proper fix is async `present()` + `response` handlers; many call sites, incl. `qltk.Message`.
 - `Gtk.Alignment`, `Gtk.Widget.show_all`/`set_no_show_all` no-ops, and the various
   `add()`→`set_child()`/`append()` container shims — remove as call sites migrate.
 
@@ -72,6 +77,9 @@ Idiomatic rewrites still pending
 - **`TreeViewHints.__motion`** is unwired (truncated-cell hover tooltips gone) —
   needs a `Gtk.EventControllerMotion` with widget-coord translation.
 
+- **Unused `expand` on the album browsers' `PreferencesButton`.** It mirrors `main`'s GTK3 packing
+  flag, which had no visible effect; `set_hexpand()` stretched the button in GTK4, so it's unused.
+  Drop it on `main` and `gtk4` together.
 
 UX enhancements (post-fidelity)
 -------------------------------
@@ -153,6 +161,10 @@ Tests
   `GTK4_MIGRATION_STATUS.md` "Test Follow-ups"): deleted `test_qltk_util.py`,
   shim-coupled `test_plugins_playlist.py`, stubbed `test_qltk_views.py` event
   senders, weakened `test_qltk_paned.py`, etc.
+- Headless tests can't check "only bind what's visible": even a plain `Gtk.GridView`
+  binds all 500 items under the test harness (GTK 4.22.4), so measure that in the running app.
+- Slim #4932's Cover Grid filter tests (~150 lines, `assertEqual`, name-mangled access);
+  merged as-is for goodwill.
 
 Tray icon has no GTK4 backend
 -----------------------------
@@ -280,6 +292,28 @@ the song list menu and diff them. Driving it from a script did not work — a
 popover popped via `emit("songs-menu")` on a `GridView`-recycled tile reports
 `visible=True, mapped=False` and never allocates.
 
+**2026-10-18: probably fixed.** The menu was parented to the recycled tile *inside* the `GridView`;
+the harness repros above parented to tiles *outside* one. It now hangs from the browser via
+`qltk.popup_menu_at(..., parent=self)`, pointing at the tile, and looks "much better" in the app.
+Likely cause: `GridView`-descendant CSS leaking into the popover. Not yet confirmed by measurement.
+
+
+`qltk.Dialog` never emits ::destroy
+-----------------------------------
+
+Found 2026-10-18 in the cover download plugin. `qltk.Window.destroy()` calls `run_dispose()`
+and funnels `do_close_request` through it, because GTK4 only emits `::destroy` on dispose,
+and any Python reference keeps a window alive. `qltk.Dialog` has neither,
+so its `::destroy` handlers (and `connect_destroy` weak handlers) can silently never run.
+
+In the cover download plugin this left closed windows connected to the cover manager
+and still searching: each later search popped a "No covers found" dialog per old window.
+Fixed there by cleaning up on `::close-request` too.
+
+About ten `Dialog` subclasses may have the same leak. A general fix must keep the
+`Dialog.run()` shim working (it waits for a `response`) and GTK3's semantics,
+where closing a dialog emits `response` but doesn't destroy it.
+
 
 89 destroy() calls were deleted branch-wide
 -------------------------------------------
@@ -379,6 +413,9 @@ Known broken, found in manual testing
 - **Saved-search combo shows two entries** — see its section above.
 - **Covergrid's three-dots menu is empty**, and probably other browsers' too.
 - **Song list column headers can no longer be dragged** to reorder.
+- **Browser search combobox** (search history, next to the search entry) is broken (2026-10-18).
+- **Cover download window**: still a thick top frame and odd sizing
+  (too small for its content yet too big overall); needs a fresh look in the app.
 
 The waveform seek bar is fixed: it needed the top bar's info area to expand,
 the scale to expand within the bar, and `do_draw` porting to `do_snapshot`
