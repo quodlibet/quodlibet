@@ -7,6 +7,7 @@ from gi.repository import Gtk
 
 from quodlibet.qltk import x
 from quodlibet.qltk import Icons
+from quodlibet.qltk import add_css
 
 from . import TestCase
 from .helper import visible
@@ -34,6 +35,48 @@ class Notebook(TestCase):
         self.assertRaises(TypeError, n.append_page, w)
         w.destroy()
         n.destroy()
+
+    def test_edge_flush_stays_within_parent(self):
+        # Preferences packs the notebook flush against the window when a
+        # header-bar close button is present and hides the notebook border.
+        # Forcing a 1px border in do_size_allocate expands past the parent.
+        window = Gtk.Window(type=Gtk.WindowType.POPUP)
+        container = Gtk.VBox()
+        notebook = x.Notebook()
+        notebook.set_show_border(False)
+        add_css(
+            notebook,
+            """
+            * {
+                border-width: 0px;
+            }
+            """,
+        )
+        page = Gtk.Label(label="Page")
+        notebook.append_page(page, "Page")
+        container.pack_start(notebook, True, True, 0)
+        window.add(container)
+
+        def assert_within_container():
+            origin = notebook.translate_coordinates(container, 0, 0)
+            self.assertIsNotNone(origin)
+            dx, dy = origin
+            self.assertGreaterEqual(dx, 0)
+            self.assertGreaterEqual(dy, 0)
+            n_alloc = notebook.get_allocation()
+            c_alloc = container.get_allocation()
+            self.assertLessEqual(dx + n_alloc.width, c_alloc.width)
+            self.assertLessEqual(dy + n_alloc.height, c_alloc.height)
+
+        try:
+            with visible(window, width=400, height=300):
+                assert_within_container()
+                window.resize(520, 380)
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+                assert_within_container()
+        finally:
+            window.destroy()
 
 
 class Frame(TestCase):
