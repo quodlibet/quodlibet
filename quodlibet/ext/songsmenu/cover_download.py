@@ -265,9 +265,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         reveal.props.transition_duration = 800
         reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
 
-        eb = Gtk.Box()
-        eb.append(img)
-        reveal.set_child(eb)
+        reveal.set_child(img)
         frame.set_child(reveal)
         frame.set_label_align(0.5)
         click = Gtk.GestureClick()
@@ -331,9 +329,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self.close()
 
     @staticmethod
-    def __image_from_child(child):
+    def _image_from_child(child):
         # Ugh, horrible
-        return child.get_child().get_child().get_child().get_child()
+        return child.get_child().get_child().get_child()
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
@@ -355,7 +353,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             new_size = slider.get_value()
             try:
                 for child in get_children(self.flow_box):
-                    img = self.__image_from_child(child)
+                    img = self._image_from_child(child)
                     img.resize(new_size)
             except AttributeError as e:
                 print_w(f"Couldn't set picture size(s) ({e})")
@@ -432,7 +430,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     def __save(self, button):
         child = self.flow_box.get_selected_children()[0]
         data = self.model.get_item(child.get_index())
-        img = self.__image_from_child(child)
+        img = self._image_from_child(child)
         self._save_images(data, img)
 
     def _save_images(self, data: CoverData, img: ResizeWebImage):

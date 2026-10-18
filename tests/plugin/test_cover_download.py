@@ -61,5 +61,6 @@ class TAlbumArt(PluginTestCase):
         result = CoverData("https://example.com/cover.jpg", "test", "1x1")
         with mock.patch.object(self.mod, "download"):
             win._covers_found(app.cover_manager, "test", [result])
-        assert len(get_children(win.flow_box)) == 1
+        (child,) = get_children(win.flow_box)
+        assert isinstance(win._image_from_child(child), self.mod.ResizeWebImage)
         win.destroy()
