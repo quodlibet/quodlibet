@@ -10,7 +10,9 @@ from unittest import mock
 from quodlibet.ext.songsmenu.cover_download import DownloadCoverArt, Config
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginManager
-from quodlibet.qltk import get_children
+from gi.repository import Gtk
+
+from quodlibet.qltk import find_widgets, get_children
 from quodlibet.util.cover.manager import CoverData
 from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
@@ -63,4 +65,13 @@ class TAlbumArt(PluginTestCase):
             win._covers_found(app.cover_manager, "test", [result])
         (child,) = get_children(win.flow_box)
         assert isinstance(win._image_from_child(child), self.mod.ResizeWebImage)
+        win.destroy()
+
+    def test_choosing_save_destination_sets_pattern(self):
+        win = self.mod.CoverArtWindow(
+            self.songs, app.cover_manager, config=Config(), headless=True
+        )
+        (dropdown,) = find_widgets(win, Gtk.DropDown)
+        dropdown.set_selected(1)
+        assert win.config.save_pattern == self.mod.SAVE_PATTERNS[1]
         win.destroy()

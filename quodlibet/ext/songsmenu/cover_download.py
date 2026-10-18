@@ -335,7 +335,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
-        hbox = Gtk.Box()
+        hbox = Gtk.Box(spacing=12)
         sizes = self.SIZES.keys()
         slider = Gtk.Scale.new_with_range(
             Gtk.Orientation.HORIZONTAL, min(sizes), max(sizes), 100
@@ -366,42 +366,44 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         hbox.append(label)
         slider.set_hexpand(True)
         hbox.append(slider)
-        vbox = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL,
-        )
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        set_margins(vbox, 12)
         vbox.append(hbox)
 
         def create_save_box():
-            hbox = Gtk.Box()
+            hbox = Gtk.Box(spacing=12)
             label = Gtk.Label(label=_("Save destination"))
             hbox.append(label)
-            model = Gtk.ListStore(str)
-            for val in SAVE_PATTERNS:
-                model.append(row=[val])
-            save_filename = Gtk.ComboBox(model=model)
+            patterns = Gtk.StringList.new(SAVE_PATTERNS)
+            save_filename = Gtk.DropDown(model=patterns)
             label.set_mnemonic_widget(save_filename)
-            cell = Gtk.CellRendererText()
-            save_filename.pack_start(cell, True)
 
-            def draw_save_type(column, cell, model, it, data):
-                pat_text = model[it][0]
+            def setup(factory, item):
+                item.set_child(Gtk.Label(xalign=0))
+
+            def bind(factory, item):
                 ext = "jpg" if self.config.re_encode else "*"
-                text = list(self._filenames(pat_text, ext))[0]
-                cell.set_property("markup", util.monospace(text))
+                text = self._filenames(item.get_item().get_string(), ext)[0]
+                item.get_child().set_markup(util.monospace(text))
 
-            save_filename.set_cell_data_func(cell, draw_save_type, None)
+            factory = Gtk.SignalListItemFactory()
+            factory.connect("setup", setup)
+            factory.connect("bind", bind)
+            save_filename.set_factory(factory)
 
-            def changed(combo):
-                value = model.get_value(combo.get_active_iter(), 0)
-                self.config.save_pattern = value
+            pattern = self.config.save_pattern
+            save_filename.set_selected(
+                SAVE_PATTERNS.index(pattern)
+                if pattern in SAVE_PATTERNS
+                else Gtk.INVALID_LIST_POSITION
+            )
 
-            def select_value(combo, value):
-                for i, item in enumerate(model):
-                    if value == item[0]:
-                        combo.set_active(i)
+            def selected(dropdown, _pspec):
+                pos = dropdown.get_selected()
+                if pos != Gtk.INVALID_LIST_POSITION:
+                    self.config.save_pattern = SAVE_PATTERNS[pos]
 
-            save_filename.connect("changed", changed)
-            select_value(save_filename, self.config.save_pattern)
+            save_filename.connect("notify::selected", selected)
             hbox.append(save_filename)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
@@ -411,13 +413,18 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             re_encode = create_ccb(
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
-            re_encode.connect("toggled", lambda _: hbox.queue_draw())
+
+            def refresh_names(_button):
+                # Rebind the items, as their extension depends on this
+                pos = save_filename.get_selected()
+                patterns.splice(0, len(SAVE_PATTERNS), SAVE_PATTERNS)
+                save_filename.set_selected(pos)
+
+            re_encode.connect("toggled", refresh_names)
             hbox.append(re_encode)
             return hbox
 
-        save_box = create_save_box()
-        save_box.set_margin_top(6)
-        vbox.append(save_box)
+        vbox.append(create_save_box())
         frame.set_child(vbox)
 
         self.button = self.add_icon_button(
