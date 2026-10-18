@@ -12,7 +12,7 @@
 
 import os
 
-from gi.repository import GLib, Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 
@@ -43,7 +43,7 @@ from quodlibet.qltk.x import Align, ScrolledWindow
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.util import connect_destroy
 from quodlibet.util import connect_obj
-from quodlibet.qltk import popup_menu_at_widget
+from quodlibet.qltk import popup_menu_at
 
 
 class PreferencesButton(AlbumPreferencesButton):
@@ -359,7 +359,10 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         reload_cover = MenuItemSpec(button_label, lambda parent: self.__refresh_cover())
 
         menu = SongsMenu(self.__library, songs, items=[[reload_cover]])
-        popup_menu_at_widget(menu, widget, Gdk.BUTTON_SECONDARY, GLib.CURRENT_TIME)
+        # Hang it from the browser: GridView recycles tiles
+        popup_menu_at(
+            menu, widget, widget.get_width() / 2, widget.get_height() / 2, parent=self
+        )
 
     def __refresh_cover(self):
         size = self.props.scale_factor * _get_cover_size()
