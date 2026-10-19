@@ -16,6 +16,7 @@ SHORTCUTS = [
     (
         _("Main Window"),
         [
+            ("Space", _("Toggle play/pause mode")),
             ("<Alt>Left", _("Seek backwards by 10 seconds")),
             ("<Alt>Right", _("Seek forward by 10 seconds")),
             ("<Primary>L", _("Focus the search entry")),
