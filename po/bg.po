@@ -19,83 +19,72 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.9\n"
 
-#: quodlibet/browsers/albums/main.py:226
-#: quodlibet/browsers/covergrid/main.py:57
+#: quodlibet/browsers/albums/main.py:222
 #, fuzzy
 msgid "_Title"
 msgstr "Заглавие"
 
-#: quodlibet/browsers/albums/main.py:227
-#: quodlibet/browsers/covergrid/main.py:58
+#: quodlibet/browsers/albums/main.py:223
 #, fuzzy
 msgid "_People"
 msgstr "човека"
 
-#: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/albums/main.py:224 quodlibet/qltk/prefs.py:58
 msgid "_Date"
 msgstr "_Дата"
 
-#: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60
+#: quodlibet/browsers/albums/main.py:225
 #, fuzzy
 msgid "_Date Added"
 msgstr "_Дата"
 
-#: quodlibet/browsers/albums/main.py:230
-#: quodlibet/browsers/covergrid/main.py:61
+#: quodlibet/browsers/albums/main.py:226
 #, fuzzy
 msgid "_Original Date"
 msgstr "оригинален артист"
 
-#: quodlibet/browsers/albums/main.py:231
-#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:57
+#: quodlibet/browsers/albums/main.py:227 quodlibet/qltk/prefs.py:57
 #, fuzzy
 msgid "_Genre"
 msgstr "_Жанр"
 
-#: quodlibet/browsers/albums/main.py:232
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:61
+#: quodlibet/browsers/albums/main.py:228 quodlibet/qltk/prefs.py:61
 #: quodlibet/qltk/ratingsmenu.py:44
 msgid "_Rating"
 msgstr "_Оценка"
 
-#: quodlibet/browsers/albums/main.py:233
-#: quodlibet/browsers/covergrid/main.py:64
+#: quodlibet/browsers/albums/main.py:229
 #, fuzzy
 msgid "Play_count"
 msgstr "Редактиране на показваното"
 
-#: quodlibet/browsers/albums/main.py:238
-#: quodlibet/browsers/covergrid/main.py:69
+#: quodlibet/browsers/albums/main.py:243
 #, fuzzy
 msgid "Sort _by…"
 msgstr "Сортиране по дата"
 
-#: quodlibet/browsers/albums/main.py:258
-#: quodlibet/browsers/covergrid/main.py:89
-#: quodlibet/browsers/paned/prefs.py:205
+#: quodlibet/browsers/albums/main.py:263 quodlibet/browsers/paned/prefs.py:205
 #: quodlibet/browsers/playlists/main.py:711 quodlibet/qltk/exfalsowindow.py:113
 #: quodlibet/qltk/pluginwin.py:359 quodlibet/qltk/quodlibetwindow.py:967
 #, fuzzy
 msgid "_Preferences"
 msgstr "Настройки"
 
-#: quodlibet/browsers/albums/main.py:430
+#: quodlibet/browsers/albums/main.py:406
 #, fuzzy
 msgid "Album List"
 msgstr "Списък с албуми"
 
-#: quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:407
 msgid "_Album List"
 msgstr "Спис_ък с албуми"
 
-#: quodlibet/browsers/albums/main.py:546
+#: quodlibet/browsers/albums/main.py:522
 #: quodlibet/browsers/covergrid/models.py:77
 msgid "All Albums"
 msgstr "Всички албуми"
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:523
 #: quodlibet/browsers/covergrid/models.py:78
 #, python-format
 msgid "%d album"
@@ -103,8 +92,8 @@ msgid_plural "%d albums"
 msgstr[0] "%d албум"
 msgstr[1] "%d албума"
 
-#: quodlibet/browsers/albums/main.py:732
-#: quodlibet/browsers/covergrid/main.py:395
+#: quodlibet/browsers/albums/main.py:708
+#: quodlibet/browsers/covergrid/main.py:348
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -201,11 +190,11 @@ msgstr[1] "%d песни"
 msgid "Invalid pattern"
 msgstr "Невалиден шаблон"
 
-#: quodlibet/browsers/collection/main.py:84
+#: quodlibet/browsers/collection/main.py:101
 msgid "Album Collection"
 msgstr ""
 
-#: quodlibet/browsers/collection/main.py:85
+#: quodlibet/browsers/collection/main.py:102
 msgid "Album _Collection"
 msgstr "Колекция от албуми"
 
@@ -301,12 +290,12 @@ msgstr "_Прилагане"
 msgid "_Cancel"
 msgstr "_Отказ"
 
-#: quodlibet/browsers/covergrid/main.py:172
+#: quodlibet/browsers/covergrid/main.py:125
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Общ размер:"
 
-#: quodlibet/browsers/covergrid/main.py:173
+#: quodlibet/browsers/covergrid/main.py:126
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "Общ размер:"
