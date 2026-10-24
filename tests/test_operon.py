@@ -336,6 +336,17 @@ class TOperonEdit(TOperonBase):
         e = self.check_false(["edit", self.f], False, True)[1]
         assert editor in e
 
+    def test_editor_exits_127(self):
+        # A resolvable program that exits 127 aborted the edit. The same
+        # status is what posix_spawn uses when exec fails and errno is not
+        # reported; that case is test_nonexist_editor.
+        if os.name == "nt":
+            return
+
+        os.environ["VISUAL"] = "sh -c 'exit 127'"
+        e = self.check_false(["edit", self.f], False, True)[1]
+        assert "'sh'" not in e
+
     def test_no_edit(self):
         if os.name == "nt":
             return

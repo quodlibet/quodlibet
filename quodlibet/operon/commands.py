@@ -166,6 +166,24 @@ class CopyCommand(Command):
             self.save_songs([dest])
 
 
+def _editor_spawn_failed(program, returncode):
+    """True when exit 127 is a lost exec failure, not a real editor exit.
+
+    POSIX allows posix_spawn() to return success when exec fails and
+    requires the child to exit 127 instead of reporting errno. glibc
+    usually forwards ENOENT through CLONE_VM|CLONE_VFORK. qemu-user,
+    OpenBSD, and HPPA do not, so subprocess raises CalledProcessError(127).
+
+    Python only uses posix_spawn() for a path with a directory component.
+    Restore the missing-editor error when that program cannot be resolved.
+    An editor that really exits 127 is unchanged.
+    """
+
+    if os.name == "nt" or returncode != 127:
+        return False
+    return shutil.which(program) is None
+
+
 @Command.register
 class EditCommand(Command):
     NAME = "edit"
@@ -175,6 +193,12 @@ class EditCommand(Command):
     def _add_options(self, p):
         p.add_option(
             "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
+
+    def _editor_launch_error(self, editor_name):
+        return CommandError(
+            _("Starting text editor '%(editor-name)s' failed.")
+            % {"editor-name": editor_name}
         )
 
     def _song_to_text(self, song):
@@ -284,13 +308,12 @@ class EditCommand(Command):
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
                 self.log(str(e))
+                if _editor_spawn_failed(editor_args[0], e.returncode):
+                    raise self._editor_launch_error(editor_args[0]) from e
                 raise CommandError(_("Editing aborted")) from e
             except OSError as e:
                 self.log(str(e))
-                raise CommandError(
-                    _("Starting text editor '%(editor-name)s' failed.")
-                    % {"editor-name": editor_args[0]}
-                ) from e
+                raise self._editor_launch_error(editor_args[0]) from e
 
             was_changed = mtime(path) != old_mtime
             if not was_changed:
