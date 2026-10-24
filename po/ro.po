@@ -22,82 +22,71 @@ msgstr ""
 "2:1));\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: quodlibet/browsers/albums/main.py:226
-#: quodlibet/browsers/covergrid/main.py:57
+#: quodlibet/browsers/albums/main.py:222
 #, fuzzy
 msgid "_Title"
 msgstr "Titlu"
 
-#: quodlibet/browsers/albums/main.py:227
-#: quodlibet/browsers/covergrid/main.py:58
+#: quodlibet/browsers/albums/main.py:223
 #, fuzzy
 msgid "_People"
 msgstr "persoane"
 
-#: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/albums/main.py:224 quodlibet/qltk/prefs.py:58
 msgid "_Date"
 msgstr "_Dată"
 
-#: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60
+#: quodlibet/browsers/albums/main.py:225
 #, fuzzy
 msgid "_Date Added"
 msgstr "Coloane _dată"
 
-#: quodlibet/browsers/albums/main.py:230
-#: quodlibet/browsers/covergrid/main.py:61
+#: quodlibet/browsers/albums/main.py:226
 #, fuzzy
 msgid "_Original Date"
 msgstr "artist iniţial"
 
-#: quodlibet/browsers/albums/main.py:231
-#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:57
+#: quodlibet/browsers/albums/main.py:227 quodlibet/qltk/prefs.py:57
 #, fuzzy
 msgid "_Genre"
 msgstr "gen"
 
-#: quodlibet/browsers/albums/main.py:232
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:61
+#: quodlibet/browsers/albums/main.py:228 quodlibet/qltk/prefs.py:61
 #: quodlibet/qltk/ratingsmenu.py:44
 msgid "_Rating"
 msgstr "E_valuare"
 
-#: quodlibet/browsers/albums/main.py:233
-#: quodlibet/browsers/covergrid/main.py:64
+#: quodlibet/browsers/albums/main.py:229
 #, fuzzy
 msgid "Play_count"
 msgstr "Editare afişare"
 
-#: quodlibet/browsers/albums/main.py:238
-#: quodlibet/browsers/covergrid/main.py:69
+#: quodlibet/browsers/albums/main.py:243
 #, fuzzy
 msgid "Sort _by…"
 msgstr "Sortează după dată"
 
-#: quodlibet/browsers/albums/main.py:258
-#: quodlibet/browsers/covergrid/main.py:89
-#: quodlibet/browsers/paned/prefs.py:205
+#: quodlibet/browsers/albums/main.py:263 quodlibet/browsers/paned/prefs.py:205
 #: quodlibet/browsers/playlists/main.py:711 quodlibet/qltk/exfalsowindow.py:113
 #: quodlibet/qltk/pluginwin.py:359 quodlibet/qltk/quodlibetwindow.py:967
 #, fuzzy
 msgid "_Preferences"
 msgstr "Preferinţe"
 
-#: quodlibet/browsers/albums/main.py:430
+#: quodlibet/browsers/albums/main.py:406
 msgid "Album List"
 msgstr "Listă albume"
 
-#: quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:407
 msgid "_Album List"
 msgstr "Listă _albume"
 
-#: quodlibet/browsers/albums/main.py:546
+#: quodlibet/browsers/albums/main.py:522
 #: quodlibet/browsers/covergrid/models.py:77
 msgid "All Albums"
 msgstr "Toate albumele"
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:523
 #: quodlibet/browsers/covergrid/models.py:78
 #, python-format
 msgid "%d album"
@@ -106,8 +95,8 @@ msgstr[0] "%d album"
 msgstr[1] "%d albume"
 msgstr[2] "%d de albume"
 
-#: quodlibet/browsers/albums/main.py:732
-#: quodlibet/browsers/covergrid/main.py:395
+#: quodlibet/browsers/albums/main.py:708
+#: quodlibet/browsers/covergrid/main.py:348
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -208,11 +197,11 @@ msgstr[2] "%d de piese"
 msgid "Invalid pattern"
 msgstr "Şablon invalid"
 
-#: quodlibet/browsers/collection/main.py:84
+#: quodlibet/browsers/collection/main.py:101
 msgid "Album Collection"
 msgstr ""
 
-#: quodlibet/browsers/collection/main.py:85
+#: quodlibet/browsers/collection/main.py:102
 msgid "Album _Collection"
 msgstr ""
 
@@ -308,12 +297,12 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: quodlibet/browsers/covergrid/main.py:172
+#: quodlibet/browsers/covergrid/main.py:125
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Mărime totală:"
 
-#: quodlibet/browsers/covergrid/main.py:173
+#: quodlibet/browsers/covergrid/main.py:126
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "Mărime totală:"
