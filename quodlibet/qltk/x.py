@@ -200,9 +200,6 @@ class Notebook(Gtk.Notebook):
         dx = max(0, dx)
         dy = max(0, dy)
 
-        # all 0 since gtk+ 3.12..
-        border.left = border.top = border.right = border.bottom = 1
-
         top_alloc = toplevel.get_allocation()
         width, height = top_alloc.width, top_alloc.height
         if alloc.height + dy == height:
