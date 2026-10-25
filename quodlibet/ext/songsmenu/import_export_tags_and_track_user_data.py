@@ -416,7 +416,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         exp_album_ids = list(self._album_id_to_export_path.keys())
 
         exp_indices = self._album_id_matcher.get_indices(album_ids, exp_album_ids)
-        size_differs = len(exp_album_ids) != len(exp_album_ids)
+        size_differs = len(album_ids) != len(exp_album_ids)
         need_check = CONFIG.need_user_check_if_number_of_albums_differs and size_differs
 
         need_check = need_check or self._does_match_need_manual_check(
