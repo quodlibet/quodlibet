@@ -126,11 +126,11 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         self.status = ""
 
     def PluginPreferences(self, parent):
-        outer_vb = Gtk.VBox(spacing=12)
-        vb = Gtk.VBox(spacing=12)
+        outer_vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # Playing
-        hb = Gtk.HBox(spacing=6)
+        hb = Gtk.Box(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
         entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PLAYING)
@@ -140,12 +140,12 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, False, True, 0)
-        hb.pack_start(entry, True, True, 0)
-        vb.pack_start(hb, True, True, 0)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # Paused
-        hb = Gtk.HBox(spacing=6)
+        hb = Gtk.Box(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PAUSED, self.DEFAULT_PAT_PAUSED))
         entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PAUSED)
@@ -155,24 +155,24 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, False, True, 0)
-        hb.pack_start(entry, True, True, 0)
-        vb.pack_start(hb, True, True, 0)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # No Song
-        hb = Gtk.HBox(spacing=6)
+        hb = Gtk.Box(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_STATUS_SONGLESS, ""))
         entry.connect("changed", self.config_entry_changed, self.CFG_STATUS_SONGLESS)
         entry.set_tooltip_text(_("Plain text for status when there is no current song"))
         lbl = Gtk.Label(label=_("No song:"))
         lbl.set_mnemonic_widget(entry)
-        hb.pack_start(lbl, False, True, 0)
-        hb.pack_start(entry, True, True, 0)
-        vb.pack_start(hb, True, True, 0)
+        hb.append(lbl)
+        hb.append(entry)
+        vb.append(hb)
 
         # Frame
         frame = qltk.Frame(_("Status Patterns"), child=vb)
-        outer_vb.pack_start(frame, False, True, 0)
+        outer_vb.append(frame)
 
         return outer_vb

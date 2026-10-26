@@ -13,7 +13,7 @@ from quodlibet.order.repeat import Repeat
 from quodlibet.plugins.playorder import RepeatPlugin
 from quodlibet.util.dprint import print_d
 from quodlibet.plugins import PluginConfigMixin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 START_COUNT = 1
 
@@ -48,19 +48,18 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         def plays_changed(spin):
             cls.config_set("play_each", int(spin.get_value()))
 
-        vb = Gtk.VBox(spacing=10)
-        vb.set_border_width(10)
-        hbox = Gtk.HBox(spacing=6)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        set_margins(vb, 10)
+        hbox = Gtk.Box(spacing=6)
         lbl = Gtk.Label(label=_("Number of times to play each song:"))
-        hbox.pack_start(lbl, False, True, 0)
+        hbox.append(lbl)
         val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
         spin = Gtk.SpinButton(
             adjustment=Gtk.Adjustment.new(float(val), 2, 20, 1, 10, 0)
         )
         spin.connect("value-changed", plays_changed)
-        hbox.pack_start(spin, False, True, 0)
-        vb.pack_start(hbox, True, True, 0)
-        vb.show_all()
+        hbox.append(spin)
+        vb.append(hbox)
         return vb
 
     def restart_counting(self):

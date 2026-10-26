@@ -18,7 +18,7 @@ import gi
 gi.require_version("PangoCairo", "1.0")
 
 from gi.repository import Gtk, GObject, GLib
-from gi.repository import Gdk
+from gi.repository import Gdk, Graphene
 from gi.repository import Pango, PangoCairo
 import cairo
 
@@ -26,6 +26,16 @@ from quodlibet.qltk.image import get_surface_for_pixbuf, get_surface_extents
 from quodlibet import qltk
 from quodlibet import app
 from quodlibet import pattern
+
+
+def _monitor_geometry(index):
+    """The geometry of monitor `index`, or of the first one."""
+
+    monitors = Gdk.Display.get_default().get_monitors()
+    count = monitors.get_n_items()
+    if not count:
+        raise ValueError("no monitors")
+    return monitors.get_item(min(index, count - 1)).get_geometry()
 
 
 class OSDWindow(Gtk.Window):
@@ -46,20 +56,18 @@ class OSDWindow(Gtk.Window):
     """wait this many milliseconds between steps"""
 
     def __init__(self, conf, song):
-        Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
-        self.set_type_hint(Gdk.WindowTypeHint.NOTIFICATION)
-
-        screen = self.get_screen()
-        rgba = screen.get_rgba_visual()
-        if rgba is not None:
-            self.set_visual(rgba)
+        Gtk.Window.__init__(self)
+        # GTK4 has no window type hints; surfaces are RGBA-capable already
+        self.set_decorated(False)
+        self.set_name("osd_bubble")
+        qltk.add_css(self, "#osd_bubble { background-color: rgba(0,0,0,0); }")
 
         self.conf = conf
         self.iteration_source = None
         self.fading_in = False
         self.fade_start_time = 0
 
-        mgeo = screen.get_monitor_geometry(conf.monitor)
+        mgeo = _monitor_geometry(conf.monitor)
         textwidth = mgeo.width - 2 * (self.BORDER + self.MARGIN)
 
         scale_factor = self.get_scale_factor()
@@ -109,53 +117,14 @@ class OSDWindow(Gtk.Window):
 
         self.cover_rectangle = rect
 
-        winx = int((mgeo.width - winw) * conf.pos_x)
-        winx = max(self.MARGIN, min(mgeo.width - self.MARGIN - winw, winx))
-        winy = int((mgeo.height - winh) * conf.pos_y)
-        winy = max(self.MARGIN, min(mgeo.height - self.MARGIN - winh, winy))
-        self.move(winx + mgeo.x, winy + mgeo.y)
+        # TODO GTK4: a client can no longer place its own toplevel, so the
+        # position preferences have nowhere to go. Needs a layer-shell surface
+        # (wlr-layer-shell / gtk4-layer-shell) to honour them again.
 
-    def do_draw(self, cr):
-        if self.is_composited():
-            self.draw_title_info(cr)
-        else:
-            # manual transparency rendering follows
-            walloc = self.get_allocation()
-            wpos = self.get_position()
-
-            if not getattr(self, "_bg_sf", None):
-                # copy the root surface into a temp image surface
-                root_win = self.get_root_window()
-                bg_sf = cairo.ImageSurface(
-                    cairo.FORMAT_ARGB32, walloc.width, walloc.height
-                )
-                pb = Gdk.pixbuf_get_from_window(
-                    root_win, wpos[0], wpos[1], walloc.width, walloc.height
-                )
-                bg_cr = cairo.Context(bg_sf)
-                Gdk.cairo_set_source_pixbuf(bg_cr, pb, 0, 0)
-                bg_cr.paint()
-                self._bg_sf = bg_sf
-
-            if not getattr(self, "_fg_sf", None):
-                # draw the window content in another temp surface
-                fg_sf = cairo.ImageSurface(
-                    cairo.FORMAT_ARGB32, walloc.width, walloc.height
-                )
-                fg_cr = cairo.Context(fg_sf)
-                fg_cr.set_source_surface(fg_sf)
-                self.draw_title_info(fg_cr)
-                self._fg_sf = fg_sf
-
-            # first draw the background so we have 'transparancy'
-            cr.set_operator(cairo.OPERATOR_SOURCE)
-            cr.set_source_surface(self._bg_sf)
-            cr.paint()
-
-            # then draw the window content with the right opacity
-            cr.set_operator(cairo.OPERATOR_OVER)
-            cr.set_source_surface(self._fg_sf)
-            cr.paint_with_alpha(self.get_opacity())
+    def do_snapshot(self, snapshot):
+        width, height = self.get_width(), self.get_height()
+        rect = Graphene.Rect().init(0, 0, width, height)
+        self.draw_title_info(snapshot.append_cairo(rect))
 
     @staticmethod
     def rounded_rectangle(cr, x, y, radius, width, height):
@@ -201,20 +170,12 @@ class OSDWindow(Gtk.Window):
         do_shadow = self.conf.shadow[0] != -1.0
         do_outline = self.conf.outline[0] != -1.0
 
-        self.set_name("osd_bubble")
-        qltk.add_css(
-            self,
-            """
-            #osd_bubble {
-                background-color:rgba(0,0,0,0);
-            }
-        """,
-        )
+        win_width, win_height = self.get_width(), self.get_height()
 
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)
-        radius = min(25, self.corners_factor * min(*self.get_size()))
-        self.draw_conf_rect(cr, 0, 0, self.get_size()[0], self.get_size()[1], radius)
+        radius = min(25, self.corners_factor * min(win_width, win_height))
+        self.draw_conf_rect(cr, 0, 0, win_width, win_height, radius)
         cr.fill()
 
         # draw border
@@ -223,9 +184,7 @@ class OSDWindow(Gtk.Window):
             f = self.conf.fill
             rgba = (f[0] / 1.25, f[1] / 1.25, f[2] / 1.25, f[3] / 2.0)
             cr.set_source_rgba(*rgba)
-            self.draw_conf_rect(
-                cr, 1, 1, self.get_size()[0] - 2, self.get_size()[1] - 2, radius
-            )
+            self.draw_conf_rect(cr, 1, 1, win_width - 2, win_height - 2, radius)
             cr.set_line_width(2.0)
             cr.stroke()
 
@@ -278,8 +237,7 @@ class OSDWindow(Gtk.Window):
             cr.fill()
 
         PangoCairo.update_layout(cr, self.title_layout)
-        height = self.title_layout.get_pixel_size()[1]
-        texty = (self.get_size()[1] - height) // 2
+        texty = (win_height - self.title_layout.get_pixel_size()[1]) // 2
 
         if do_shadow:
             cr.set_source_rgba(*self.conf.shadow)
@@ -324,9 +282,6 @@ class OSDWindow(Gtk.Window):
             self.set_opacity(fraction)
         else:
             self.set_opacity(1.0 - fraction)
-
-        if not self.is_composited():
-            self.queue_draw()
 
         if fraction >= 1.0:
             self.iteration_source = None

@@ -21,7 +21,7 @@ from quodlibet.browsers.collection.models import EMPTY
 
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.x import Frame
-from quodlibet.qltk import Icons, Dialog
+from quodlibet.qltk import Icons, Dialog, set_margins
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
@@ -362,20 +362,19 @@ class RGDialog(Dialog):
 
         self.process_mode = process_mode
         self.set_default_size(600, 400)
-        self.set_border_width(6)
+        set_margins(self, 6)
 
-        hbox = Gtk.HBox(spacing=6)
+        hbox = Gtk.Box(spacing=6)
         info = Gtk.Label()
-        hbox.pack_start(info, True, True, 0)
-        self.vbox.pack_start(hbox, False, False, 6)
+        hbox.append(info)
+        self.get_content_area().append(hbox)
 
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        swin.set_shadow_type(Gtk.ShadowType.IN)
 
-        self.vbox.pack_start(swin, True, True, 0)
+        self.get_content_area().append(swin)
         view = HintedTreeView()
-        swin.add(view)
+        swin.set_child(view)
 
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
@@ -387,6 +386,7 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn()
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         icon_render = Gtk.CellRendererPixbuf()
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(icon_render, True)
         column.set_cell_data_func(icon_render, icon_cdf)
         view.append_column(column)
@@ -402,6 +402,7 @@ class RGDialog(Dialog):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         track_render = Gtk.CellRendererText()
         track_render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(track_render, True)
         column.set_cell_data_func(track_render, track_cdf)
         view.append_column(column)
@@ -414,6 +415,7 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Progress"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         progress_render = Gtk.CellRendererProgress()
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(progress_render, True)
         column.set_cell_data_func(progress_render, progress_cdf)
         view.append_column(column)
@@ -429,6 +431,7 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Gain"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         gain_renderer = Gtk.CellRendererText()
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(gain_renderer, True)
         column.set_cell_data_func(gain_renderer, gain_cdf)
         view.append_column(column)
@@ -444,6 +447,7 @@ class RGDialog(Dialog):
         column = Gtk.TreeViewColumn(_("Peak"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         peak_renderer = Gtk.CellRendererText()
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(peak_renderer, True)
         column.set_cell_data_func(peak_renderer, peak_cdf)
         view.append_column(column)
@@ -589,7 +593,6 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     def plugin_albums(self, albums):
         mode = self.config_get("process_if", UpdateMode.ALWAYS)
         win = RGDialog(albums, parent=self.plugin_window, process_mode=mode)
-        win.show_all()
         win.start_analysis()
 
         # plugin_done checks for metadata changes and opens the write dialog
@@ -600,7 +603,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
     @classmethod
     def PluginPreferences(cls, parent):
-        vb = Gtk.VBox(spacing=12)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=1, n_columns=2)
@@ -642,7 +645,8 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         for row, (label_text, entry) in enumerate(rows):
             label = Gtk.Label(label=label_text)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
+            label.set_yalign(0.5)
             label.set_use_underline(True)
             label.set_mnemonic_widget(entry)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
@@ -651,7 +655,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         # Server settings Frame
         frame = Frame(_("Existing Tags"), table)
 
-        vb.pack_start(frame, True, True, 0)
+        vb.append(frame)
         return vb
 
 

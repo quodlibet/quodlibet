@@ -9,7 +9,7 @@
 from gi.repository import Gtk, Pango, GLib
 
 from quodlibet import _, util
-from quodlibet.qltk import Button, Window
+from quodlibet.qltk import Button, Window, set_margins
 from quodlibet.util import connect_obj, print_w
 
 from .acoustid import AcoustidSubmissionThread
@@ -35,41 +35,44 @@ def can_submit(result):
 class FingerprintDialog(Window):
     def __init__(self, songs):
         super().__init__()
-        self.set_border_width(12)
+        set_margins(self, 12)
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(450, 0)
 
-        outer_box = Gtk.VBox(spacing=12)
+        outer_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         self.__label = label = Gtk.Label()
         label.set_markup(util.bold(_("Generating fingerprints:")))
-        label.set_alignment(0, 0.5)
-        box.pack_start(label, False, True, 0)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
+        box.append(label)
 
         self.__bar = bar = Gtk.ProgressBar()
         self.__set_fraction(0)
-        box.pack_start(bar, False, True, 0)
+        box.append(bar)
         self.__label_song = label_song = Gtk.Label()
-        label_song.set_alignment(0, 0.5)
+        label_song.set_xalign(0)
+        label_song.set_yalign(0.5)
         label_song.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-        box.pack_start(label_song, False, True, 0)
+        box.append(label_song)
 
         self.__stats = stats = Gtk.Label()
-        stats.set_alignment(0, 0.5)
+        stats.set_xalign(0)
+        stats.set_yalign(0.5)
         stats.set_line_wrap(True)
         stats.set_size_request(426, -1)
         expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
         expand.set_resize_toplevel(True)
-        expand.add(stats)
+        expand.set_child(stats)
 
         def expand_cb(expand, *args):
             self.resize(self.get_size()[0], 1)
 
         stats.connect("unmap", expand_cb)
 
-        box.pack_start(expand, False, False, 0)
+        box.append(expand)
 
         self.__fp_results = {}
         self.__fp_done = 0
@@ -81,7 +84,7 @@ class FingerprintDialog(Window):
 
         pool = FingerPrintPool()
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
         self.__submit = submit = Button(_("_Submit"))
@@ -89,11 +92,11 @@ class FingerprintDialog(Window):
         submit.connect("clicked", self.__submit_cb)
         cancel = Button(_("_Cancel"))
         connect_obj(cancel, "clicked", self.__cancel_cb, pool)
-        bbox.pack_start(cancel, True, True, 0)
-        bbox.pack_start(submit, True, True, 0)
+        bbox.append(cancel)
+        bbox.append(submit)
 
-        outer_box.pack_start(box, True, True, 0)
-        outer_box.pack_start(bbox, False, True, 0)
+        outer_box.append(box)
+        outer_box.append(bbox)
 
         pool.connect("fingerprint-done", self.__fp_done_cb)
         pool.connect("fingerprint-error", self.__fp_error_cb)
@@ -104,8 +107,7 @@ class FingerprintDialog(Window):
 
         connect_obj(self, "delete-event", self.__cancel_cb, pool)
 
-        self.add(outer_box)
-        self.show_all()
+        self.set_child(outer_box)
 
     def __update_stats(self):
         all_ = len(self.__songs)
@@ -167,7 +169,7 @@ class FingerprintDialog(Window):
         )
 
     def __cancel_cb(self, pool, *args):
-        self.destroy()
+        self.close()
 
         def idle_cancel():
             pool.stop()

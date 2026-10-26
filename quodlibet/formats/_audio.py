@@ -262,7 +262,10 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     @property
     def mountpoint(self):
-        return self["~mountpoint"]
+        try:
+            return self["~mountpoint"]
+        except KeyError:
+            raise AttributeError("~mountpoint not set") from None
 
     def __hash__(self):
         # Dicts aren't hashable by default, so we need a hash

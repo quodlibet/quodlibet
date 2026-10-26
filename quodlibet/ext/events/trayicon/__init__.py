@@ -9,40 +9,26 @@
 
 from quodlibet import _
 from quodlibet import app
+from quodlibet.plugins import PluginNotSupportedError
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.util import is_linux, is_osx, print_w, print_d
-from quodlibet.util.environment import dbus_name_owned
+from quodlibet.util import is_osx
 
 from .prefs import Preferences
-from .systemtray import SystemTray
 
 
 if is_osx():
     # Works, but not without problems:
     # https://github.com/quodlibet/quodlibet/issues/1870
     # The dock menu is more useful so disable.
-    from quodlibet.plugins import PluginNotSupportedError
-
     raise PluginNotSupportedError
 
-
-def get_indicator_impl():
-    """Returns a BaseIndicator implementation depending on the environ"""
-
-    use_app_indicator = is_linux() and dbus_name_owned("org.kde.StatusNotifierWatcher")
-
-    print_d(f"use app indicator: {use_app_indicator}")
-    if not use_app_indicator:
-        return SystemTray
-    try:
-        from .appindicator import AppIndicator
-    except ImportError as e:
-        print_w(f"Loading AppIndicator failed ({e}). Using {SystemTray}")
-        # no indicator, fall back
-        return SystemTray
-    else:
-        return AppIndicator
+try:
+    from .appindicator import AppIndicator
+except ImportError as e:
+    # AppIndicator3 is a GTK3 library, so this is currently always the case.
+    # TODO GTK4: implement the StatusNotifierItem D-Bus spec directly.
+    raise PluginNotSupportedError(str(e)) from e
 
 
 class TrayIconPlugin(EventPlugin):
@@ -52,8 +38,7 @@ class TrayIconPlugin(EventPlugin):
     PLUGIN_ICON = Icons.USER_DESKTOP
 
     def enabled(self):
-        impl = get_indicator_impl()
-        self._tray = impl()
+        self._tray = AppIndicator()
         self._tray.set_song(app.player.song)
         self._tray.set_info_song(app.player.info)
         self._tray.set_paused(app.player.paused)

@@ -17,7 +17,7 @@ from quodlibet import _, print_w
 from quodlibet import app
 from quodlibet import config
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 
 def get_path() -> Path:
@@ -59,11 +59,11 @@ class PictureSaver(EventPlugin):
             else:
                 set_path(fn)
 
-        hb = Gtk.HBox(spacing=6)
-        hb.set_border_width(6)
-        hb.pack_start(Gtk.Label(label=_("File:")), False, True, 0)
+        hb = Gtk.Box(spacing=6)
+        set_margins(hb, 6)
+        hb.append(Gtk.Label(label=_("File:")))
         e = Gtk.Entry()
         e.set_text(str(get_path()))
         e.connect("changed", changed)
-        hb.pack_start(e, True, True, 0)
+        hb.append(e)
         return hb

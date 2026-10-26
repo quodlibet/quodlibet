@@ -13,7 +13,7 @@ from quodlibet import _, print_d
 from quodlibet.order import OrderInOrder
 from quodlibet.plugins import PluginConfig
 from quodlibet.plugins.playorder import ShufflePlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 
 pconfig = PluginConfig("skip_songs")
 pconfig.defaults.set("threshold", 0.0)
@@ -33,8 +33,8 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
 
     @classmethod
     def PluginPreferences(cls, window):
-        vb = Gtk.VBox(spacing=10)
-        vb.set_border_width(0)
+        vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        set_margins(vb, 0)
 
         adj = Gtk.Adjustment.new(pconfig.getfloat("threshold"), 0, 1.0, 0.01, 0.01, 0.0)
         fb_spin = Gtk.SpinButton(adjustment=adj)
@@ -45,8 +45,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
 
         fb_spin.connect("changed", on_changed)
 
-        vb.add(fb_spin)
-        vb.show_all()
+        vb.append(fb_spin)
         return vb
 
     def next(self, playlist, current):

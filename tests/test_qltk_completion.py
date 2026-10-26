@@ -20,7 +20,6 @@ class TEntryWordCompletion(TestCase):
         e.set_completion(w)
         self.assertEqual(w.get_entry(), e)
         self.assertEqual(e.get_completion(), w)
-        e.destroy()
 
 
 class TLibraryTagCompletion(TestCase):
@@ -30,7 +29,6 @@ class TLibraryTagCompletion(TestCase):
         e.set_completion(w)
         self.assertEqual(w.get_entry(), e)
         self.assertEqual(e.get_completion(), w)
-        e.destroy()
 
 
 class TLibraryValueCompletion(TestCase):
@@ -46,4 +44,3 @@ class TLibraryValueCompletion(TestCase):
         e.set_completion(w)
         self.assertEqual(w.get_entry(), e)
         self.assertEqual(e.get_completion(), w)
-        e.destroy()

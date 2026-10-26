@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gio, Gtk
 
 from quodlibet import config
 from quodlibet.browsers.tracks import TrackList
@@ -18,6 +18,7 @@ from quodlibet.qltk.songlist import (
 )
 from quodlibet.qltk.songlistcolumns import SongListColumn
 from tests import TestCase, run_gtk_loop
+from tests.helper import visible
 
 
 class TSongList(TestCase):
@@ -229,6 +230,52 @@ class TSongList(TestCase):
         librarian.destroy()
         self.lib.librarian = None
 
+    def test_column_header_has_context_menu_gesture(self):
+        self.songlist.set_column_headers(["artist", "title"])
+        for column in self.songlist.get_columns():
+            gestures = [
+                c
+                for c in column.get_button().observe_controllers()
+                if isinstance(c, Gtk.GestureClick)
+                and c.get_button() == Gdk.BUTTON_SECONDARY
+            ]
+            assert len(gestures) == 1, f"{column.header_name} has {len(gestures)}"
+
+    def test_column_header_menu_pops_up(self):
+        self.songlist.set_column_headers(["artist"])
+        column = self.songlist.get_columns()[0]
+        with visible(self.songlist):
+            self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
+
+    def test_column_header_menu_survives_the_column_rebuild_it_causes(self):
+        self.addCleanup(setattr, SongList, "headers", SongList.headers)
+        self.addCleanup(set_columns, get_columns())
+        SongList.headers = ["~#track", "title", "artist"]
+        self.songlist.set_column_headers(SongList.headers)
+        column = self.songlist.get_columns()[1]
+
+        with visible(self.songlist):
+            self.songlist._popup_header_menu(column.get_button(), column, 0, 0)
+            menu = self.songlist._header_menu
+            # not the header button, which a rebuild destroys
+            assert menu.get_parent() is self.songlist
+            assert menu.activate_action("menu.toggle-header-artist", None)
+            assert menu.get_parent() is self.songlist
+
+    def test_column_header_menu_actions_toggle_headers(self):
+        self.addCleanup(setattr, SongList, "headers", SongList.headers)
+        self.addCleanup(set_columns, get_columns())
+        SongList.headers = ["~#track", "title", "artist"]
+        self.songlist.set_column_headers(SongList.headers)
+        popover = self.songlist._menu(self.songlist.get_columns()[1])
+
+        assert popover.activate_action("menu.toggle-header-artist", None)
+        assert "artist" not in SongList.headers
+
+        # a tied tag, whose ~ has to survive the action name round trip
+        assert popover.activate_action("menu.toggle-sub-_7ealbum_7ediscsubtitle", None)
+        assert "~album~discsubtitle" in SongList.headers
+
     def test_get_columns_migrated(self):
         assert not config.get("settings", "headers", None)
         columns = "~album,~#replaygain_track_gain,foobar"
@@ -266,14 +313,27 @@ class TSongList(TestCase):
     def test_check_sensible_menu_items(self):
         col = SongListColumn("title")
 
-        menu = self.songlist._menu(col)
-        submenus = [item.get_submenu() for item in menu.get_children()]
-        names = {
-            item.get_label()
-            for child in submenus
-            if child and not isinstance(child, Gtk.SeparatorMenuItem)
-            for item in child.get_children()
-        }
+        popover = self.songlist._menu(col)
+        menu_model = popover.get_menu_model()
+
+        def collect_submenu_item_labels(model):
+            """Collect all item labels from submenus in a Gio.Menu model."""
+            labels = set()
+            for i in range(model.get_n_items()):
+                submenu = model.get_item_link(i, Gio.MENU_LINK_SUBMENU)
+                if submenu is not None:
+                    for j in range(submenu.get_n_items()):
+                        label = submenu.get_item_attribute_value(
+                            j, Gio.MENU_ATTRIBUTE_LABEL, None
+                        )
+                        if label is not None:
+                            labels.add(label.get_string())
+                section = model.get_item_link(i, Gio.MENU_LINK_SECTION)
+                if section is not None:
+                    labels |= collect_submenu_item_labels(section)
+            return labels
+
+        names = collect_submenu_item_labels(menu_model)
         assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):

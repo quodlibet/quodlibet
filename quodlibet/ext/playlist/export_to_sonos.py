@@ -23,7 +23,7 @@ from quodlibet import app
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PlaylistPlugin
-from quodlibet.qltk import Icons, Dialog, WarningMessage
+from quodlibet.qltk import Icons, Dialog, WarningMessage, set_margins
 from quodlibet.qltk.notif import Task
 from quodlibet.util import copool, escape
 from quodlibet.util.dprint import print_d, print_w
@@ -90,30 +90,29 @@ class GetSonosPlaylistDialog(Dialog):
         super().__init__(title="Which Sonos Playlist?", transient_for=None)
         self.options = choices
 
-        self.set_border_width(6)
+        set_margins(self, 6)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(_("_OK"), Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 
-        box = Gtk.VBox(spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         label = Gtk.Label(
             label=_(
                 "Type a new playlist name,\n"
                 "or choose an existing Sonos playlist to overwrite"
             )
         )
-        box.set_border_width(6)
+        set_margins(box, 6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
-        box.pack_start(label, True, True, 0)
+        box.append(label)
 
         self._combo = ComboBoxEntry(choices)
-        box.pack_start(self._combo, False, False, 0)
+        box.append(self._combo)
 
-        self.vbox.pack_start(box, True, True, 0)
-        self.get_child().show_all()
+        self.vbox.append(box)
 
     def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
         self.show()
@@ -124,7 +123,7 @@ class GetSonosPlaylistDialog(Dialog):
         try:
             return self._combo.get_chosen() if resp == Gtk.ResponseType.OK else None
         finally:
-            self.destroy()
+            self.close()
 
 
 class SonosPlaylistPlugin(PlaylistPlugin):

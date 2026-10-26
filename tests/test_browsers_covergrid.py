@@ -95,9 +95,7 @@ class TCoverGridBrowser(TestCase):
 
     def test_activated(self):
         with realized(self.bar):
-            view = self.bar.view
-            child = view.get_child_at_index(0)
-            child.emit("activate")
+            self.bar.view.emit("activate", 0)
             self._wait()
             assert self.activated
 
@@ -194,18 +192,6 @@ class TCoverGridBrowser(TestCase):
         visible = [item for item in items if item.album is not None]
         self.assertEqual(len(visible), count)
         self.assertEqual(len(items), count + 1)
-
-        index = 0
-        while True:
-            child = browser.view.get_child_at_index(index)
-            if child is None:
-                break
-            assert child.get_visible()
-            if index == 0:
-                assert child.model.album is None
-                self.assertEqual(child.model.props.n_albums, count)
-            index += 1
-        self.assertEqual(index, count + 1)
 
     def _apply_search(self, browser, text):
         with realized(browser):

@@ -45,8 +45,7 @@ class TGstPlayerPrefs(TestCase):
         config.quit()
 
     def test_main(self):
-        widget = GstPlayerPreferences(None, True)
-        widget.destroy()
+        GstPlayerPreferences(None, True)
 
 
 @skipUnless(Gst, "GStreamer missing")

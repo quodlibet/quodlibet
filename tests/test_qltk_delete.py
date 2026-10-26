@@ -59,4 +59,4 @@ class TDeleteDialog(TestCase):
         dialog.destroy()
 
     def test_menu_item(self):
-        TrashMenuItem().destroy()
+        TrashMenuItem()

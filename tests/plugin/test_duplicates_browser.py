@@ -51,7 +51,6 @@ class TDuplicates(PluginTestCase):
     # TODO: proper logic tests...
 
     def tearDown(self):
-        self.plugin.destroy()
         del self.plugin
         destroy_fake_app()
 

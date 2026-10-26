@@ -87,9 +87,9 @@ def build_shortcut_window(data):
         for accel, shortcut_title in shortcuts:
             short = Gtk.ShortcutsShortcut(title=shortcut_title, accelerator=accel)
             short.show()
-            group.add(short)
-        section.add(group)
-    w.add(section)
+            group.add_shortcut(short)
+        section.add_group(group)
+    w.add_section(section)
 
     return w
 
