@@ -365,6 +365,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self.songs_lib.emit("changed", removals.values())
             else:
                 playlist.remove_songs(removals.values(), True)
+                playlist.write()
                 remove_from_model(removals.keys(), smodel)
             print_d("Removed %d song(s) from %s" % (len(removals), playlist))
 
