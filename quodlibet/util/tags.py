@@ -107,6 +107,7 @@ _TAGS = {
         T("title", "u", _("title")),
         T("version", "u", _("version")),
         T("website", "u", _("website")),
+        T("work", "u", _("work")),
         T("albumartist", "us", _("album artist")),
         T("bpm", "u", _("BPM")),
         T("isrc", "u", "ISRC"),
