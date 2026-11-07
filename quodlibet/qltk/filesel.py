@@ -191,6 +191,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         model = ObjectTreeStore()
         super().__init__(model=model)
+        self.__revealed_paths = set()
 
         if initial is not None:
             assert isinstance(initial, fsnative)
@@ -296,6 +297,12 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             return
         start_iter = roots[head]
 
+        requested = head
+        for component in reversed(to_find):
+            requested = os.path.join(requested, component)
+            if component.startswith("."):
+                self.__revealed_paths.add(requested)
+
         # expand until we find the right directory or the last valid one
         # and select/scroll to it
         def search(view, model, iter_, to_find):
@@ -306,6 +313,14 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 view.set_cursor(tree_path)
                 view.scroll_to_cell(tree_path)
                 return
+
+            # An expanded row (or a leaf) may predate this hidden request.
+            requested = os.path.join(model[iter_][0], to_find[-1])
+            if requested in self.__revealed_paths and not any(
+                child == requested for _, child in model.iterrows(iter_)
+            ):
+                view.emit("test-expand-row", iter_, tree_path)
+                iter_ = model.get_iter(tree_path)
 
             # expand the row
             view.expand_row(tree_path, False)
@@ -448,6 +463,12 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                     needs_expanding.append(path)
                 child = model.iter_next(child)
 
+    def __listdir(self, folder):
+        for name in sorted(os.listdir(folder)):
+            path = os.path.join(folder, name)
+            if not name.startswith(".") or path in self.__revealed_paths:
+                yield path
+
     def __expanded(self, iter, path, model):
         window = self.get_window()
         if window:
@@ -460,11 +481,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 while model.iter_has_child(iter):
                     model.remove(model.iter_children(iter))
                 folder = model[iter][0]
-                for path in listdir(folder):
+                for path in self.__listdir(folder):
                     try:
                         if not os.path.isdir(path):
                             continue
-                        for filename in listdir(path):
+                        for filename in self.__listdir(path):
                             if os.path.isdir(filename):
                                 niter = model.append(iter, [path])
                                 model.append(niter, ["dummy"])
