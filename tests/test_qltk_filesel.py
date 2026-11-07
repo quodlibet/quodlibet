@@ -7,7 +7,9 @@ from tests import TestCase, mkdtemp
 from tests.helper import __
 
 import os
+import shutil
 import sys
+from unittest import mock
 
 sys.modules["dircache"] = os  # cheat the dircache effects
 
@@ -85,6 +87,72 @@ class TDirectoryTree(TestCase):
         dirlist = DirectoryTree("/", folders=self.ROOTS)
         dirlist.go_to(newpath)
         dirlist.destroy()
+
+    def test_hidden_navigation(self):
+        root = mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        visible = os.path.join(root, "visible")
+        store = os.path.join(visible, ".store")
+        target = os.path.join(store, "album", ".disc")
+        os.makedirs(target)
+        os.mkdir(os.path.join(visible, ".unrelated"))
+
+        for initial in (target, visible):
+            tree = DirectoryTree(initial, folders=[root])
+            self.addCleanup(tree.destroy)
+            model = tree.get_model()
+            self.assertEqual(tree.get_selected_paths(), [initial])
+            if initial == visible:
+                tree.expand_row(model.get_path(model.get_iter_first()), False)
+                parent = model.iter_children(model.get_iter_first())
+                self.assertFalse(model.iter_has_child(parent))
+            tree.go_to(target)
+            self.assertEqual(tree.get_selected_paths(), [target])
+            tree.go_to(target)
+            tree.collapse_all()
+            tree.go_to(target)
+            self.assertEqual(tree.get_selected_paths(), [target])
+
+            tree.go_to(visible)
+            menu = tree._create_menu()
+            self.addCleanup(menu.destroy)
+            menu.get_children()[2].activate()
+            tree.go_to(target)
+            self.assertEqual(tree.get_selected_paths(), [target])
+            parent = model.iter_children(model.get_iter_first())
+            self.assertEqual([p for _, p in model.iterrows(parent)], [store])
+
+            # Reveal another child of an already expanded directory.
+            tree.go_to(os.path.join(visible, ".unrelated"))
+            tree.go_to(os.path.join(visible, ".unrelated"))
+            self.assertEqual(
+                tree.get_selected_paths(), [os.path.join(visible, ".unrelated")]
+            )
+            self.assertEqual(
+                [p for _, p in model.iterrows(parent)],
+                [store, os.path.join(visible, ".unrelated")],
+            )
+
+    def test_hidden_navigation_fallback(self):
+        root = mkdtemp()
+        self.addCleanup(shutil.rmtree, root)
+        hidden = os.path.join(root, ".store")
+        os.mkdir(hidden)
+        file_ = os.path.join(hidden, "file")
+        open(file_, "wb").close()
+        tree = DirectoryTree(root, folders=[root])
+        self.addCleanup(tree.destroy)
+        for target, expected in (
+            (os.path.join(root, ".missing", "album"), root),
+            (os.path.join(file_, "album"), hidden),
+            (os.path.join(hidden, "missing"), hidden),
+        ):
+            tree.go_to(target)
+            self.assertEqual(tree.get_selected_paths(), [expected])
+        tree.collapse_all()
+        with mock.patch("os.listdir", side_effect=OSError):
+            tree.go_to(hidden)
+        self.assertEqual(tree.get_selected_paths(), [root])
 
     def test_main(self):
         folders = ["/"]
@@ -168,6 +236,37 @@ class TFileSelector(TestCase):
 
         self.selection.select_all()
         self.assertEqual(self.files, expected)
+
+    def test_hidden_directory(self):
+        root = os.path.realpath(mkdtemp())
+        self.addCleanup(shutil.rmtree, root)
+        target = os.path.join(root, ".store", "album")
+        os.makedirs(target)
+        file_ = os.path.join(target, "song")
+        open(file_, "wb").close()
+        for initial in (target, root):
+            selector = FileSelector(
+                initial=initial, filter=lambda p: p == file_, folders=[root]
+            )
+            self.addCleanup(selector.destroy)
+            if initial == root:
+                selector.go_to(target)
+            filelist = selector.get_child2().get_child()
+            self.assertEqual([p for _, p in filelist.get_model().iterrows()], [file_])
+
+        link = os.path.join(root, "link")
+        try:
+            os.symlink(target, link, target_is_directory=True)
+        except (OSError, NotImplementedError):
+            return
+        selector = FileSelector(
+            initial=os.path.realpath(link),
+            filter=lambda p: p == file_,
+            folders=[root],
+        )
+        self.addCleanup(selector.destroy)
+        filelist = selector.get_child2().get_child()
+        self.assertEqual([p for _, p in filelist.get_model().iterrows()], [file_])
 
     def test_select_rescan(self):
         expected = self.PATHS
