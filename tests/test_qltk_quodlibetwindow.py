@@ -4,13 +4,13 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from quodlibet import app, config, player
+from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.qltk.notif import TaskController
-from tests import TestCase, init_fake_app
-
 from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlaybackErrorDialog
-from quodlibet import player
-from quodlibet import config
+from tests import TestCase, init_fake_app
+from tests.helper import send_key_click, visible
 
 
 class TQuodLibetWindow(TestCase):
@@ -35,6 +35,21 @@ class TQuodLibetWindow(TestCase):
         window = QuodLibetWindow(lib, pl, headless=True)
         assert window in window.windows
         window.destroy()
+
+    def test_space_toggles_play_pause_only(self):
+        app.player.song = AudioFile({"~filename": "/dev/null"})
+        app.player.paused = False
+        app.window.stop_after.set_active(False)
+
+        with visible(app.window):
+            assert send_key_click(app.window, "space")
+            assert app.player.paused
+            assert not app.window.stop_after.get_active()
+
+            app.player.paused = False
+            assert send_key_click(app.window, "<shift>space")
+            assert app.player.paused
+            assert not app.window.stop_after.get_active()
 
     def test_playback_error_dialog(self):
         error = player.PlayerError("\xf6\xe4\xfc", "\xf6\xe4\xfc")
