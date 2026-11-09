@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-09-14 09:51+0000\n"
+"PO-Revision-Date: 2026-10-28 00:44+0000\n"
 "Last-Translator: Bundy01 <bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 2026.10.dev0\n"
+"X-Generator: Weblate 2026.11.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:222
 msgid "_Title"
@@ -3764,7 +3764,7 @@ msgstr "Retour aux valeurs par défaut"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr "Sauter les morceaux que vous n'aimez pas"
+msgstr "Passer Les Pistes Non Appréciées"
 
 #: quodlibet/ext/playorder/skip_disliked.py:27
 msgid ""
@@ -3776,7 +3776,7 @@ msgstr ""
 
 #: quodlibet/ext/playorder/skip_disliked.py:31
 msgid "Skip disliked tracks"
-msgstr "Sauter les morceaux que vous n'aimez pas"
+msgstr "Passer les pistes non appréciées"
 
 #: quodlibet/ext/playorder/skip_disliked.py:32
 msgid "Skip _disliked tracks"
