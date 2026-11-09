@@ -18,74 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.14-dev\n"
 
-#: quodlibet/browsers/albums/main.py:226
-#: quodlibet/browsers/covergrid/main.py:57
+#: quodlibet/browsers/albums/main.py:222
 msgid "_Title"
 msgstr "_TITLE"
 
-#: quodlibet/browsers/albums/main.py:227
-#: quodlibet/browsers/covergrid/main.py:58
+#: quodlibet/browsers/albums/main.py:223
 msgid "_People"
 msgstr "_ மக்கள்"
 
-#: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/albums/main.py:224 quodlibet/qltk/prefs.py:58
 msgid "_Date"
 msgstr "_ டேட்"
 
-#: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60
+#: quodlibet/browsers/albums/main.py:225
 msgid "_Date Added"
 msgstr "_ டேட் சேர்க்கப்பட்டது"
 
-#: quodlibet/browsers/albums/main.py:230
-#: quodlibet/browsers/covergrid/main.py:61
+#: quodlibet/browsers/albums/main.py:226
 msgid "_Original Date"
 msgstr "_ரிசினல் தேதி"
 
-#: quodlibet/browsers/albums/main.py:231
-#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:57
+#: quodlibet/browsers/albums/main.py:227 quodlibet/qltk/prefs.py:57
 msgid "_Genre"
 msgstr "_சென்ரே"
 
-#: quodlibet/browsers/albums/main.py:232
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:61
+#: quodlibet/browsers/albums/main.py:228 quodlibet/qltk/prefs.py:61
 #: quodlibet/qltk/ratingsmenu.py:44
 msgid "_Rating"
 msgstr "_ ரேட்டிங்"
 
-#: quodlibet/browsers/albums/main.py:233
-#: quodlibet/browsers/covergrid/main.py:64
+#: quodlibet/browsers/albums/main.py:229
 msgid "Play_count"
 msgstr "விளையாடு_எண்ணிக்கை"
 
-#: quodlibet/browsers/albums/main.py:238
-#: quodlibet/browsers/covergrid/main.py:69
+#: quodlibet/browsers/albums/main.py:243
 msgid "Sort _by…"
 msgstr "வரிசைப்படுத்தவும் _ பை…"
 
-#: quodlibet/browsers/albums/main.py:258
-#: quodlibet/browsers/covergrid/main.py:89
-#: quodlibet/browsers/paned/prefs.py:205
+#: quodlibet/browsers/albums/main.py:263 quodlibet/browsers/paned/prefs.py:205
 #: quodlibet/browsers/playlists/main.py:711 quodlibet/qltk/exfalsowindow.py:113
 #: quodlibet/qltk/pluginwin.py:359 quodlibet/qltk/quodlibetwindow.py:967
 msgid "_Preferences"
 msgstr "_ முனைகள்"
 
-#: quodlibet/browsers/albums/main.py:430
+#: quodlibet/browsers/albums/main.py:406
 msgid "Album List"
 msgstr "ஆல்பம் பட்டியல்"
 
-#: quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:407
 msgid "_Album List"
 msgstr "_ ஆல்பம் பட்டியல்"
 
-#: quodlibet/browsers/albums/main.py:546
+#: quodlibet/browsers/albums/main.py:522
 #: quodlibet/browsers/covergrid/models.py:77
 msgid "All Albums"
 msgstr "அனைத்து ஆல்பங்களும்"
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:523
 #: quodlibet/browsers/covergrid/models.py:78
 #, python-format
 msgid "%d album"
@@ -93,8 +82,8 @@ msgid_plural "%d albums"
 msgstr[0] "%d ஆல்பம்"
 msgstr[1] "%d ஆல்பங்கள்"
 
-#: quodlibet/browsers/albums/main.py:732
-#: quodlibet/browsers/covergrid/main.py:395
+#: quodlibet/browsers/albums/main.py:708
+#: quodlibet/browsers/covergrid/main.py:348
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "ஆல்பம் அட்டையை மீண்டும் ஏற்றவும்"
@@ -188,11 +177,11 @@ msgstr[1] "%d பாடல்கள்"
 msgid "Invalid pattern"
 msgstr "தவறான முறை"
 
-#: quodlibet/browsers/collection/main.py:84
+#: quodlibet/browsers/collection/main.py:101
 msgid "Album Collection"
 msgstr "ஆல்பம் சேகரிப்பு"
 
-#: quodlibet/browsers/collection/main.py:85
+#: quodlibet/browsers/collection/main.py:102
 msgid "Album _Collection"
 msgstr "ஆல்பம் _ சேகரிப்பு"
 
@@ -286,11 +275,11 @@ msgstr "_Aplay"
 msgid "_Cancel"
 msgstr "_CANCEL"
 
-#: quodlibet/browsers/covergrid/main.py:172
+#: quodlibet/browsers/covergrid/main.py:125
 msgid "Cover Grid"
 msgstr "கவர் கட்டம்"
 
-#: quodlibet/browsers/covergrid/main.py:173
+#: quodlibet/browsers/covergrid/main.py:126
 msgid "_Cover Grid"
 msgstr "_ கவர் கட்டம்"
 
