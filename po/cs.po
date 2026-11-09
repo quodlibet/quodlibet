@@ -9,8 +9,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2026-09-14 09:51+0000\n"
-"Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
+"PO-Revision-Date: 2026-10-28 00:44+0000\n"
+"Last-Translator: Jindřich Šesták <khagaroth@users.noreply.hosted.weblate.org>"
+"\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
 "Language: cs\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.10.dev0\n"
+"X-Generator: Weblate 2026.11.dev0\n"
 
 #: quodlibet/browsers/albums/main.py:222
 msgid "_Title"
@@ -5067,7 +5068,7 @@ msgstr "BPM:"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:36
 msgid "Reset"
-msgstr "_Resetovat"
+msgstr "Obnovit"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:42
 msgid "Tap"
