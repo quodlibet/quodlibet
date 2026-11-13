@@ -110,6 +110,7 @@ def process_arguments(argv):
         "repeat-type",
         "shuffle-type",
         "add-location",
+        "set-panes",
     ]
 
     options = util.OptionParser(
@@ -183,6 +184,7 @@ def process_arguments(argv):
         ),
         ("add-location", _("Add a file or directory to the library"), _("location")),
         ("with-pattern", _("Set template for --print-* commands"), _("pattern")),
+        ("set-panes", _("Set paned browser panes"), _("set-panes")),
     ]:
         options.add(opt, help=help, arg=arg)
 
