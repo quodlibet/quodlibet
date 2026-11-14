@@ -22,7 +22,7 @@ from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
-from quodlibet.qltk.songlist import DND_QL
+from quodlibet.qltk.songlist import DND_QL, SongList
 from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
 from quodlibet.fsn import fsn2uri, fsn2bytes
@@ -379,6 +379,55 @@ class TPlaylistsBrowser(TestCase):
         ret = b.key_pressed(event)
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
+
+    def _in_window(self, browser):
+        """Packs `browser` in a window with its own song list,
+        showing the selected playlist"""
+        window = Gtk.Window()
+        window.songlist = SongList(self.lib)
+        box = Gtk.VBox()
+        box.pack_start(browser, True, True, 0)
+        box.pack_start(window.songlist, True, True, 0)
+        window.add(box)
+        window.songlist.set_songs(browser._filtered_playlist_songs(), sorted=True)
+        self.addCleanup(window.destroy)
+        return window.songlist
+
+    def test_change_syncs_other_windows(self):
+        """See #4072"""
+        other = PlaylistsBrowser(self.lib, self.MockConfirmerAccepting)
+        self.addCleanup(other.destroy)
+        other._select_playlist(self.big)
+        self.bar._select_playlist(self.big)
+        songlists = [self._in_window(self.bar), self._in_window(other)]
+
+        # e.g. from the songs context menu
+        self.big.extend([self.ANOTHER_SONG])
+        for songlist in songlists:
+            assert songlist.get_songs() == self.big.songs
+
+        self.big[:] = list(reversed(self.big.songs))
+        for songlist in songlists:
+            assert songlist.get_songs() == self.big.songs
+
+    def test_sync_keeps_selection(self):
+        self.bar._select_playlist(self.big)
+        songlist = self._in_window(self.bar)
+        selected = self.big.songs[1]
+        songlist.select_by_func(lambda row: row[0] is selected, scroll=False)
+
+        self.big.extend([self.ANOTHER_SONG])
+        assert songlist.get_selected_songs() == [selected]
+
+    def test_no_sync_if_up_to_date(self):
+        """Song (metadata) changes shouldn't reset the song list (see #4179)"""
+        self.bar._select_playlist(self.big)
+        songlist = self._in_window(self.bar)
+        calls = []
+        songlist.set_songs = lambda *args, **kwargs: calls.append(args)
+
+        self.lib.changed([self.big.songs[0]])
+        assert not calls, "Song list was reset with no change to its songs"
 
     def test_playlist_deletion_ACCEPT(self):
         b = self.bar
