@@ -56,6 +56,11 @@ and select *Add to Playlist*. This is a convenient way of adding a song to
 a playlist from almost *any* browser, and even better, seeing *every* 
 playlist that song features in (they will be ticked). 
 
+Playlists are sorted by name, both here and in the Playlist Browser.
+If you name your playlists by date (e.g. ``25-12 Party``), you can see the
+most recent ones first by enabling *Sort playlists in descending order*
+in the Playlist Browser's preferences.
+
 Library Changes
 ---------------
 

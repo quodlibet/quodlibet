@@ -8,6 +8,7 @@
 from gi.repository import Gtk, Pango
 
 from quodlibet import ngettext, _
+from quodlibet import config
 from quodlibet import qltk
 from quodlibet.browsers.playlists.util import GetPlaylistName
 from quodlibet.library.playlist import PlaylistLibrary
@@ -25,7 +26,8 @@ class PlaylistMenu(Gtk.Menu):
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
 
-        for playlist in sorted(pl_lib):
+        descending = config.getboolean("browsers", "playlists_sort_descending")
+        for playlist in sorted(pl_lib, reverse=descending):
             name = playlist.name
             i = Gtk.CheckMenuItem(label=name)
             some, all = playlist.has_songs(songs)
