@@ -594,13 +594,6 @@ def _init_gtk():  # noqa: C901
 
             Gdk.cairo_surface_create_from_pixbuf = _cairo_surface_from_pixbuf
 
-    # GTK4: IconSize enum changed
-    if not hasattr(Gtk.IconSize, "LARGE_TOOLBAR"):
-        Gtk.IconSize.LARGE_TOOLBAR = Gtk.IconSize.LARGE
-        Gtk.IconSize.SMALL_TOOLBAR = Gtk.IconSize.NORMAL
-        Gtk.IconSize.BUTTON = Gtk.IconSize.NORMAL
-        Gtk.IconSize.MENU = Gtk.IconSize.NORMAL
-
     # GTK4: RC file system removed - themes work differently
     if not hasattr(Gtk, "rc_get_theme_dir"):
         # Return empty string instead of None to avoid path.join errors

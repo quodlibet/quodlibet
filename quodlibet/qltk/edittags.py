@@ -361,9 +361,7 @@ class AddTagDialog(Dialog):
         valuebox.append(hbox)
         hbox.append(self.__val)
         hbox.set_spacing(6)
-        invalid = Gtk.Image.new_from_icon_name(
-            Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR
-        )
+        invalid = Gtk.Image.new_from_icon_name(Icons.DIALOG_WARNING)
         hbox.append(invalid)
 
         self.get_content_area().append(table)

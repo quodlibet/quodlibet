@@ -77,7 +77,7 @@ class EditBookmarksPane(Gtk.Box):
         time.set_width_chars(5)
         time.set_size_request(65, -1)
         self.markname = name = Gtk.Entry()
-        self.add = add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        self.add = add = qltk.Button(_("_Add"), Icons.LIST_ADD, Gtk.IconSize.NORMAL)
         # GTK4: Use append() with hexpand instead of pack_start()
         hb.append(time)
         name.set_hexpand(True)
