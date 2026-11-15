@@ -386,7 +386,6 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         self.set_default_size(750, 500)
         if parent and on_top:
             self.set_transient_for(parent)
-        self.set_type_hint(Gdk.WindowTypeHint.NORMAL)
         self.enable_window_tracking("plugin_prefs")
 
         model = ObjectStore()

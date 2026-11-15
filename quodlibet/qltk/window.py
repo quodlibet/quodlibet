@@ -204,7 +204,7 @@ class Window(Gtk.Window):
         a close button.
         """
 
-        if self.get_type_hint() == Gdk.WindowTypeHint.NORMAL:
+        if not self._is_dialog:
             return True
 
         if os.name == "nt":

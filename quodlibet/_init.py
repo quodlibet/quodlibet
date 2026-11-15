@@ -441,45 +441,11 @@ def _init_gtk():  # noqa: C901
 
         Gtk.AttachOptions = AttachOptions
 
-    # GTK4 compatibility: Window type hints removed
-    if not hasattr(Gtk.Window, "set_type_hint"):
-
-        def _set_type_hint(self, hint):
-            self._gtk4_type_hint = hint
-
-        def _get_type_hint(self):
-            return getattr(self, "_gtk4_type_hint", Gdk.WindowTypeHint.NORMAL)
-
-        Gtk.Window.set_type_hint = _set_type_hint
-        Gtk.Window.get_type_hint = _get_type_hint
-
-    # GTK4 compatibility: Gdk.WindowTypeHint removed
     from gi.repository import Gdk, GLib
 
     # GTK4: GLib.CURRENT_TIME removed - use constant 0
     if not hasattr(GLib, "CURRENT_TIME"):
         GLib.CURRENT_TIME = 0
-
-    if not hasattr(Gdk, "WindowTypeHint"):
-        from enum import IntEnum
-
-        class WindowTypeHint(IntEnum):
-            NORMAL = 0
-            DIALOG = 1
-            MENU = 2
-            TOOLBAR = 3
-            SPLASHSCREEN = 4
-            UTILITY = 5
-            DOCK = 6
-            DESKTOP = 7
-            DROPDOWN_MENU = 8
-            POPUP_MENU = 9
-            TOOLTIP = 10
-            NOTIFICATION = 11
-            COMBO = 12
-            DND = 13
-
-        Gdk.WindowTypeHint = WindowTypeHint
 
     # GTK4 compatibility: Gdk.WindowState removed
     if not hasattr(Gdk, "WindowState"):
