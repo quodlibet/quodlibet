@@ -271,10 +271,6 @@ def _init_gtk():  # noqa: C901
         # GTK4: Widgets no longer have GdkWindows, they use surfaces
         # Return None as a compatibility shim
         Gtk.Widget.get_window = lambda self: None
-    if not hasattr(Gtk.Widget, "freeze_child_notify"):
-        # GTK4: freeze/thaw_child_notify removed - no-op
-        Gtk.Widget.freeze_child_notify = lambda self: None
-        Gtk.Widget.thaw_child_notify = lambda self: None
 
     # GTK4: add_events removed - event system redesigned with controllers
     if not hasattr(Gtk.Widget, "add_events"):

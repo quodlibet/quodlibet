@@ -324,7 +324,6 @@ class RenameFiles(Gtk.Box):
         win.show()
         was_changed = set()
         skip_all = self.__skip_interactive
-        self.view.freeze_child_notify()
         should_move_art = config.getboolean("rename", "move_art")
         moveart_sets = {}
         remove_empty_dirs = config.getboolean("rename", "remove_empty_dirs")
@@ -399,7 +398,6 @@ class RenameFiles(Gtk.Box):
             if win.step():
                 break
 
-        self.view.thaw_child_notify()
         win.destroy()
         library.changed(was_changed)
         self.save.set_sensitive(False)
