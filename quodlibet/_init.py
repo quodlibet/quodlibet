@@ -882,12 +882,6 @@ def _init_gtk():  # noqa: C901
     if not hasattr(Gtk.Button, "clicked"):
         Gtk.Button.clicked = lambda self: self.emit("clicked")
 
-    # GTK4: TextBuffer.begin/end_not_undoable_action removed
-    if not hasattr(Gtk.TextBuffer, "begin_not_undoable_action"):
-        Gtk.TextBuffer.begin_not_undoable_action = lambda self: None
-    if not hasattr(Gtk.TextBuffer, "end_not_undoable_action"):
-        Gtk.TextBuffer.end_not_undoable_action = lambda self: None
-
     # GTK4: FileChooserNative.set_local_only removed (always local in GTK4)
     if not hasattr(Gtk.FileChooserNative, "set_local_only"):
         Gtk.FileChooserNative.set_local_only = lambda self, local: None

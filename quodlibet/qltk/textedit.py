@@ -35,9 +35,9 @@ else:
             self.set_highlight_syntax(False)
 
         def set_text(self, *args):
-            self.begin_not_undoable_action()
+            self.begin_irreversible_action()
             super().set_text(*args)
-            self.end_not_undoable_action()
+            self.end_irreversible_action()
 
 
 class TextEditBox(Gtk.Box):
