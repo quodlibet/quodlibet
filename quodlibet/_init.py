@@ -272,27 +272,6 @@ def _init_gtk():  # noqa: C901
         # Return None as a compatibility shim
         Gtk.Widget.get_window = lambda self: None
 
-    # GTK4: Box.reorder_child() removed - children reordering works differently
-    if not hasattr(Gtk.Box, "reorder_child"):
-
-        def _box_reorder_child(self, child, position):
-            # GTK4: No direct reorder - remove and re-insert at position
-            print_d("GTK4: Box.reorder_child() using remove/insert workaround")
-            self.remove(child)
-            # GTK4 doesn't have insert_child_after with position number
-            # This is a simplified implementation
-            if position == 0:
-                first = self.get_first_child()
-                if first:
-                    self.reorder_child_after(child, None)  # Insert at start
-                else:
-                    self.append(child)
-            else:
-                # For other positions, just append (not perfect but avoids crash)
-                self.append(child)
-
-        Gtk.Box.reorder_child = _box_reorder_child
-
     # GTK4: Wrap GObject.connect to ignore removed event signals
     from gi.repository import GObject
 

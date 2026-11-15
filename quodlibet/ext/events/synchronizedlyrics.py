@@ -155,8 +155,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         vb = Gtk.Box()
         vb.set_hexpand(True)
         vb.append(self.scrolled_window)
-        app.window.get_child().append(vb)
-        app.window.get_child().reorder_child(vb, 2)
+        app.window.get_child().insert_child_after(vb, app.window.top_bar)
 
         self._style_lyrics_window()
         self.scrolled_window.show()
