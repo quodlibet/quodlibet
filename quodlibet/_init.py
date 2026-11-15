@@ -267,8 +267,6 @@ def _init_gtk():  # noqa: C901
     assert os.path.exists(theme_search_path)
     theme.add_search_path(theme_search_path)
 
-    if not hasattr(Gtk.Widget, "get_toplevel"):
-        Gtk.Widget.get_toplevel = lambda self: self.get_root() or self
     if not hasattr(Gtk.Widget, "get_window"):
         # GTK4: Widgets no longer have GdkWindows, they use surfaces
         # Return None as a compatibility shim
