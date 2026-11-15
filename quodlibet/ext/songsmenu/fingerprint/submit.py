@@ -61,7 +61,7 @@ class FingerprintDialog(Window):
         self.__stats = stats = Gtk.Label()
         stats.set_xalign(0)
         stats.set_yalign(0.5)
-        stats.set_line_wrap(True)
+        stats.set_wrap(True)
         stats.set_size_request(426, -1)
         expand = Gtk.Expander.new_with_mnemonic(_("_Details"))
         expand.set_resize_toplevel(True)

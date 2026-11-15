@@ -20,7 +20,7 @@ class RatingBox(Gtk.Box):
         self.thumb_downs = 1
 
         self.title = Gtk.Label(label="")
-        self.title.set_line_wrap(True)
+        self.title.set_wrap(True)
         self.title.set_lines(2)
 
         hbox = Gtk.Box()

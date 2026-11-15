@@ -105,7 +105,7 @@ class GetSonosPlaylistDialog(Dialog):
             )
         )
         set_margins(box, 6)
-        label.set_line_wrap(True)
+        label.set_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
         box.append(label)
 

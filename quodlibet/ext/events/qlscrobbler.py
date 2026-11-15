@@ -512,7 +512,7 @@ class QLScrobbler(EventPlugin):
         label_names = [_("_Service:"), _("_URL:"), _("User_name:"), _("_Password:")]
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
             label.set_use_underline(True)
             table.attach(
                 label,
@@ -589,7 +589,7 @@ class QLScrobbler(EventPlugin):
         labels = []
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
-            label.set_alignment(0.0, 0.5)
+            label.set_xalign(0.0)
             label.set_use_underline(True)
             table.attach(
                 label,

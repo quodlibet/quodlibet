@@ -42,7 +42,7 @@ class GetStringDialog(Dialog):
         box.set_margin_end(6)
         box.set_margin_top(6)
         box.set_margin_bottom(6)
-        lab.set_line_wrap(True)
+        lab.set_wrap(True)
         lab.set_justify(Gtk.Justification.CENTER)
         box.append(lab)
 

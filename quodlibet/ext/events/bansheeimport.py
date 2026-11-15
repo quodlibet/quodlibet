@@ -136,7 +136,7 @@ class BansheeImport(EventPlugin):
         grid = Gtk.Grid(row_spacing=6, column_spacing=6)
 
         label = Gtk.Label(label=_("_Database path:"), use_underline=True)
-        label.set_alignment(0.0, 0.5)
+        label.set_xalign(0.0)
         grid.attach(label, 0, 0, 1, 1)
 
         entry = UndoEntry()

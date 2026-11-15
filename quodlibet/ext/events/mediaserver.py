@@ -57,12 +57,13 @@ class MediaServer(EventPlugin):
 
         exp_lbl = Gtk.Label(label=conf_exp)
         exp_lbl.set_selectable(True)
-        exp_lbl.set_line_wrap(True)
-        exp_lbl.set_alignment(0, 0)
-
+        exp_lbl.set_wrap(True)
+        exp_lbl.set_xalign(0)
+        exp_lbl.set_yalign(0)
         conf_lbl = Gtk.Label()
         conf_lbl.set_selectable(True)
-        conf_lbl.set_alignment(0, 0)
+        conf_lbl.set_xalign(0)
+        conf_lbl.set_yalign(0)
         conf_lbl.set_markup(f"<span font='mono'>{conf_cont}</span>")
 
         vbox.append(exp_lbl)

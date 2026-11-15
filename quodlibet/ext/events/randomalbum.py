@@ -100,7 +100,8 @@ class RandomAlbum(EventPlugin):
         less_lbl = Gtk.Label()
         arr = Gtk.Image.new_from_icon_name("pan-start-symbolic")
         less_lbl.set_markup(util.italic(_("avoid")))
-        less_lbl.set_alignment(0, 0)
+        less_lbl.set_xalign(0)
+        less_lbl.set_yalign(0)
         less_lbl.set_hexpand(True)
         hb = Gtk.Box(spacing=0)
         hb.append(arr)
@@ -110,7 +111,8 @@ class RandomAlbum(EventPlugin):
         more_lbl = Gtk.Label()
         arr = Gtk.Image.new_from_icon_name("pan-end-symbolic")
         more_lbl.set_markup(util.italic(_("prefer")))
-        more_lbl.set_alignment(1, 0)
+        more_lbl.set_xalign(1)
+        more_lbl.set_yalign(0)
         more_lbl.set_hexpand(True)
         hb = Gtk.Box(spacing=0)
         hb.append(more_lbl)
@@ -119,7 +121,8 @@ class RandomAlbum(EventPlugin):
 
         for idx, (key, text, _func) in enumerate(self.keys):
             lbl = Gtk.Label(label=text)
-            lbl.set_alignment(0, 0)
+            lbl.set_xalign(0)
+            lbl.set_yalign(0)
             table.attach(
                 lbl,
                 0,

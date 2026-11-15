@@ -94,7 +94,7 @@ class PluginErrorWindow(UniqueWindow):
             failure.set_margin_top(6)
             failure.set_margin_bottom(6)
             failure.set_selectable(True)
-            failure.set_line_wrap(True)
+            failure.set_wrap(True)
 
             vbox.append(expander)
             expander.set_child(failure)
@@ -313,7 +313,7 @@ class PluginPreferencesContainer(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
         self.desc = desc = Gtk.Label()
-        desc.set_line_wrap(True)
+        desc.set_wrap(True)
         # Ensure a reasonable minimum height request for long descriptions
         desc.set_width_chars(30)
         desc.set_xalign(0)

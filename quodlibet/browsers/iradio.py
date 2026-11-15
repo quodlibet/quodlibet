@@ -493,7 +493,7 @@ class QuestionBar(Gtk.InfoBar):
         label = Gtk.Label(
             label=_("Would you like to load a list of popular radio stations?")
         )
-        label.set_line_wrap(True)
+        label.set_wrap(True)
         # GTK4: InfoBar uses add_child() instead of get_content_area().add()
         self.add_child(label)
 

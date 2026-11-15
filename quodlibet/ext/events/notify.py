@@ -68,7 +68,7 @@ class PreferencesWidget(Gtk.Box):
 
         title_label = Gtk.Label(label=_("_Title:"))
         title_label.set_use_underline(True)
-        title_label.set_alignment(0, 0.5)
+        title_label.set_xalign(0)
         title_label.set_mnemonic_widget(title_entry)
         table.attach(
             title_label,
@@ -113,7 +113,8 @@ class PreferencesWidget(Gtk.Box):
         body_label.set_margin_top(3)
         body_label.set_margin_bottom(3)
         body_label.set_use_underline(True)
-        body_label.set_alignment(0, 0)
+        body_label.set_xalign(0)
+        body_label.set_yalign(0)
         body_label.set_mnemonic_widget(body_textview)
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 

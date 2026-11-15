@@ -715,23 +715,6 @@ def _init_gtk():  # noqa: C901
 
     Gtk.Button.__init__ = _button_init_compat
 
-    # GTK4: Label.set_line_wrap() → set_wrap()
-    if not hasattr(Gtk.Label, "set_line_wrap"):
-        Gtk.Label.set_line_wrap = lambda self, wrap: self.set_wrap(wrap)
-
-    # GTK4: Label.set_line_wrap_mode() → set_wrap_mode()
-    if not hasattr(Gtk.Label, "set_line_wrap_mode"):
-        Gtk.Label.set_line_wrap_mode = lambda self, mode: self.set_wrap_mode(mode)
-
-    # GTK4: Label.set_alignment() → set_xalign()/set_yalign()
-    if not hasattr(Gtk.Label, "set_alignment"):
-
-        def _label_set_alignment(self, xalign, yalign):
-            self.set_xalign(xalign)
-            self.set_yalign(yalign)
-
-        Gtk.Label.set_alignment = _label_set_alignment
-
     # GTK4: Gtk.events_pending() removed - use GLib.MainContext
     if not hasattr(Gtk, "events_pending"):
 

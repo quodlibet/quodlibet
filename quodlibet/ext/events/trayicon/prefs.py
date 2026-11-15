@@ -76,7 +76,7 @@ class Preferences(Gtk.Box):
         box.append(entry_box)
 
         preview = Gtk.Label()
-        preview.set_line_wrap(True)
+        preview.set_wrap(True)
         preview_frame = Gtk.Frame(label=_("Preview"))
         vbox = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
