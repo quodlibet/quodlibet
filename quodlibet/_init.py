@@ -715,17 +715,6 @@ def _init_gtk():  # noqa: C901
 
     Gtk.Button.__init__ = _button_init_compat
 
-    _orig_label_init = Gtk.Label.__init__
-
-    def _label_init_compat(self, *args, **kwargs):
-        # GTK4: Label requires label= as keyword argument
-        if args and "label" not in kwargs:
-            kwargs["label"] = args[0]
-            args = args[1:]
-        return _orig_label_init(self, *args, **kwargs)
-
-    Gtk.Label.__init__ = _label_init_compat
-
     # GTK4: Label.set_line_wrap() → set_wrap()
     if not hasattr(Gtk.Label, "set_line_wrap"):
         Gtk.Label.set_line_wrap = lambda self, wrap: self.set_wrap(wrap)

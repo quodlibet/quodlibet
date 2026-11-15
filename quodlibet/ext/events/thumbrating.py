@@ -19,7 +19,7 @@ class RatingBox(Gtk.Box):
         self.thumb_ups = 1
         self.thumb_downs = 1
 
-        self.title = Gtk.Label("")
+        self.title = Gtk.Label(label="")
         self.title.set_line_wrap(True)
         self.title.set_lines(2)
 
@@ -28,7 +28,7 @@ class RatingBox(Gtk.Box):
         self.downvote = ToggleButton("👎")
         self.upvote.connect("toggled", self.__thumb_toggled)
         self.downvote.connect("toggled", self.__thumb_toggled)
-        self.score_label = Gtk.Label("----")
+        self.score_label = Gtk.Label(label="----")
         self.upvote.set_property("height-request", 50)
         self.downvote.set_property("height-request", 50)
         hbox.append(self.upvote)

@@ -76,7 +76,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         vb.set_spacing(24)
         set_margins(self, 5)
 
-        desc_lbl = Gtk.Label(f"\n{description}\n", wrap=True)
+        desc_lbl = Gtk.Label(label=f"\n{description}\n", wrap=True)
         vb.append(desc_lbl)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
@@ -84,7 +84,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
         order_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
 
-        lbl = Gtk.Label(_("Right side order:"))
+        lbl = Gtk.Label(label=_("Right side order:"))
         order_box.append(lbl)
 
         self.order_entry = Gtk.Entry()

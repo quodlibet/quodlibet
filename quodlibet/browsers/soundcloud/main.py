@@ -194,7 +194,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         if child:
             print_d("Removing old image...")
             but.remove(child)
-        but.set_child(icon if icon else Gtk.Label(tooltip))
+        but.set_child(icon if icon else Gtk.Label(label=tooltip))
 
         but.get_child().show()
         but.set_sensitive(True)

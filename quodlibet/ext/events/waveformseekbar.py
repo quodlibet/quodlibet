@@ -746,7 +746,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         vbox.append(box)
 
         sw = Gtk.Switch()
-        label = Gtk.Label(_("Show current position whilst hovering"))
+        label = Gtk.Label(label=_("Show current position whilst hovering"))
         sw.set_active(CONFIG.show_current_pos)
         sw.connect("notify::active", on_show_pos_toggled)
         hbox = Gtk.Box(spacing=6)
@@ -755,7 +755,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         vbox.append(hbox)
 
         sw = Gtk.Switch()
-        label = Gtk.Label(_("Show time labels"))
+        label = Gtk.Label(label=_("Show time labels"))
         sw.set_active(CONFIG.show_time_labels)
         sw.connect("notify::active", on_show_time_labels_toggled)
         hbox = Gtk.Box(spacing=6)

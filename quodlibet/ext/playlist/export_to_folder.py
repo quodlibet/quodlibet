@@ -44,7 +44,7 @@ class ExportToFolderDialog(Dialog):
 
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        destination_label = Gtk.Label(_("Destination folder:"))
+        destination_label = Gtk.Label(label=_("Destination folder:"))
         destination_label.set_line_wrap(True)
         destination_label.set_xalign(0.0)
         box.append(destination_label)
@@ -59,7 +59,7 @@ class ExportToFolderDialog(Dialog):
         set_margins(frame, 0)
         box.append(frame)
 
-        pattern_label = Gtk.Label(_("Filename pattern:"))
+        pattern_label = Gtk.Label(label=_("Filename pattern:"))
         pattern_label.set_line_wrap(True)
         pattern_label.set_xalign(0.0)
         box.append(pattern_label)
