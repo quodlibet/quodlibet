@@ -88,8 +88,10 @@ class WaveformSeekBar(Gtk.Box):
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
         self._waveform_scale.connect("size-allocate", self._update_redraw_interval)
-        self._waveform_scale.connect("motion-notify-event", self._on_mouse_hover)
-        self._waveform_scale.connect("leave-notify-event", self._on_mouse_leave)
+        motion = Gtk.EventControllerMotion()
+        motion.connect("motion", self._on_mouse_hover)
+        motion.connect("leave", self._on_mouse_leave)
+        self._waveform_scale.add_controller(motion)
 
         self._label_tracker = TimeTracker(player)
         self._label_tracker.connect("tick", self._on_tick_label, player)
@@ -290,20 +292,20 @@ class WaveformSeekBar(Gtk.Box):
             self._rms_vals.clear()
             self._waveform_scale.queue_draw()
 
-    def _on_mouse_hover(self, _, event):
+    def _on_mouse_hover(self, controller, x, y):
         def clamp(a, x, b):
             """Return x if a <= x <= b, else the a or b nearest to x."""
             return min(max(x, a), b)
 
         width = self._waveform_scale.get_allocation().width
-        self._waveform_scale.set_mouse_x_position(clamp(0, event.x, width))
+        self._waveform_scale.set_mouse_x_position(clamp(0, x, width))
 
         self._waveform_scale.queue_draw()
 
         self._update_label(self._player)
         self._hovering = True
 
-    def _on_mouse_leave(self, _, event):
+    def _on_mouse_leave(self, controller):
         self._waveform_scale.set_mouse_x_position(-1)
         self._waveform_scale.queue_draw()
 
@@ -342,6 +344,12 @@ class WaveformScale(Gtk.Box):
         click.connect("pressed", self._on_pressed)
         click.connect("released", self._on_released)
         self.add_controller(click)
+        scroll = Gtk.EventControllerScroll(
+            flags=Gtk.EventControllerScrollFlags.VERTICAL
+            | Gtk.EventControllerScrollFlags.DISCRETE
+        )
+        scroll.connect("scroll", self._on_scroll)
+        self.add_controller(scroll)
         self._player = player
         self.set_size_request(40, CONFIG.height_px)
         self.position = 0
@@ -351,7 +359,6 @@ class WaveformScale(Gtk.Box):
 
         self.mouse_position = -1
         self._last_mouse_position = -1
-        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK)
         self._seeking = False
 
     @property
@@ -611,13 +618,13 @@ class WaveformScale(Gtk.Box):
         self._seeking = False
         self.queue_draw()
 
-    def do_scroll_event(self, event):
-        if event.direction == Gdk.ScrollDirection.UP:
+    def _on_scroll(self, controller, dx, dy):
+        if dy < 0:
             self._player.seek(self._player.get_position() + CONFIG.seek_amount)
-            self.queue_draw()
-        elif event.direction == Gdk.ScrollDirection.DOWN:
+        elif dy > 0:
             self._player.seek(self._player.get_position() - CONFIG.seek_amount)
-            self.queue_draw()
+        self.queue_draw()
+        return True
 
     def set_position(self, position):
         self.position = position
