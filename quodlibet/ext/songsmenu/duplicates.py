@@ -333,7 +333,7 @@ class DuplicateDialog(Gtk.Window):
                 for row in model:
                     view.expand_row(row.path, False)
 
-        expand = Gtk.Button(_("Collapse / Expand all"))
+        expand = Gtk.Button(label=_("Collapse / Expand all"))
         connect_obj(expand, "clicked", expand_all, view)
         hbox.append(expand)
 

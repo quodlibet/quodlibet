@@ -159,7 +159,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def _create_header(self):
         hbox = Gtk.Box()
-        button = Gtk.Button(always_show_image=True)
+        button = Gtk.Button()
         button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.set_child(self._logo_image)
@@ -227,7 +227,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             self.update_connect_button()
 
         hbox = Gtk.Box()
-        self.login_button = login = Gtk.Button(always_show_image=True)
+        self.login_button = login = Gtk.Button()
         self.update_connect_button()
         login.connect("clicked", clicked_login)
         hbox.append(login)

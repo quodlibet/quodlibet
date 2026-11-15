@@ -77,7 +77,7 @@ class WikiSearch(SongsMenuPlugin):
             editor.connect("destroy", _editor_closed)
             editor.show()
 
-        button = Gtk.Button(_("Edit Tags"))
+        button = Gtk.Button(label=_("Edit Tags"))
         button.connect("clicked", _open_editor)
         vb.append(button)
 

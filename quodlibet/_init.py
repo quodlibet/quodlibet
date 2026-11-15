@@ -703,17 +703,6 @@ def _init_gtk():  # noqa: C901
 
     # GTK4: Button.always_show_image property removed (images always shown)
     # Wrap __init__ to strip the property before GObject sees it
-    _orig_button_init = Gtk.Button.__init__
-
-    def _button_init_compat(self, *args, **kwargs):
-        kwargs.pop("always_show_image", None)
-        # GTK4: Button requires label= as keyword argument
-        if args and "label" not in kwargs:
-            kwargs["label"] = args[0]
-            args = args[1:]
-        return _orig_button_init(self, **kwargs)
-
-    Gtk.Button.__init__ = _button_init_compat
 
     # GTK4: Gtk.events_pending() removed - use GLib.MainContext
     if not hasattr(Gtk, "events_pending"):

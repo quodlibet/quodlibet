@@ -192,7 +192,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
 
         vbox.append(table)
 
-        defaults = Gtk.Button(_("Reset to defaults"))
+        defaults = Gtk.Button(label=_("Reset to defaults"))
         defaults.connect("clicked", default_on_click)
         vbox.append(defaults)
 
