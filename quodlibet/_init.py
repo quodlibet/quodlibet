@@ -272,10 +272,6 @@ def _init_gtk():  # noqa: C901
         # Return None as a compatibility shim
         Gtk.Widget.get_window = lambda self: None
 
-    # GTK4: add_events removed - event system redesigned with controllers
-    if not hasattr(Gtk.Widget, "add_events"):
-        Gtk.Widget.add_events = lambda self, events: None
-
     # GTK4: Box.reorder_child() removed - children reordering works differently
     if not hasattr(Gtk.Box, "reorder_child"):
 
@@ -484,40 +480,6 @@ def _init_gtk():  # noqa: C901
     # GTK4: GLib.CURRENT_TIME removed - use constant 0
     if not hasattr(GLib, "CURRENT_TIME"):
         GLib.CURRENT_TIME = 0
-
-    # GTK4: EventMask removed - event system redesigned
-    if not hasattr(Gdk, "EventMask"):
-        from enum import IntFlag
-
-        class EventMask(IntFlag):
-            EXPOSURE_MASK = 1 << 1
-            POINTER_MOTION_MASK = 1 << 2
-            POINTER_MOTION_HINT_MASK = 1 << 3
-            BUTTON_MOTION_MASK = 1 << 4
-            BUTTON1_MOTION_MASK = 1 << 5
-            BUTTON2_MOTION_MASK = 1 << 6
-            BUTTON3_MOTION_MASK = 1 << 7
-            BUTTON_PRESS_MASK = 1 << 8
-            BUTTON_RELEASE_MASK = 1 << 9
-            KEY_PRESS_MASK = 1 << 10
-            KEY_RELEASE_MASK = 1 << 11
-            ENTER_NOTIFY_MASK = 1 << 12
-            LEAVE_NOTIFY_MASK = 1 << 13
-            FOCUS_CHANGE_MASK = 1 << 14
-            STRUCTURE_MASK = 1 << 15
-            PROPERTY_CHANGE_MASK = 1 << 16
-            VISIBILITY_NOTIFY_MASK = 1 << 17
-            PROXIMITY_IN_MASK = 1 << 18
-            PROXIMITY_OUT_MASK = 1 << 19
-            SUBSTRUCTURE_MASK = 1 << 20
-            SCROLL_MASK = 1 << 21
-            TOUCH_MASK = 1 << 22
-            SMOOTH_SCROLL_MASK = 1 << 23
-            TOUCHPAD_GESTURE_MASK = 1 << 24
-            TABLET_PAD_MASK = 1 << 25
-            ALL_EVENTS_MASK = 0x3FFFFFE
-
-        Gdk.EventMask = EventMask
 
     if not hasattr(Gdk, "WindowTypeHint"):
         from enum import IntEnum

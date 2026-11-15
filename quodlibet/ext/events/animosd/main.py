@@ -10,7 +10,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gdk, GLib
+from gi.repository import GLib, Gtk
 
 from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
@@ -49,8 +49,9 @@ class AnimOsd(EventPlugin):
             return
 
         window = OSDWindow(self.Conf, song)
-        window.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
-        window.connect("button-press-event", self.__buttonpress)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__pressed, window)
+        window.add_controller(click)
         window.connect("fade-finished", self.__fade_finished)
         self.__current_window = window
 
@@ -67,7 +68,7 @@ class AnimOsd(EventPlugin):
         window.fade_out()
         return False
 
-    def __buttonpress(self, window, event):
+    def __pressed(self, gesture, n_press, x, y, window):
         window.hide()
         if self.__current_window is window:
             self.__current_window = None
