@@ -20,7 +20,7 @@ class TTextEditBox(TestCase):
         self.assertEqual(self.box.text, "bazquux")
 
     def test_clicked(self):
-        self.box.apply.clicked()
+        self.box.apply.emit("clicked")
 
 
 class TTextEdit(TTextEditBox):
@@ -37,7 +37,7 @@ class TTextEditBox2(TestCase):
         self.foobar = TextEditBox("foobar")
 
     def test_revert(self):
-        self.foobar.revert.clicked()
+        self.foobar.revert.emit("clicked")
         assert self.foobar.text, "foobar"
 
 

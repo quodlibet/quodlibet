@@ -140,7 +140,6 @@ class EditBookmarksPane(Gtk.Box):
 
         connect_obj(time, "changed", self.__check_entry, add, time, name)
         connect_obj(name, "changed", self.__check_entry, add, time, name)
-        # GTK4: Gtk.Button.clicked() as method removed, use emit() instead
         name.connect("activate", lambda entry: add.emit("clicked"))
 
         time.set_placeholder_text(_("MM:SS"))

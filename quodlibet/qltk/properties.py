@@ -203,11 +203,11 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         if currently_selected or not self.__save:
             return True
         if self.auto_save_on_change:
-            self.__save.clicked()
+            self.__save.emit("clicked")
             return True
         resp = CancelRevertSave(self).run()
         if resp == Gtk.ResponseType.YES:
-            self.__save.clicked()
+            self.__save.emit("clicked")
             return True
         if resp == Gtk.ResponseType.NO:
             # Discard edits and proceed with the new selection.

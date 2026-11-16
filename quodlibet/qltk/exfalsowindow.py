@@ -207,7 +207,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         if self.__save:
             resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
-                self.__save.clicked()
+                self.__save.emit("clicked")
             elif resp == Gtk.ResponseType.NO:
                 fs.rescan()
             else:

@@ -739,9 +739,6 @@ def _init_gtk():  # noqa: C901
     # GTK4: CellRendererText.set_margin_start doesn't exist - it's a Widget method
     # CellRenderer is not a widget in GTK4, margins don't apply the same way
 
-    # GTK4: Button.clicked() removed - use activate() or emit("clicked")
-    if not hasattr(Gtk.Button, "clicked"):
-        Gtk.Button.clicked = lambda self: self.emit("clicked")
 
     # GTK4: FileChooserNative.set_local_only removed (always local in GTK4)
     if not hasattr(Gtk.FileChooserNative, "set_local_only"):
