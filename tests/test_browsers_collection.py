@@ -44,8 +44,7 @@ class TCollectionPreferences(TestCase):
         self.assertEqual(get_headers(), value)
 
     def test_pref_dialog(self):
-        d = PatternEditor()
-        d.destroy()
+        PatternEditor()
 
 
 class TCollectionAlbums(TestCase):

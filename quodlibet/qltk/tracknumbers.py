@@ -17,7 +17,7 @@ from quodlibet.qltk.views import HintedTreeView, TreeViewColumn
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.qltk.x import Button, Align
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.util import connect_obj
 
 
@@ -31,11 +31,11 @@ class Entry:
         return fsn2text(self.song("~basename"))
 
 
-class TrackNumbers(Gtk.VBox):
+class TrackNumbers(Gtk.Box):
     def __init__(self, prop, library):
-        super().__init__(spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.title = _("Track Numbers")
-        self.set_border_width(12)
+        set_margins(self, 12)
 
         label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)
@@ -55,7 +55,7 @@ class TrackNumbers(Gtk.VBox):
         preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
 
         grid = Gtk.Grid(row_spacing=4, column_spacing=4)
-        grid.add(label_start)
+        grid.attach(label_start, 0, 0, 1, 1)
         grid.attach_next_to(spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
         grid.attach_next_to(label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
         grid.attach_next_to(spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)
@@ -71,10 +71,11 @@ class TrackNumbers(Gtk.VBox):
         model = ObjectStore()
         view = HintedTreeView(model=model)
 
-        self.pack_start(grid, False, True, 0)
+        self.append(grid)
 
         render = Gtk.CellRendererText()
         column = TreeViewColumn(title=_("File"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
@@ -88,6 +89,7 @@ class TrackNumbers(Gtk.VBox):
         render = Gtk.CellRendererText()
         render.set_property("editable", True)
         column = TreeViewColumn(title=_("Track"))
+        # GTK4: TreeViewColumn.prepend() removed - use pack_start() instead
         column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
@@ -100,12 +102,12 @@ class TrackNumbers(Gtk.VBox):
         view.append_column(column)
         view.set_reorderable(True)
         w = Gtk.ScrolledWindow()
-        w.set_shadow_type(Gtk.ShadowType.IN)
         w.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        w.add(view)
-        self.pack_start(w, True, True, 0)
+        w.set_child(view)
+        w.set_vexpand(True)
+        self.append(w)
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_spacing(6)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
@@ -113,9 +115,9 @@ class TrackNumbers(Gtk.VBox):
         connect_obj(save, "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
-        bbox.pack_start(revert, True, True, 0)
-        bbox.pack_start(save, True, True, 0)
-        self.pack_start(bbox, False, True, 0)
+        bbox.append(revert)
+        bbox.append(save)
+        self.append(bbox)
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect("clicked", self.__preview_tracks, *preview_args)
@@ -137,9 +139,6 @@ class TrackNumbers(Gtk.VBox):
             save,
             revert,
         )
-
-        for child in self.get_children():
-            child.show_all()
 
     def __row_edited(self, render, path, new, model, preview, save):
         path = Gtk.TreePath.new_from_string(path)

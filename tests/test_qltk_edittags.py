@@ -12,7 +12,6 @@ from quodlibet import app
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.editing import EditTagsPlugin
 from quodlibet.qltk.edittags import (
-    SplitValues,
     SplitDisc,
     SplitTitle,
     SplitArranger,
@@ -45,10 +44,9 @@ class TEditTags(TestCase):
         destroy_fake_app()
 
     def test_items(self):
-        SplitValues("foo", "bar").destroy()
-        SplitDisc("foo", "bar").destroy()
-        SplitTitle("foo", "bar").destroy()
-        SplitArranger("foo", "bar").destroy()
+        SplitDisc("foo", "bar")
+        SplitTitle("foo", "bar")
+        SplitArranger("foo", "bar")
 
     def test_addtag_dialog(self):
         AddTagDialog(None, ["artist"], app.library).destroy()

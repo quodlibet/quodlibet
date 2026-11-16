@@ -723,19 +723,17 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         # new in 1.6
         if hasattr(context, "set_desktop_id"):
-            from gi.repository import Gtk
-
             context.set_desktop_id(app.id)
 
         # new in 1.6
         if hasattr(context, "set_startup_notification_id"):
-            current_time = Gtk.get_current_event_time()
+            current_time = GLib.CURRENT_TIME
             context.set_startup_notification_id("_TIME%d" % current_time)
 
-        gdk_window = app.window.get_window()
-        if gdk_window:
+        surface = app.window.get_surface()
+        if surface:
             try:
-                xid = gdk_window.get_xid()
+                xid = surface.get_xid()
             except AttributeError:  # non X11
                 pass
             else:

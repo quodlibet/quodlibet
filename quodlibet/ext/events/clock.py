@@ -104,7 +104,7 @@ class Alarm(EventPlugin):
             day = Gtk.Label(label=time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
             day.set_mnemonic_widget(e)
             day.set_use_underline(True)
-            day.set_alignment(0.0, 0.5)
+            day.set_xalign(0.0)
             t.attach(day, 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(e, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             entries.append(e)

@@ -3,6 +3,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from gi.repository import Gtk
+
 from tests import TestCase
 from .helper import visible
 
@@ -15,9 +17,9 @@ class TEntry(TestCase):
     def test_set_max_width_chars(self):
         with visible(Entry()) as e:
             e.set_max_width_chars(4)
-            nat1 = e.get_preferred_width()[1]
+            nat1 = e.measure(Gtk.Orientation.HORIZONTAL, -1)[1]
             e.set_max_width_chars(40)
-            nat2 = e.get_preferred_width()[1]
+            nat2 = e.measure(Gtk.Orientation.HORIZONTAL, -1)[1]
             assert nat1 < nat2
 
 
@@ -48,7 +50,6 @@ class TValidatingEntry(TestCase):
         assert isinstance(x[0], str)
 
     def tearDown(self):
-        self.entry.destroy()
         quodlibet.config.quit()
 
 
@@ -156,6 +157,3 @@ class TUndoEntry(TestCase):
         self.__delete_right(2, 3)
         entry.undo()
         self.__equal("foob")
-
-    def tearDown(self):
-        self.entry.destroy()

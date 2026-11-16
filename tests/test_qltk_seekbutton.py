@@ -21,7 +21,6 @@ class TSlider(TestCase):
         s.set_slider_disabled(False)
         s.set_slider_length(100)
         s.set_slider_widget(Gtk.Button())
-        s.destroy()
 
 
 class TTimeLabel(TestCase):
@@ -38,5 +37,4 @@ class TTimeLabel(TestCase):
 
 class TSeekButton(TestCase):
     def test_seekbutton(self):
-        w = SeekButton(NullPlayer(), SongLibrary())
-        w.destroy()
+        SeekButton(NullPlayer(), SongLibrary())

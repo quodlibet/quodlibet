@@ -24,7 +24,7 @@ import re
 import traceback
 from itertools import takewhile
 
-from gi.repository import Gtk, Pango, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib
 
 from quodlibet import _, app, ngettext
 from quodlibet import const
@@ -51,7 +51,6 @@ class PyConsole(SongsMenuPlugin):
                 plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name
             )
         )
-        win.show_all()
 
 
 class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
@@ -72,7 +71,6 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
     def create_sidebar(self):
         align = Align(self.console)
         self.sidebar = align
-        self.sidebar.show_all()
         return align
 
 
@@ -119,7 +117,7 @@ class ConsoleWindow(Gtk.Window):
         Gtk.Window.__init__(self)
         if title:
             self.set_title(title)
-        self.add(console)
+        self.set_child(console)
         self.set_size_request(700, 500)
         console.connect("destroy", lambda *x: self.destroy())
 
@@ -130,17 +128,18 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         self.destroy_cb = destroy_cb
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
         add_css(
             self,
             "scrolledwindow { padding: 6px; "
             "background-color: white; background-color: @content_view_bg;}",
         )
-        self.view.modify_font(Pango.font_description_from_string("Monospace"))
+        # GTK4: modify_font() removed - use CSS instead
+        add_css(self.view, "textview { font-family: monospace; }")
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
-        self.add(self.view)
+        # GTK4: ScrolledWindow.add() → set_child()
+        self.set_child(self.view)
         self.view.show()
 
         buffer = self.view.get_buffer()
@@ -179,7 +178,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         event_state = event.state & modifier_mask
 
         if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
-            self.destroy()
+            self.close()
 
         elif event.keyval == Gdk.KEY_Return and (
             event_state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
@@ -360,7 +359,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
-                dialog.destroy()
+                dialog.close()
             elif len(comp_items) == 1:
                 # if current text is only suggestion, add a '.' if object
                 # has properties visible to autosuggestion
@@ -476,7 +475,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 exec(command, self.namespace)
         except Exception:
             if hasattr(sys, "last_type") and sys.last_type is SystemExit:
-                self.destroy()
+                self.close()
             else:
                 traceback.print_exc()
 
@@ -631,19 +630,19 @@ class ListChoiceDialog(Gtk.Dialog):
         for i, (name, details) in enumerate(rows):
             row = Gtk.ListBoxRow()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-            row.add(hbox)
+            row.set_child(hbox)
 
             lbl = Gtk.Label(label=name, xalign=0)
             lbl2 = Gtk.Label(label=details, xalign=0)
-            hbox.pack_start(lbl, expand=False, fill=False, padding=0)
-            hbox.pack_start(lbl2, expand=True, fill=True, padding=0)
+            hbox.append(lbl)
+            hbox.append(lbl2)
 
             # dim the details-label
             style = lbl2.get_style_context()
             style.add_class("dim-label")
             add_css(lbl2, ".dim-label { opacity: 0.5; } ")
 
-            listbox.add(row)
+            listbox.append(row)
 
             if i == 0:
                 listbox.set_focus_child(row)
@@ -651,12 +650,11 @@ class ListChoiceDialog(Gtk.Dialog):
         listbox.connect("row-activated", self.on_row_click)
 
         scroll = Gtk.ScrolledWindow()
-        scroll.add(listbox)
+        scroll.set_child(listbox)
 
         content = self.get_content_area()
-        content.pack_start(scroll, True, True, 0)
+        content.append(scroll)
 
-        content.show_all()
         self.get_action_area().hide()
 
     def on_row_click(self, listbox, row):

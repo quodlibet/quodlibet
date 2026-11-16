@@ -21,10 +21,10 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, get_children, set_margins
 from quodlibet.qltk.paned import Paned
 from quodlibet.qltk.window import PersistentWindowMixin
-from quodlibet.util import connect_destroy, format_size, escape
+from quodlibet.util import format_size, escape
 from quodlibet.util.cover import CoverManager
 from quodlibet.util.cover.manager import CoverData
 from quodlibet.util.http import download
@@ -66,7 +66,7 @@ class DownloadCoverArt(SongsMenuPlugin):
         ret = dialog.run()
         if ret == Gtk.ResponseType.APPLY:
             manager.cover_changed(songs)
-        dialog.destroy()
+        dialog.close()
 
 
 class Config:
@@ -78,7 +78,7 @@ class Config:
     jpg_quality = IntConfProp(plugin_config, "jpeg_quality", 95)
 
 
-class ResizeWebImage(Gtk.Image):
+class ResizeWebImage(Gtk.Picture):
     """A resizeable widget that can receive loaded images, and save them"""
 
     __gsignals__ = {
@@ -144,7 +144,7 @@ class ResizeWebImage(Gtk.Image):
         resized = self._pixbuf.scale_simple(
             new_size, new_size, GdkPixbuf.InterpType.BILINEAR
         )
-        self.set_from_pixbuf(resized)
+        self.set_paintable(Gdk.Texture.new_for_pixbuf(resized))
         self.set_size_request(new_size, new_size)
 
     def save_image(self, fsn):
@@ -207,25 +207,39 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         paned = Paned(orientation=Gtk.Orientation.VERTICAL)
         paned.ensure_wide_handle()
         sw = Gtk.ScrolledWindow()
-        sw.add(self.flow_box)
+        sw.set_child(self.flow_box)
 
-        paned.pack1(sw, True, True)
-        paned.pack2(self.create_options(), False, False)
-        self.vbox.pack_start(paned, True, True, 0)
+        paned.set_start_child(sw)
+        paned.set_resize_start_child(True)
+        paned.set_shrink_start_child(True)
+        paned.set_end_child(self.create_options())
 
-        connect_destroy(manager, "covers-found", self._covers_found)
-        connect_destroy(manager, "searches-complete", self._finished)
-        cancellable = self.__cancellable = Gio.Cancellable()
-        self.show_all()
+        paned.set_resize_end_child(False)
+
+        paned.set_shrink_end_child(False)
+        paned.set_vexpand(True)
+        self.get_content_area().prepend(paned)
+
+        self._manager = manager
+        self._manager_sigs = [
+            manager.connect("covers-found", self._covers_found),
+            manager.connect("searches-complete", self._finished),
+        ]
+        self._cancellable = cancellable = Gio.Cancellable()
+        # As a Dialog, ::destroy alone isn't reliable while Python holds a reference
+        self.connect("close-request", self._cleanup)
+        self.connect("destroy", self._cleanup)
 
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
 
-    def destroy(self):
-        if self.__cancellable:
-            print_d("Cancelling remaining requests...")
-            self.__cancellable.cancel()
-        super().destroy()
+    def _cleanup(self, _window):
+        print_d("Cancelling remaining requests...")
+        self._cancellable.cancel()
+        for sig in self._manager_sigs:
+            self._manager.disconnect(sig)
+        self._manager_sigs = []
+        return Gdk.EVENT_PROPAGATE
 
     def _image_failed(self, _view, message: str, widget: Gtk.Widget):
         print_d(f"Failed downloading image ({message}), removing result.")
@@ -250,9 +264,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             "dimensions": item.dimensions,
         }
         frame = Gtk.Frame.new(text)
-        img.set_padding(12, 12)
-        frame.set_shadow_type(Gtk.ShadowType.NONE)
-        frame.set_border_width(12)
+        set_margins(img, 12)
+        set_margins(frame, 12)
         img.connect("info-known", update, item, frame)
         img.connect("failed", self._image_failed, frame)
         reveal = Gtk.Revealer()
@@ -260,22 +273,18 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         reveal.props.transition_duration = 800
         reveal.props.transition_type = Gtk.RevealerTransitionType.CROSSFADE
 
-        eb = Gtk.EventBox()
-        eb.add(img)
-        reveal.add(eb)
-        frame.add(reveal)
-        frame.set_label_align(0.5, 1.0)
-        reveal.connect("button-press-event", self._on_click)
+        reveal.set_child(img)
+        frame.set_child(reveal)
+        frame.set_label_align(0.5)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self._on_click)
+        reveal.add_controller(click)
         return frame
 
-    def _on_click(self, view, event):
-        # TODO: less hacky way to detect double-click
-        if (
-            event.button == Gdk.BUTTON_PRIMARY
-            and event.type != Gdk.EventType.BUTTON_PRESS
-        ):
+    def _on_click(self, gesture, n_press, x, y):
+        if n_press == 2:
             self.__save(None)
-            self.destroy()
+            self.close()
 
     def _filenames(self, pat_text, ext, full_path=False) -> list[str]:
         def fn_for(song):
@@ -292,7 +301,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         for result in results:
             self.model.append(result)
             self.flow_box.insert(self._create_item_widget(result), 0)
-        self.show_all()
 
     def _finished(self, manager, results):
         if not any(results.values()):
@@ -326,16 +334,16 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             escape_desc=False,
         )
         dialog.run()
-        self.destroy()
+        self.close()
 
     @staticmethod
-    def __image_from_child(child):
+    def _image_from_child(child):
         # Ugh, horrible
-        return child.get_child().get_child().get_child().get_child()
+        return child.get_child().get_child().get_child()
 
     def create_options(self):
         frame = Gtk.Frame(label=_("Options"))
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(spacing=12)
         sizes = self.SIZES.keys()
         slider = Gtk.Scale.new_with_range(
             Gtk.Orientation.HORIZONTAL, min(sizes), max(sizes), 100
@@ -352,53 +360,59 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         def slider_changed(_slider):
             new_size = slider.get_value()
             try:
-                for child in self.flow_box.get_children():
-                    img = self.__image_from_child(child)
+                for child in get_children(self.flow_box):
+                    img = self._image_from_child(child)
                     img.resize(new_size)
             except AttributeError as e:
                 print_w(f"Couldn't set picture size(s) ({e})")
 
-        slider.connect("format-value", format_dims)
+        slider.set_draw_value(True)
+        slider.set_format_value_func(format_dims)
         slider.connect("value-changed", slider_changed)
-        label = Gtk.Label(_("Preview size"))
+        label = Gtk.Label(label=_("Preview size"))
         label.set_mnemonic_widget(slider)
-        hbox.pack_start(label, False, False, 6)
-        hbox.pack_start(slider, True, True, 6)
-        vbox = Gtk.VBox()
-        vbox.pack_start(hbox, False, False, 6)
+        hbox.append(label)
+        slider.set_hexpand(True)
+        hbox.append(slider)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        set_margins(vbox, 12)
+        vbox.append(hbox)
 
         def create_save_box():
-            hbox = Gtk.HBox()
-            label = Gtk.Label(_("Save destination"))
-            hbox.pack_start(label, False, False, 6)
-            model = Gtk.ListStore(str)
-            for val in SAVE_PATTERNS:
-                model.append(row=[val])
-            save_filename = Gtk.ComboBox(model=model)
+            hbox = Gtk.Box(spacing=12)
+            label = Gtk.Label(label=_("Save destination"))
+            hbox.append(label)
+            patterns = Gtk.StringList.new(SAVE_PATTERNS)
+            save_filename = Gtk.DropDown(model=patterns)
             label.set_mnemonic_widget(save_filename)
-            cell = Gtk.CellRendererText()
-            save_filename.pack_start(cell, True)
 
-            def draw_save_type(column, cell, model, it, data):
-                pat_text = model[it][0]
+            def setup(factory, item):
+                item.set_child(Gtk.Label(xalign=0))
+
+            def bind(factory, item):
                 ext = "jpg" if self.config.re_encode else "*"
-                text = list(self._filenames(pat_text, ext))[0]
-                cell.set_property("markup", util.monospace(text))
+                text = self._filenames(item.get_item().get_string(), ext)[0]
+                item.get_child().set_markup(util.monospace(text))
 
-            save_filename.set_cell_data_func(cell, draw_save_type, None)
+            factory = Gtk.SignalListItemFactory()
+            factory.connect("setup", setup)
+            factory.connect("bind", bind)
+            save_filename.set_factory(factory)
 
-            def changed(combo):
-                value = model.get_value(combo.get_active_iter(), 0)
-                self.config.save_pattern = value
+            pattern = self.config.save_pattern
+            save_filename.set_selected(
+                SAVE_PATTERNS.index(pattern)
+                if pattern in SAVE_PATTERNS
+                else Gtk.INVALID_LIST_POSITION
+            )
 
-            def select_value(combo, value):
-                for i, item in enumerate(model):
-                    if value == item[0]:
-                        combo.set_active(i)
+            def selected(dropdown, _pspec):
+                pos = dropdown.get_selected()
+                if pos != Gtk.INVALID_LIST_POSITION:
+                    self.config.save_pattern = SAVE_PATTERNS[pos]
 
-            save_filename.connect("changed", changed)
-            select_value(save_filename, self.config.save_pattern)
-            hbox.pack_start(save_filename, False, False, 6)
+            save_filename.connect("notify::selected", selected)
+            hbox.append(save_filename)
             create_ccb = self.config.plugin_config.ConfigCheckButton
             tooltip = _(
                 "If not already a JPEG, convert the image to "
@@ -407,12 +421,19 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             re_encode = create_ccb(
                 _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
             )
-            re_encode.connect("toggled", lambda _: hbox.queue_draw())
-            hbox.pack_start(re_encode, False, False, 6)
+
+            def refresh_names(_button):
+                # Rebind the items, as their extension depends on this
+                pos = save_filename.get_selected()
+                patterns.splice(0, len(SAVE_PATTERNS), SAVE_PATTERNS)
+                save_filename.set_selected(pos)
+
+            re_encode.connect("toggled", refresh_names)
+            hbox.append(re_encode)
             return hbox
 
-        vbox.pack_start(create_save_box(), False, False, 6)
-        frame.add(vbox)
+        vbox.append(create_save_box())
+        frame.set_child(vbox)
 
         self.button = self.add_icon_button(
             _("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.APPLY
@@ -424,10 +445,10 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     def __save(self, button):
         child = self.flow_box.get_selected_children()[0]
         data = self.model.get_item(child.get_index())
-        img = self.__image_from_child(child)
+        img = self._image_from_child(child)
         self._save_images(data, img)
 
-    def _save_images(self, data: CoverData, img: Gtk.Image):
+    def _save_images(self, data: CoverData, img: ResizeWebImage):
         paths = self._filenames(self.config.save_pattern, img.extension, full_path=True)
         try:
             first_path = paths.pop()

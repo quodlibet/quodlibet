@@ -20,15 +20,16 @@ class TTextEditBox(TestCase):
         self.assertEqual(self.box.text, "bazquux")
 
     def test_clicked(self):
-        self.box.apply.clicked()
-
-    def tearDown(self):
-        self.box.destroy()
+        self.box.apply.emit("clicked")
 
 
 class TTextEdit(TTextEditBox):
     def setUp(self):
         self.box = TextEdit(None)
+
+    def tearDown(self):
+        # A UniqueWindow, so it must go before the next one can be built
+        self.box.destroy()
 
 
 class TTextEditBox2(TestCase):
@@ -36,16 +37,16 @@ class TTextEditBox2(TestCase):
         self.foobar = TextEditBox("foobar")
 
     def test_revert(self):
-        self.foobar.revert.clicked()
+        self.foobar.revert.emit("clicked")
         assert self.foobar.text, "foobar"
-
-    def tearDown(self):
-        self.foobar.destroy()
 
 
 class TTextEdit2(TTextEditBox2):
     def setUp(self):
         self.foobar = TextEdit(None, "foobar")
+
+    def tearDown(self):
+        self.foobar.destroy()
 
 
 class Tvalidate_markup_pattern(TestCase):

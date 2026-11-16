@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gst
+from gi.repository import Gst, Gtk
 
 from quodlibet.library.base import Library
 from tests.plugin import PluginTestCase
@@ -55,6 +55,20 @@ class TWaveformSeekBar(PluginTestCase):
         with visible(scale):
             scale.compute_redraw_interval()
             scale.compute_redraw_area()
+
+    def test_scroll_up_seeks_forward(self):
+        player = NullPlayer()
+        player.info = AudioFile({"~#length": 60})
+        scale = self.mod.WaveformScale(player)
+        scroll = next(
+            c
+            for c in scale.observe_controllers()
+            if isinstance(c, Gtk.EventControllerScroll)
+        )
+
+        scroll.emit("scroll", 0, -1)
+
+        assert player.get_position() == self.mod.CONFIG.seek_amount
 
     def test_no_gstreamer_rms(self):
         player = NullPlayer()
