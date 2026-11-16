@@ -267,7 +267,6 @@ def _init_gtk():  # noqa: C901
     assert os.path.exists(theme_search_path)
     theme.add_search_path(theme_search_path)
 
-
     # GTK4: Wrap GObject.connect to ignore removed event signals
     from gi.repository import GObject
 
@@ -734,8 +733,6 @@ def _init_gtk():  # noqa: C901
 
     # GTK4: CellRendererText.set_margin_start doesn't exist - it's a Widget method
     # CellRenderer is not a widget in GTK4, margins don't apply the same way
-
-
 
     # GTK4: PopoverMenu.attach_to_widget removed
     if not hasattr(Gtk.PopoverMenu, "attach_to_widget"):
