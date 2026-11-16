@@ -29,6 +29,7 @@ so the tree stays runnable throughout.
   It swallows *any* removed signal, not just events: `Gtk.Scale` `format-value` silently did nothing
   in three places until 2026-10-18. To find the rest, make the shim log what it drops,
   then run the suite.
+  It also catches the `TypeError` for signals it doesn't list (e.g. `size-allocate`).
 - `Gtk.Dialog.run()` / `Gtk.NativeDialog.run()` blocking shims (nested main loop).
   Proper fix is async `present()` + `response` handlers; many call sites, incl. `qltk.Message`.
 - `Gtk.Alignment`, `Gtk.Widget.show_all`/`set_no_show_all` no-ops, and the various
@@ -72,8 +73,8 @@ Idiomatic rewrites still pending
   shim: `exfalsowindow` app menu and the covergrid/albums/queue prefs popovers.
   Inline star-rating row is still a deferred enhancement (below).
 - **`Gtk.Image` subclasses that show arbitrary images** — `WebImage`
-  (`qltk/x.py`) and `ResizeWebImage` (`ext/songsmenu/cover_download.py`) hit the
-  same tiny-render trap as CoverGrid; port to `Gtk.Picture`/snapshot.
+  (`qltk/x.py`) hits the same tiny-render trap as CoverGrid; port to `Gtk.Picture`/snapshot,
+  as `ResizeWebImage` (cover download) was on 2026-10-18.
 - **`TreeViewHints.__motion`** is unwired (truncated-cell hover tooltips gone) —
   needs a `Gtk.EventControllerMotion` with widget-coord translation.
 
