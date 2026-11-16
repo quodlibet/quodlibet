@@ -267,10 +267,6 @@ def _init_gtk():  # noqa: C901
     assert os.path.exists(theme_search_path)
     theme.add_search_path(theme_search_path)
 
-    if not hasattr(Gtk.Widget, "get_window"):
-        # GTK4: Widgets no longer have GdkWindows, they use surfaces
-        # Return None as a compatibility shim
-        Gtk.Widget.get_window = lambda self: None
 
     # GTK4: Wrap GObject.connect to ignore removed event signals
     from gi.repository import GObject

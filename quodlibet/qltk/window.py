@@ -157,13 +157,7 @@ class Window(Gtk.Window):
         when it does.
         """
 
-        window = self.get_window()
-        if not window:
-            is_fullscreen = False
-        else:
-            is_fullscreen = window.get_state() & Gdk.WindowState.FULLSCREEN
-
-        if is_fullscreen:
+        if self.is_fullscreen():
             self.unfullscreen()
         else:
             self.fullscreen()

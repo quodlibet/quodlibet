@@ -730,10 +730,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             current_time = GLib.CURRENT_TIME
             context.set_startup_notification_id("_TIME%d" % current_time)
 
-        gdk_window = app.window.get_window()
-        if gdk_window:
+        surface = app.window.get_surface()
+        if surface:
             try:
-                xid = gdk_window.get_xid()
+                xid = surface.get_xid()
             except AttributeError:  # non X11
                 pass
             else:

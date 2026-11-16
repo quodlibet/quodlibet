@@ -20,9 +20,7 @@ def get_surface_for_pixbuf(
     if not pixbuf:
         return None
     scale_factor = widget.get_scale_factor()
-    # GTK4: window parameter is optional/deprecated
-    window = widget.get_window() if hasattr(widget, "get_window") else None
-    return Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale_factor, window)
+    return Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale_factor, None)
 
 
 def get_surface_extents(surface):

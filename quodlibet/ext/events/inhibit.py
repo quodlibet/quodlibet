@@ -27,9 +27,10 @@ from quodlibet.plugins.events import EventPlugin
 
 
 def get_toplevel_xid():
-    if app.window.get_window():
+    surface = app.window.get_surface()
+    if surface:
         try:
-            return app.window.get_window().get_xid()
+            return surface.get_xid()
         except AttributeError:  # non x11
             pass
     return 0

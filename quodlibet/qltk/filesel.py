@@ -468,10 +468,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 child = model.iter_next(child)
 
     def __expanded(self, iter, path, model):
-        window = self.get_window()
-        if window:
-            window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-            GLib.MainContext.default().iteration(False)
+        self.set_cursor_from_name("wait")
+        GLib.MainContext.default().iteration(False)
         try:
             try:
                 if model is None:
@@ -497,8 +495,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             except OSError:
                 pass
         finally:
-            if window:
-                window.set_cursor(None)
+            Gtk.Widget.set_cursor(self, None)
 
 
 class FileSelector(Paned):

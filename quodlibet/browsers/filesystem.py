@@ -258,13 +258,11 @@ class FileSystem(Browser, Gtk.Box):
         yield songs
 
     def __songs_selected(self, view):
-        if self.get_window():
-            self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        self.set_cursor_from_name("wait")
         songs = []
         for songs in self.__find_songs(view.get_selection()):  # noqa
             yield True
-        if self.get_window():
-            self.get_window().set_cursor(None)
+        self.set_cursor(None)
         self.songs_selected(songs)
 
 
