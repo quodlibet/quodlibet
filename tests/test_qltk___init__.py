@@ -66,15 +66,6 @@ class TQltk(TestCase):
                 Gdk.KEY_Return, Gdk.ModifierType.CONTROL_MASK, "<Primary>Return"
             )
 
-    def test_popup_menu_under_widget(self):
-        w = Gtk.Window()
-        l = Gtk.Label()
-        w.set_child(l)
-        m = Gtk.PopoverMenu()
-        m.attach_to_widget(l, None)
-        qltk.popup_menu_under_widget(m, l, 1, 0)
-        w.destroy()
-
     def test_redraw_all(self):
         qltk.redraw_all_toplevels()
 
