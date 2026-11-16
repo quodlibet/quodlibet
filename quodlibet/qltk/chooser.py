@@ -228,7 +228,6 @@ def choose_folders(parent, title, action_title, allow_multiple=True):
     chooser = _get_chooser(action_title, _("_Cancel"))
     chooser.set_title(title)
     chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
-    chooser.set_local_only(True)
     chooser.set_select_multiple(allow_multiple)
 
     return _run_chooser(parent, chooser)
@@ -249,7 +248,6 @@ def choose_files(parent, title, action_title, filter_=None):
     chooser = _get_chooser(action_title, _("_Cancel"))
     chooser.set_title(title)
     chooser.set_action(Gtk.FileChooserAction.OPEN)
-    chooser.set_local_only(True)
     chooser.set_select_multiple(True)
 
     if filter_ is not None:
@@ -273,7 +271,6 @@ def choose_target_file(parent, title, action_title, name_suggestion=None):
     chooser = _get_chooser(action_title, _("_Cancel"))
     chooser.set_title(title)
     chooser.set_action(Gtk.FileChooserAction.SAVE)
-    chooser.set_local_only(True)
     if name_suggestion is not None:
         chooser.set_current_name(name_suggestion)
 
@@ -299,7 +296,6 @@ def choose_target_folder(parent, title, action_title, name_suggestion=None):
     chooser.set_title(title)
     # GTK4: CREATE_FOLDER removed - use SELECT_FOLDER with set_current_name
     chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
-    chooser.set_local_only(True)
     if name_suggestion is not None:
         chooser.set_current_name(name_suggestion)
 

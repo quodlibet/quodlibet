@@ -740,9 +740,6 @@ def _init_gtk():  # noqa: C901
     # CellRenderer is not a widget in GTK4, margins don't apply the same way
 
 
-    # GTK4: FileChooserNative.set_local_only removed (always local in GTK4)
-    if not hasattr(Gtk.FileChooserNative, "set_local_only"):
-        Gtk.FileChooserNative.set_local_only = lambda self, local: None
 
     # GTK4: PopoverMenu.attach_to_widget removed
     if not hasattr(Gtk.PopoverMenu, "attach_to_widget"):

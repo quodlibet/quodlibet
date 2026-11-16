@@ -150,7 +150,6 @@ class ScanBox(Gtk.Box):
             _("Select Actual / New Directory for {dir!r}").format(dir=base_dir)
         )
         chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
-        chooser.set_local_only(True)
         chooser.set_select_multiple(False)
         results = _run_chooser(self, chooser)
         if not results:
