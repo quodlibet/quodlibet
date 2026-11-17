@@ -460,6 +460,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
         removing only the first reference if `leave_dupes` is True
         :returns True if anything was removed
         """
+        songs = list(songs)
         changed = False
         for song in songs:
             # TODO: document the "library.masked" business
