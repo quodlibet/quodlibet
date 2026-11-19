@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import os
+from collections import Counter
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -37,6 +38,7 @@ from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
 from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.library import background_filter
 from quodlibet.util.urllib import urlopen
 from .util import (
     parse_m3u,
@@ -135,8 +137,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     # Changes affect aggregate caches etc
                     print_d(f"Refreshing view in {self} for {playlist}")
                     self._lists.row_changed(row.path, row.iter)
-                    # TODO: fix #4072, but not with playlist.activate()
-                    # see #4179 for reasoning
                 break
 
     def __removed(self, lib, playlists):
@@ -155,6 +155,51 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __changed(self, lib, playlists):
         for playlist in playlists:
             self.changed(playlist)
+        selected = self._selected_playlist()
+        if selected is not None and any(pl is selected for pl in playlists):
+            self._sync_song_list()
+
+    def _sync_song_list(self):
+        """Updates the song list if it no longer shows the selected playlist,
+        e.g. after it was changed from another window or a menu (#4072).
+
+        Unlike `activate()`, this does nothing if the songs shown are already
+        right (e.g. in the window that made the change, or when only song
+        metadata changed), and keeps the selection and scroll position (#4179).
+        """
+        songlist = getattr(qltk.get_top_parent(self), "songlist", None)
+        if songlist is None:
+            return
+        songs = self._filtered_playlist_songs()
+        if self.background:
+            bg = background_filter()
+            if bg:
+                songs = list(filter(bg, songs))
+        shown = songlist.get_songs()
+        sorted_by_column = songlist.is_sorted()
+        if sorted_by_column:
+            up_to_date = Counter(map(id, shown)) == Counter(map(id, songs))
+        else:
+            up_to_date = len(shown) == len(songs) and all(
+                a is b for a, b in zip(shown, songs, strict=True)
+            )
+        if up_to_date:
+            return
+
+        print_d(f"Updating song list in {self} for {self._selected_playlist()}")
+        selected = set(songlist.get_selected_songs())
+        visible = songlist.get_visible_range()
+        first_visible = songlist.get_model()[visible[0]][0] if visible else None
+
+        songlist.set_songs(songs, sorted=not sorted_by_column, scroll=False)
+
+        if selected:
+            songlist.select_by_func(lambda row: row[0] in selected, scroll=False)
+        if first_visible is not None:
+            for row in songlist.get_model():
+                if row[0] is first_visible:
+                    songlist.scroll_to_cell(row.path, use_align=True, row_align=0)
+                    break
 
     def cell_data(self, col, cell, model, iter, data):
         playlist = model[iter][0]
@@ -364,8 +409,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 # Emit manually
                 self.songs_lib.emit("changed", removals.values())
             else:
-                playlist.remove_songs(removals.values(), True)
+                # Update the model first: the playlist change will
+                # sync the song list, invalidating the iters
                 remove_from_model(removals.keys(), smodel)
+                playlist.remove_songs(removals.values(), True)
             print_d("Removed %d song(s) from %s" % (len(removals), playlist))
 
     def __rebuild_playlist_from_songs_model(self, playlist, smodel):
@@ -405,9 +452,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
             songs = list(filter(None, [self.songs_lib.get(f) for f in filenames]))
-            # Used in conjunction with the prompt for DnD to decide whether to
-            # perform various updates/refreshes.
-            was_modified = True
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
@@ -427,15 +471,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 playlist = model[path][0]
                 # Call a helper-function that adds the tracks to the playlist if the
                 # user accepts the prompt.
-                was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
+                # Any change to the selected playlist syncs the song list
+                self._add_drag_data_tracks_to_playlist(playlist, songs)
 
             Gtk.drag_finish(ctx, True, False, etime)
-            # Cause a refresh to the dragged-to playlist if it is selected
-            # so that the dragged (duplicate) track(s) appears
-            if playlist is self._selected_playlist() and was_modified:
-                model, plist_iter = self.__selected_playlists()
-                songlist = qltk.get_top_parent(self).songlist
-                self.activate(resort=not songlist.is_sorted())
         else:
             if tid == DND_URI_LIST:
                 uri = sel.get_uris()[0]
@@ -545,11 +584,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._sb_box.set_text(text)
 
     def activate(self, widget=None, resort=True):
+        GLib.idle_add(self.songs_selected, self._filtered_playlist_songs(), resort)
+
+    def _filtered_playlist_songs(self):
+        """The selected playlist's songs, filtered by the search bar query"""
         songs = self._get_playlist_songs()
         query = self._sb_box.get_query(SongList.star)
         if query and query.is_parsable:
             songs = query.filter(songs)
-        GLib.idle_add(self.songs_selected, songs, resort)
+        return songs
 
     def refresh_all(self):
         print_d("Refreshing all items...")
