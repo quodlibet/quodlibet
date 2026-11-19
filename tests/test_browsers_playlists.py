@@ -380,6 +380,18 @@ class TPlaylistsBrowser(TestCase):
         assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
 
+    def test_sort_descending(self):
+        browsers = [self.bar, self.bar_decline]
+        for b in browsers:
+            assert [pl.name for pl in b.playlists()] == ["Big", "Small"]
+        quodlibet.config.set("browsers", "playlists_sort_descending", "true")
+        try:
+            PlaylistsBrowser.resort_all()
+            for b in browsers:
+                assert [pl.name for pl in b.playlists()] == ["Small", "Big"]
+        finally:
+            quodlibet.config.set("browsers", "playlists_sort_descending", "false")
+
     def test_playlist_deletion_ACCEPT(self):
         b = self.bar
         orig_length = len(b.playlists())

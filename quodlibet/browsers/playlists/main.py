@@ -34,7 +34,7 @@ from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, InstanceTracker
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.urllib import urlopen
@@ -49,7 +49,7 @@ from .util import (
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
 
-class PlaylistsBrowser(Browser, DisplayPatternMixin):
+class PlaylistsBrowser(Browser, DisplayPatternMixin, InstanceTracker):
     name = _("Playlists")
     accelerated_name = _("_Playlists")
     keys = ["Playlists", "PlaylistsBrowser"]
@@ -67,8 +67,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         except (AttributeError, TypeError) as e:
             raise BrowserError(f"No playlist library available in {songs_lib!r}") from e
 
+        self._register_instance(PlaylistsBrowser)
         self._lists = ObjectModelSort(model=ObjectStore())
-        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
+        self._apply_sort()
         model = self._lists.get_model()
         print_d(f"Reading playlists from library: {self.pl_lib}")
         for playlist in self.pl_lib:
@@ -127,6 +128,22 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def playlists(self):
         return [row[0] for row in self._lists]
+
+    @staticmethod
+    def _sort_descending(model, a, b, data):
+        return -ObjectStore._sort_on_value(model, a, b, data)
+
+    def _apply_sort(self):
+        descending = config.getboolean("browsers", "playlists_sort_descending")
+        self._lists.set_default_sort_func(
+            self._sort_descending if descending else ObjectStore._sort_on_value
+        )
+
+    @classmethod
+    def resort_all(cls):
+        """Re-sorts the playlists in all browsers, e.g. after a config change"""
+        for browser in cls.instances():
+            browser._apply_sort()
 
     def changed(self, playlist, refresh=True):
         for row in self._lists:

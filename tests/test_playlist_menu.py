@@ -7,6 +7,8 @@
 
 import os
 
+from gi.repository import Gtk
+
 import quodlibet
 from quodlibet import qltk
 from quodlibet.browsers.playlists.menu import PlaylistMenu
@@ -57,6 +59,27 @@ class TPlaylistMenu(TestCase):
         self.lib.destroy()
         self.lib.librarian.destroy()
         quodlibet.config.quit()
+
+    def test_playlists_sort_order(self):
+        pl_lib = PlaylistLibrary(SongFileLibrary())
+        names = ["26-01 b", "25-12 a", "26-02 c"]
+        playlists = [pl_lib.create(name) for name in names]
+        try:
+            for descending in (False, True):
+                quodlibet.config.set(
+                    "browsers", "playlists_sort_descending", str(descending).lower()
+                )
+                menu = PlaylistMenu(self.SONGS, pl_lib)
+                labels = [
+                    item.get_label()
+                    for item in menu.get_children()
+                    if isinstance(item, Gtk.CheckMenuItem)
+                ]
+                shown = [label for label in labels if label in names]
+                assert shown == sorted(names, reverse=descending)
+        finally:
+            for pl in playlists:
+                pl.delete()
 
     def test__on_new_playlist_activate(self):
         main = qltk.MenuItem("Menu")

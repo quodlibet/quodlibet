@@ -12,6 +12,7 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet.browsers._base import EditDisplayPatternMixin, FakeDisplayItem
 from quodlibet.qltk import Button, Icons
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util.i18n import numeric_phrase
 
 _FOOTER = "<~tracks> (<~filesize> / <~length>)"
@@ -53,6 +54,16 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         self.set_transient_for(qltk.get_top_parent(browser))
 
         box = Gtk.VBox(spacing=6)
+        cb = ConfigCheckButton(
+            _("Sort playlists in _descending order"),
+            "browsers",
+            "playlists_sort_descending",
+            populate=True,
+            tooltip=_("Also applies to the playlists menu of songs"),
+        )
+        cb.connect("toggled", lambda _cb: browser.resort_all())
+        box.pack_start(qltk.Frame(_("Options"), child=cb), False, True, 12)
+
         edit_frame = self.edit_display_pane(browser, _("Playlist display"))
         box.pack_start(edit_frame, False, True, 12)
 

@@ -126,6 +126,8 @@ INITIAL: dict[str, dict[str, str]] = {
         "album_substrings": "1",
         # Collections browser: tag to collect, merge or not (0 = no)
         "collection_headers": "~people 0",
+        # Playlists browser and menus: sort playlists in descending order
+        "playlists_sort_descending": "false",
         # radio filter selection
         "radio": "",
         # click to rate song, on/off
