@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import random
+from io import BytesIO
 from typing import Any
 from urllib.parse import quote
 
@@ -690,6 +691,9 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
     _SAFER = {c: quote(c, safe="") for c in ('\\/:*?"<>|' if is_windows() else "\0/")}
 
+    _date: str | None = None
+    """The `<date>` of the last persisted version, i.e. the last real change"""
+
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, songs_lib, pl_lib):
         """Migrate from an existing file-based playlist"""
@@ -737,6 +741,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                     f"Playlist was named {node.text!r} in XML "
                     f"instead of {self.name!r} at {self.path!r}"
                 )
+            self._date = root.findtext("date", namespaces=ns_mapping)
 
             for node in tree.iterfind(".//track", namespaces=ns_mapping):
                 location = node.findtext("location", namespaces=ns_mapping).strip()
@@ -777,6 +782,29 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         return filename
 
     def write(self):
+        path = self.path
+        if self._date and path == self._last_fn:
+            # Only touch the file (and its date) if the contents really changed,
+            # to keep version control / sync tools quiet (see #3622)
+            unchanged = self._serialize(self._date)
+            try:
+                with open(path, "rb") as f:
+                    if f.read() == unchanged:
+                        print_d(f"No changes to write for {path!r}")
+                        return
+            except OSError:
+                pass
+        self._date = datetime.now().isoformat()
+        data = self._serialize(self._date)
+        print_d(f"Writing {path!r}")
+        with open(path, "wb") as f:
+            f.write(data)
+        if self._last_fn != path:
+            self._delete_file(self._last_fn)
+            self._last_fn = path
+
+    def _serialize(self, date: str) -> bytes:
+        """Returns the full XSPF document for this playlist, using `date`"""
         track_list = Element("trackList")
         # TODO: ditch for proper indent, once we have Python 3.9
         track_list.text = "\n"
@@ -803,16 +831,13 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         playlist.tail = "\n"
         playlist.append(self._version_tag())
         playlist.append(self._text_element("title", self.name))
-        playlist.append(self._text_element("date", datetime.now().isoformat()))
+        playlist.append(self._text_element("date", date))
         playlist.append(track_list)
         tree = ElementTree(playlist)
         ET.register_namespace("", XSPF_NS)
-        path = self.path
-        print_d(f"Writing {path !r}")
-        tree.write(path, encoding="utf-8", xml_declaration=True)
-        if self._last_fn != path:
-            self._delete_file(self._last_fn)
-            self._last_fn = path
+        out = BytesIO()
+        tree.write(out, encoding="utf-8", xml_declaration=True)
+        return out.getvalue()
 
     @classmethod
     def _version_tag(cls):

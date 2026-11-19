@@ -725,6 +725,52 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
                 lines = f.readlines()
                 assert len(lines) >= 1 + 2 + len(pl), "Was expecting a semi-pretty-file"
 
+    @staticmethod
+    def _date_in(path: str) -> str:
+        return ElementTree().parse(path).findtext("date", namespaces={"": XSPF_NS})
+
+    def test_write_unchanged_keeps_file(self):
+        """Writing an unchanged playlist must not touch its file (#3622)"""
+        songs_lib = FileLibrary()
+        songs_lib.add(NUMERIC_SONGS)
+        pl = XSPFBackedPlaylist.new(self.temp, "unchanged", songs_lib=songs_lib)
+        pl.extend(NUMERIC_SONGS)
+        pl.write()
+        with open(pl.path, "rb") as f:
+            original = f.read()
+
+        pl.write()
+        fn = os.path.basename(pl.path)
+        XSPFBackedPlaylist(self.temp, fn, songs_lib=songs_lib).write()
+
+        with open(pl.path, "rb") as f:
+            assert f.read() == original
+        songs_lib.destroy()
+
+    def test_write_changed_updates_date(self):
+        songs_lib = FileLibrary()
+        songs_lib.add(NUMERIC_SONGS)
+        pl = XSPFBackedPlaylist.new(self.temp, "changed", songs_lib=songs_lib)
+        pl.extend(NUMERIC_SONGS[:1])
+        pl.write()
+
+        # Simulate a playlist last changed long ago
+        old_date = "2000-01-01T00:00:00"
+        with open(pl.path, encoding="utf-8") as f:
+            data = f.read().replace(self._date_in(pl.path), old_date)
+        with open(pl.path, "w", encoding="utf-8") as f:
+            f.write(data)
+
+        fn = os.path.basename(pl.path)
+        reloaded = XSPFBackedPlaylist(self.temp, fn, songs_lib=songs_lib)
+        reloaded.write()
+        assert self._date_in(pl.path) == old_date, "Unchanged, but date updated"
+
+        reloaded.extend(NUMERIC_SONGS[1:])
+        reloaded.write()
+        assert self._date_in(pl.path) != old_date, "Changed, but date not updated"
+        songs_lib.destroy()
+
     def test_load_legacy_format_to_xspf(self):
         playlist_fn = "old"
         songs_lib = FileLibrary()
