@@ -454,13 +454,14 @@ class Playlist(Collection, abc.Iterable, HasKey):
         return bool(changed)
 
     def remove_songs(
-        self, songs: abc.Iterable[AudioFile], leave_dupes: bool = False
+        self, songs: abc.Collection[AudioFile], leave_dupes: bool = False
     ) -> bool:
         """Removes `songs` from this playlist if they are there,
         removing only the first reference if `leave_dupes` is True
+        :param songs: a collection of songs, which must be re-iterable
+            (e.g. a list or set), not a one-shot iterator
         :returns True if anything was removed
         """
-        songs = list(songs)
         changed = False
         for song in songs:
             # TODO: document the "library.masked" business

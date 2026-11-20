@@ -555,21 +555,21 @@ class TPlaylist(TestCase):
             assert not len(pl)
             self.assertEqual(self.FAKE_LIB.changed, self.TWO_SONGS)
 
-    def test_remove_songs_generator_with_leave_dupes(self):
+    def test_remove_songs_with_leave_dupes(self):
         with self.wrap("playlist") as pl:
             song = self.TWO_SONGS[0]
             pl.append(song)
             self.FAKE_LIB.reset()
-            self.assertTrue(pl.remove_songs(iter([song]), leave_dupes=True))
+            self.assertTrue(pl.remove_songs([song], leave_dupes=True))
             assert song not in pl
             self.assertEqual(self.FAKE_LIB.changed, [song])
 
-    def test_remove_songs_generator_without_leave_dupes(self):
+    def test_remove_songs_without_leave_dupes(self):
         with self.wrap("playlist") as pl:
             song = self.TWO_SONGS[0]
             pl.extend([song, song])
             self.FAKE_LIB.reset()
-            self.assertTrue(pl.remove_songs(iter([song]), leave_dupes=False))
+            self.assertTrue(pl.remove_songs([song], leave_dupes=False))
             assert song not in pl
             self.assertEqual(self.FAKE_LIB.changed, [song])
 
