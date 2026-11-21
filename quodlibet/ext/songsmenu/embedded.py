@@ -112,7 +112,7 @@ class EditEmbedded(SongsMenuPlugin):
         remove_item.set_sensitive(any(song.has_images for song in songs))
         menu.append(remove_item)
 
-        set_item = MenuItem(_("_Embed Current Image"), Icons.EDIT_PASTE)
+        set_item = MenuItem(_("_Embed Detected Cover Art"), Icons.INSERT_IMAGE)
         set_item.connect("activate", self.__set_image, songs)
         menu.append(set_item)
 
