@@ -607,7 +607,9 @@ class EditTags(Gtk.Box):
             connect_obj(model, sig, parent.set_pending, save)
 
         view.connect("popup-menu", self._popup_menu, parent)
-        view.connect("button-press-event", self.__button_press)
+        middle_click = Gtk.GestureClick(button=Gdk.BUTTON_MIDDLE)
+        middle_click.connect("pressed", self.__middle_click, view)
+        view.add_controller(middle_click)
         key_controller = Gtk.EventControllerKey()
         key_controller.connect("key-pressed", self.__view_key_press_event, view)
         view.add_controller(key_controller)
@@ -637,8 +639,9 @@ class EditTags(Gtk.Box):
         for b in buttons:
             b.set_sensitive(True)
 
-    def __paste(self, clip, text, args):
+    def __paste(self, clipboard, result, args):
         rend, path = args
+        text = clipboard.read_text_finish(result)
         if text:
             rend.emit("edited", path, text.strip())
 
@@ -1042,31 +1045,29 @@ class EditTags(Gtk.Box):
 
             model.row_changed(path, model.get_iter(path))
 
-    def __button_press(self, view, event):
-        if event.button not in [Gdk.BUTTON_PRIMARY, Gdk.BUTTON_MIDDLE]:
-            return Gdk.EVENT_PROPAGATE
-
-        x, y = map(int, [event.x, event.y])
+    def __middle_click(self, gesture, n_press, x, y, view):
+        x, y = view.convert_widget_to_bin_window_coords(int(x), int(y))
         try:
             path, col, cellx, celly = view.get_path_at_pos(x, y)
         except TypeError:
-            return Gdk.EVENT_PROPAGATE
+            return
 
-        if event.button == Gdk.BUTTON_MIDDLE and col == view.get_columns()[2]:
-            display = Gdk.DisplayManager.get().get_default_display()
-            selection = Gdk.SELECTION_PRIMARY
-            if sys.platform == "win32":
-                selection = Gdk.SELECTION_CLIPBOARD
+        if col != view.get_columns()[2]:
+            return
 
-            clipboard = Gtk.Clipboard.get_for_display(display, selection)
-            for rend in col.get_cells():
-                if rend.get_property("editable"):
-                    clipboard.request_text(self.__paste, (rend, path.get_indices()[0]))
-                    return Gdk.EVENT_STOP
-            else:
-                return Gdk.EVENT_PROPAGATE
+        display = view.get_display()
+        if sys.platform == "win32":
+            clipboard = display.get_clipboard()
         else:
-            return Gdk.EVENT_PROPAGATE
+            clipboard = display.get_primary_clipboard()
+
+        for rend in col.get_cells():
+            if rend.get_property("editable"):
+                gesture.set_state(Gtk.EventSequenceState.CLAIMED)
+                clipboard.read_text_async(
+                    None, self.__paste, (rend, path.get_indices()[0])
+                )
+                return
 
     def _update(self, songs=None):
         if songs is None:

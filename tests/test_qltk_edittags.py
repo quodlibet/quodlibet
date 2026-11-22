@@ -7,6 +7,8 @@
 # (at your option) any later version.
 from unittest.mock import Mock
 
+from gi.repository import Gdk, Gtk
+
 import quodlibet.config
 from quodlibet import app
 from quodlibet.formats import AudioFile
@@ -23,7 +25,8 @@ from quodlibet.qltk.edittags import (
     EditTagsPluginHandler,
 )
 from quodlibet.qltk.properties import SongProperties
-from tests import TestCase, init_fake_app, destroy_fake_app
+from tests import TestCase, init_fake_app, destroy_fake_app, run_gtk_loop
+from tests.helper import visible
 
 
 class DummyEditPlugin(EditTagsPlugin):
@@ -80,6 +83,29 @@ class TEditTags(TestCase):
         box._popup_menu(box._view, props)
         box.show()
         assert plugin_cls.activations == [(tag, value)]
+
+    def test_middle_click_pastes_primary_selection_into_value(self):
+        song = AudioFile({"~filename": "/dev/null", "artist": "Person"})
+        props = SongProperties(app.library, [song], app.window)
+        box = EditTags(props, app.library)
+        box._update([song])
+        view = box._view
+        with visible(box, 400, 300):
+            view.get_display().get_primary_clipboard().set("Someone Else")
+            value_col = view.get_columns()[2]
+            area = view.get_cell_area(view.get_model()[0].path, value_col)
+            x, y = view.convert_bin_window_to_widget_coords(
+                area.x + 1, area.y + area.height // 2
+            )
+            click = next(
+                c
+                for c in view.observe_controllers()
+                if isinstance(c, Gtk.GestureClick)
+                and c.get_button() == Gdk.BUTTON_MIDDLE
+            )
+            click.emit("pressed", 1, x, y)
+            run_gtk_loop()
+        assert view.get_model()[0][0].value.text == "Someone Else"
 
 
 class GroupSong(AudioFile):
