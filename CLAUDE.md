@@ -49,10 +49,10 @@ Commands (always prefix with `nix develop -c --`)
 GTK4 Migration (Current Branch: gtk4)
 --------------------------------------
 
-- **Status**: 98.7% tests passing (4606/4668). App starts and runs. See `GTK4_MIGRATION_STATUS.md` for full details.
+- **Status**: suite green bar the 2 known `test_mediaserver` D-Bus failures (4709 passed). App starts and runs. See `GTK4_MIGRATION_STATUS.md` for full details.
 - **Compatibility shims**: `quodlibet/_init.py` contains temporary GTK3→GTK4 shims. These are TECHNICAL DEBT - prefer updating call sites to use proper GTK4 APIs.
 - **Helper**: `quodlibet/qltk/__init__.py` has `get_children()` for iterating GTK4 widget children
-- **Remaining high-priority work**: Drag-and-drop rewrite, UIManager→Gio.Menu, keyboard accelerator restoration, event controller migration
+- **Remaining high-priority work**: the `_init.py` shims — `Gtk.Menu*`/`PopoverMenu` compat → `Gio.Menu`, `Dialog.run`, `Gtk.Table`/`HScale`. See "Remaining shim fronts" in `GTK4_MIGRATION_STATUS.md`
 - Use `/gtk4` skill for idiomatic GTK4 migration guidance
 - Use `/lint` skill to run formatting/linting/type checks
 - Official guide: https://docs.gtk.org/gtk4/migrating-3to4.html

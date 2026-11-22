@@ -2,8 +2,8 @@ GTK4 Migration Status
 =====================
 
 **Branch**: `gtk4`
-**Last Updated**: 2026-11-16
-**Test Results**: 4686 passed, 49 skipped, 2 failed —
+**Last Updated**: 2026-11-22
+**Test Results**: 4709 passed, 49 skipped, 2 failed —
 both `test_mediaserver`, the known D-Bus name lifecycle issue.
 
 The long-standing order-dependent `test_qltk_cover.test_big_window` failure is
@@ -112,8 +112,9 @@ Still open, in rough priority order:
 - `gtk_css_node_insert_after` critical whenever a popover is parented to a
   `Gtk.TreeView`. Reproduces with stock widgets, so likely a GTK complaint
   rather than ours.
-- `tests/test_qltk_views.py` and `test_qltk_queue.py` hang when run standalone
-  (pre-existing); they only pass as part of the full suite.
+- `tests/test_qltk_views.py`, `test_qltk_queue.py` and `test_qltk_ccb.py` hang when run
+  standalone (pre-existing); they only pass as part of the full suite.
+  Likely `run_gtk_loop()`'s blocking first `iteration(True)` with nothing pending.
 
 
 Gotchas found while fixing manual-test regressions (2026-08-02)
@@ -227,6 +228,42 @@ lifecycle / cleanup differences not yet investigated:
 - Tray icon (2): test_popup_menu, test_icons
 - MediaServer (2): test_entry_name, test_name_owner (DBus teardown,
   not GTK-related)
+
+
+Recently Landed (2026-11-22)
+----------------------------
+
+The `GObject.connect` / `connect_after` shims are gone. They swallowed every removed GTK3 signal,
+including any "unknown signal" `TypeError`, so a feature wired to one simply never ran.
+Instrumenting them and running the suite found far more than the 11 sites listed below;
+with them gone, a removed signal now fails loudly. Broken features this fixed:
+
+- **Song list drag reorder** inserted copies instead of moving rows,
+  and never told the browser, so playlist reorders weren't saved.
+  Now `move_before` / `move_after` as on `main`, plus a `songs-dropped` signal on `SongList`
+  for the main and library-browser windows (was `drag-data-received`).
+- **Album List covers never loaded**: `draw` was their only trigger.
+  Now the scroll adjustment's `changed` / `value-changed` and the model's
+  `row-inserted` / `rows-reordered`.
+- **Ex Falso's "save changes?" prompt** never appeared on changing file selection
+  (`button-press-event` / `focus`); now a capture-phase `GestureClick` and `EventControllerFocus`.
+- **Scale value labels** (`format-value`, 9 sites) → `set_format_value_func`.
+- Tag editor middle-click paste,
+  Track Numbers renumbering after a drag (`drag-end` → model `row-deleted`),
+  file list scroll position across rescans (`draw` → adjustment `changed`),
+  `ConfigSwitch` label clicks, equalizer right-click reset, OSD preview, Tap BPM,
+  fingerprint result toggles, waveform redraw interval on resize,
+  `close-request` for hide-on-close (MPRIS, AppIndicator, macOS, fingerprint dialog),
+  focus-leave on plugin pref entries, and the Toggle Menu Bar plugin (`PopoverMenuBar`).
+- `selection-done` handlers dropped: `RCMTreeView.popup_menu` already unparents the old menu.
+
+Gotchas:
+
+- A `Gtk.Box` subclass's `do_size_allocate` is never called: Box allocates via its layout manager.
+  Childless custom-drawn widgets should subclass `Gtk.Widget` (`WaveformScale` now does).
+- `observe_controllers()` lists the newest controller first.
+- On a `Gtk.Button`, a click gesture needs `PropagationPhase.CAPTURE`:
+  the button's own gesture claims the press.
 
 
 Recently Landed (2026-11-16)
@@ -360,15 +397,19 @@ Two open items from the same session, neither reproduced in a harness:
 - **CoverGrid's context menu is over-tall** while the song list's is fine — see
   `GTK4_POST_MIGRATION_CLEANUP.md`, which lists what has been ruled out.
 
-Remaining shim fronts, largest first — `_init.py` is 977 lines with 33
-patched attributes (2026-11-16):
+Remaining shim fronts, largest first — `_init.py` is 879 lines with 31
+patched attributes (2026-11-22):
 
-- The four `Gtk.PopoverMenu` compat patches (`__init__`, `append`, `popup`,
-  `get_children`) and the last 20 `Gtk.Menu*` occurrences in 12 files.
+- The `Gtk.PopoverMenu` compat patches (`__init__`, `append`, `popup`, `attach_to_widget`,
+  `get_children`) and the last 20 `Gtk.Menu*` occurrences.
   `add_accelerator` / `AccelGroup` / `add_fake_accel` go with them:
   they only label shim menu items, which `Gio.Menu` does via the `accel` attribute.
-- 11 call sites still connecting removed GTK3 signal names, plus
-  `Gdk.Event.new`/`_FakeEvent`, `Gtk.Dialog.run`, `Gdk.cairo_surface_create_from_pixbuf`.
+- `Gtk.Dialog.run` / `Gtk.NativeDialog.run` and the `events_pending` / `main_iteration` loop shims.
+- `Gtk.Table` (25 sites, mostly plugin prefs) → `Gtk.Grid`;
+  `Gtk.HScale` / `VScale` (9 sites) → `Gtk.Scale`.
+- Small ones: `Box.set_layout`, `Image.new_from_icon_name` size, `accelerator_parse`,
+  `AttachOptions`, `GLib.CURRENT_TIME`, `Gdk.WindowState`, `ButtonBoxStyle`,
+  `cairo_surface_create_from_pixbuf`, `rc_get_theme_dir`.
 
 
 Recently Landed (2026-06-15)
@@ -560,16 +601,8 @@ Known Limitations (Tracked, Non-Blocking)
 - M3U/PLS URL import via DnD to playlist browser is deferred.
 - `quodlibet/_init.py` still hosts compatibility shims; each is
   documented and should be removed as call sites migrate.
-- Remaining shimmed-signal call sites, 11 as of 2026-11-16:
-  `button-press-event` (5: `qltk/edittags.py`, `ext/songsmenu/tapbpm.py`,
-  `fingerprint/search.py`, `ext/events/equalizer.py`, `animosd/prefs.py`),
-  `delete-event` (3), `focus-out-event` (2), and `size-allocate` in `waveformseekbar.py`
-  (not in `_removed_signals`; swallowed by the shim's `TypeError` catch,
-  so the redraw interval never follows resizes). Each needs a GestureClick / EventControllerKey
-  rewrite; reuse the Gtk.Popover+Gtk.Box context-menu idiom
-  (queue/playorder) rather than the shimmed Gtk.PopoverMenu.
-  Note `popup-menu` is *not* in this list: `RCMTreeView` declares it as its
-  own gsignal and emits it natively, so those ~15 connects need no work.
+- No shimmed signals remain (2026-11-22): connecting a removed GTK3 signal now raises.
+  `popup-menu` is fine: `RCMTreeView` declares it as its own gsignal and emits it natively.
 - The Gtk.Menu/Gtk.MenuItem subsystem is still shimmed, but the surface is
   small: 20 `Gtk.Menu*` occurrences across 12 files (including `_init.py`
   itself). Still worth doing as one pass with the `Gtk.PopoverMenu` compat
