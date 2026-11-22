@@ -15,7 +15,6 @@ class FilterTestCase(TestCase):
         self.c = self.Kind()
 
     def tearDown(self):
-        self.c.destroy()
         quodlibet.config.quit()
 
 

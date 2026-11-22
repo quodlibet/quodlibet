@@ -6,8 +6,8 @@
 from tests import TestCase
 
 from quodlibet import config
-from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.library import SongFileLibrary
+from quodlibet.qltk.maskedbox import MaskedBox
 
 
 class TMaskedBox(TestCase):
@@ -18,5 +18,4 @@ class TMaskedBox(TestCase):
         config.quit()
 
     def test(self):
-        lib = SongFileLibrary()
-        MaskedBox(lib).destroy()
+        MaskedBox(SongFileLibrary())

@@ -10,13 +10,13 @@ from gi.repository import Gdk, Gtk
 
 from quodlibet import _
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, set_margins
 from quodlibet.qltk.window import Dialog
 
 
-class TapBpmPanel(Gtk.VBox):
+class TapBpmPanel(Gtk.Box):
     def __init__(self, parent, song):
-        super().__init__()
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         self.dialog = parent
         self.song = song
@@ -25,29 +25,33 @@ class TapBpmPanel(Gtk.VBox):
         self.set_margin_bottom(6)
         self.set_spacing(6)
 
-        box = Gtk.HBox()
+        box = Gtk.Box()
         box.set_spacing(6)
         # TRANSLATORS: BPM mean "beats per minute"
-        box.pack_start(Gtk.Label(_("BPM:")), False, True, 0)
-        self.bpm_label = Gtk.Label(_("n/a"))
+        box.append(Gtk.Label(label=_("BPM:")))
+        self.bpm_label = Gtk.Label(label=_("n/a"))
         self.bpm_label.set_xalign(0.5)
-        box.pack_start(self.bpm_label, True, True, 0)
+        box.append(self.bpm_label)
 
         self.reset_btn = Gtk.Button(label=_("Reset"))
         self.reset_btn.connect("clicked", lambda *x: self.reset())
-        box.pack_end(self.reset_btn, False, True, 0)
+        box.append(self.reset_btn)
 
-        self.pack_start(box, False, True, 0)
+        self.append(box)
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
-        self.tap_btn.connect("button-press-event", self.tap)
-        self.tap_btn.connect("key-press-event", self.key_tap)
-        self.pack_start(self.tap_btn, True, True, 0)
+        click = Gtk.GestureClick()
+        click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        click.connect("pressed", self.tap)
+        self.tap_btn.add_controller(click)
+        key = Gtk.EventControllerKey()
+        key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        key.connect("key-pressed", self.key_tap)
+        self.tap_btn.add_controller(key)
+        self.append(self.tap_btn)
 
         self.init_tap()
         self.update()
-
-        self.show_all()
 
     def update(self):
         has_new_bpm = self.clicks > 1
@@ -65,15 +69,15 @@ class TapBpmPanel(Gtk.VBox):
         # Give focus back to the tap button even if reset was pressed
         self.tap_btn.grab_focus()
 
-    def tap(self, widget, event):
-        self.count_tap(event.time)
+    def tap(self, gesture, n_press, x, y):
+        self.count_tap(gesture.get_current_event_time())
         self.update()
 
-    def key_tap(self, widget, event):
-        if event.keyval != Gdk.KEY_space and event.keyval != Gdk.KEY_Return:
+    def key_tap(self, controller, keyval, keycode, state):
+        if keyval != Gdk.KEY_space and keyval != Gdk.KEY_Return:
             return False
 
-        self.count_tap(event.time)
+        self.count_tap(controller.get_current_event_time())
         self.update()
         return True
 
@@ -183,13 +187,12 @@ class TapBpm(SongsMenuPlugin):
         window.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.OK)
 
         window.set_default_size(300, 100)
-        window.set_border_width(6)
+        set_margins(window, 6)
         self.__resp_sig = window.connect("response", self.response)
 
         self._panel = TapBpmPanel(window, song)
-        window.vbox.pack_start(self._panel, False, True, 0)
+        window.vbox.append(self._panel)
 
-        window.vbox.show_all()
         window.present()
 
     def response(self, win, response):

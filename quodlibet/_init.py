@@ -19,7 +19,7 @@ from quodlibet.util import is_osx, is_windows, i18n
 from quodlibet.util.dprint import print_e, PrintHandler, print_d
 from quodlibet.util.urllib import install_urllib2_ca_file
 
-from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
+from ._main import get_base_dir, get_image_dir, is_release, get_cache_dir
 
 
 _cli_initialized = False
@@ -223,7 +223,7 @@ def _init_g():
     sys.modules["gobject"] = None
 
 
-def _init_gtk():
+def _init_gtk():  # noqa: C901
     """Call before using Gtk/Gdk"""
 
     import gi
@@ -240,32 +240,491 @@ def _init_gtk():
 
     try:
         # not sure if this is available under Windows
-        gi.require_version("GdkX11", "3.0")
+        gi.require_version("GdkX11", "4.0")
         from gi.repository import GdkX11
 
         GdkX11  # noqa
-    except (ValueError, ImportError):
+    except (ValueError, ImportError, AssertionError):
         pass
 
-    gi.require_version("Gtk", "3.0")
-    gi.require_version("Gdk", "3.0")
+    gi.require_version("Gtk", "4.0")
+    gi.require_version("Gdk", "4.0")
     gi.require_version("Pango", "1.0")
     gi.require_version("Soup", "3.0")
     gi.require_version("PangoCairo", "1.0")
 
-    from gi.repository import Gtk
+    from gi.repository import Gdk, Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # PyGObject doesn't fail any more when init fails, so do it ourselves
-    initialized, sys.argv[:] = Gtk.init_check(sys.argv)
+    initialized = Gtk.init_check()
     if not initialized:
         raise SystemExit("Gtk.init failed")
 
     # include our own icon theme directory
-    theme = Gtk.IconTheme.get_default()
+    theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
     theme_search_path = get_image_dir()
     assert os.path.exists(theme_search_path)
-    theme.append_search_path(theme_search_path)
+    theme.add_search_path(theme_search_path)
+
+    # GTK4: ButtonBox removed - set_layout is a no-op on regular Box
+    if not hasattr(Gtk.Box, "set_layout"):
+        Gtk.Box.set_layout = lambda self, layout: None
+
+    # GTK4: Image.new_from_icon_name() only takes icon_name, not size
+    _orig_image_new_from_icon_name = Gtk.Image.new_from_icon_name
+
+    def _image_new_from_icon_name_compat(icon_name, size=None):
+        # GTK4: ignore size parameter
+        return _orig_image_new_from_icon_name(icon_name)
+
+    Gtk.Image.new_from_icon_name = _image_new_from_icon_name_compat
+
+    # GTK4: HScale/VScale removed - use Scale with orientation
+    if not hasattr(Gtk, "HScale"):
+
+        class HScaleCompat(Gtk.Scale):
+            def __init__(self, adjustment=None):
+                super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+                if adjustment:
+                    self.set_adjustment(adjustment)
+
+            @staticmethod
+            def new(adjustment):
+                return Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adjustment)
+
+        Gtk.HScale = HScaleCompat
+
+    if not hasattr(Gtk, "VScale"):
+
+        class VScaleCompat(Gtk.Scale):
+            def __init__(self, adjustment=None):
+                super().__init__(orientation=Gtk.Orientation.VERTICAL)
+                if adjustment:
+                    self.set_adjustment(adjustment)
+
+            @staticmethod
+            def new(adjustment):
+                return Gtk.Scale.new(Gtk.Orientation.VERTICAL, adjustment)
+
+        Gtk.VScale = VScaleCompat
+
+    if not hasattr(Gtk.Window, "add_accel_group"):
+        Gtk.Window.add_accel_group = lambda self, group: None
+    if not hasattr(Gtk.Window, "remove_accel_group"):
+        Gtk.Window.remove_accel_group = lambda self, group: None
+
+    # GTK4: accelerator_parse now returns (success, keyval, modifiers)
+    _original_accelerator_parse = Gtk.accelerator_parse
+
+    def _accelerator_parse_compat(accelerator):
+        result = _original_accelerator_parse(accelerator)
+        if len(result) == 3:
+            success, keyval, modifiers = result
+            return (keyval, modifiers) if success else (0, 0)
+        return result
+
+    Gtk.accelerator_parse = _accelerator_parse_compat
+
+    # GTK4 compatibility: Add Gtk.AttachOptions for Table compatibility
+    # (Gtk.Table removed in GTK4, but plugins still use it)
+    if not hasattr(Gtk, "AttachOptions"):
+        from enum import IntFlag
+
+        class AttachOptions(IntFlag):
+            EXPAND = 1 << 0
+            SHRINK = 1 << 1
+            FILL = 1 << 2
+
+        Gtk.AttachOptions = AttachOptions
+
+    from gi.repository import Gdk, GLib
+
+    # GTK4: GLib.CURRENT_TIME removed - use constant 0
+    if not hasattr(GLib, "CURRENT_TIME"):
+        GLib.CURRENT_TIME = 0
+
+    # GTK4 compatibility: Gdk.WindowState removed
+    if not hasattr(Gdk, "WindowState"):
+        from enum import IntFlag
+
+        class WindowState(IntFlag):
+            """GTK4 compatibility shim for Gdk.WindowState.
+
+            In GTK4, window states are handled via Gdk.ToplevelState.
+            This provides a compatible enum for GTK3 code.
+            """
+
+            WITHDRAWN = 1 << 0
+            ICONIFIED = 1 << 1
+            MAXIMIZED = 1 << 2
+            STICKY = 1 << 3
+            FULLSCREEN = 1 << 4
+            ABOVE = 1 << 5
+            BELOW = 1 << 6
+            FOCUSED = 1 << 7
+            TILED = 1 << 8
+
+        Gdk.WindowState = WindowState
+
+    from gi.repository import GObject
+
+    # GTK4: AccelGroup removed - create dummy for compatibility
+    class AccelGroup(GObject.Object):
+        """Dummy AccelGroup for GTK4 compatibility.
+
+        In GTK4, AccelGroup was removed in favor of application-wide
+        keyboard shortcuts via GtkApplication. This dummy allows
+        code to continue creating AccelGroups without crashing.
+        """
+
+        def __init__(self):
+            super().__init__()
+
+        def connect(self, *args, **kwargs):
+            """Dummy connect - does nothing in GTK4"""
+
+        def disconnect(self, *args, **kwargs):
+            """Dummy disconnect - does nothing in GTK4"""
+
+    Gtk.AccelGroup = AccelGroup
+
+    # GTK4: AccelFlags removed - add dummy enum
+    if not hasattr(Gtk, "AccelFlags"):
+        from enum import IntFlag
+
+        class AccelFlags(IntFlag):
+            """Dummy AccelFlags for GTK4 compatibility."""
+
+            VISIBLE = 1 << 0
+            LOCKED = 1 << 1
+            MASK = 0x07
+
+        Gtk.AccelFlags = AccelFlags
+
+    # GTK4: Widget.add_accelerator() removed - add no-op shim
+    if not hasattr(Gtk.Widget, "add_accelerator"):
+
+        def _widget_add_accelerator(self, signal, accel_group, key, mod, flags):
+            """No-op shim: GTK4 uses Application.set_accels_for_action."""
+
+        Gtk.Widget.add_accelerator = _widget_add_accelerator
+
+    # GTK4: MenuItem removed - create Button-based replacement
+    if not hasattr(Gtk, "MenuItem"):
+
+        class MenuItem(Gtk.Button):
+            """GTK4 MenuItem replacement using Button.
+
+            Provides basic container methods (add/remove/get_child) for compatibility.
+            """
+
+            def __init__(self, label=None, use_underline=False):
+                if label:
+                    super().__init__(label=label, use_underline=use_underline)
+                else:
+                    super().__init__()
+                self.add_css_class("flat")
+
+            def add(self, widget):
+                """Add child widget"""
+                self.set_child(widget)
+
+            def remove(self, widget):
+                """Remove child widget"""
+                if self.get_child() == widget:
+                    self.set_child(None)
+
+            def set_submenu(self, menu):
+                """Store submenu reference (not fully implemented in GTK4 shim)"""
+                self._submenu = menu
+
+            def get_submenu(self):
+                """Return stored submenu reference"""
+                return getattr(self, "_submenu", None)
+
+        Gtk.MenuItem = MenuItem
+
+    # GTK4: ImageMenuItem removed - dummy for isinstance checks
+    class ImageMenuItem:
+        pass
+
+    Gtk.ImageMenuItem = ImageMenuItem
+
+    # GTK4: ButtonBoxStyle removed (ButtonBox removed)
+    if not hasattr(Gtk, "ButtonBoxStyle"):
+        from enum import IntEnum
+
+        class ButtonBoxStyle(IntEnum):
+            SPREAD = 0
+            EDGE = 1
+            START = 2
+            END = 3
+            CENTER = 4
+            EXPAND = 5
+
+        Gtk.ButtonBoxStyle = ButtonBoxStyle
+
+    # GTK4: cairo_surface_create_from_pixbuf moved
+    if not hasattr(Gdk, "cairo_surface_create_from_pixbuf"):
+        # In GTK4, this function exists in GdkPixbuf module
+        try:
+            from gi.repository import GdkPixbuf
+
+            Gdk.cairo_surface_create_from_pixbuf = (
+                GdkPixbuf.cairo_surface_create_from_pixbuf
+            )
+        except (ImportError, AttributeError):
+            # Fallback if not available
+            import cairo
+
+            def _cairo_surface_from_pixbuf(pixbuf, scale, window):
+                if pixbuf is None:
+                    return None
+                width = pixbuf.get_width()
+                height = pixbuf.get_height()
+                surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+                ctx = cairo.Context(surface)
+                Gdk.cairo_set_source_pixbuf(ctx, pixbuf, 0, 0)
+                ctx.paint()
+                return surface
+
+            Gdk.cairo_surface_create_from_pixbuf = _cairo_surface_from_pixbuf
+
+    # GTK4: RC file system removed - themes work differently
+    if not hasattr(Gtk, "rc_get_theme_dir"):
+        # Return empty string instead of None to avoid path.join errors
+        Gtk.rc_get_theme_dir = lambda: ""
+
+    # GTK4: Dialog.run() removed - dialogs are now async
+    if not hasattr(Gtk.Dialog, "run"):
+
+        def _dialog_run_compat(self):
+            # GTK4: Dialog.run() removed, need to use async show()
+            # This is a blocking compatibility shim - proper fix is to use async
+            print_d("GTK4: Dialog.run() called - using compatibility blocking mode")
+            import gi.repository.GLib as GLib
+
+            response = [None]
+
+            def on_response(dialog, response_id):
+                response[0] = response_id
+
+            handler_id = self.connect("response", on_response)
+            self.show()
+
+            # Run a nested event loop (not ideal but maintains compatibility)
+            context = GLib.MainContext.default()
+            while response[0] is None:
+                context.iteration(True)
+
+            self.disconnect(handler_id)
+            return response[0]
+
+        Gtk.Dialog.run = _dialog_run_compat
+
+    # GTK4: NativeDialog.run() also removed
+    if not hasattr(Gtk.NativeDialog, "run"):
+
+        def _native_dialog_run_compat(self):
+            print_d(
+                "GTK4: NativeDialog.run() called - using compatibility blocking mode"
+            )
+            import gi.repository.GLib as GLib
+
+            response = [None]
+
+            def on_response(dialog, response_id):
+                response[0] = response_id
+
+            handler_id = self.connect("response", on_response)
+            self.show()
+
+            context = GLib.MainContext.default()
+            while response[0] is None:
+                context.iteration(True)
+
+            self.disconnect(handler_id)
+            return response[0]
+
+        Gtk.NativeDialog.run = _native_dialog_run_compat
+
+    # GTK4: PopoverMenu.append() compatibility
+    _orig_popover_menu_init = Gtk.PopoverMenu.__init__
+
+    def _popover_menu_init_compat(self, *args, **kwargs):
+        _orig_popover_menu_init(self, *args, **kwargs)
+        if not hasattr(self, "_menu_box"):
+            self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            # Don't set_child during init - wait until widget is in hierarchy
+            try:
+                if self.get_root() is not None:
+                    self.set_child(self._menu_box)
+            except Exception:
+                pass
+
+    def _popover_menu_append_compat(self, widget):
+        if not hasattr(self, "_menu_box"):
+            self._menu_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self._menu_box.append(widget)
+        if self.get_child() is None and (
+            self.get_parent() is not None and self.get_root() is not None
+        ):
+            self.set_child(self._menu_box)
+
+    Gtk.PopoverMenu.__init__ = _popover_menu_init_compat
+    Gtk.PopoverMenu.append = _popover_menu_append_compat
+
+    # GTK4: Wrap popup() to prevent crashes when not properly parented
+    _orig_popover_popup = Gtk.PopoverMenu.popup
+
+    def _popover_menu_popup_compat(self):
+        # Silently fail if not properly set up to avoid crashes
+        if self.get_parent() is None:
+            print_d("PopoverMenu.popup() called without parent, ignoring")
+            return None
+        if self.get_root() is None:
+            print_d("PopoverMenu.popup() called before parented to window, ignoring")
+            return None
+        # Ensure child is set if we have a menu box (widget-append shim path).
+        # Model-based menus render from their model, so never clobber those.
+        if (
+            hasattr(self, "_menu_box")
+            and self.get_child() is None
+            and self.get_menu_model() is None
+        ):
+            self.set_child(self._menu_box)
+        return _orig_popover_popup(self)
+
+    Gtk.PopoverMenu.popup = _popover_menu_popup_compat
+
+    # GTK4: Button.always_show_image property removed (images always shown)
+    # Wrap __init__ to strip the property before GObject sees it
+
+    # GTK4: Gtk.events_pending() removed - use GLib.MainContext
+    if not hasattr(Gtk, "events_pending"):
+
+        def _events_pending():
+            return GLib.MainContext.default().pending()
+
+        Gtk.events_pending = _events_pending
+
+    # GTK4: Gtk.main_iteration() removed - use GLib.MainContext
+    if not hasattr(Gtk, "main_iteration"):
+
+        def _main_iteration():
+            return GLib.MainContext.default().iteration(False)
+
+        Gtk.main_iteration = _main_iteration
+
+    if not hasattr(Gtk, "main_iteration_do"):
+
+        def _main_iteration_do(blocking):
+            return GLib.MainContext.default().iteration(blocking)
+
+        Gtk.main_iteration_do = _main_iteration_do
+
+    # GTK4: SeparatorMenuItem removed - use Separator
+    if not hasattr(Gtk, "SeparatorMenuItem"):
+
+        class SeparatorMenuItem(Gtk.Separator):
+            def __init__(self):
+                super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
+
+        Gtk.SeparatorMenuItem = SeparatorMenuItem
+
+    # GTK4: CellRendererText.set_margin_start doesn't exist - it's a Widget method
+    # CellRenderer is not a widget in GTK4, margins don't apply the same way
+
+    # GTK4: PopoverMenu.attach_to_widget removed
+    if not hasattr(Gtk.PopoverMenu, "attach_to_widget"):
+
+        def _popover_attach_to_widget(self, widget, detacher=None):
+            if self.get_parent() is not None:
+                self.unparent()
+            self.set_parent(widget)
+
+        Gtk.PopoverMenu.attach_to_widget = _popover_attach_to_widget
+
+    # GTK4: PopoverMenu.get_children() compatibility
+    if not hasattr(Gtk.PopoverMenu, "get_children"):
+
+        def _popover_get_children(self):
+            if hasattr(self, "_menu_box"):
+                from quodlibet.qltk import get_children
+
+                return get_children(self._menu_box)
+            child = self.get_child()
+            if child is None:
+                return []
+            from quodlibet.qltk import get_children
+
+            return get_children(child)
+
+        Gtk.PopoverMenu.get_children = _popover_get_children
+
+    # GTK4: Table removed - wrap Grid to provide Table API
+    class Table(Gtk.Grid):
+        def __init__(
+            self, rows=1, columns=1, homogeneous=False, n_rows=None, n_columns=None
+        ):
+            super().__init__()
+            self._rows = n_rows if n_rows is not None else rows
+            self._columns = n_columns if n_columns is not None else columns
+            self.set_row_homogeneous(homogeneous)
+            self.set_column_homogeneous(homogeneous)
+
+        @property
+        def props(self):
+            class Props:
+                def __init__(self, parent):
+                    self._parent = parent
+
+                @property
+                def n_rows(self):
+                    return self._parent._rows
+
+                @property
+                def n_columns(self):
+                    return self._parent._columns
+
+            if not hasattr(self, "_props"):
+                self._props = Props(self)
+            return self._props
+
+        def attach(
+            self,
+            child,
+            left,
+            right,
+            top,
+            bottom,
+            xoptions=0,
+            yoptions=0,
+            xpadding=0,
+            ypadding=0,
+        ):
+            child.set_margin_start(xpadding)
+            child.set_margin_end(xpadding)
+            child.set_margin_top(ypadding)
+            child.set_margin_bottom(ypadding)
+
+            width = right - left
+            height = bottom - top
+
+            super().attach(child, left, top, width, height)
+
+        def set_row_spacings(self, spacing):
+            self.set_row_spacing(spacing)
+
+        def set_col_spacings(self, spacing):
+            self.set_column_spacing(spacing)
+
+        def set_col_spacing(self, column, spacing):
+            # Grid doesn't support per-column spacing, use uniform spacing
+            self.set_column_spacing(spacing)
+
+    Gtk.Table = Table
 
     # Force menu/button image related settings. We might show too many atm
     # but this makes sure we don't miss cases where we forgot to force them
@@ -281,10 +740,6 @@ def _init_gtk():
     )
 
     settings = Gtk.Settings.get_default()
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        settings.set_property("gtk-button-images", True)
-        settings.set_property("gtk-menu-images", True)
     if hasattr(settings.props, "gtk_primary_button_warps_slider"):
         # https://bugzilla.gnome.org/show_bug.cgi?id=737843
         settings.set_property("gtk-primary-button-warps-slider", True)

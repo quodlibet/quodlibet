@@ -3,10 +3,12 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from gi.repository import Gtk
+
 from tests import TestCase, run_gtk_loop
 
 from quodlibet import config
-from quodlibet.qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
+from quodlibet.qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem, ConfigSwitch
 
 
 class TConfigCheckButton(TestCase):
@@ -65,3 +67,23 @@ class TConfigCheckMenuItem(TestCase):
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
         run_gtk_loop()
         assert not c.get_active()
+
+
+class TConfigSwitch(TestCase):
+    def setUp(self):
+        config.init()
+
+    def tearDown(self):
+        config.quit()
+
+    def test_clicking_label_toggles_switch_and_config(self):
+        config.set("memory", "bar", "off")
+        switch = ConfigSwitch("dummy", "memory", "bar", populate=True)
+        click = next(
+            c
+            for c in switch.label.get_parent().observe_controllers()
+            if isinstance(c, Gtk.GestureClick)
+        )
+        click.emit("pressed", 1, 0, 0)
+        assert switch.get_active()
+        assert config.getboolean("memory", "bar")

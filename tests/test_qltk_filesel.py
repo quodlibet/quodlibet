@@ -3,10 +3,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from gi.repository import GLib
+
 from tests import TestCase, mkdtemp
-from tests.helper import __
+from tests.helper import __, visible
 
 import os
+import time
 import sys
 
 sys.modules["dircache"] = os  # cheat the dircache effects
@@ -104,28 +107,39 @@ class TDirectoryTree(TestCase):
         dt = DirectoryTree(None, folders=self.ROOTS)
         menu = dt._create_menu()
         dt._popup_menu(menu)
-        children = menu.get_children()
-        self.assertEqual(len(children), 4)
-        delete = children[1]
-        self.assertEqual(delete.get_label(), __("_Delete"))
-        assert delete.get_sensitive()
+        ag = dt._action_group
+        # 4 actions: new-folder, delete, refresh, expand
+        self.assertEqual(len(list(ag.list_actions())), 4)
+        delete_action = ag.lookup_action("delete")
+        self.assertIsNotNone(delete_action)
+        # Verify the Gio.Menu has the right label for the delete item
+        gio_model = menu.gio_model
+        delete_label = gio_model.get_item_attribute_value(1, "label").get_string()
+        self.assertEqual(delete_label, __("_Delete"))
+        assert delete_action.get_enabled()
 
     def test_multiple_selections(self):
         dt = DirectoryTree(None, folders=self.ROOTS)
         menu = dt._create_menu()
         dt._popup_menu(menu)
-        children = menu.get_children()
-        select_sub = children[3]
-        assert "sub-folders" in select_sub.get_label().lower()
-        assert select_sub.get_sensitive()
+        ag = dt._action_group
+        gio_model = menu.gio_model
+        expand_label = gio_model.get_item_attribute_value(3, "label").get_string()
+        assert "sub-folders" in expand_label.lower()
+        expand_action = ag.lookup_action("expand")
+        assert expand_action.get_enabled()
         sel = dt.get_selection()
         model = dt.get_model()
         for it, _pth in model.iterrows(None):
             sel.select_iter(it)
-        assert select_sub.get_sensitive(), "Select All should work for multiple"
+        dt._popup_menu(menu)
+        assert expand_action.get_enabled(), "Select All should work for multiple"
+        new_folder_action = ag.lookup_action("new-folder")
         msg = "New Folder should be disabled for multiple"
-        assert not children[0].get_sensitive(), msg
-        assert children[3].get_sensitive(), "Refresh should be enabled for multiple"
+        assert not new_folder_action.get_enabled(), msg
+        assert ag.lookup_action(
+            "refresh"
+        ).get_enabled(), "Refresh should be enabled for multiple"
 
 
 class TFileSelector(TestCase):
@@ -149,7 +163,6 @@ class TFileSelector(TestCase):
         self.fs.rescan()
 
     def tearDown(self):
-        self.fs.destroy()
         quodlibet.config.quit()
 
         for file_ in self.PATHS:
@@ -180,6 +193,22 @@ class TFileSelector(TestCase):
         self.fs.rescan()
         self.assertEqual(self.files, expected)
         self.assertEqual(self.files, files_prev)
+
+    def test_rescan_keeps_file_list_scroll_position(self):
+        paths = [os.path.join(self.ROOTS[0], "f%03d" % i) for i in range(200)]
+        for path in paths:
+            open(path, "wb").close()
+        self.PATHS.extend(paths)
+        self.fs.rescan()
+        vadj = self.fs.get_end_child().get_child().get_vadjustment()
+
+        with visible(self.fs, 400, 300):
+            vadj.set_value(1000)
+            self.fs.rescan()
+            deadline = time.monotonic() + 0.5
+            while time.monotonic() < deadline:
+                GLib.MainContext.default().iteration(False)
+            assert vadj.get_value() == 1000
 
     def test_main(self):
         MainFileSelector()

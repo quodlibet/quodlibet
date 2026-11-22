@@ -10,7 +10,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gdk, GLib
+from gi.repository import GLib, Gtk
 
 from quodlibet import _
 from quodlibet.plugins.events import EventPlugin
@@ -39,19 +39,19 @@ class AnimOsd(EventPlugin):
 
     def plugin_on_song_started(self, song):
         if self.__current_window is not None:
-            if self.__current_window.is_composited():
+            if self.__current_window.get_display().is_composited():
                 self.__current_window.fade_out()
             else:
                 self.__current_window.hide()
-                self.__current_window.destroy()
 
         if song is None:
             self.__current_window = None
             return
 
         window = OSDWindow(self.Conf, song)
-        window.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
-        window.connect("button-press-event", self.__buttonpress)
+        click = Gtk.GestureClick()
+        click.connect("pressed", self.__pressed, window)
+        window.add_controller(click)
         window.connect("fade-finished", self.__fade_finished)
         self.__current_window = window
 
@@ -61,7 +61,6 @@ class AnimOsd(EventPlugin):
 
     def plugin_on_error(self, song, error):
         if self.__current_window is not None:
-            self.__current_window.destroy()
             self.__current_window = None
 
     @staticmethod
@@ -69,11 +68,10 @@ class AnimOsd(EventPlugin):
         window.fade_out()
         return False
 
-    def __buttonpress(self, window, event):
+    def __pressed(self, gesture, n_press, x, y, window):
         window.hide()
         if self.__current_window is window:
             self.__current_window = None
-        window.destroy()
 
     def __fade_finished(self, window, fade_in):
         if fade_in:

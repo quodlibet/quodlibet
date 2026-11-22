@@ -7,12 +7,17 @@
 # (at your option) any later version.
 
 import sqlite3
+
+from gi.repository import Gtk
+
 from quodlibet.fsn import fsn2uri
 
 from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
 from quodlibet.library import SongFileLibrary
+from quodlibet.qltk import find_widgets
+from quodlibet.qltk.entry import UndoEntry
 from . import PluginTestCase
 
 
@@ -137,3 +142,18 @@ class TBansheeImport(PluginTestCase):
             db.close()
 
             self.assertEqual(count, 0)
+
+    def test_leaving_path_entry_sets_path(self):
+        cls = self.mod.BansheeImport
+        self.addCleanup(setattr, cls, "USR_PATH", cls.USR_PATH)
+        plugin = cls()
+        prefs = plugin.PluginPreferences()
+        (entry,) = find_widgets(prefs, UndoEntry)
+        entry.set_text("/some/banshee.db")
+        focus = next(
+            c
+            for c in entry.observe_controllers()
+            if isinstance(c, Gtk.EventControllerFocus)
+        )
+        focus.emit("leave")
+        assert cls.USR_PATH == "/some/banshee.db"

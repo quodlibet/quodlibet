@@ -125,7 +125,9 @@ class ResultView(AllTreeView):
         column.set_min_width(60)
         self.append_column(column)
 
-        self.connect("button-press-event", self.__button_press, column)
+        click = Gtk.GestureClick(button=Gdk.BUTTON_PRIMARY)
+        click.connect("pressed", self.__button_press, column)
+        self.add_controller(click)
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -202,30 +204,21 @@ class ResultView(AllTreeView):
                 column.set_min_width(50)
         self.set_fixed_height_mode(True)
 
-    def __button_press(self, view, event, edit_column):
-        x, y = map(int, [event.x, event.y])
+    def __button_press(self, gesture, n_press, x, y, edit_column):
+        # header clicks land above the rows, so miss
+        x, y = self.convert_widget_to_bin_window_coords(int(x), int(y))
         try:
-            path, col, cellx, celly = view.get_path_at_pos(x, y)
+            path, col, cellx, celly = self.get_path_at_pos(x, y)
         except TypeError:
-            return False
+            return
 
-        # header clicks go to the first cell otherwise
-        if event.window is not view.get_bin_window():
-            return False
-
-        if (
-            event.button == Gdk.BUTTON_PRIMARY
-            and event.type == Gdk.EventType.BUTTON_PRESS
-            and col == edit_column
-        ):
-            model = view.get_model()
+        if n_press == 1 and col == edit_column:
+            model = self.get_model()
             row = model[path]
             entry = row[0]
             entry.toggle_write()
             model.row_changed(row.path, row.iter)
-            return True
-
-        return False
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED)
 
     def set_album_visible(self, value):
         self._release_column.set_visible(value)
@@ -249,7 +242,6 @@ class SearchWindow(Window):
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         model = ObjectStore()
         self.view = view = ResultView()
@@ -261,7 +253,7 @@ class SearchWindow(Window):
             iter_ = self.model.append([SearchEntry(song)])
             self._iter_map[song] = iter_
 
-        sw.add(view)
+        sw.set_child(view)
 
         self.pool = pool = FingerPrintPool()
         pool.connect("fingerprint-done", self.__fp_done_cb)
@@ -270,9 +262,9 @@ class SearchWindow(Window):
         for song in songs:
             pool.push(song)
 
-        outer_box = Gtk.VBox(spacing=12)
+        outer_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
 
-        bbox = Gtk.HButtonBox()
+        bbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         bbox.set_spacing(6)
         self.__save = save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
@@ -280,17 +272,17 @@ class SearchWindow(Window):
         save.set_sensitive(False)
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda *x: self.destroy())
-        bbox.pack_start(save, True, True, 0)
-        bbox.pack_start(cancel, True, True, 0)
+        bbox.append(save)
+        bbox.append(cancel)
 
-        inner_box = Gtk.VBox(spacing=6)
-        inner_box.pack_start(sw, True, True, 0)
+        inner_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        inner_box.append(sw)
 
         ccb = ConfigCheckButton(
             _("Write MusicBrainz tags"), "plugins", "fingerprint_write_mb_tags"
         )
         ccb.set_active(get_write_mb_tags())
-        inner_box.pack_start(ccb, False, True, 0)
+        inner_box.append(ccb)
 
         ccb = ConfigCheckButton(
             _("Group by directory"), "plugins", "fingerprint_group_by_dir"
@@ -299,9 +291,9 @@ class SearchWindow(Window):
         ccb.connect("toggled", self.__group_toggled)
         self._group_ccb = ccb
 
-        outer_box.pack_start(inner_box, True, True, 0)
+        outer_box.append(inner_box)
 
-        bottom_box = Gtk.HBox(spacing=12)
+        bottom_box = Gtk.Box(spacing=12)
         mode_button = Gtk.ToggleButton(label=_("Album Mode"))
         mode_button.set_tooltip_text(
             _(
@@ -311,14 +303,13 @@ class SearchWindow(Window):
         )
         mode_button.set_active(True)
         mode_button.connect("toggled", self.__mode_toggle)
-        bottom_box.pack_start(mode_button, False, True, 0)
-        bottom_box.pack_start(self._group_ccb, False, True, 0)
-        bottom_box.pack_start(bbox, True, True, 0)
+        bottom_box.append(mode_button)
+        bottom_box.append(self._group_ccb)
+        bottom_box.append(bbox)
 
-        outer_box.pack_start(bottom_box, False, True, 0)
+        outer_box.append(bottom_box)
 
-        outer_box.show_all()
-        self.add(outer_box)
+        self.set_child(outer_box)
 
         self.__album_mode = True
         self.__group_by_dir = True
@@ -351,7 +342,7 @@ class SearchWindow(Window):
             row[0].apply_tags(write_mb, write_album)
             # the plugin wrapper will handle the rest
 
-        self.destroy()
+        self.close()
 
     @contextmanager
     def __update_row(self, song):

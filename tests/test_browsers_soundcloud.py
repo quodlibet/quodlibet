@@ -6,8 +6,7 @@
 import time
 
 from tests import TestCase
-
-from gi.repository import Gtk
+from tests.helper import menu_item_labels
 
 from quodlibet import config
 from quodlibet import const
@@ -78,11 +77,7 @@ class TestMenu(TBrowserBase):
     def test_songsmenu_has_information_but_no_edit(self):
         menu = self.b.menu([], self.library, [])
         assert menu
-        items = [
-            item.get_label()
-            for item in menu.get_children()
-            if type(item) is not Gtk.SeparatorMenuItem
-        ]
+        items = menu_item_labels(menu.get_menu_model())
         # We're always in en_US
         assert "_Rating" in items
         assert "_Information" in items, "Should have included Information"

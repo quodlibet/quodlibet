@@ -14,10 +14,6 @@ class TagsCombo(TestCase):
         self.all = self.Kind()
         self.some = self.Kind(["artist", "album", "~people", "foobar"])
 
-    def tearDown(self):
-        self.all.destroy()
-        self.some.destroy()
-
 
 class TagsComboMixin:
     def test_none(self):

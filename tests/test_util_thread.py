@@ -11,8 +11,6 @@ import pytest as pytest
 
 from tests import TestCase, run_gtk_loop
 
-from gi.repository import Gtk
-
 from quodlibet.util.thread import (
     call_async,
     call_async_background,
@@ -35,11 +33,9 @@ class Tcall_async(TestCase):
             data.append(threading.current_thread().name)
 
         call_async(func, cancel, callback)
-        Gtk.main_iteration()
         run_gtk_loop()
 
         call_async_background(func, cancel, callback)
-        Gtk.main_iteration()
         run_gtk_loop()
 
         main_name = threading.current_thread().name
@@ -59,7 +55,6 @@ class Tcall_async(TestCase):
         cancel = Cancellable()
         cancel.cancel()
         call_async(func, cancel, callback)
-        Gtk.main_iteration()
         run_gtk_loop()
 
     def test_terminate_all(self):

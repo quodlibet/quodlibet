@@ -46,27 +46,27 @@ class MPRIS(EventPlugin):
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     def PluginPreferences(self, parent):
-        box = Gtk.HBox()
+        box = Gtk.Box()
         ccb = ConfigSwitch(
             _("Hide main window on close"),
             "plugins",
             "mpris_window_hide",
             populate=True,
         )
-        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        box.append(qltk.Frame(_("Preferences"), child=ccb))
         return box
 
     def __do_hide(self):
         return config.getboolean("plugins", "mpris_window_hide", False)
 
-    def __window_delete(self, win, event):
+    def __window_delete(self, win):
         if self.__do_hide():
             win.hide()
             return True
         return None
 
     def enabled(self):
-        self.__sig = app.window.connect("delete-event", self.__window_delete)
+        self.__sig = app.window.connect("close-request", self.__window_delete)
 
         self.objects = []
         for service in [MPRIS2]:

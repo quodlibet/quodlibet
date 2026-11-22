@@ -46,13 +46,13 @@ class ConfigSwitch(Gtk.Box):
     ):
         super().__init__()
         self.switch = Gtk.Switch()
-        eb = Gtk.EventBox()
+        eb = Gtk.Box()
         if label is not None:
-            self.label = Gtk.Label(label, use_underline=True)
+            self.label = Gtk.Label(label=label, use_underline=True)
             self.label.set_mnemonic_widget(self.switch)
-            eb.add(self.label)
-        self.pack_start(eb, False, True, 0)
-        self.pack_end(self.switch, False, True, 0)
+            eb.append(self.label)
+        self.append(eb)
+        self.append(self.switch)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)
 
@@ -61,10 +61,11 @@ class ConfigSwitch(Gtk.Box):
         if tooltip:
             self.switch.set_tooltip_text(tooltip)
         self.switch.connect("notify::active", self.__activated, section, option)
-        eb.connect(
-            "button_press_event",
-            lambda *_: self.switch.set_state(not self.switch.get_state()),
+        click = Gtk.GestureClick()
+        click.connect(
+            "pressed", lambda *_: self.switch.set_active(not self.switch.get_active())
         )
+        eb.add_controller(click)
 
     def set_active(self, value: bool):
         self.switch.set_active(value)
@@ -79,11 +80,13 @@ class ConfigSwitch(Gtk.Box):
         config.set(section, option, str(switch.get_active()).lower())
 
 
-class ConfigCheckMenuItem(Gtk.CheckMenuItem):
-    """A CheckMenuItem that connects to QL's config module, and toggles
-    a boolean configuration value when it is toggled.
+class ConfigCheckMenuItem(Gtk.CheckButton):
+    """A CheckButton (for menu use) that connects to QL's config module,
+    and toggles a boolean configuration value when it is toggled.
 
-    It is initialised to the current config value if `populate` is set True."""
+    It is initialised to the current config value if `populate` is set True.
+
+    Backed by CheckButton (GTK4 PopoverMenu items are widget-based)."""
 
     def __init__(self, label, section, option, populate=False, default=False):
         super().__init__(label=label, use_underline=True)

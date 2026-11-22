@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.songwrapper import SongWrapper
@@ -56,4 +56,18 @@ class TConsole(PluginTestCase):
         comp = plugin.console.get_completion_items("")
         assert NAMESPACE_COMPLETIONS in comp
 
+        plugin.disabled()
+
+    def test_return_runs_the_command_line(self):
+        plugin = self.mod.PyConsoleSidebar()
+        plugin.enabled()
+        console = plugin.console
+        console.set_command_line("answer = 42")
+        key = next(
+            c
+            for c in console.view.observe_controllers()
+            if isinstance(c, Gtk.EventControllerKey)
+        )
+        assert key.emit("key-pressed", Gdk.KEY_Return, 0, 0)
+        assert console.namespace["answer"] == 42
         plugin.disabled()

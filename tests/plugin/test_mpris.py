@@ -12,7 +12,6 @@ try:
 except ImportError:
     dbus = None
 
-from gi.repository import Gtk
 
 from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
@@ -21,6 +20,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet import const
 from quodlibet import app
+from quodlibet.qltk.window import Window
 
 
 A1 = AudioFile(
@@ -89,6 +89,13 @@ class TMPRIS(PluginTestCase):
         bus = dbus.SessionBus()
         assert bus.name_has_owner(self.BUS_NAME)
 
+    def test_closing_window_hides_it_when_configured(self):
+        config.set("plugins", "mpris_window_hide", True)
+        app.window.present()
+        assert app.window.emit("close-request")
+        assert not app.window.get_visible()
+        assert app.window in Window.windows, "destroyed, not hidden"
+
     def _main_iface(self):
         bus = dbus.SessionBus()
         obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
@@ -118,7 +125,7 @@ class TMPRIS(PluginTestCase):
     def _wait(self, msg=""):
         start = time.time()
         while not self._replies:
-            Gtk.main_iteration_do(False)
+            run_gtk_loop()  # was: iteration(False)
             if time.time() - start > MAX_TIME:
                 self.fail(f"Timed out waiting for replies ({msg})")
         return self._replies.pop(0)
