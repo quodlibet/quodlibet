@@ -15,7 +15,7 @@
 from functools import lru_cache
 from math import ceil, floor
 
-from gi.repository import Gtk, Gdk, Graphene, Gst
+from gi.repository import GObject, Gtk, Gdk, Graphene, Gst
 import cairo
 
 from quodlibet import _, app
@@ -87,7 +87,7 @@ class WaveformSeekBar(Gtk.Box):
 
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
-        self._waveform_scale.connect("size-allocate", self._update_redraw_interval)
+        self._waveform_scale.connect("resized", self._update_redraw_interval)
         motion = Gtk.EventControllerMotion()
         motion.connect("motion", self._on_mouse_hover)
         motion.connect("leave", self._on_mouse_leave)
@@ -332,8 +332,10 @@ class WaveformSeekBar(Gtk.Box):
         self._elapsed_label.set_size_request(width, -1)
 
 
-class WaveformScale(Gtk.Box):
+class WaveformScale(Gtk.Widget):
     """The waveform widget."""
+
+    __gsignals__ = {"resized": (GObject.SignalFlags.RUN_LAST, None, ())}
 
     _rms_vals: list[int] = []
     _player = None
@@ -364,6 +366,9 @@ class WaveformScale(Gtk.Box):
     @property
     def width(self):
         return self.get_allocation().width
+
+    def do_size_allocate(self, width, height, baseline):
+        self.emit("resized")
 
     def reset(self, rms_vals):
         self._rms_vals = rms_vals

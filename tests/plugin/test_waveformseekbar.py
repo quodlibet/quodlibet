@@ -56,6 +56,13 @@ class TWaveformSeekBar(PluginTestCase):
             scale.compute_redraw_interval()
             scale.compute_redraw_area()
 
+    def test_allocating_emits_resized(self):
+        scale = self.mod.WaveformScale(NullPlayer())
+        resized = []
+        scale.connect("resized", lambda *_: resized.append(True))
+        with visible(scale, 300, 40):
+            assert resized
+
     def test_scroll_up_seeks_forward(self):
         player = NullPlayer()
         player.info = AudioFile({"~#length": 60})
