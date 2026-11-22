@@ -110,7 +110,9 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
                     self._refresh()
 
         entry.connect_after("activate", port_activate)
-        entry.connect_after("focus-out-event", port_activate)
+        focus = Gtk.EventControllerFocus()
+        focus.connect("leave", lambda *_: port_activate(entry))
+        entry.add_controller(focus)
 
         table.attach(entry, 1, 2, 1, 2)
 

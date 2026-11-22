@@ -149,7 +149,9 @@ class BansheeImport(EventPlugin):
                 BansheeImport.USR_PATH = path
 
         entry.connect_after("activate", path_activate)
-        entry.connect_after("focus-out-event", path_activate)
+        focus = Gtk.EventControllerFocus()
+        focus.connect("leave", lambda *_: path_activate(entry))
+        entry.add_controller(focus)
         grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
 
         path_revert = Gtk.Button()
