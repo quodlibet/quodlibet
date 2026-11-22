@@ -162,10 +162,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.__save = None
         connect_obj(self, "changed", self.set_pending, None)
         for sw in (fs.get_start_child(), fs.get_end_child()):
-            sw.get_child().connect(
-                "button-press-event", self.__pre_selection_changed, fs, nb
-            )
-            sw.get_child().connect("focus", self.__pre_selection_changed, fs, nb)
+            click = Gtk.GestureClick(button=0)
+            click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+            click.connect("pressed", self.__pre_selection_clicked, fs, nb)
+            sw.get_child().add_controller(click)
+            focus = Gtk.EventControllerFocus()
+            focus.connect("enter", lambda *_: self.__pre_selection_changed(fs, nb))
+            sw.get_child().add_controller(focus)
         fs.get_end_child().get_child().connect("popup-menu", self.__popup_menu, fs)
         self.emit("changed", [])
 
@@ -203,7 +206,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
     def set_pending(self, button, *excess):
         self.__save = button
 
-    def __pre_selection_changed(self, view, event, fs, nb):
+    def __pre_selection_clicked(self, gesture, n_press, x, y, fs, nb):
+        if self.__pre_selection_changed(fs, nb):
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED)
+
+    def __pre_selection_changed(self, fs, nb):
         if self.__save:
             resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
@@ -213,7 +220,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             else:
                 nb.grab_focus()
                 return True  # cancel or closed
-        return None
+        return False
 
     def __popup_menu(self, view, fs):
         # get all songs for the selection
