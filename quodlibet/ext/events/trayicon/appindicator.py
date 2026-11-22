@@ -69,7 +69,7 @@ class AppIndicator(BaseIndicator):
         self.indicator.set_menu(self.menu)
         self.__scroll_id = self.indicator.connect("scroll_event", self.__on_scroll)
 
-        self.__w_sig_del = app.window.connect("delete-event", self.__window_delete)
+        self.__w_sig_del = app.window.connect("close-request", self.__window_delete)
 
     def set_info_song(self, song):
         if song:
@@ -117,7 +117,7 @@ class AppIndicator(BaseIndicator):
                 else:
                     app.player.volume -= 0.05
 
-    def __window_delete(self, win, event):
+    def __window_delete(self, win):
         if pconfig.getboolean("window_hide"):
             self.__hide_window()
             return True

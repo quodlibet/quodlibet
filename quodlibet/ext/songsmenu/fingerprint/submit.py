@@ -105,7 +105,7 @@ class FingerprintDialog(Window):
         for song in songs:
             pool.push(song)
 
-        connect_obj(self, "delete-event", self.__cancel_cb, pool)
+        connect_obj(self, "close-request", self.__cancel_cb, pool)
 
         self.set_child(outer_box)
 
@@ -169,7 +169,7 @@ class FingerprintDialog(Window):
         )
 
     def __cancel_cb(self, pool, *args):
-        self.close()
+        self.destroy()
 
         def idle_cancel():
             pool.stop()
@@ -179,6 +179,7 @@ class FingerprintDialog(Window):
         # pool.stop can block a short time because the CV might be locked
         # during starting the pipeline -> idle_add -> no GUI blocking
         GLib.idle_add(idle_cancel)
+        return True
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)

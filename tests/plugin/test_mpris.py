@@ -20,6 +20,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet import const
 from quodlibet import app
+from quodlibet.qltk.window import Window
 
 
 A1 = AudioFile(
@@ -87,6 +88,13 @@ class TMPRIS(PluginTestCase):
     def test_name_owner(self):
         bus = dbus.SessionBus()
         assert bus.name_has_owner(self.BUS_NAME)
+
+    def test_closing_window_hides_it_when_configured(self):
+        config.set("plugins", "mpris_window_hide", True)
+        app.window.present()
+        assert app.window.emit("close-request")
+        assert not app.window.get_visible()
+        assert app.window in Window.windows, "destroyed, not hidden"
 
     def _main_iface(self):
         bus = dbus.SessionBus()

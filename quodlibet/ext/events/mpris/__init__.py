@@ -59,14 +59,14 @@ class MPRIS(EventPlugin):
     def __do_hide(self):
         return config.getboolean("plugins", "mpris_window_hide", False)
 
-    def __window_delete(self, win, event):
+    def __window_delete(self, win):
         if self.__do_hide():
             win.hide()
             return True
         return None
 
     def enabled(self):
-        self.__sig = app.window.connect("delete-event", self.__window_delete)
+        self.__sig = app.window.connect("close-request", self.__window_delete)
 
         self.objects = []
         for service in [MPRIS2]:
