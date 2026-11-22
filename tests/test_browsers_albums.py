@@ -7,13 +7,14 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import time
 from functools import cmp_to_key
 
-from gi.repository import Gtk
+from gi.repository import GLib, Gtk
 
 from quodlibet.browsers._base import DisplayPatternMixin
-from . import TestCase, run_gtk_loop
-from .helper import realized
+from . import TestCase, destroy_fake_app, init_fake_app, run_gtk_loop
+from .helper import realized, visible
 
 from quodlibet import config
 
@@ -219,6 +220,22 @@ class TAlbumBrowser(TestCase):
 
     def test_header(self):
         assert not self.bar.headers
+
+    def test_showing_albums_scans_their_covers(self):
+        init_fake_app()
+        self.addCleanup(destroy_fake_app)
+        config.set("browsers", "album_covers", True)
+        AlbumList.toggle_covers()
+        model = self.bar.view.get_model()
+
+        def all_scanned():
+            return all(row[0].scanned for row in model if row[0].album)
+
+        with visible(self.bar, 400, 400):
+            deadline = time.monotonic() + 2
+            while not all_scanned() and time.monotonic() < deadline:
+                GLib.MainContext.default().iteration(False)
+        assert all_scanned()
 
     def test_list(self):
         albums = self.bar.list_albums()

@@ -287,9 +287,13 @@ class VisibleUpdate:
     PRELOAD_COUNT = 35
 
     def enable_row_update(self, view, sw, column):
-        connect_obj(view, "draw", self.__update_visibility, view)
-
-        connect_destroy(sw.get_vadjustment(), "value-changed", self.__stop_update, view)
+        vadj = sw.get_vadjustment()
+        connect_destroy(vadj, "value-changed", self.__stop_update, view)
+        # scrolling, resizing and model changes can all reveal new rows
+        connect_destroy(vadj, "changed", self.__stop_update, view)
+        model = view.get_model()
+        connect_destroy(model, "row-inserted", self.__rows_changed, view)
+        connect_destroy(model, "rows-reordered", self.__rows_changed, view)
 
         self.__pending_paths = []
         self.__update_deferred = DeferredSignal(
@@ -323,14 +327,18 @@ class VisibleUpdate:
         if self.__pending_paths:
             copool.remove(self.__scan_paths)
             self.__pending_paths = []
-            self.__update_visibility(view)
+        self.__update_visibility(view)
+
+    def __rows_changed(self, model, *args):
+        view = args[-1]
+        self.__update_visibility(view)
 
     def __update_visibility(self, view, *args):
         if not self.__column.get_visible():
             return
 
         # update all visible rows on first expose event
-        if self.__first_expose:
+        if self.__first_expose and view.get_visible_range():
             self.__first_expose = False
             self.__update_visible_rows(view, 0)
             for _i in self.__scan_paths():
