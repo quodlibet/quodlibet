@@ -605,6 +605,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             raise
 
         self.songlist.connect("popup-menu", self.__songs_popup_menu)
+        self.songlist.connect("songs-dropped", self.__songlist_songs_dropped)
         self.songlist.connect("columns-changed", self.__cols_changed)
         self.songlist.connect("columns-changed", self.__hide_headers)
         self.songlist.info.connect("changed", self.__set_totals)
@@ -813,7 +814,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def __songlist_key_press(self, controller, keyval, keycode, state):
         return self.browser.key_pressed(keyval, state)
 
-    def __songlist_drag_data_recv(self, view, *args):
+    def __songlist_songs_dropped(self, view):
         if self.browser.can_reorder:
             songs = view.get_songs()
             self.browser.reordered(songs)

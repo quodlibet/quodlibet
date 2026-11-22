@@ -331,6 +331,8 @@ class SongListDnDMixin(GObject.GObject):
         if self._drop_by_row:
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
+            if self._drag_iters:
+                return Gdk.DragAction.MOVE
         return Gdk.DragAction.COPY
 
     def _on_drop_leave(self, target):
@@ -366,7 +368,9 @@ class SongListDnDMixin(GObject.GObject):
 
         # Browser drop mode (not by row)
         if not self._drop_by_row:
-            return self._drag_data_browser_dropped(songs)
+            success = self._drag_data_browser_dropped(songs)
+            self.emit("songs-dropped")
+            return success
 
         # Row-based drop
         model = self.get_model()
@@ -376,24 +380,35 @@ class SongListDnDMixin(GObject.GObject):
             path = max(0, len(model) - 1)
             position = Gtk.TreeViewDropPosition.AFTER
 
-        # Insert songs at drop position
-        song = songs.pop(0)
-        try:
+        before = position in (
+            Gtk.TreeViewDropPosition.BEFORE,
+            Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
+        )
+        if self._drag_iters:
+            # Reordering within this list
             iter_ = model.get_iter(path)
-        except ValueError:
-            iter_ = model.append(row=[song])
-        else:
-            if position in (
-                Gtk.TreeViewDropPosition.BEFORE,
-                Gtk.TreeViewDropPosition.INTO_OR_BEFORE,
-            ):
-                iter_ = model.insert_before(iter_, [song])
+            if before:
+                while self._drag_iters:
+                    model.move_before(self._drag_iters.pop(0), iter_)
             else:
+                while self._drag_iters:
+                    model.move_after(self._drag_iters.pop(), iter_)
+        else:
+            song = songs.pop(0)
+            try:
+                iter_ = model.get_iter(path)
+            except ValueError:
+                iter_ = model.append(row=[song])
+            else:
+                if before:
+                    iter_ = model.insert_before(iter_, [song])
+                else:
+                    iter_ = model.insert_after(iter_, [song])
+
+            for song in songs:
                 iter_ = model.insert_after(iter_, [song])
 
-        for song in songs:
-            iter_ = model.insert_after(iter_, [song])
-
+        self.emit("songs-dropped")
         return True
 
     def _drag_data_browser_dropped(self, songs):
@@ -408,6 +423,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     __gsignals__: GSignals = {
         "songs-removed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "orders-changed": (GObject.SignalFlags.RUN_LAST, None, []),
+        "songs-dropped": (GObject.SignalFlags.RUN_LAST, None, []),
     }
 
     headers: list[str] = []

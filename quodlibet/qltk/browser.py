@@ -264,7 +264,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         browser.connect("songs-selected", self.__browser_cb)
         browser.finalize(False)
         view.connect("popup-menu", self._menu, library)
-        view.connect("drag-data-received", self.__drag_data_recv)
+        view.connect("songs-dropped", self.__songs_dropped)
         view.connect("row-activated", self.__enqueue, player)
 
         if browser.headers is not None:
@@ -296,7 +296,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         if player.song is None:
             player.next()
 
-    def __drag_data_recv(self, view, *args):
+    def __songs_dropped(self, view):
         if self.browser.can_reorder:
             songs = view.get_songs()
             self.browser.reordered(songs)

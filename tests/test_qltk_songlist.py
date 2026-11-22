@@ -241,6 +241,36 @@ class TSongList(TestCase):
             ]
             assert len(gestures) == 1, f"{column.header_name} has {len(gestures)}"
 
+    def _drop_on_first_row(self, songs):
+        files = [Gio.File.new_for_path(s("~filename")) for s in songs]
+        area = self.songlist.get_cell_area(Gtk.TreePath(0), None)
+        x, y = self.songlist.convert_bin_window_to_widget_coords(area.x + 1, area.y + 1)
+        return self.songlist._on_drop(None, Gdk.FileList.new_from_list(files), x, y)
+
+    def test_dragging_within_the_list_moves_rows_and_signals(self):
+        songs = [AudioFile({"~filename": f"/dev/{n}"}) for n in "abc"]
+        self.lib.add(songs)
+        self.songlist.set_column_headers(["title"])
+        self.songlist.set_songs(songs, sorted=True)
+        dropped = []
+        self.songlist.connect("songs-dropped", lambda *_: dropped.append(True))
+        with visible(self.songlist):
+            self.songlist.get_selection().select_path(Gtk.TreePath(2))
+            self.songlist._on_drag_prepare(None, 0, 0)
+            self.songlist._on_drag_begin(None, None)
+            assert self._drop_on_first_row([songs[2]])
+        assert self.songlist.get_songs() == [songs[2], songs[0], songs[1]]
+        assert dropped
+
+    def test_dropping_from_elsewhere_inserts_rows(self):
+        songs = [AudioFile({"~filename": f"/dev/{n}"}) for n in "abc"]
+        self.lib.add(songs)
+        self.songlist.set_column_headers(["title"])
+        self.songlist.set_songs(songs[:2], sorted=True)
+        with visible(self.songlist):
+            assert self._drop_on_first_row([songs[2]])
+        assert self.songlist.get_songs() == [songs[2], songs[0], songs[1]]
+
     def test_column_header_menu_pops_up(self):
         self.songlist.set_column_headers(["artist"])
         column = self.songlist.get_columns()[0]
