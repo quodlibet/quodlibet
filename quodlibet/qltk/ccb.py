@@ -61,10 +61,11 @@ class ConfigSwitch(Gtk.Box):
         if tooltip:
             self.switch.set_tooltip_text(tooltip)
         self.switch.connect("notify::active", self.__activated, section, option)
-        eb.connect(
-            "button_press_event",
-            lambda *_: self.switch.set_state(not self.switch.get_state()),
+        click = Gtk.GestureClick()
+        click.connect(
+            "pressed", lambda *_: self.switch.set_active(not self.switch.get_active())
         )
+        eb.add_controller(click)
 
     def set_active(self, value: bool):
         self.switch.set_active(value)
