@@ -124,8 +124,9 @@ class TrackNumbers(Gtk.Box):
         connect_obj(revert, "clicked", self.__update, None, *preview_args[1:])
         spin_total.connect("value-changed", self.__preview_tracks, *preview_args)
         spin_start.connect("value-changed", self.__preview_tracks, *preview_args)
-        connect_obj(
-            view, "drag-end", self.__class__.__preview_tracks, self, *preview_args
+        # A drag reorder deletes the original row last
+        self.__reordered = model.connect(
+            "row-deleted", lambda *_: self.__preview_tracks(None, *preview_args)
         )
         render.connect("edited", self.__row_edited, model, preview, save)
 
@@ -211,7 +212,8 @@ class TrackNumbers(Gtk.Box):
 
         songs.sort(key=sort_key)
 
-        model.clear()
+        with model.handler_block(self.__reordered):
+            model.clear()
         total.set_value(len(songs))
 
         for song in songs:
