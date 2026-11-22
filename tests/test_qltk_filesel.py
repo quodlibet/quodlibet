@@ -3,10 +3,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from gi.repository import GLib
+
 from tests import TestCase, mkdtemp
-from tests.helper import __
+from tests.helper import __, visible
 
 import os
+import time
 import sys
 
 sys.modules["dircache"] = os  # cheat the dircache effects
@@ -190,6 +193,22 @@ class TFileSelector(TestCase):
         self.fs.rescan()
         self.assertEqual(self.files, expected)
         self.assertEqual(self.files, files_prev)
+
+    def test_rescan_keeps_file_list_scroll_position(self):
+        paths = [os.path.join(self.ROOTS[0], "f%03d" % i) for i in range(200)]
+        for path in paths:
+            open(path, "wb").close()
+        self.PATHS.extend(paths)
+        self.fs.rescan()
+        vadj = self.fs.get_end_child().get_child().get_vadjustment()
+
+        with visible(self.fs, 400, 300):
+            vadj.set_value(1000)
+            self.fs.rescan()
+            deadline = time.monotonic() + 0.5
+            while time.monotonic() < deadline:
+                GLib.MainContext.default().iteration(False)
+            assert vadj.get_value() == 1000
 
     def test_main(self):
         MainFileSelector()
