@@ -770,8 +770,6 @@ class EditTags(Gtk.Box):
             c.set_sensitive(can_change and c.get_property("sensitive"))
         copy_b.set_sensitive(True)
         remove_b.set_sensitive(True)
-        menu.connect("selection-done", lambda m: m.destroy())
-
         # XXX: Keep reference
         self.__menu = menu
         return view.popup_menu(menu, 3, GLib.CURRENT_TIME)

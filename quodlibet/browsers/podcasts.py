@@ -495,7 +495,6 @@ class Podcasts(Browser):
         menu.append(refresh)
         menu.append(rebuild)
         menu.append(delete)
-        menu.connect("selection-done", lambda m: m.destroy())
 
         if self._view.popup_menu(menu, 0, GLib.CURRENT_TIME):
             return menu
