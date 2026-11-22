@@ -170,17 +170,20 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.stderr = OutFile(self, self.error)
 
         # Signals
-        self.view.connect("key-press-event", self.__key_press_event_cb)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        key_controller.connect("key-pressed", self.__key_press_event_cb, self.view)
+        self.view.add_controller(key_controller)
         buffer.connect("mark-set", self.__mark_set_cb)
 
-    def __key_press_event_cb(self, view, event):
+    def __key_press_event_cb(self, controller, keyval, keycode, state, view):
         modifier_mask = Gtk.accelerator_get_default_mod_mask()
-        event_state = event.state & modifier_mask
+        event_state = state & modifier_mask
 
-        if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
+        if keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
             self.close()
 
-        elif event.keyval == Gdk.KEY_Return and (
+        elif keyval == Gdk.KEY_Return and (
             event_state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
         ):
             # Get the command
@@ -210,7 +213,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_Return:
+        elif keyval == Gdk.KEY_Return:
             # Get the marks
             buffer = view.get_buffer()
             lin_mark = buffer.get_mark("input-line")
@@ -264,7 +267,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_c and event_state == Gdk.ModifierType.CONTROL_MASK:
+        elif keyval == Gdk.KEY_c and event_state == Gdk.ModifierType.CONTROL_MASK:
             # Get the marks
             buffer = view.get_buffer()
             lin_mark = buffer.get_mark("input-line")
@@ -285,31 +288,29 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Down or event.keyval == Gdk.KEY_Down:
+        elif keyval == Gdk.KEY_KP_Down or keyval == Gdk.KEY_Down:
             # Next entry from history
-            view.emit_stop_by_name("key_press_event")
             self.history_down()
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Up or event.keyval == Gdk.KEY_Up:
+        elif keyval == Gdk.KEY_KP_Up or keyval == Gdk.KEY_Up:
             # Previous entry from history
-            view.emit_stop_by_name("key_press_event")
             self.history_up()
             GLib.idle_add(self.scroll_to_end)
             return True
 
         elif (
-            event.keyval == Gdk.KEY_KP_Left
-            or event.keyval == Gdk.KEY_Left
-            or event.keyval == Gdk.KEY_BackSpace
+            keyval == Gdk.KEY_KP_Left
+            or keyval == Gdk.KEY_Left
+            or keyval == Gdk.KEY_BackSpace
         ):
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
             cur = buffer.get_iter_at_mark(buffer.get_insert())
             return inp.compare(cur) == 0
 
-        elif event.keyval == Gdk.KEY_Home:
+        elif keyval == Gdk.KEY_Home:
             # Go to the begin of the command instead of the begin of the line
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
@@ -320,8 +321,8 @@ class PythonConsole(Gtk.ScrolledWindow):
             return True
 
         # completion - Tab, Shift+Tab, Ctrl+Space , Ctrl+Shift+Space
-        elif (event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_ISO_Left_Tab) or (
-            event.keyval == Gdk.KEY_space
+        elif (keyval == Gdk.KEY_Tab or keyval == Gdk.KEY_ISO_Left_Tab) or (
+            keyval == Gdk.KEY_space
             and (
                 event_state
                 == (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
