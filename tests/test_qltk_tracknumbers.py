@@ -25,6 +25,7 @@ class TTrackNumbers(TestCase):
     def test_reordering_rows_renumbers_them(self):
         songs = [AudioFile({"~filename": f"/dev/{n}", "tracknumber": n}) for n in "123"]
         props = SongProperties(app.library, songs, app.window)
+        self.addCleanup(props.destroy)
         page = TrackNumbers(props, app.library)
         props.emit("changed", songs)
         (view,) = find_widgets(page, HintedTreeView)

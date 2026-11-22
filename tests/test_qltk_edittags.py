@@ -56,6 +56,7 @@ class TEditTags(TestCase):
 
     def test_edit_tags_starts(self):
         props = SongProperties(app.library, [], quodlibet.app.window)
+        self.addCleanup(props.destroy)
         EditTags(props, app.library)
 
     def test_edit_tags_popup_menu(self):
@@ -63,6 +64,7 @@ class TEditTags(TestCase):
             {"~filename": "/dev/null", "artist": "Person", "album": "Dj Bars of FOO"}
         )
         props = SongProperties(app.library, [song], app.window)
+        self.addCleanup(props.destroy)
         box = EditTags(props, app.library)
 
         # Add a fake plugin
@@ -87,6 +89,7 @@ class TEditTags(TestCase):
     def test_middle_click_pastes_primary_selection_into_value(self):
         song = AudioFile({"~filename": "/dev/null", "artist": "Person"})
         props = SongProperties(app.library, [song], app.window)
+        self.addCleanup(props.destroy)
         box = EditTags(props, app.library)
         box._update([song])
         view = box._view
