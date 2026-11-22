@@ -8,7 +8,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 
 from quodlibet import _
 from quodlibet import app
@@ -421,7 +421,9 @@ class Equalizer(EventPlugin):
             adj.connect("value-changed", set_band, i)
             adjustments.append(adj)
             hs = Gtk.HScale(adjustment=adj)
-            hs.connect("button-press-event", self.__rightclick)
+            right_click = Gtk.GestureClick(button=Gdk.BUTTON_SECONDARY)
+            right_click.connect("pressed", self.__rightclick, hs)
+            hs.add_controller(right_click)
             hs.set_draw_value(True)
             hs.set_value_pos(Gtk.PositionType.RIGHT)
             hs.set_format_value_func(lambda s, v: _("%.1f dB") % v)
@@ -582,6 +584,5 @@ class Equalizer(EventPlugin):
         main_vbox.append(frame)
         return main_vbox
 
-    def __rightclick(self, hs, event):
-        if event.triggers_context_menu():
-            hs.set_value(0)
+    def __rightclick(self, gesture, n_press, x, y, hs):
+        hs.set_value(0)

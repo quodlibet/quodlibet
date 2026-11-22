@@ -296,7 +296,7 @@ class AnimOsdPrefs(Gtk.Box):
             edit_button.connect("clicked", edit_pattern)
             hb.append(edit_button)
             preview_button = Gtk.Button(label=_("Preview"), use_underline=True)
-            preview_button.connect("button-press-event", on_button_pressed)
+            preview_button.connect("clicked", on_button_pressed)
             hb.append(preview_button)
             return hb
 

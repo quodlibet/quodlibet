@@ -40,8 +40,14 @@ class TapBpmPanel(Gtk.Box):
         self.append(box)
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
-        self.tap_btn.connect("button-press-event", self.tap)
-        self.tap_btn.connect("key-press-event", self.key_tap)
+        click = Gtk.GestureClick()
+        click.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        click.connect("pressed", self.tap)
+        self.tap_btn.add_controller(click)
+        key = Gtk.EventControllerKey()
+        key.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        key.connect("key-pressed", self.key_tap)
+        self.tap_btn.add_controller(key)
         self.append(self.tap_btn)
 
         self.init_tap()
@@ -63,15 +69,15 @@ class TapBpmPanel(Gtk.Box):
         # Give focus back to the tap button even if reset was pressed
         self.tap_btn.grab_focus()
 
-    def tap(self, widget, event):
-        self.count_tap(event.time)
+    def tap(self, gesture, n_press, x, y):
+        self.count_tap(gesture.get_current_event_time())
         self.update()
 
-    def key_tap(self, widget, event):
-        if event.keyval != Gdk.KEY_space and event.keyval != Gdk.KEY_Return:
+    def key_tap(self, controller, keyval, keycode, state):
+        if keyval != Gdk.KEY_space and keyval != Gdk.KEY_Return:
             return False
 
-        self.count_tap(event.time)
+        self.count_tap(controller.get_current_event_time())
         self.update()
         return True
 
