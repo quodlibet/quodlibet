@@ -114,7 +114,7 @@ class Preferences(Gtk.Box):
         def format_hz(scale, value):
             return _("%d Hz") % value
 
-        fcut_scale.connect("format-value", format_hz)
+        fcut_scale.set_format_value_func(format_hz)
         table.attach(fcut_scale, 1, 2, 1, 2)
 
         def fcut_changed(scale):
@@ -134,7 +134,7 @@ class Preferences(Gtk.Box):
         def format_db(scale, value):
             return _("%.1f dB") % (value / 10.0)
 
-        level_scale.connect("format-value", format_db)
+        level_scale.set_format_value_func(format_db)
         table.attach(level_scale, 1, 2, 2, 3)
 
         def level_changed(scale):

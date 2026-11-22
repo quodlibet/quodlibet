@@ -264,7 +264,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             scale.set_tooltip_text(tooltip_text)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             scale.set_value(ratio)
-            scale.connect("format-value", format_perc)
+            scale.set_format_value_func(format_perc)
             scale.connect("value-changed", on_change)
 
             label = Gtk.Label(label=lbl_text)

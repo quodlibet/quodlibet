@@ -60,7 +60,7 @@ class GstPlayerPreferences(Gtk.Box):
         )
         scale.set_value_pos(Gtk.PositionType.LEFT)
         scale.set_show_fill_level(True)
-        scale.connect("format-value", format_buffer)
+        scale.set_format_value_func(format_buffer)
         scale.connect("value-changed", scale_changed)
 
         buffer_label = Gtk.Label(label=_("_Buffer duration:"))

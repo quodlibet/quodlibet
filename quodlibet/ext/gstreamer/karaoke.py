@@ -100,13 +100,13 @@ class Preferences(Gtk.Box):
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
 
-        scales["level"].connect("format-value", format_perc)
+        scales["level"].set_format_value_func(format_perc)
 
         def format_hertz(scale, value):
             return _("%d Hz") % value
 
-        scales["band"].connect("format-value", format_hertz)
-        scales["width"].connect("format-value", format_hertz)
+        scales["band"].set_format_value_func(format_hertz)
+        scales["width"].set_format_value_func(format_hertz)
 
         frame = qltk.Frame(_("Preferences"), child=table)
         frame.set_vexpand(True)

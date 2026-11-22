@@ -424,7 +424,7 @@ class Equalizer(EventPlugin):
             hs.connect("button-press-event", self.__rightclick)
             hs.set_draw_value(True)
             hs.set_value_pos(Gtk.PositionType.RIGHT)
-            hs.connect("format-value", lambda s, v: _("%.1f dB") % v)
+            hs.set_format_value_func(lambda s, v: _("%.1f dB") % v)
             table.attach(hs, 2, 3, i, i + 1)
         main_vbox.append(table)
 

@@ -86,7 +86,7 @@ class Preferences(Gtk.Box):
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
 
-        threshold_scale.connect("format-value", format_perc)
+        threshold_scale.set_format_value_func(format_perc)
         table.attach(threshold_scale, 1, 2, 0, 1)
 
         def threshold_changed(scale):
