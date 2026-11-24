@@ -279,6 +279,25 @@ class TOperonSet(TOperonBase):
         self.s.reload()
         self.assertEqual(self.s["artist"], "foobar")
 
+    def test_pairs(self):
+        self.check_false(["set", "foo=bar"], False, True)
+        self.check_true(["set", "foo=bar", "album=quux", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(self.s["foo"], "bar")
+        self.assertEqual(self.s["album"], "quux")
+
+    def test_pair_multiple_values(self):
+        old = self.s.list("artist")
+        self.check_true(["set", "artist=one", "artist=two", self.f], False, False)
+        self.s.reload()
+        self.assertEqual(sorted(self.s.list("artist")), ["one", "two"])
+        self.assertNotEqual(sorted(self.s.list("artist")), sorted(old))
+
+    def test_pair_dry_run(self):
+        self.check_true(["set", "--dry-run", "foo=bar", self.f], False, False)
+        self.s.reload()
+        self.assertNotIn("foo", self.s)
+
 
 class TOperonCopy(TOperonBase):
     # [--dry-run] [--ignore-errors] <source> <dest>

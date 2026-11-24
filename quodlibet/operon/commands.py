@@ -315,11 +315,38 @@ class EditCommand(Command):
             self.save_songs(songs)
 
 
+def _split_set_pairs(args):
+    """Split leading <tag>=<value> arguments off the file paths.
+
+    Returns a list of (tag, value) pairs and the remaining paths, or
+    None if the first argument doesn't use the pair form. A tag name
+    never contains "=" or a path separator, so the two forms can be
+    told apart by the first argument alone.
+    """
+
+    if not args or "=" not in fsn2text(args[0]):
+        return None
+
+    pairs = []
+    rest = list(args)
+    while rest:
+        tag, sep, value = fsn2text(rest[0]).partition("=")
+        if not sep or not tag or "/" in tag or "." in tag:
+            break
+        pairs.append((tag, value))
+        rest.pop(0)
+
+    return pairs, rest
+
+
 @Command.register
 class SetCommand(Command):
     NAME = "set"
     DESCRIPTION = _("Set a tag and remove existing values")
-    USAGE = "[--dry-run] <tag> <value> <file> [<files>]"
+    USAGE = (
+        "[--dry-run] <tag> <value> <file> [<files>] | "
+        "<tag>=<value> [<tag>=<value>] <file> [<files>]"
+    )
 
     def _add_options(self, p):
         p.add_option(
@@ -327,31 +354,39 @@ class SetCommand(Command):
         )
 
     def _execute(self, options, args):
-        if len(args) < 3:
-            raise CommandError(_("Not enough arguments"))
-
-        tag = fsn2text(args[0])
-        value = fsn2text(args[1])
-        paths = args[2:]
+        split = _split_set_pairs(args)
+        if split is not None:
+            pairs, paths = split
+            if not pairs or not paths:
+                raise CommandError(_("Not enough arguments"))
+        else:
+            if len(args) < 3:
+                raise CommandError(_("Not enough arguments"))
+            pairs = [(fsn2text(args[0]), fsn2text(args[1]))]
+            paths = args[2:]
 
         songs = []
         for path in paths:
             song = self.load_song(path)
 
-            if not song.can_change(tag):
-                vars = {
-                    "tag": tag,
-                    "format": type(song).format,
-                    "file": song("~filename"),
-                }
-                raise CommandError(
-                    _("Can not set %(tag)r for %(format)s file %(file)r") % vars
-                )
+            cleared = set()
+            for tag, value in pairs:
+                if not song.can_change(tag):
+                    vars = {
+                        "tag": tag,
+                        "format": type(song).format,
+                        "file": song("~filename"),
+                    }
+                    raise CommandError(
+                        _("Can not set %(tag)r for %(format)s file %(file)r") % vars
+                    )
 
-            self.log(f"Set {value!r} to {tag!r}")
-            if tag in song:
-                del song[tag]
-            song.add(tag, value)
+                self.log(f"Set {value!r} to {tag!r}")
+                if tag not in cleared:
+                    cleared.add(tag)
+                    if tag in song:
+                        del song[tag]
+                song.add(tag, value)
             songs.append(song)
 
         if not options.dry_run:

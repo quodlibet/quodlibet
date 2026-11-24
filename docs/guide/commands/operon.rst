@@ -103,6 +103,12 @@ Replace all values of the tag ``<tag>`` by ``<value>`` in all files.
 
 operon set [-h] [--dry-run] <tag> <value> <file>...
 
+Multiple tags can be set in a single command by passing one or more
+``<tag>=<value>`` pairs before the files. Repeating a tag sets multiple
+values for it:
+
+operon set [-h] [--dry-run] <tag>=<value> [<tag>=<value>] <file>...
+
 -h, --help
     Display help and exit
 
@@ -111,6 +117,8 @@ operon set [-h] [--dry-run] <tag> <value> <file>...
 
 Example:
     operon set artist 'The Beatles' song.ogg
+
+    operon set artist='The Beatles' artist='Beatles, The' song.ogg
 
 clear
 -----
