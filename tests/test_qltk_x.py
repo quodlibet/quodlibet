@@ -50,6 +50,12 @@ class Button(TestCase):
     def test_ctr(self):
         assert x.Button("foo", Icons.EDIT_FIND)
 
+    def test_icon_button_mnemonic_targets_button(self):
+        button = x.Button("_Remove", Icons.LIST_REMOVE)
+        label = button.get_child().get_child().get_children()[1]
+        assert label.get_mnemonic_widget() is button
+        button.destroy()
+
 
 class TAlign(TestCase):
     def test_ctr(self):

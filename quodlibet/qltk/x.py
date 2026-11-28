@@ -346,6 +346,8 @@ def _Button(
     align.show_all()
     button = type_()
     button.add(align)
+    if text is not None:
+        label.set_mnemonic_widget(button)
     return button
 
 
